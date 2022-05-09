@@ -1,0 +1,14 @@
+{
+	"name": "Week 3",
+	"title": "Pico",
+	"songs": [
+		["Pico", "pico"],
+		["Philly Nice", "pico"],
+		["Blammed", "pico"]
+	],
+	"menuChars": ["gf", "bf", "pico"],
+	"requiredToUnlock": [],
+	"previous": "week2",
+	"visibleFreeplay": true,
+	"visibleStoryMenu": true
+}

@@ -1,0 +1,11 @@
+currently there's no mods menu!!!
+
+so edit modsActive.txt
+
+the format is:
+A:B
+where A is whether it's enabled (1 or 0), and B is the mod folder name
+
+also the order of mods matters as well! higher mods will take priority for stuff such as menus
+
+to reload without restarting the game, return to title screen

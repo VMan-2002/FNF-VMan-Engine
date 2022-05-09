@@ -1,0 +1,14 @@
+{
+	"name": "Week 6",
+	"title": "Hating Simulator ft. Moawling",
+	"songs": [
+		["Senpai", "senpai"],
+		["Roses", "senpai-angry"],
+		["Spirit", "spirit"]
+	],
+	"menuChars": ["gf", "bf", "senpai"],
+	"requiredToUnlock": [],
+	"previous": "week5",
+	"visibleFreeplay": true,
+	"visibleStoryMenu": true
+}

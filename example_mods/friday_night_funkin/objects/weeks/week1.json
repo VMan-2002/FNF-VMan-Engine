@@ -1,0 +1,14 @@
+{
+	"name": "Week 1",
+	"title": "Daddy Dearest",
+	"songs": [
+		["Bopeebo", "dad"],
+		["Fresh", "dad"],
+		["Dad Battle", "dad"]
+	],
+	"menuChars": ["gf", "bf", "dad"],
+	"requiredToUnlock": [],
+	"previous": "tutorial",
+	"visibleFreeplay": true,
+	"visibleStoryMenu": true
+}

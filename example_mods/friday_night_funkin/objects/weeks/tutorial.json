@@ -1,0 +1,11 @@
+{
+	"name": "Tutorial",
+	"title": "Learn to Funk",
+	"songs": [
+		["Tutorial", "gf"]
+	],
+	"menuChars": ["", "bf", "gf"],
+	"requiredToUnlock": [],
+	"visibleFreeplay": true,
+	"visibleStoryMenu": true
+}

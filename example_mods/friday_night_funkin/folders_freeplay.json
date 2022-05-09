@@ -1,0 +1,46 @@
+{
+	"groupName": "Friday Night Funkin'",
+	"folderIcons": {
+		"Week 1": "dad",
+		"Week 2": "spooky",
+		"Week 3": "pico",
+		"Week 4": "mom",
+		"Week 5": "parents-christmas",
+		"Week 6": "senpai",
+		"Week 7": "tankman",
+		"rootFolder": "bf"
+	},
+	"initFolder": "rootFolder",
+	"categories": {
+		"Week 1": [
+			["week1", "week"]
+		],
+		"Week 2": [
+			["week2", "week"]
+		],
+		"Week 3": [
+			["week3", "week"]
+		],
+		"Week 4": [
+			["week4", "week"]
+		],
+		"Week 5": [
+			["week5", "week"]
+		],
+		"Week 6": [
+			["week6", "week"]
+		],
+		"Week 7": [
+			["week7", "week"]
+		],
+		"rootFolder": [
+			["Tutorial", "song"],
+			["Week 1", "folder"],
+			["Week 2", "folder"],
+			["Week 3", "folder"],
+			["Week 4", "folder"],
+			["Week 5", "folder"],
+			["Week 6", "folder"]
+		]
+	}
+}

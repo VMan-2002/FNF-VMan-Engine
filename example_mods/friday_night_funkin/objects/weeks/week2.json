@@ -1,0 +1,14 @@
+{
+	"name": "Week 2",
+	"title": "Spooky Month",
+	"songs": [
+		["Spookeez", "spooky"],
+		["South", "spooky"],
+		["Monster", "monster"]
+	],
+	"menuChars": ["gf", "bf", "spooky"],
+	"requiredToUnlock": [],
+	"previous": "week1",
+	"visibleFreeplay": true,
+	"visibleStoryMenu": true
+}
