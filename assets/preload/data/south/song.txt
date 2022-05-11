@@ -1,3 +1,4 @@
 110
 South
 bf::spooky::gf
+Kawai Sprite

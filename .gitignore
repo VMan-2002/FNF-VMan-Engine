@@ -1,3 +1,7 @@
 export/
 .vscode/
 vman_mods/
+assets/preload/data/thunderstorm/
+assets/songs/thunderstorm/
+assets/preload/data/space-breaker/
+assets/songs/space-breaker/
