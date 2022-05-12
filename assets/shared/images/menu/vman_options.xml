@@ -14,13 +14,14 @@
 	<SubTexture name="instant respawn0000" x="1733" y="320" width="309" height="312" frameX="-91" frameY="-88" frameWidth="400" frameHeight="400"/>
 	<SubTexture name="instrumental volume0000" x="0" y="578" width="331" height="208" frameX="-69" frameY="-192" frameWidth="400" frameHeight="400"/>
 	<SubTexture name="invisi-notes0000" x="332" y="640" width="342" height="309" frameX="-58" frameY="-91" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="master volume0000" x="675" y="636" width="303" height="311" frameX="-97" frameY="-89" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="middlescroll0000" x="979" y="636" width="373" height="234" frameX="-27" frameY="-166" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="scroll direction0000" x="1353" y="633" width="383" height="292" frameX="-17" frameY="-108" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="set alt bind0000" x="1737" y="633" width="296" height="329" frameX="-104" frameY="-71" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="set bind0000" x="0" y="787" width="296" height="329" frameX="-104" frameY="-71" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="skip title0000" x="297" y="950" width="374" height="129" frameX="-26" frameY="-271" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="sound volume0000" x="672" y="950" width="317" height="268" frameX="-83" frameY="-132" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="unknownOption0000" x="990" y="871" width="276" height="225" frameX="-123" frameY="-174" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="vocals volume0000" x="1267" y="926" width="374" height="214" frameX="-26" frameY="-186" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="language0000" x="675" y="636" width="209" height="198" frameX="-191" frameY="-202" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="master volume0000" x="885" y="636" width="303" height="311" frameX="-97" frameY="-89" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="middlescroll0000" x="1189" y="597" width="373" height="234" frameX="-27" frameY="-166" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="scroll direction0000" x="1563" y="633" width="383" height="292" frameX="-17" frameY="-108" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="set alt bind0000" x="0" y="787" width="296" height="329" frameX="-104" frameY="-71" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="set bind0000" x="297" y="950" width="296" height="329" frameX="-104" frameY="-71" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="skip title0000" x="594" y="950" width="374" height="129" frameX="-26" frameY="-271" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="sound volume0000" x="969" y="948" width="317" height="268" frameX="-83" frameY="-132" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="unknownOption0000" x="1287" y="926" width="276" height="225" frameX="-123" frameY="-174" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="vocals volume0000" x="1564" y="926" width="374" height="214" frameX="-26" frameY="-186" frameWidth="400" frameHeight="400"/>
 </TextureAtlas>
