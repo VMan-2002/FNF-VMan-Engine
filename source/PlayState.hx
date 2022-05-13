@@ -353,8 +353,8 @@ class PlayState extends MusicBeatState
 					grpLimoDancers.add(dancer);
 				}
 
-				var overlayShit:FlxSprite = new FlxSprite(-500, -600).loadGraphic(Paths.image('limo/limoOverlay'));
-				overlayShit.alpha = 0.5;
+				//var overlayShit:FlxSprite = new FlxSprite(-500, -600).loadGraphic(Paths.image('limo/limoOverlay'));
+				//overlayShit.alpha = 0.5;
 				// add(overlayShit);
 
 				// var shaderBullshit = new BlendModeEffect(new OverlayShader(), FlxColor.RED);

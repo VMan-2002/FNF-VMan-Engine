@@ -4,6 +4,17 @@ import flixel.FlxG;
 import flixel.graphics.frames.FlxAtlasFrames;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
+#if MODS
+import sys.io.File;
+import sys.FileSystem;
+import flash.display.BitmapData;
+import flash.media.Sound;
+#end
+import Options;
+import flixel.system.FlxAssets.FlxSoundAsset;
+import lime.utils.Assets;
+import lime.graphics.Image;
+import flash.display.BitmapData;
 
 class Paths
 {
@@ -15,6 +26,23 @@ class Paths
 	{
 		currentLevel = name.toLowerCase();
 	}
+	
+	#if MODS
+	static function doesModHaveThing(path:String):String {
+		for (i in modsActive) {
+			var p = 'mods/${i}/${path}';
+			if (FileSystem.exists(p)) {
+				//trace('found ${path} in ${i}');
+				return p;
+			}
+		}
+		return "";
+	}
+	#else
+	inline function doesModHaveThing(path:String):String {
+		return "";
+	}
+	#end
 
 	static function getPath(file:String, type:AssetType, library:Null<String>)
 	{
