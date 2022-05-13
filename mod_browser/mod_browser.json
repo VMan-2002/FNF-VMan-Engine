@@ -1,3 +1,11 @@
 {
-	"mods": []
+	"mods": [
+		{
+			"name": "Real mod",
+			"author": "A real person",
+			"tags": "song,week,extra",
+			"description": "Just kidding! It's not real",
+			"link": "https://www.youtube.com/watch?v=sZ4pfn0fKOw"
+		}
+	]
 }
