@@ -1,0 +1,192 @@
+lang_english language name::English
+lang_native language name::English
+lang_translation description::VMan_2002
+game_vman engine::VMan Engine
+options_controls::Controls
+options_controls_desc::Change your controls.
+options_scroll direction::Scroll direction
+options_scroll direction_desc::The direction the notes move.
+options_middlescroll::Middlescroll
+options_middlescroll_desc::Move your notes to the middle of the screen, and hide the opponent's notes.
+options_ghost tapping::Ghost Tapping
+options_ghost tapping_desc::Whether or not pressing the wrong arrow loses you health.
+options_invisi-notes::Invisi-Notes
+options_invisi-notes_desc::Bad idea. Makes the notes invisible.
+options_instant respawn::Instant Respawn
+options_instant respawn_desc::Respawn immediately upon dying.
+options_botplay::Botplay
+options_botplay_desc::Watch the game go brrr
+options_freeplay folders::Freeplay Folders
+options_freeplay folders_desc::Categorize the songs in the Freeplay menu.\nContent Warning: may scare some players.
+options_activate new mods::Activate New Mods
+options_activate new mods_desc::The state that any new mods in the mods folder have if they hadn't been added before.
+options_skip title::Skip Title
+options_skip title_desc::Skip the title screen when the game starts.
+options_exit without saving::Exit without saving
+options_exit without saving_desc::Exit the options menu, and discard your changes.
+options_master volume::Master Volume
+options_master volume_desc::Volume of everything.
+options_sound volume::Sound Volume
+options_sound volume_desc::Volume of sound effects.
+options_instrumental volume::Instrumental Volume
+options_instrumental volume_desc::Volume of song instrumentals.
+options_vocals volume::Vocals Volume
+options_vocals volume_desc::Volume of song vocals.
+options_enable modcharts::Enable modcharts
+options_enable modcharts_desc::Enable modcharts
+options_antialiasing::Antialiasing
+options_antialiasing_desc::Whether or not stuff gets a bit of smoothing, disabling this can boost framerates
+options_change mania::Change Mania
+options_change mania_desc::Left/Right to change the amount of keys.
+options_set bind::Set Bind
+options_set bind_desc::Change the first keybind of a note. Left/Right to change the key selected.
+options_set alt bind::Set Alt Bind
+options_set alt bind_desc::Change the second keybind of a note. Left/Right to change the key selected.
+options_set ui controls::Set UI Controls
+options_set ui controls_desc::Change the other controls, such as those for the UI.
+options_change color::Change Color
+options_change color_desc::Change the colors of notes. Left/Right to change the key selected.
+options_change color advanced::Change Color Advanced
+options_change color advanced_desc::Change the colors of notes in a more detailed way.
+options_change strumline color::Change Strumline Color
+options_change strumline color_desc::Change the color of the strumline.
+options_chart editor::Chart Editor
+options_chart editor_desc::Edit song charting.
+options_animation debug::Animation Debug
+options_animation debug_desc::Look at animations n stuff.
+options_folder editor::Folder Editor
+options_folder editor_desc::Edit category structures for the Freeplay menu.
+options_week editor::Week Editor
+options_week editor_desc::Edit in-game weeks for Story Mode.
+options_intro text test::Intro Text Test
+options_intro text test_desc::Preview and edit the randomized intro text.
+options_menu character editor::Menu Character Editor
+options_menu character editor_desc::Menu Character Editor
+options_stage editor::Stage Editor
+options_stage editor_desc::Edit stages, including positions of stage sprites.
+options_noteskin creator::Noteskin Creator
+options_noteskin creator_desc::Create noteskins.
+options_spritesheet tool::Spritesheet Tool
+options_spritesheet tool_desc::Convert spritesheets to or from individual frames.
+optionsMenu_unknown option::Unknown option.
+optionsMenu_will return to::Will return to #0
+optionsMenu_enabled::Enabled
+optionsMenu_disabled::Disabled
+optionsMenu_upscroll::Upscroll
+optionsMenu_downscroll::Downscroll
+optionsMenu_no antimash::No antimash
+optionsMenu_horizontal antimash::Horizontal antimash
+optionsMenu_always antimash::Always antimash
+optionsMenu_note_middleline::Middleline
+optionsMenu_note_outline::Outline
+optionsMenu_note_fill::Fill
+optionsMenu_hue::Hue
+optionsMenu_sat::Sat
+optionsMenu_val::Val
+optionsKeys_backspace::BckSp.
+optionsKeys_escape::Esc
+optionsKeys_space::SPACE
+optionsKeys_pageup::PgUp
+optionsKeys_pagedown::PgDn
+optionsKeys_none::---
+freeplay_uncategorized::Uncategorized
+freeplay_personal best::PERSONAL BEST: #0
+storymenu_week score::WEEK SCORE:#0
+storymenu_tracks::TRACKS
+mania_piano::piano
+mania_keys::#0K
+difficulty_easy::Easy
+difficulty_normal::Normal
+difficulty_hard::Hard
+difficulty_mania::Mania
+difficulty_extra::Extra
+mainmenu_story mode::STORY MODE
+mainmenu_free play::FREE PLAY
+mainmenu_donate::DONATE
+mainmenu_options::OPTIONS
+charteditor_tab_note::Note
+charteditor_tab_section::Section
+charteditor_tab_song::Song
+charteditor_apply::Apply
+charteditor_must hit section::Must hit section
+charteditor_change bpm::Change BPM
+charteditor_copy last::Copy last
+charteditor_clear::Clear
+charteditor_swap section::Swap section
+charteditor_alt animation::Alt Animation
+charteditor_has voice track::Has voice track
+charteditor_save::Save
+charteditor_reload audio::Reload Audio
+charteditor_reload json::Reload JSON
+charteditor_load autosave::load autosave
+charteditor_mute instrumental::Mute Instrumental\n(in editor)
+charteditor_section number::Section: #0
+charteditor_note type::Note Type
+charteditor_notetype_normal note::Normal Note
+charteditor_notetype_hurt note::Hurt Note
+charteditor_notetype_death note::Death Note
+charteditor_notetype_warning note::Warning Note
+charteditor_notetype_angel note::Angel Note
+charteditor_notetype_alt animation::Alt Animation
+charteditor_notetype_bob note::Bob Note
+charteditor_notetype_glitch note::Glitch Note
+charteditor_notetype_hey::Hey
+charteditor_event::Event
+charteditor_event_hey::Hey
+charteditor_event_hey_desc::Play the "Hey!" animation of the player character.
+charteditor_event_hey_player::Player
+charteditor_event_hey_girlfriend::Girlfriend
+charteditor_event_play animation::Play Animation
+charteditor_event_play animation_desc::Play an animation of a character.
+charteditor_event_play animation_animation::Animation
+charteditor_event_play animation_character::Character
+charteditor_event_zoom hit::Zoom Hit
+charteditor_event_zoom hit_desc::Increase the zoom a bit. Won't change the default zoom.
+charteditor_event_zoom hit_camera zoom::Camera Zoom
+charteditor_event_zoom hit_hud zoom::HUD Zoom
+charteditor_event_set gf speed::Set GF Speed
+charteditor_event_set gf speed_desc::Set the speed at which Girlfriend's idle animation plays.
+charteditor_event_set gf speed_speed::Speed
+playstate_hud_score::Score:#0
+playstate_hud_misses::Misses:#0
+playstate_fc_sfc::SFC
+playstate_fc_gfc::GFC
+playstate_fc_fc::FC
+playstate_fc_sdcb::SDCB
+playstate_fc_clear::Clear
+playstate_hud_accrating::AccRating:#0%
+playstate_hud_accsimple::AccSimple:#0%
+playstate_hud_health::Health:#0%
+playstate_hud_hits::Hits:#0
+playstate_hud_sicks::Sicks:#0
+playstate_hud_goods::Goods:#0
+playstate_hud_bads::Bads:#0
+playstate_hud_shits::Shits:#0
+playstate_hud_misses::Misses:#0
+playstate_hud_totalnotes::TotalNotes:#0
+playstate_hud_engine::VMan Engine
+playstate_hud_engine botplay::VMan Engine (Botplay)
+playstate_pause_resume::Resume
+playstate_pause_restart song::Restart Song
+playstate_pause_options::Options
+playstate_pause_exit to menu::Exit to menu
+announcechecker_title::Announcement!
+announcechecker_update::New Update!
+announcechecker_security::IMPORTANT SECURITY ISSUE:
+announcechecker_security_update::Security Update!
+modbrowser_search::Search
+modbrowser_download::Download
+modbrowser_downloaded::Downloaded
+modbrowser_author::by #0
+modbrowser_more from this author::More from this author
+modbrowser_my downloads::My Downloads
+modbrowser_submit::Submit
+modbrowser_tag_song::Song
+modbrowser_tag_week::Week
+modbrowser_tag_playable::Playable
+modbrowser_tag_girlfriend::Girlfriend
+modbrowser_supportedlanguage::Supports English
+mods_enable::Enabled
+mods_disabled::Disabled
+mods_enable all::Enable All
+mods_disable all::Disable All

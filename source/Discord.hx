@@ -7,6 +7,7 @@ using StringTools;
 
 class DiscordClient
 {
+	static var isActivated:Bool = false;
 	public function new()
 	{
 		trace("Discord Client starting...");
@@ -18,6 +19,7 @@ class DiscordClient
 		});
 		trace("Discord Client started.");
 
+		isActivated = true;
 		while (true)
 		{
 			DiscordRpc.process();
@@ -30,11 +32,18 @@ class DiscordClient
 
 	public static function shutdown()
 	{
+		if (!isActivated) {
+			return;
+		}
 		DiscordRpc.shutdown();
+		isActivated = false;
 	}
 	
 	static function onReady()
 	{
+		if (!isActivated) {
+			return;
+		}
 		DiscordRpc.presence({
 			details: "In the Menus",
 			state: null,
@@ -64,6 +73,9 @@ class DiscordClient
 
 	public static function changePresence(details:String, state:Null<String>, ?smallImageKey : String, ?hasStartTimestamp : Bool, ?endTimestamp: Float)
 	{
+		if (!isActivated) {
+			return;
+		}
 		var startTimestamp:Float = if(hasStartTimestamp) Date.now().getTime() else 0;
 
 		if (endTimestamp > 0)

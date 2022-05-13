@@ -12,7 +12,7 @@ import flixel.util.FlxColor;
 /**
 	*DEBUG MODE
  */
-class AnimationDebug extends FlxState
+class AnimationDebug extends MusicBeatState
 {
 	var bf:Boyfriend;
 	var dad:Character;
@@ -188,6 +188,10 @@ class AnimationDebug extends FlxState
 			updateTexts();
 			genBoyOffsets(false);
 			char.playAnim(animList[curAnim]);
+		}
+		
+		if (controls.BACK) {
+			FlxG.switchState(new MainMenuState());
 		}
 
 		super.update(elapsed);

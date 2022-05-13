@@ -13,11 +13,14 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 
+import OptionsMenu;
+import Translation;
+
 class PauseSubState extends MusicBeatSubstate
 {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
-	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Exit to menu'];
+	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Options', 'Exit to menu'];
 	var curSelected:Int = 0;
 
 	var pauseMusic:FlxSound;
@@ -26,6 +29,7 @@ class PauseSubState extends MusicBeatSubstate
 	{
 		super();
 
+		//Dont use CoolUtil.playMusic here
 		pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfast'), true, true);
 		pauseMusic.volume = 0;
 		pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
@@ -41,13 +45,14 @@ class PauseSubState extends MusicBeatSubstate
 		levelInfo.text += PlayState.SONG.song;
 		levelInfo.scrollFactor.set();
 		levelInfo.setFormat(Paths.font("vcr.ttf"), 32);
+		Translation.setObjectFont(levelInfo, "vcr font");
 		levelInfo.updateHitbox();
 		add(levelInfo);
 
 		var levelDifficulty:FlxText = new FlxText(20, 15 + 32, 0, "", 32);
-		levelDifficulty.text += CoolUtil.difficultyString();
+		levelDifficulty.text += Translation.getTranslation(CoolUtil.difficultyString(), "difficulty");;
 		levelDifficulty.scrollFactor.set();
-		levelDifficulty.setFormat(Paths.font('vcr.ttf'), 32);
+		levelDifficulty.setFormat(levelInfo.font, 32);
 		levelDifficulty.updateHitbox();
 		add(levelDifficulty);
 
@@ -101,14 +106,21 @@ class PauseSubState extends MusicBeatSubstate
 		{
 			var daSelected:String = menuItems[curSelected];
 
-			switch (daSelected)
+			switch (daSelected.toLowerCase())
 			{
-				case "Resume":
+				case "resume":
 					close();
-				case "Restart Song":
+				case "restart song":
 					FlxG.resetState();
-				case "Exit to menu":
-					FlxG.switchState(new MainMenuState());
+				case "exit to menu":
+					if (PlayState.isStoryMode)
+						FlxG.switchState(new StoryMenuState());
+					else
+						FlxG.switchState(new FreeplayState());
+				case "options":
+					FlxG.state.closeSubState();
+					OptionsMenu.wasInPlayState = true;
+					FlxG.switchState(new OptionsMenu());
 			}
 		}
 

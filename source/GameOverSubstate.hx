@@ -6,6 +6,9 @@ import flixel.FlxSubState;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
+import Options;
+
+import CoolUtil;
 
 class GameOverSubstate extends MusicBeatSubstate
 {
@@ -20,14 +23,11 @@ class GameOverSubstate extends MusicBeatSubstate
 		var daBf:String = '';
 		switch (daStage)
 		{
-			case 'school':
-				stageSuffix = '-pixel';
-				daBf = 'bf-pixel-dead';
-			case 'schoolEvil':
+			case 'school' | 'schoolEvil':
 				stageSuffix = '-pixel';
 				daBf = 'bf-pixel-dead';
 			default:
-				daBf = 'bf';
+				daBf = 'bf-dead';
 		}
 
 		super();
@@ -49,6 +49,10 @@ class GameOverSubstate extends MusicBeatSubstate
 		FlxG.camera.target = null;
 
 		bf.playAnim('firstDeath');
+		
+		if (Options.instantRespawn) {
+			gotoplaystate();
+		}
 	}
 
 	override function update(elapsed:Float)
@@ -77,7 +81,7 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.finished)
 		{
-			FlxG.sound.playMusic(Paths.music('gameOver' + stageSuffix));
+			CoolUtil.playMusic('gameOver' + stageSuffix);
 		}
 
 		if (FlxG.sound.music.playing)
@@ -105,11 +109,12 @@ class GameOverSubstate extends MusicBeatSubstate
 			FlxG.sound.play(Paths.music('gameOverEnd' + stageSuffix));
 			new FlxTimer().start(0.7, function(tmr:FlxTimer)
 			{
-				FlxG.camera.fade(FlxColor.BLACK, 2, false, function()
-				{
-					LoadingState.loadAndSwitchState(new PlayState());
-				});
+				FlxG.camera.fade(FlxColor.BLACK, 2, false, gotoplaystate);
 			});
 		}
+	}
+	
+	inline function gotoplaystate() {
+		LoadingState.loadAndSwitchState(new PlayState());
 	}
 }

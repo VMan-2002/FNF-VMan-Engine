@@ -120,7 +120,8 @@ class DialogueBox extends FlxSpriteGroup
 		box.screenCenter(X);
 		portraitLeft.screenCenter(X);
 
-		handSelect = new FlxSprite(FlxG.width * 0.9, FlxG.height * 0.9).loadGraphic(Paths.image('weeb/pixelUI/hand_textbox'));
+		handSelect = new FlxSprite(FlxG.width * 0.9, FlxG.height * 0.9).loadGraphic(Paths.image('pixelUI/hand_textbox'));
+		handSelect.setGraphicSize(Std.int(handSelect.width * PlayState.daPixelZoom * 0.9));
 		add(handSelect);
 
 
@@ -139,6 +140,9 @@ class DialogueBox extends FlxSpriteGroup
 		swagDialogue.color = 0xFF3F2021;
 		swagDialogue.sounds = [FlxG.sound.load(Paths.sound('pixelText'), 0.6)];
 		add(swagDialogue);
+		
+		Translation.setObjectFont(dropText, "pixel font");
+		Translation.setObjectFont(swagDialogue, "pixel font");
 
 		dialogue = new Alphabet(0, 80, "", false, true);
 		// dialogue.x = 90;

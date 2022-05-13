@@ -17,7 +17,7 @@ class Highscore
 
 
 		#if !switch
-		NGio.postScore(score, song);
+		//NGio.postScore(score, song);
 		#end
 
 
@@ -34,7 +34,7 @@ class Highscore
 	{
 
 		#if !switch
-		NGio.postScore(score, "Week " + week);
+		//NGio.postScore(score, "Week " + week);
 		#end
 
 
@@ -50,34 +50,33 @@ class Highscore
 	}
 
 	/**
-	 * YOU SHOULD FORMAT SONG WITH formatSong() BEFORE TOSSING IN SONG VARIABLE
+	 * YOU SHOULD FORMAT SONG WITH formatSong() BEFORE TOSSING IN SONG VARIABLE... NOW!!
 	 */
 	static function setScore(song:String, score:Int):Void
 	{
 		// Reminder that I don't need to format this song, it should come formatted!
-		songScores.set(song, score);
+		songScores.set(formatSong(song), score);
 		FlxG.save.data.songScores = songScores;
 		FlxG.save.flush();
 	}
 
-	public static function formatSong(song:String, diff:Int):String
+	public static function formatSong(song:String, ?diff:Int = -1):String
 	{
-		var daSong:String = song;
+		var daSong:String = (~/ /g).replace(song.toLowerCase(), "-");
+		
+		if (diff == -1)
+			return daSong;
 
-		if (diff == 0)
-			daSong += '-easy';
-		else if (diff == 2)
-			daSong += '-hard';
-
-		return daSong;
+		return daSong + CoolUtil.difficultyPostfixString(diff);
 	}
 
 	public static function getScore(song:String, diff:Int):Int
 	{
-		if (!songScores.exists(formatSong(song, diff)))
-			setScore(formatSong(song, diff), 0);
+		var daSong = formatSong(song, diff);
+		if (!songScores.exists(daSong))
+			setScore(daSong, 0);
 
-		return songScores.get(formatSong(song, diff));
+		return songScores.get(daSong);
 	}
 
 	public static function getWeekScore(week:Int, diff:Int):Int

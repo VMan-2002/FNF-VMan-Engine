@@ -55,16 +55,10 @@ class GitarooPause extends MusicBeatState
 		if (controls.LEFT_P || controls.RIGHT_P)
 			changeThing();
 
-		if (controls.ACCEPT)
-		{
+		if (controls.ACCEPT) {
 			if (replaySelect)
-			{
-				FlxG.switchState(new PlayState());
-			}
-			else
-			{
-				FlxG.switchState(new MainMenuState());
-			}
+				return FlxG.switchState(new PlayState());
+			return FlxG.switchState(new MainMenuState());
 		}
 
 		super.update(elapsed);
@@ -75,14 +69,7 @@ class GitarooPause extends MusicBeatState
 		replaySelect = !replaySelect;
 
 		if (replaySelect)
-		{
 			cancelButton.animation.curAnim.curFrame = 0;
-			replayButton.animation.curAnim.curFrame = 1;
-		}
-		else
-		{
-			cancelButton.animation.curAnim.curFrame = 1;
-			replayButton.animation.curAnim.curFrame = 0;
-		}
+		replayButton.animation.curAnim.curFrame = 1 - cancelButton.animation.curAnim.curFrame;
 	}
 }

@@ -74,7 +74,7 @@ class ChartingState extends MusicBeatState
 	**/
 	var curSelectedNote:Array<Dynamic>;
 
-	var tempBpm:Int = 0;
+	var tempBpm:Float = 0;
 
 	var vocals:FlxSound;
 
@@ -120,7 +120,12 @@ class ChartingState extends MusicBeatState
 				player1: 'bf',
 				player2: 'dad',
 				speed: 1,
-				validScore: false
+				validScore: false,
+				maniaStr: "4k",
+				mania: 0,
+				keyCount: 4,
+				gfVersion: "gf",
+				stage: ""
 			};
 		}
 
@@ -223,7 +228,7 @@ class ChartingState extends MusicBeatState
 		stepperBPM.value = Conductor.bpm;
 		stepperBPM.name = 'song_bpm';
 
-		var characters:Array<String> = CoolUtil.coolTextFile(Paths.txt('characterList'));
+		var characters:Array<String> = CoolUtil.coolTextFile('data/characterList');
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
@@ -454,7 +459,7 @@ class ChartingState extends MusicBeatState
 	}*/
 	function sectionStartTime():Float
 	{
-		var daBPM:Int = _song.bpm;
+		var daBPM:Float = _song.bpm;
 		var daPos:Float = 0;
 		for (i in 0...curSection)
 		{
@@ -829,7 +834,7 @@ class ChartingState extends MusicBeatState
 		else
 		{
 			// get last bpm
-			var daBPM:Int = _song.bpm;
+			var daBPM:Float = _song.bpm;
 			for (i in 0...curSection)
 				if (_song.notes[i].changeBPM)
 					daBPM = _song.notes[i].bpm;

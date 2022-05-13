@@ -12,19 +12,33 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 
+import flixel.addons.transition.FlxTransitionableState;
+
 class OptionsMenu extends MusicBeatState
 {
 	var selector:FlxText;
 	var curSelected:Int = 0;
+	public static var wasInPlayState:Bool = false;
 
-	var controlsStrings:Array<String> = [];
+	//i deleted controls.txt so i cant use this
+	//var controlsStrings:Array<String> = [];
 
 	private var grpControls:FlxTypedGroup<Alphabet>;
+	
+	private var launchSubstate:Null<MusicBeatSubstate>;
+	
+	public function new(?substate:Null<MusicBeatSubstate>) {
+		launchSubstate = substate;
+		super();
+	}
 
 	override function create()
 	{
-		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolTextFile(Paths.txt('controls'));
+		FlxTransitionableState.skipNextTransIn = true;
+		FlxTransitionableState.skipNextTransOut = true;
+		
+		var menuBG:FlxSprite = CoolUtil.makeMenuBackground('Desat');
+		//controlsStrings = CoolUtil.coolTextFile(Paths.txt('controls'));
 		menuBG.color = 0xFFea71fd;
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
 		menuBG.updateHitbox();
@@ -51,7 +65,8 @@ class OptionsMenu extends MusicBeatState
 
 		super.create();
 
-		openSubState(new OptionsSubState());
+		openSubState(launchSubstate == null ? new OptionsSubState() : launchSubstate);
+		launchSubstate = null;
 	}
 
 	override function update(elapsed:Float)
@@ -100,7 +115,7 @@ class OptionsMenu extends MusicBeatState
 	function changeSelection(change:Int = 0)
 	{
 		#if !switch
-		NGio.logEvent('Fresh');
+		//NGio.logEvent('Fresh');
 		#end
 
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);

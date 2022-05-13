@@ -49,9 +49,9 @@ class LatencyState extends FlxState
 			multiply = 10;
 
 		if (FlxG.keys.justPressed.RIGHT)
-			Conductor.offset += 1 * multiply;
+			Conductor.offset += multiply;
 		if (FlxG.keys.justPressed.LEFT)
-			Conductor.offset -= 1 * multiply;
+			Conductor.offset -= multiply;
 
 		if (FlxG.keys.justPressed.SPACE)
 		{

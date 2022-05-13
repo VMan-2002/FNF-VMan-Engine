@@ -28,7 +28,7 @@ class Alphabet extends FlxSpriteGroup
 
 	public var widthOfWords:Float = FlxG.width;
 
-	var yMulti:Float = 1;
+	public var yMulti:Float = 1;
 
 	// custom shit
 	// amp, backslash, question mark, apostrophy, comma, angry faic, period
@@ -58,6 +58,18 @@ class Alphabet extends FlxSpriteGroup
 			{
 				addText();
 			}
+		}
+	}
+	
+	public function changeText(text:String) {
+		clearLetters();
+		this.text = text;
+		addText();
+	}
+	
+	public function clearLetters() {
+		while (members.length > 0) {
+			members.pop().destroy();
 		}
 	}
 

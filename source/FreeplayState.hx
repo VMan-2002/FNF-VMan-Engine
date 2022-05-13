@@ -12,7 +12,9 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+import CoolUtil;
 
+import Translation;
 using StringTools;
 
 class FreeplayState extends MusicBeatState
@@ -20,8 +22,8 @@ class FreeplayState extends MusicBeatState
 	var songs:Array<SongMetadata> = [];
 
 	var selector:FlxText;
-	var curSelected:Int = 0;
-	var curDifficulty:Int = 1;
+	public static var curSelected:Int = 0;
+	public static var curDifficulty:Int = 1;
 
 	var scoreText:FlxText;
 	var diffText:FlxText;
@@ -32,15 +34,83 @@ class FreeplayState extends MusicBeatState
 	private var curPlaying:Bool = false;
 
 	private var iconArray:Array<HealthIcon> = [];
+	private var icon2Array:Array<FolderIcon> = [];
+	
+	var categories:Map<String, Array<SongMetadata>>;
+	public static var inFolder:Array<String> = [""];
+	var nextCategoryInt:Int = 0;
 
 	override function create()
 	{
-		var initSonglist = CoolUtil.coolTextFile(Paths.txt('freeplaySonglist'));
+		var uncategorized:Array<SongMetadata> = [];
+		var initSonglist = CoolUtil.coolTextFile("data/freeplaySonglist");
 
 		for (i in 0...initSonglist.length)
 		{
-			songs.push(new SongMetadata(initSonglist[i], 1, 'gf'));
+			if (initSonglist[i].length > 0) {
+				trace('added song ${initSonglist[i]} to uncat');
+				uncategorized.push(new SongMetadata(initSonglist[i], 1, 'face'));
+			} else {
+				trace('there are no 0-char song names allowed!');
+			}
 		}
+		if (Options.freeplayFolders) {
+			var categoryList = [new SongMetadata("Friday Night Funkin", 0, "bf", 1)];
+			
+			categories = [
+				"Friday Night Funkin" => [
+					new SongMetadata("Tutorial", 0, "gf"),
+					new SongMetadata("Week 1", 1, "dad", 1),
+					new SongMetadata("Week 2", 2, "spooky", 1),
+					new SongMetadata("Week 3", 3, "pico", 1),
+					new SongMetadata("Week 4", 4, "mom", 1),
+					new SongMetadata("Week 5", 5, "parents-christmas", 1),
+					new SongMetadata("Week 6", 6, "senpai", 1)
+				],
+				"Week 1" => returnWeek(['Bopeebo', 'Fresh', 'Dad Battle'], 1, ['dad']),
+				"Week 2" => returnWeek(['Spookeez', 'South', 'Monster'], 2, ['spooky', 'spooky', 'monster']),
+				"Week 3" => returnWeek(['Pico', 'Philly Nice', 'Blammed'], 3, ['pico']),
+				"Week 4" => returnWeek(['Satin Panties', 'High', 'Milf'], 4, ['mom']),
+				"Week 5" => returnWeek(['Cocoa', 'Eggnog', 'Winter Horrorland'], 5, ['parents-christmas', 'parents-christmas', 'monster-christmas']),
+				"Week 6" => returnWeek(['Senpai', 'Roses', 'Thorns'], 6, ['senpai', 'senpai-angry', 'spirit'])
+			];
+			
+			if (uncategorized.length > 0) {
+				categories.set("Uncategorized", uncategorized);
+				categoryList.push(new SongMetadata("Uncategorized", 0, "face", 1));
+			}
+			categories.set("", categoryList);
+			
+			if (inFolder.length == 1) {
+				while (categories.get(inFolder[0]).length == 1 && categories.get(inFolder[0])[0].type == 1) {
+					inFolder[0] = categories.get(inFolder[0])[0].songName;
+				}
+			}
+		} else {
+			//if (StoryMenuState.weekUnlocked[6] || isDebug)
+			if (inFolder.length > 1) {
+				//todo: Achievement Get
+				//name "Fired From The Office"
+				//description "How can you fail at folders!?"
+				categories = [
+					"I Guess So" => [new SongMetadata('I Guess So', 0, 'face', 1)]
+				];
+				inFolder = ["I Guess So"]; //Yes, there's otherwise a crash when you have folders enabled, enter a song in a folder in freeplay, enter options, disable folders, exit options, then exit the song.
+			} else {
+				categories = [
+					"" => uncategorized
+					.concat(returnWeek(['Tutorial'], 0, ['gf']))
+					.concat(returnWeek(['Bopeebo', 'Fresh', 'Dad Battle'], 1, ['dad']))
+					.concat(returnWeek(['Spookeez', 'South', 'Monster'], 2, ['spooky']))
+					.concat(returnWeek(['Pico', 'Philly Nice', 'Blammed'], 3, ['pico']))
+					.concat(returnWeek(['Satin Panties', 'High', 'Milf'], 4, ['mom']))
+					.concat(returnWeek(['Cocoa', 'Eggnog', 'Winter Horrorland'], 5, ['parents-christmas', 'parents-christmas', 'monster-christmas']))
+					.concat(returnWeek(['Senpai', 'Roses', 'Thorns'], 6, ['senpai', 'senpai', 'spirit']))
+				];
+				inFolder = [""]; //Yes, there's otherwise a crash when you have folders enabled, enter a song in a folder in freeplay, enter options, disable folders, exit options, then exit the song.
+			}
+		}
+		
 
 		/* 
 			if (FlxG.sound.music != null)
@@ -61,56 +131,19 @@ class FreeplayState extends MusicBeatState
 		isDebug = true;
 		#end
 
-		if (StoryMenuState.weekUnlocked[2] || isDebug)
-			addWeek(['Bopeebo', 'Fresh', 'Dadbattle'], 1, ['dad']);
-
-		if (StoryMenuState.weekUnlocked[2] || isDebug)
-			addWeek(['Spookeez', 'South', 'Monster'], 2, ['spooky']);
-
-		if (StoryMenuState.weekUnlocked[3] || isDebug)
-			addWeek(['Pico', 'Philly', 'Blammed'], 3, ['pico']);
-
-		if (StoryMenuState.weekUnlocked[4] || isDebug)
-			addWeek(['Satin-Panties', 'High', 'Milf'], 4, ['mom']);
-
-		if (StoryMenuState.weekUnlocked[5] || isDebug)
-			addWeek(['Cocoa', 'Eggnog', 'Winter-Horrorland'], 5, ['parents-christmas', 'parents-christmas', 'monster-christmas']);
-
-		if (StoryMenuState.weekUnlocked[6] || isDebug)
-			addWeek(['Senpai', 'Roses', 'Thorns'], 6, ['senpai', 'senpai', 'spirit']);
-
 		// LOAD MUSIC
 
 		// LOAD CHARACTERS
 
-		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuBGBlue'));
+		var bg:FlxSprite = CoolUtil.makeMenuBackground('Blue');
 		add(bg);
-
-		grpSongs = new FlxTypedGroup<Alphabet>();
-		add(grpSongs);
-
-		for (i in 0...songs.length)
-		{
-			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, songs[i].songName, true, false);
-			songText.isMenuItem = true;
-			songText.targetY = i;
-			grpSongs.add(songText);
-
-			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
-			icon.sprTracker = songText;
-
-			// using a FlxGroup is too much fuss!
-			iconArray.push(icon);
-			add(icon);
-
-			// songText.x += 40;
-			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
-			// songText.screenCenter(X);
-		}
+		
+		makeSonglist(categories.get(inFolder[inFolder.length-1]));
 
 		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "", 32);
 		// scoreText.autoSize = false;
 		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
+		Translation.setObjectFont(scoreText, "vcr font");
 		// scoreText.alignment = RIGHT;
 
 		var scoreBG:FlxSprite = new FlxSprite(scoreText.x - 6, 0).makeGraphic(Std.int(FlxG.width * 0.35), 66, 0xFF000000);
@@ -128,13 +161,13 @@ class FreeplayState extends MusicBeatState
 
 		// FlxG.sound.playMusic(Paths.music('title'), 0);
 		// FlxG.sound.music.fadeIn(2, 0, 0.8);
-		selector = new FlxText();
+		//selector = new FlxText();
 
-		selector.size = 40;
-		selector.text = ">";
+		//selector.size = 40;
+		//selector.text = ">";
 		// add(selector);
 
-		var swag:Alphabet = new Alphabet(1, 0, "swag");
+		//var swag:Alphabet = new Alphabet(1, 0, "swag");
 
 		// JUST DOIN THIS SHIT FOR TESTING!!!
 		/* 
@@ -155,6 +188,47 @@ class FreeplayState extends MusicBeatState
 
 		super.create();
 	}
+	
+	public function makeSonglist(list:Array<SongMetadata>) {
+		songs = list;
+		
+		remove(grpSongs);
+		grpSongs = new FlxTypedGroup<Alphabet>();
+		add(grpSongs);
+		
+		while (iconArray.length != 0) {
+			remove(iconArray.pop());
+		}
+		
+		while (icon2Array.length != 0) {
+			remove(icon2Array.pop());
+		}
+
+		for (i in 0...songs.length)
+		{
+			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, songs[i].songName, true, false);
+			songText.isMenuItem = true;
+			songText.targetY = i;
+			grpSongs.add(songText);
+			var folder:FolderIcon = new FolderIcon();
+
+			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
+			icon.sprTracker = songText;
+			folder.sprTracker = icon;
+			if (songs[i].type == 1) {
+				icon2Array.push(folder);
+				add(folder);
+			}
+
+			// using a FlxGroup is too much fuss!
+			iconArray.push(icon);
+			add(icon);
+
+			// songText.x += 40;
+			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
+			// songText.screenCenter(X);
+		}
+	}
 
 	public function addSong(songName:String, weekNum:Int, songCharacter:String)
 	{
@@ -163,7 +237,7 @@ class FreeplayState extends MusicBeatState
 
 	public function addWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>)
 	{
-		if (songCharacters == null)
+		if (songCharacters == null || songCharacters.length <= 0)
 			songCharacters = ['bf'];
 
 		var num:Int = 0;
@@ -171,9 +245,34 @@ class FreeplayState extends MusicBeatState
 		{
 			addSong(song, weekNum, songCharacters[num]);
 
-			if (songCharacters.length != 1)
+			if (num + 1 < songCharacters.length)
 				num++;
 		}
+	}
+
+	public function returnWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>)
+	{
+		var result = new Array<SongMetadata>();
+		if (songCharacters == null || songCharacters.length <= 0)
+			songCharacters = ['bf'];
+
+		var num:Int = 0;
+		for (song in songs)
+		{
+			result.push(new SongMetadata(song, weekNum, songCharacters[num]));
+
+			if (num + 1 < songCharacters.length)
+				num++;
+		}
+		return result;
+	}
+	
+	public function returnFolder(songs:Array<SongMetadata>, name:String, icon:String) {
+		/*
+		categories.set(nextCategoryInt, songs);
+		return new SongMetadata(name, nextCategoryInt, icon);
+		nextCategoryInt += 1;
+		*/
 	}
 
 	override function update(elapsed:Float)
@@ -190,8 +289,10 @@ class FreeplayState extends MusicBeatState
 		if (Math.abs(lerpScore - intendedScore) <= 10)
 			lerpScore = intendedScore;
 
-		scoreText.text = "PERSONAL BEST:" + lerpScore;
-
+		if (scoreText.visible) {
+			scoreText.text = Translation.getTranslation("personal best", "freeplay", [Std.string(lerpScore)]);
+		}
+		
 		var upP = controls.UP_P;
 		var downP = controls.DOWN_P;
 		var accepted = controls.ACCEPT;
@@ -210,24 +311,43 @@ class FreeplayState extends MusicBeatState
 		if (controls.RIGHT_P)
 			changeDiff(1);
 
-		if (controls.BACK)
-		{
-			FlxG.switchState(new MainMenuState());
+		if (controls.BACK) {
+			if (inFolder.length > 1) {
+				var was = inFolder.pop();
+				makeSonglist(categories.get(inFolder[inFolder.length-1]));
+				curSelected = 0;
+				for (i in 0...songs.length) {
+					if (songs[i].songName == was && songs[i].type == 1) {
+						curSelected = i;
+						break;
+					}
+				}
+				changeSelection();
+			} else {
+				MainMenuState.returnToMenuFocusOn("freeplay");
+			}
 		}
 
 		if (accepted)
 		{
-			var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
+			if (songs[curSelected].type == 1) {
+				inFolder.push(songs[curSelected].songName);
+				makeSonglist(categories.get(songs[curSelected].songName));
+				curSelected = 0;
+				changeSelection();
+			} else {
+				var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
 
-			trace(poop);
+				trace(poop);
 
-			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
-			PlayState.isStoryMode = false;
-			PlayState.storyDifficulty = curDifficulty;
+				PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
+				PlayState.isStoryMode = false;
+				PlayState.storyDifficulty = curDifficulty;
 
-			PlayState.storyWeek = songs[curSelected].week;
-			trace('CUR WEEK' + PlayState.storyWeek);
-			LoadingState.loadAndSwitchState(new PlayState());
+				PlayState.storyWeek = songs[curSelected].week;
+				trace('CUR WEEK' + PlayState.storyWeek);
+				LoadingState.loadAndSwitchState(new PlayState());
+			}
 		}
 	}
 
@@ -243,22 +363,14 @@ class FreeplayState extends MusicBeatState
 		#if !switch
 		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
 		#end
-
-		switch (curDifficulty)
-		{
-			case 0:
-				diffText.text = "EASY";
-			case 1:
-				diffText.text = 'NORMAL';
-			case 2:
-				diffText.text = "HARD";
-		}
+		
+		diffText.text = Translation.getTranslation(CoolUtil.difficultyArray[curDifficulty], "difficulty");
 	}
 
 	function changeSelection(change:Int = 0)
 	{
 		#if !switch
-		NGio.logEvent('Fresh');
+		//NGio.logEvent('Fresh');
 		#end
 
 		// NGio.logEvent('Fresh');
@@ -279,8 +391,11 @@ class FreeplayState extends MusicBeatState
 		#end
 
 		#if PRELOAD_ALL
-		FlxG.sound.playMusic(Paths.inst(songs[curSelected].songName), 0);
+		if (songs[curSelected].type == 0) {
+			CoolUtil.playSongMusic(songs[curSelected].songName, 0);
+		}
 		#end
+		scoreText.visible = songs[curSelected].type == 0;
 
 		var bullShit:Int = 0;
 
@@ -313,11 +428,13 @@ class SongMetadata
 	public var songName:String = "";
 	public var week:Int = 0;
 	public var songCharacter:String = "";
+	public var type:Int = 0; //0: song, 1: folder
 
-	public function new(song:String, week:Int, songCharacter:String)
+	public function new(song:String, week:Int, songCharacter:String, ?type:Int = 0)
 	{
 		this.songName = song;
 		this.week = week;
 		this.songCharacter = songCharacter;
+		this.type = type;
 	}
 }
