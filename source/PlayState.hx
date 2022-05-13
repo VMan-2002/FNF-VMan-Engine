@@ -274,6 +274,8 @@ class PlayState extends MusicBeatState
 				default:
 					curStage = 'stage';
 			}
+		} else {
+			curStage = SONG.stage;
 		}
 		
 		switch (curStage)

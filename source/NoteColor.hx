@@ -50,9 +50,10 @@ class NoteColor
 	
 	public static function makeSprite(style:String, arrow:String, col:Array<FlxColor>) {
 		//todo: idk what's going on but the color swapping isn't working and idfk why
-		var imagePath = Paths.image('notecustom/${style}/${arrow}');
-		imagePath = imagePath.substr(imagePath.indexOf(":") + 1);
-		var inSprite = BitmapData.fromFile(imagePath);
+		//var imagePath = Paths.image('notecustom/${style}/${arrow}');
+		//imagePath = imagePath.substr(imagePath.indexOf(":") + 1);
+		//var inSprite = BitmapData.fromFile(imagePath);
+		var inSprite = Paths.image('notecustom/${style}/${arrow}');
 		var outSprite = new BitmapData(inSprite.width, inSprite.height, true);
 		for (x in 0...Math.floor(inSprite.width)) {
 			for (y in 0...Math.floor(inSprite.height)) {

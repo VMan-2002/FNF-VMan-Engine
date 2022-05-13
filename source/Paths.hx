@@ -16,11 +16,16 @@ import lime.utils.Assets;
 import lime.graphics.Image;
 import flash.display.BitmapData;
 
+using StringTools;
+
 class Paths
 {
 	inline public static var SOUND_EXT = #if web "mp3" #else "ogg" #end;
 
 	static var currentLevel:String;
+	
+	var lastModSearch:String = "";
+	var lastModFind:String = "";
 
 	static public function setCurrentLevel(name:String)
 	{
@@ -28,24 +33,35 @@ class Paths
 	}
 	
 	#if MODS
-	static function doesModHaveThing(path:String):String {
+	static function doesModHaveThing(path:String):Null<String> {
+		//trace('Searching ${path} in ${modsActive.length} active mods');
+		var p:String;
 		for (i in modsActive) {
-			var p = 'mods/${i}/${path}';
+			p = 'mods/${i}/${path}';
 			if (FileSystem.exists(p)) {
 				//trace('found ${path} in ${i}');
+				lastModSearch = path;
+				lastModFind = p;
 				return p;
 			}
+			//trace('Failed in mod path ${p}');
 		}
-		return "";
+		return null;
 	}
 	#else
-	inline function doesModHaveThing(path:String):String {
-		return "";
+	inline function doesModHaveThing(path:String):Null<String> {
+		return null;
 	}
 	#end
 
 	static function getPath(file:String, type:AssetType, library:Null<String>)
 	{
+		#if MODS
+		var modThing = doesModHaveThing(file);
+		if (modThing != null) {
+			return modThing;
+		}
+		#end
 		if (library != null)
 			return getLibraryPath(file, library);
 
@@ -61,6 +77,36 @@ class Paths
 			return levelPath;
 
 		return getPreloadPath(file);
+	}
+
+	inline public static function getSoundAsset(file:String, type:AssetType, library:Null<String>):Sound
+	{
+		trace('sound asset at ${file} at ${library}');
+		#if MODS
+		return Sound.fromFile(getPath(file, type, library));
+		#else
+		return Assets.getAudioBuffer(getPath(file, type, library));
+		#end
+	}
+
+	inline public static function getImageAsset(file:String)
+	{
+		//trace('get image asset $file');
+		//#if MODS
+		//return Sound.fromFile(getPathLoc(file, type, library));
+		//#else
+		return BitmapData.fromFile(file.substr(file.indexOf(":") + 1));
+		//#end
+	}
+
+	inline public static function getTextAsset(file:String, type:AssetType, library:Null<String>):String
+	{
+		trace('text asset at ${file} at ${library}');
+		#if MODS
+		return File.getContent(getPath(file, type, library));
+		#else
+		return Assets.getText(getPath(file, type, library));
+		#end
 	}
 
 	static public function getLibraryPath(file:String, library = "preload")
@@ -125,7 +171,7 @@ class Paths
 
 	inline static public function image(key:String, ?library:String)
 	{
-		return getPath('images/$key.png', IMAGE, library);
+		return getImageAsset(getPath('images/$key.png', IMAGE, library));
 	}
 
 	inline static public function font(key:String)
@@ -187,7 +233,7 @@ class Paths
 		modsActiveStor = [];
 		//understand it
 		for (i in txtThing) {
-			var a = i.split(":");
+			var a = i.trim().split(":");
 			modsThing.set(a[1], a[0] == "1");
 			if (a[0] == "1") {
 				modsActiveStor.push(a[1]);
@@ -208,6 +254,8 @@ class Paths
 			File.saveContent("modsActive.txt", newTxtThing.join("\n"));
 		}
 		#end
+		trace('mod list is ${Std.string(modsActiveStor)}');
+		modsActive = modsActiveStor;
 		return modsActiveStor;
 	}
 	

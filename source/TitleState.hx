@@ -50,6 +50,8 @@ class TitleState extends MusicBeatState
 	var curWacky:Array<String> = [];
 
 	var wackyImage:FlxSprite;
+	
+	var doCoolText = true;
 
 	override public function create():Void
 	{
@@ -129,6 +131,41 @@ class TitleState extends MusicBeatState
 			initTransitionShit();
 			return FlxG.switchState(new FreeplayState());
 		}
+		
+		titleGroup = new FlxGroup();
+		add(titleGroup);
+		titleGroup.visible = false;
+		
+		persistentUpdate = true;
+
+		logoBl = new FlxSprite(-150, -100);
+		logoBl.frames = Paths.getSparrowAtlas('title/logoBumpin');
+		logoBl.antialiasing = true;
+		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
+		logoBl.animation.play('bump');
+		logoBl.updateHitbox();
+		// logoBl.screenCenter();
+		// logoBl.color = FlxColor.BLACK;
+
+		gfDance = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
+		gfDance.frames = Paths.getSparrowAtlas('title/gfDanceTitle');
+		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
+		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+		gfDance.antialiasing = true;
+		titleGroup.add(gfDance);
+		titleGroup.add(logoBl);
+
+		titleText = new FlxSprite(100, FlxG.height * 0.8);
+		titleText.frames = Paths.getSparrowAtlas('title/titleEnter');
+		titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
+		titleText.animation.addByPrefix('press', "ENTER PRESSED", 24);
+		titleText.antialiasing = true;
+		titleText.animation.play('idle');
+		titleText.updateHitbox();
+		// titleText.screenCenter(X);
+		titleGroup.add(titleText);
+		
+		doCoolText = !initialized;
 
 		#if FREEPLAY
 		FlxG.switchState(new FreeplayState());
@@ -198,45 +235,12 @@ class TitleState extends MusicBeatState
 			//todo: this is testing reason.
 			//NoteColor.TestThing();
 		}
-		
-		titleGroup = new FlxGroup();
-		add(titleGroup);
-		titleGroup.visible = false;
-		
-		persistentUpdate = true;
 
 		//var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		// bg.antialiasing = true;
 		// bg.setGraphicSize(Std.int(bg.width * 0.6));
 		// bg.updateHitbox();
 		//add(bg);
-
-		logoBl = new FlxSprite(-150, -100);
-		logoBl.frames = Paths.getSparrowAtlas('title/logoBumpin');
-		logoBl.antialiasing = true;
-		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
-		logoBl.animation.play('bump');
-		logoBl.updateHitbox();
-		// logoBl.screenCenter();
-		// logoBl.color = FlxColor.BLACK;
-
-		gfDance = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
-		gfDance.frames = Paths.getSparrowAtlas('title/gfDanceTitle');
-		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
-		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
-		gfDance.antialiasing = true;
-		titleGroup.add(gfDance);
-		titleGroup.add(logoBl);
-
-		titleText = new FlxSprite(100, FlxG.height * 0.8);
-		titleText.frames = Paths.getSparrowAtlas('title/titleEnter');
-		titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
-		titleText.animation.addByPrefix('press', "ENTER PRESSED", 24);
-		titleText.antialiasing = true;
-		titleText.animation.play('idle');
-		titleText.updateHitbox();
-		// titleText.screenCenter(X);
-		titleGroup.add(titleText);
 		
 		
 
@@ -428,7 +432,7 @@ class TitleState extends MusicBeatState
 
 		FlxG.log.add(curBeat);
 		
-		if (skippedIntro)
+		if (skippedIntro || !doCoolText)
 			return;
 
 		switch (curBeat)
