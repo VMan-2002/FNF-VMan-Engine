@@ -10,7 +10,6 @@ using StringTools;
 
 class Translation
 {
-	public static var context:String = "game";
 	public static var translation = new Map<String, Map<String, String>>();
 	public static var active:Bool = true;
 	public static var usesFont:Bool = false;

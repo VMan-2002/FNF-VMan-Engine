@@ -8,10 +8,10 @@ import flixel.util.FlxColor;
 
 class LanguageOptionSubState extends OptionsSubStateBasic
 {
-	static var langNames:Map<String, String>;
-	static var langDesc:Map<String, String>;
-	static var langFont:Map<String, String>;
-	static var langIds:Array<String> = [];
+	var langNames:Map<String, String>;
+	var langDesc:Map<String, String>;
+	var langFont:Map<String, String>;
+	var langIds:Array<String> = [];
 	override function optionList() {
 		backSubState = 1;
 		langIds = CoolUtil.coolTextFile('objects/translations/languageList');
