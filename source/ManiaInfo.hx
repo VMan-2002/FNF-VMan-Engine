@@ -147,7 +147,8 @@ class ManiaInfo {
 		'pianoblack' => "UP"
 	];
 	
-	public static var getReal:Map<String, Int> = [
+	//this was for psych engine colorswap
+	/*public static var getReal:Map<String, Int> = [
 		'purple' => 0,
 		'blue' => 1,
 		'green' => 2,
@@ -170,7 +171,7 @@ class ManiaInfo {
 		'piano7k' => 7,
 		'piano8k' => 8,
 		'pianoblack' => 4
-	];
+	];*/
 	
 	public static var AvailableMania:Array<String> = [ //for chart editor
 		'1k',
@@ -265,7 +266,7 @@ class ManiaInfo {
 	];
 	
 	
-	public static var LeatherConvert:Map<Int, Int> = [
+	/*public static var LeatherConvert:Map<Int, Int> = [
 		1 => 6,
 		2 => 7,
 		3 => 8,
@@ -284,7 +285,7 @@ class ManiaInfo {
 		16 => 31,
 		17 => 32,
 		18 => 33
-	];
+	];*/
 	
 	public static var splashNameDefault:Map<String, String> = [
 		"purple" => "purple",

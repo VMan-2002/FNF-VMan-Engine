@@ -89,7 +89,7 @@ class Song
 		if (swagShit.maniaStr == null) {
 			if (swagShit.keyCount != null) {
 				//from leather
-				swagShit.maniaStr = ManiaInfo.ManiaConvert[ManiaInfo.LeatherConvert[swagShit.keyCount]];
+				swagShit.maniaStr = '${swagShit.keyCount}k'; //ManiaInfo.ManiaConvert[ManiaInfo.LeatherConvert[swagShit.keyCount]];
 			} else if (swagShit.mania != null) {
 				//from the other thing idk
 				swagShit.maniaStr = ManiaInfo.ManiaConvert[swagShit.mania];
