@@ -1,4 +1,6 @@
-# Friday Night Funkin
+# Friday Night Funkin - VMan Engine
+
+## the rest of the readme.md is the same rn lmao!!!
 
 This is the repository for Friday Night Funkin, a game originally made for Ludum Dare 47 "Stuck In a Loop".
 
