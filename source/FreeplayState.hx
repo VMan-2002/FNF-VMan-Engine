@@ -140,18 +140,22 @@ class FreeplayState extends MusicBeatState
 		
 		makeSonglist(categories.get(inFolder[inFolder.length-1]));
 
-		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "", 32);
+		scoreText = new FlxText(FlxG.width, 5, FlxG.width, Translation.getTranslation("personal best", "freeplay", ["123456789"]), 32);
+		scoreText.x -= scoreText.textField.textWidth + 2;
+		scoreText.fieldWidth -= scoreText.x;
 		// scoreText.autoSize = false;
-		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
+		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, LEFT);
 		Translation.setObjectFont(scoreText, "vcr font");
 		// scoreText.alignment = RIGHT;
 
-		var scoreBG:FlxSprite = new FlxSprite(scoreText.x - 6, 0).makeGraphic(Std.int(FlxG.width * 0.35), 66, 0xFF000000);
+		var scoreBG:FlxSprite = new FlxSprite(scoreText.x - 6, 0);
+		scoreBG.makeGraphic(Std.int(FlxG.width + 1 - scoreBG.x), 66, 0xFF000000);
 		scoreBG.alpha = 0.6;
 		add(scoreBG);
 
-		diffText = new FlxText(scoreText.x, scoreText.y + 36, 0, "", 24);
+		diffText = new FlxText(scoreText.x, scoreText.y + 36, scoreText.fieldWidth, "", 24);
 		diffText.font = scoreText.font;
+		diffText.alignment = scoreText.alignment;
 		add(diffText);
 
 		add(scoreText);
