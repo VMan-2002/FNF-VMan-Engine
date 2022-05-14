@@ -30,7 +30,7 @@ class OptionsSubState extends OptionsSubStateBasic
 			"Activate New Mods",
 			#end
 			"Skip Title",
-			"Enable modcharts",
+			//"Enable modcharts",
 			"Language",
 			"Exit Without Saving"
 		];

@@ -33,7 +33,7 @@ class Translation
 				#end
 			}
 		}
-		usesFont = loadTranslat.exists("font");
+		//usesFont = loadTranslat.exists("font");
 		return loadTranslat;
 	}
 	

@@ -32,6 +32,11 @@ import Options;
 import CoolUtil;
 import NoteColor;
 import Translation;
+#if polymod
+import polymod.Polymod;
+import polymod.Polymod.Framework;
+import sys.io.File;
+#end
 
 using StringTools;
 
@@ -56,9 +61,27 @@ class TitleState extends MusicBeatState
 	override public function create():Void
 	{
 		//Paths.updateModsList();
-		/*#if polymod
-		polymod.Polymod.init({modRoot: "mods", dirs: ['introMod']});
+		/*#if MODS
+		var modListThing:Array<String> = File.getContent("mods/modList.txt").split("\n");
+		for (i in modListThing) {
+			i = i.trim();
+		}
+		polymod.Polymod.init({
+			modRoot: "./mods/",
+			dirs: modListThing,
+			framework: Framework.FLIXEL
+		});
 		#end*/
+		
+		
+		#if polymod
+		loadMods(['example']);
+		//polymod.Polymod.init({modRoot: "mods", dirs: ['introMod']});
+		#end
+		//polymod.Polymod.init({
+		//	modRoot: "./mods/",
+		//	dirs: ["example"]
+		//});
 
 		PlayerSettings.init();
 
@@ -165,7 +188,9 @@ class TitleState extends MusicBeatState
 		// titleText.screenCenter(X);
 		titleGroup.add(titleText);
 		
-		doCoolText = !initialized;
+		if (initialized) {
+			doCoolText = false;
+		}
 
 		#if FREEPLAY
 		FlxG.switchState(new FreeplayState());
@@ -518,6 +543,55 @@ class TitleState extends MusicBeatState
 	}
 	
 	inline function MainMenuThing() {
+		if (!OptionsWarningState.leftState) {
+			return FlxG.switchState(new OptionsWarningState());
+		}
 		FlxG.switchState(new MainMenuState());
+	}
+	
+	//copied from polymod flixel sample
+
+	private function loadMods(dirs:Array<String>)
+	{
+		trace('Loading mods: ${dirs}');
+		/*var modRoot = '../../../mods/';
+		#if mac
+		// account for <APPLICATION>.app/Contents/Resources
+		var modRoot = '../../../../../../mods';
+		#end*/
+		var modRoot = './mods/';
+		var results = Polymod.init({
+			modRoot: modRoot,
+			dirs: dirs,
+			errorCallback: onError,
+			ignoredFiles: Polymod.getDefaultIgnoreList(),
+			frameworkParams: {
+				assetLibraryPaths: [
+					"default" => "./assets",
+					"shared" => "./assets/shared",
+					"week1" => "./assets/week1",
+					"week2" => "./assets/week2",
+					"week3" => "./assets/week3",
+					"week4" => "./assets/week4",
+					"week5" => "./assets/week5",
+					"week6" => "./assets/week6",
+					"songs" => "./assets/songs"
+				]
+			}
+		});
+		// Reload graphics before rendering again.
+		if (results == null) {
+			return;
+		}
+		var loadedMods = results.map(function(item:ModMetadata)
+		{
+			return item.id;
+		});
+		trace('Loaded mods: ${loadedMods}');
+	}
+
+	private function onError(error:PolymodError)
+	{
+		trace('[${error.severity}] (${error.code.toUpperCase()}): ${error.message}');
 	}
 }

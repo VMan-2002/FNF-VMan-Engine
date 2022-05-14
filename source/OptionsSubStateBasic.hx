@@ -59,6 +59,7 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 			optionsImage.animation.addByPrefix(v.toLowerCase(), v.toLowerCase()+"0", 12, true);
 		}
 		optionsImage.animation.addByPrefix("unknownOption", "unknownOption", 12, true);
+		optionsImage.color = FlxColor.BLACK;
 		add(optionsImage);
 		
 		if (OptionsMenu.wasInPlayState) {

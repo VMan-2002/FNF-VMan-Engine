@@ -1,11 +1,31 @@
 {
 	"mods": [
 		{
-			"name": "Real mod",
-			"author": "A real person",
+			"name": "Real mod 1",
+			"author": "vman",
 			"tags": "song,week,extra",
 			"description": "Just kidding! It's not real",
-			"link": "https://www.youtube.com/watch?v=sZ4pfn0fKOw"
+			"icon": "https://github.com/ShadowMario/FNF-PsychEngine/raw/main/assets/preload/images/icons/icon-bf.png",
+			"link": "https://twitter.com/vman_2002/photo",
+			"code": "7374"
+		},
+		{
+			"name": "Mod Number Two",
+			"author": "v the man",
+			"tags": "song,playable,extra",
+			"description": "Second Mod",
+			"icon": "https://github.com/ShadowMario/FNF-PsychEngine/raw/main/assets/preload/images/icons/icon-pico.png",
+			"link": "https://static.wikia.nocookie.net/lukarune/images/4/45/ShopHyu.png",
+			"code": "2743"
+		},
+		{
+			"name": "Cool shit",
+			"author": "the v man",
+			"tags": "girlfriend,mania",
+			"description": "The third one",
+			"icon": "https://github.com/ShadowMario/FNF-PsychEngine/blob/main/assets/preload/images/icons/icon-senpai-pixel.png",
+			"link": "http://example.com/",
+			"code": "2394"
 		}
 	]
 }

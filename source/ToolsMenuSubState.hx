@@ -24,6 +24,14 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 	
 	override public function new() {
 		super();
+		var menuBG:FlxSprite = CoolUtil.makeMenuBackground('Desat');
+		menuBG.color = 0xFF242424;
+		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
+		menuBG.updateHitbox();
+		menuBG.screenCenter();
+		insert(0, menuBG);
+		
+		optionsImage.color = FlxColor.WHITE;
 		optionsImage.animation.addByPrefix("freeplay folders", "freeplay folders0", 12, true);
 		optionsImage.animation.addByPrefix("change color advanced", "change color advanced0", 12, true);
 	}

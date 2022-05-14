@@ -46,6 +46,14 @@ class AnnounceChecker extends MusicBeatState
 			+ "\n\nAccept: Open link - Back: Dismiss",
 			32);
 		txt.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, CENTER);
+		txt.applyMarkup(txt.text, [
+			new FlxTextFormatMarkerPair(new FlxTextFormat(0xffff0000), "[red]"),
+			new FlxTextFormatMarkerPair(new FlxTextFormat(0xff00ff00), "[gre]"),
+			new FlxTextFormatMarkerPair(new FlxTextFormat(0xff0000ff), "[blu]"),
+			new FlxTextFormatMarkerPair(new FlxTextFormat(0xff00ffff), "[cya]"),
+			new FlxTextFormatMarkerPair(new FlxTextFormat(0xffffff00), "[yel]"),
+			new FlxTextFormatMarkerPair(new FlxTextFormat(0xffff00ff), "[mag]")
+		]);
 		txt.screenCenter();
 		add(txt);
 	}
