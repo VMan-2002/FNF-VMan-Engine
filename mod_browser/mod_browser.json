@@ -13,7 +13,7 @@
 			"name": "Mod Number Two",
 			"author": "v the man",
 			"tags": "song,playable,extra",
-			"description": "Second Mod",
+			"description": "Second Mod, have a link in here: http://example.com/",
 			"icon": "https://github.com/ShadowMario/FNF-PsychEngine/raw/main/assets/preload/images/icons/icon-pico.png",
 			"link": "https://static.wikia.nocookie.net/lukarune/images/4/45/ShopHyu.png",
 			"code": "2743"
@@ -22,7 +22,7 @@
 			"name": "Cool shit",
 			"author": "the v man",
 			"tags": "girlfriend,mania",
-			"description": "The third one",
+			"description": "The third one\n\nThis\none's\ndescription\nhas\nmany\nnewlines\nso\nyou\nshould\nhave\nfunctionality\nto\nscroll\nthrough\nthe\ntext\n:)\n\n\n\n\n\n\n\n\n\nHi",
 			"icon": "https://github.com/ShadowMario/FNF-PsychEngine/blob/main/assets/preload/images/icons/icon-senpai-pixel.png",
 			"link": "http://example.com/",
 			"code": "2394"
