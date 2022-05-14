@@ -6,6 +6,7 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
 import flixel.util.FlxTimer;
+import flixel.text.FlxText;
 
 using StringTools;
 
@@ -39,6 +40,8 @@ class Alphabet extends FlxSpriteGroup
 	var splitWords:Array<String> = [];
 
 	var isBold:Bool = false;
+	
+	var isFlxText:Bool = Translation.usesFont;
 
 	public function new(x:Float, y:Float, text:String = "", ?bold:Bool = false, typed:Bool = false)
 	{
@@ -72,9 +75,24 @@ class Alphabet extends FlxSpriteGroup
 			members.pop().destroy();
 		}
 	}
+	
+	public function addFlxText() {
+		var tx = new FlxText(0, 0, widthOfWords, text);
+		tx.setFormat(60, 0xFF000000);
+		tx.setBorderStyle(OUTLINE, 0xFFFFFFFF, 6, 2);
+		Translation.setObjectFont(tx, "alphabet");
+		add(tx);
+		tx.updateHitbox();
+		tx.fieldWidth = tx.textField.textWidth + 16;
+		//width = tx.textField.textWidth;
+		//height = tx.textField.textHeight;
+	}
 
 	public function addText()
 	{
+		if (isFlxText) {
+			return addFlxText();
+		}
 		doSplitWords();
 
 		var xPos:Float = 0;

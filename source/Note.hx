@@ -75,7 +75,7 @@ class Note extends FlxSprite
 					animation.add('bluehold', [1]);
 				}
 
-				setGraphicSize(Std.int(width * PlayState.daPixelZoom));
+				scale.x = PlayState.daPixelZoom * 1.5;
 
 			default:
 				frames = Paths.getSparrowAtlas('normal/NOTE_assets');
@@ -101,9 +101,11 @@ class Note extends FlxSprite
 				animation.addByPrefix('${myArrow}hold', '${myArrow} hold piece');
 				animation.appendByPrefix('purpleholdend', 'pruple end hold'); //develop your spritesheets properly challenge (impossible)
 
-				setGraphicSize(Std.int(width * 0.7));
 				antialiasing = true;
 		}
+		
+		scale.x *= PlayState.instance.curManiaInfo.scale;
+		scale.y = scale.x;
 		
 		animation.play(myArrow+"Scroll");
 

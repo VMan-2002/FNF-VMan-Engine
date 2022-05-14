@@ -7,6 +7,8 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.app.Application;
 
+import Options;
+
 class OptionsWarningState extends MusicBeatState
 {
 	public static var leftState:Bool = false;
@@ -42,9 +44,11 @@ class OptionsWarningState extends MusicBeatState
 	{
 		if (controls.ACCEPT) {
 			leftState = true;
+			Options.seenOptionsWarning = true;
 			FlxG.switchState(new MainMenuState());
 		} else if (FlxG.keys.justPressed.O) {
 			leftState = true;
+			Options.seenOptionsWarning = true;
 			FlxG.switchState(new OptionsMenu());
 		}
 		super.update(elapsed);

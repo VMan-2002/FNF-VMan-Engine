@@ -5,6 +5,9 @@ import flixel.input.keyboard.FlxKey;
 import CoolUtil;
 import flixel.text.FlxText;
 import Paths;
+import flixel.addons.ui.interfaces.ILabeled;
+import flixel.util.typeLimit.OneOfTwo;
+import flixel.addons.ui.FlxUIText;
 
 using StringTools;
 
@@ -67,6 +70,13 @@ class Translation
 				translation["font"].get(type) :
 				translation["font"].get("font")
 			);
+		}
+	}
+	
+	public static function setUIObjectFont(a:ILabeled, ?type:String = "font") {
+		if (usesFont && active) {
+			a.getLabel().size = Math.floor(a.getLabel().size * 1.25);
+			setObjectFont(a.getLabel());
 		}
 	}
 }

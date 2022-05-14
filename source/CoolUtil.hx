@@ -7,6 +7,9 @@ import flixel.FlxG;
 import Paths;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
+#if polymod
+import polymod.backends.PolymodAssets;
+#end
 
 using StringTools;
 

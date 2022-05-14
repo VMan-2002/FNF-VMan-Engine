@@ -543,7 +543,7 @@ class TitleState extends MusicBeatState
 	}
 	
 	inline function MainMenuThing() {
-		if (!OptionsWarningState.leftState) {
+		if (!OptionsWarningState.leftState && !Options.seenOptionsWarning) {
 			return FlxG.switchState(new OptionsWarningState());
 		}
 		FlxG.switchState(new MainMenuState());
@@ -565,6 +565,7 @@ class TitleState extends MusicBeatState
 			dirs: dirs,
 			errorCallback: onError,
 			ignoredFiles: Polymod.getDefaultIgnoreList(),
+			framework: Framework.FLIXEL,
 			frameworkParams: {
 				assetLibraryPaths: [
 					"default" => "./assets",

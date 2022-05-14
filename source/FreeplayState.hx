@@ -13,6 +13,7 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 import CoolUtil;
+import flixel.util.FlxColor;
 
 import Translation;
 using StringTools;
@@ -36,8 +37,8 @@ class FreeplayState extends MusicBeatState
 	private var iconArray:Array<HealthIcon> = [];
 	private var icon2Array:Array<FolderIcon> = [];
 	
-	var categories:Map<String, Array<SongMetadata>>;
-	public static var inFolder:Array<String> = [""];
+	var categories:Map<Int, Array<SongMetadata>>;
+	public static var inFolder:Array<Int> = [-1];
 	var nextCategoryInt:Int = 0;
 
 	override function create()
@@ -58,7 +59,7 @@ class FreeplayState extends MusicBeatState
 			var categoryList = [new SongMetadata("Friday Night Funkin", 0, "bf", 1)];
 			
 			categories = [
-				"Friday Night Funkin" => [
+				0 => [
 					new SongMetadata("Tutorial", 0, "gf"),
 					new SongMetadata("Week 1", 1, "dad", 1),
 					new SongMetadata("Week 2", 2, "spooky", 1),
@@ -67,23 +68,23 @@ class FreeplayState extends MusicBeatState
 					new SongMetadata("Week 5", 5, "parents-christmas", 1),
 					new SongMetadata("Week 6", 6, "senpai", 1)
 				],
-				"Week 1" => returnWeek(['Bopeebo', 'Fresh', 'Dad Battle'], 1, ['dad']),
-				"Week 2" => returnWeek(['Spookeez', 'South', 'Monster'], 2, ['spooky', 'spooky', 'monster']),
-				"Week 3" => returnWeek(['Pico', 'Philly Nice', 'Blammed'], 3, ['pico']),
-				"Week 4" => returnWeek(['Satin Panties', 'High', 'Milf'], 4, ['mom']),
-				"Week 5" => returnWeek(['Cocoa', 'Eggnog', 'Winter Horrorland'], 5, ['parents-christmas', 'parents-christmas', 'monster-christmas']),
-				"Week 6" => returnWeek(['Senpai', 'Roses', 'Thorns'], 6, ['senpai', 'senpai-angry', 'spirit'])
+				1 => returnWeek(['Bopeebo', 'Fresh', 'Dad Battle'], 1, ['dad']),
+				2 => returnWeek(['Spookeez', 'South', 'Monster'], 2, ['spooky', 'spooky', 'monster']),
+				3 => returnWeek(['Pico', 'Philly Nice', 'Blammed'], 3, ['pico']),
+				4 => returnWeek(['Satin Panties', 'High', 'Milf'], 4, ['mom']),
+				5 => returnWeek(['Cocoa', 'Eggnog', 'Winter Horrorland'], 5, ['parents-christmas', 'parents-christmas', 'monster-christmas']),
+				6 => returnWeek(['Senpai', 'Roses', 'Thorns'], 6, ['senpai', 'senpai-angry', 'spirit'])
 			];
 			
 			if (uncategorized.length > 0) {
-				categories.set("Uncategorized", uncategorized);
-				categoryList.push(new SongMetadata("Uncategorized", 0, "face", 1));
+				categories.set(7, uncategorized);
+				categoryList.push(new SongMetadata(Translation.getTranslation("Uncategorized", "freeplay"), 7, "face", 1));
 			}
-			categories.set("", categoryList);
+			categories.set(-1, categoryList);
 			
 			if (inFolder.length == 1) {
 				while (categories.get(inFolder[0]).length == 1 && categories.get(inFolder[0])[0].type == 1) {
-					inFolder[0] = categories.get(inFolder[0])[0].songName;
+					inFolder[0] = categories.get(inFolder[0])[0].week;
 				}
 			}
 		} else {
@@ -92,13 +93,11 @@ class FreeplayState extends MusicBeatState
 				//todo: Achievement Get
 				//name "Fired From The Office"
 				//description "How can you fail at folders!?"
-				categories = [
-					"I Guess So" => [new SongMetadata('I Guess So', 0, 'face', 1)]
-				];
-				inFolder = ["I Guess So"]; //Yes, there's otherwise a crash when you have folders enabled, enter a song in a folder in freeplay, enter options, disable folders, exit options, then exit the song.
+				categories.set(-4, [new SongMetadata('oof', 0, 'face', 1)]);
+				inFolder = [-1, -4]; //Yes, there's otherwise a crash when you have folders enabled, enter a song in a folder in freeplay, enter options, disable folders, exit options, then exit the song.
 			} else {
 				categories = [
-					"" => uncategorized
+					-1 => uncategorized
 					.concat(returnWeek(['Tutorial'], 0, ['gf']))
 					.concat(returnWeek(['Bopeebo', 'Fresh', 'Dad Battle'], 1, ['dad']))
 					.concat(returnWeek(['Spookeez', 'South', 'Monster'], 2, ['spooky']))
@@ -107,7 +106,7 @@ class FreeplayState extends MusicBeatState
 					.concat(returnWeek(['Cocoa', 'Eggnog', 'Winter Horrorland'], 5, ['parents-christmas', 'parents-christmas', 'monster-christmas']))
 					.concat(returnWeek(['Senpai', 'Roses', 'Thorns'], 6, ['senpai', 'senpai', 'spirit']))
 				];
-				inFolder = [""]; //Yes, there's otherwise a crash when you have folders enabled, enter a song in a folder in freeplay, enter options, disable folders, exit options, then exit the song.
+				inFolder = [-1]; //Yes, there's otherwise a crash when you have folders enabled, enter a song in a folder in freeplay, enter options, disable folders, exit options, then exit the song.
 			}
 		}
 		
@@ -140,7 +139,7 @@ class FreeplayState extends MusicBeatState
 		
 		makeSonglist(categories.get(inFolder[inFolder.length-1]));
 
-		scoreText = new FlxText(FlxG.width, 5, FlxG.width, Translation.getTranslation("personal best", "freeplay", ["123456789"]), 32);
+		scoreText = new FlxText(FlxG.width, 5, FlxG.width, Translation.getTranslation("personal best", "freeplay", ["1234567890"]), 32);
 		scoreText.x -= scoreText.textField.textWidth + 2;
 		scoreText.fieldWidth -= scoreText.x;
 		// scoreText.autoSize = false;
@@ -321,7 +320,7 @@ class FreeplayState extends MusicBeatState
 				makeSonglist(categories.get(inFolder[inFolder.length-1]));
 				curSelected = 0;
 				for (i in 0...songs.length) {
-					if (songs[i].songName == was && songs[i].type == 1) {
+					if (songs[i].week == was && songs[i].type == 1) {
 						curSelected = i;
 						break;
 					}
@@ -335,8 +334,8 @@ class FreeplayState extends MusicBeatState
 		if (accepted)
 		{
 			if (songs[curSelected].type == 1) {
-				inFolder.push(songs[curSelected].songName);
-				makeSonglist(categories.get(songs[curSelected].songName));
+				inFolder.push(songs[curSelected].week);
+				makeSonglist(categories.get(songs[curSelected].week));
 				curSelected = 0;
 				changeSelection();
 			} else {

@@ -1,0 +1,205 @@
+lang_english language name::Japanese
+lang_native language name::日本語
+lang_translation description::by hyuponia
+font_font::NotoSansJP-Medium.otf
+font_vcr font::DotGothic16-Regular.ttf
+font_pixel font::DotGothic16-Regular.ttf
+font_alphabet::RocknRollOne-Regular.ttf
+game_vman engine::VMan Engine
+options_controls::操作設定
+options_controls_desc::操作の設定ができます。
+options_scroll direction::スクロール方向
+options_scroll direction_desc::ノートが移動する方向を変更します。
+//"note" katakana use verified use in LunaticRave2.
+options_middlescroll::ミドルスクロール
+options_middlescroll_desc::自分のノートを画面の中央に移動し、相手のノートを非表示にします。
+options_ghost tapping::ゴーストタップ
+options_ghost tapping_desc::違うキーを押すとゲージが減るか設定します。
+//changed terms to japanese rhythm game use, health -> "gauge", arrow -> "key" although this one is more on IIDX standards
+options_invisi-notes::ノート非表示
+options_invisi-notes_desc::ノートを非表示にします。
+options_instant respawn::高速リスポーン
+options_instant respawn_desc::ゲームオーバーした瞬間に再開するか設定します。
+//dying -> "game over". "game over"'s rhythm game use verified use in LunaticRave2.
+options_botplay::オートプレイ
+options_botplay_desc::自動演奏モードにします。
+//"autoplay" katakana term verified use in whatever mobile game Show By Rock Fes A Live is. https://info.showbyrock-fes.com/inc/faq/faq73.html
+options_freeplay folders::フリープレイフォルダ表示
+options_freeplay folders_desc::フリープレイでの曲表示をカテゴリー化します。
+//"freeplay" katakana term verified use in DDR GP (pc version of ddr). https://p.eagate.573.jp/game/eacddr/konaddr/info/mode.html
+options_activate new mods::MODの自動有効化
+options_activate new mods_desc::新しいMODが追加された際に自動で有効化するか設定します。
+options_skip title::タイトルスキップ
+options_skip title_desc::タイトル画面をスキップします。
+options_exit without saving::保存せずに戻る
+options_exit without saving_desc::変更を保存せずにオプション画面から戻ります。
+options_master volume::全体ボリューム
+options_master volume_desc::全体の音量が変更できます。
+options_sound volume::効果音ボリューム
+options_sound volume_desc::効果音の音量が変更できます。
+options_instrumental volume::インストボリューム
+options_instrumental volume_desc::ボーカル以外の演奏の音量が変更できます。
+options_vocals volume::ボーカルボリューム
+options_vocals volume_desc::ボーカルの音量が変更できます。
+options_enable modcharts::Modchartの有効化
+options_enable modcharts_desc::譜面やレーン自体への特殊効果を有効化するか設定できます。
+options_antialiasing::アンチエイリアス
+options_antialiasing_desc::近くで見た時のギザギザした見た目をなめらかにします。無効化することで動作が軽くなることがあります。
+options_change mania::Mania難易度の設定
+options_change mania_desc::Mania難易度で使用するキー数を変更します。左か右を押すことで変更できます。
+options_set bind::キー設定
+options_set bind_desc::キーの操作設定を変更します。左か右を押すことで違うキーを選択できます。
+options_set alt bind::キー設定(副)
+options_set alt bind_desc::キーの操作設定を変更します。左か右を押すことで違うキーを選択できます。
+options_set ui controls::メニュー操作の変更
+options_set ui controls_desc::メニューなどで使用する操作を変更します。
+options_change color::ノート色変更
+options_change color_desc::ノートの色を変更できます。左か右を押すことで違うキーを選択できます。
+options_change color advanced::ノート色詳細変更
+options_change color advanced_desc::ノートの色を細かく変更できます。
+options_change strumline color::レーン色変更
+options_change strumline color_desc::レーンの色を変更できます。
+options_chart editor::譜面エディタ
+options_chart editor_desc::曲の譜面を編集できます。
+options_animation debug::アニメーション確認
+options_animation debug_desc::アニメーションの確認ができます。
+options_folder editor::フォルダエディタ
+options_folder editor_desc::フリープレイ内のフォルダ構造を編集できます。
+options_week editor::Weekエディタ
+options_week editor_desc::ストーリーモード内でのWeekを編集することができます。
+options_intro text test::起動テキストテスト
+options_intro text test_desc::起動時のランダムテキストの確認や編集ができます。
+options_menu character editor::メニューキャラエディタ
+options_menu character editor_desc::ストーリーモードメニューでのキャラ表示の編集ができます。
+options_stage editor::ステージエディタ
+options_stage editor_desc::画像の位置などステージの編集ができます。
+options_noteskin creator::ノートスキンクリエータ
+options_noteskin creator_desc::ノート用のスキンを作成できます。
+options_spritesheet tool::スプライトシートツール
+options_spritesheet tool_desc::スプライトシートと個別の画像を変換できます。
+optionsMenu_unknown option::不明
+optionsMenu_will return to::プレイ中の曲　#0　へ戻ります。
+//used when accessing options menu from the pause menu. #0 is replaced with the song name.
+optionsMenu_enabled::オン
+optionsMenu_disabled::オフ
+optionsMenu_upscroll::上スクロール
+optionsMenu_downscroll::下スクロール
+optionsMenu_no antimash::ごり押し防止無し
+optionsMenu_horizontal antimash::全押し防止
+optionsMenu_always antimash::ごり押し防止
+optionsMenu_note_middleline::内枠
+optionsMenu_note_outline::外枠
+optionsMenu_note_fill::塗り
+optionsMenu_hue::色相
+optionsMenu_sat::彩度
+optionsMenu_val::明度
+optionsKeys_backspace::BckSp.
+optionsKeys_escape::Esc
+optionsKeys_space::SPACE
+optionsKeys_pageup::PgUp
+optionsKeys_pagedown::PgDn
+optionsKeys_none::---
+freeplay_uncategorized::未分類
+freeplay_personal best::自己ベスト:#0
+storymenu_week score::WEEKスコア:#0
+storymenu_tracks::トラックリスト
+mania_piano::piano
+mania_keys::#0KEY
+//this is how BMS displays its key counts anyway
+difficulty_easy::Easy
+difficulty_normal::Normal
+difficulty_hard::Hard
+difficulty_mania::Mania
+difficulty_extra::Extra
+mainmenu_story mode::STORY MODE
+mainmenu_free play::FREE PLAY
+mainmenu_donate::DONATE
+mainmenu_options::OPTIONS
+charteditor_tab_note::ノート
+charteditor_tab_section::小節
+charteditor_tab_song::曲
+charteditor_apply::適用
+charteditor_must hit section::プレイヤーフォーカス
+charteditor_change bpm::BPM変更
+charteditor_copy last::直前コピー
+charteditor_clear::クリア
+charteditor_swap section::小節の敵とプレイヤー譜面交換
+charteditor_alt animation::サブアニメーション
+charteditor_has voice track::ボーカル有り
+charteditor_save::セーブ
+charteditor_reload audio::音声データ再読み込み
+charteditor_reload json::JSONデータ再読み込み
+charteditor_load autosave::オートセーブを読み込む
+charteditor_mute instrumental::インストミュート\n(エディタ内のみ)
+charteditor_section number::#0小節目
+charteditor_note type::ノートタイプ
+charteditor_notetype_normal note::通常ノート
+charteditor_notetype_hurt note::ダメージノート
+charteditor_notetype_death note::即死ノート
+charteditor_notetype_warning note::警告ノート
+charteditor_notetype_angel note::エンジェルノート
+charteditor_notetype_alt animation::サブアニメーション
+charteditor_notetype_bob note::ボブノート
+charteditor_notetype_glitch note::バグノート
+charteditor_notetype_hey::アピール
+charteditor_event::イベント
+charteditor_event_hey::アピール
+charteditor_event_hey_desc::プレイヤーキャラのアピールアニメを再生します。
+charteditor_event_hey_player::プレイヤー
+charteditor_event_hey_girlfriend::ガールフレンド
+charteditor_event_play animation::アニメーション再生
+charteditor_event_play animation_desc::キャラクターのアニメーションを再生します。
+charteditor_event_play animation_animation::アニメーション
+charteditor_event_play animation_character::キャラクター
+charteditor_event_zoom hit::ズームヒット
+charteditor_event_zoom hit_desc::少しの間ズームします。標準のズームは変更されません。
+charteditor_event_zoom hit_camera zoom::カメラズーム
+charteditor_event_zoom hit_hud zoom::HUDズーム
+charteditor_event_set gf speed::GFアニメ速度
+charteditor_event_set gf speed_desc::ガールフレンドのアニメーションの速度を変更します。
+charteditor_event_set gf speed_speed::速度
+//
+//translating ingame stuff (things below) isn't really necessary because japanese people (we) can read super basic english, especilly if it is recurring in various video games
+playstate_hud_score::Score:#0
+playstate_hud_misses::Misses:#0
+playstate_fc_sfc::SFC
+playstate_fc_gfc::GFC
+playstate_fc_fc::FC
+playstate_fc_sdcb::SDCB
+playstate_fc_clear::Clear
+playstate_hud_accrating::AccRating:#0%
+playstate_hud_accsimple::AccSimple:#0%
+playstate_hud_health::Health:#0%
+playstate_hud_hits::Hits:#0
+playstate_hud_sicks::Sicks:#0
+playstate_hud_goods::Goods:#0
+playstate_hud_bads::Bads:#0
+playstate_hud_shits::Shits:#0
+playstate_hud_misses::Misses:#0
+playstate_hud_totalnotes::TotalNotes:#0
+playstate_hud_engine::VMan Engine
+playstate_hud_engine botplay::VMan Engine (Botplay)
+playstate_pause_resume::続ける
+playstate_pause_restart song::リスタート
+playstate_pause_options::設定
+playstate_pause_exit to menu::メニューに戻る
+announcechecker_title::新着情報
+announcechecker_update::新着アップデート
+announcechecker_security::重要なセキュリティアップデートがあります：
+announcechecker_security_update::セキュリティアップデート
+modbrowser_search::検索
+modbrowser_download::ダウンロード
+modbrowser_downloaded::ダウンロード済み
+modbrowser_author::作者 #0 から
+modbrowser_more from this author::この作者の他のMOD
+modbrowser_my downloads::ダウンロードリスト
+modbrowser_submit::送信
+modbrowser_tag_song::曲
+modbrowser_tag_week::Week
+modbrowser_tag_playable::カスタムプレイヤー
+modbrowser_tag_girlfriend::カスタムガールフレンド
+modbrowser_supportedlanguage::日本語対応
+mods_enable::有効
+mods_disabled::無効
+mods_enable all::全部有効化する
+mods_disable all::全部無効化する

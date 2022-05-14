@@ -75,6 +75,7 @@ class Options
 	public static var uiControls = new Map<String, Array<Int>>();
 	public static var language = "en_us";
 	public static var modchartEnabled = "en_us";
+	public static var seenOptionsWarning = false;
 	
 	public static function SaveOptions() {
 		var svd = GetSaveObj();
@@ -96,6 +97,7 @@ class Options
 		svd.data.uiControls = uiControls;
 		svd.data.language = language;
 		svd.data.modchartEnabled = modchartEnabled;
+		svd.data.seenOptionsWarning = seenOptionsWarning;
 		svd.close();
 	}
 	
@@ -118,6 +120,7 @@ class Options
 		controls = ifNotNull(svd.data.controls, controls);
 		language = ifNotNull(svd.data.language, language);
 		modchartEnabled = ifNotNull(svd.data.modchartEnabled, modchartEnabled);
+		seenOptionsWarning = ifNotNull(svd.data.seenOptionsWarning, seenOptionsWarning);
 		/*var insertControls = new Map<String, Array<Array<Int>>>();
 		insertControls = ifNotNull(svd.data.controls, controls);
 		for (i in insertControls.keys()) {
