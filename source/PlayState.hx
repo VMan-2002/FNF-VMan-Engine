@@ -1542,11 +1542,13 @@ class PlayState extends MusicBeatState
 
 		if (unspawnNotes[0] != null)
 		{
-			if (unspawnNotes[0].strumTime - Conductor.songPosition < 1500)
-			{
+			while (unspawnNotes[0].strumTime - Conductor.songPosition < 1500) {
 				var dunceNote:Note = unspawnNotes.shift();
 				dunceNote.visible = dunceNote.visible && !Options.invisibleNotes;
 				notes.add(dunceNote);
+				if (unspawnNotes.length == 0) {
+					break;
+				}
 			}
 		}
 
@@ -2032,8 +2034,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 		
-		for (i in 0...playerStrums.members.length)
-		{
+		for (i in 0...playerStrums.members.length) {
 			var spr = playerStrums.members[i];
 			var press = FlxG.keys.anyJustPressed(curManiaInfo.control_set[i]);
 			var rel = FlxG.keys.anyJustReleased(curManiaInfo.control_set[i]);

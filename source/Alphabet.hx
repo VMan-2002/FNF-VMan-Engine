@@ -82,6 +82,7 @@ class Alphabet extends FlxSpriteGroup
 		tx.setBorderStyle(OUTLINE, 0xFFFFFFFF, 6, 2);
 		Translation.setObjectFont(tx, "alphabet");
 		add(tx);
+		tx.antialiasing = true;
 		tx.updateHitbox();
 		tx.fieldWidth = tx.textField.textWidth + 16;
 		//width = tx.textField.textWidth;

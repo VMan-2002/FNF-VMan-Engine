@@ -213,11 +213,11 @@ class Character extends FlxSprite
 			case 'monster':
 				tex = Paths.getSparrowAtlas('characters/Monster_Assets');
 				frames = tex;
-				animation.addByPrefix('idle', 'monster idle', 24, false);
-				animation.addByPrefix('singUP', 'monster up note', 24, false);
-				animation.addByPrefix('singDOWN', 'monster down', 24, false);
-				animation.addByPrefix('singLEFT', 'Monster left note', 24, false);
-				animation.addByPrefix('singRIGHT', 'Monster Right note', 24, false);
+				animation.addByPrefix('idle', 'monster nrm idle', 24, false);
+				animation.addByPrefix('singUP', 'monster nrm up', 24, false);
+				animation.addByPrefix('singDOWN', 'monster nrm down', 24, false);
+				animation.addByPrefix('singLEFT', 'monster nrm left', 24, false);
+				animation.addByPrefix('singRIGHT', 'monster nrm right', 24, false);
 
 				addOffset('idle');
 				addOffset("singUP", -20, 50);
