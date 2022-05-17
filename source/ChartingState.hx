@@ -126,7 +126,8 @@ class ChartingState extends MusicBeatState
 				mania: 0,
 				keyCount: 4,
 				gfVersion: "gf",
-				stage: ""
+				stage: "",
+				usedNoteTypes: new Array<String>()
 			};
 		}
 

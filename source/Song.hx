@@ -23,9 +23,10 @@ typedef SwagSong =
 	
 	var gfVersion:String;
 	var maniaStr:Null<String>;
-	var mania:Null<Int>;
-	var keyCount:Null<Int>;
+	var mania:Null<Int>; //for Kade/Psych (7k and 9k vs shaggy charts dont get interpreted right)
+	var keyCount:Null<Int>; //for Leather
 	var stage:String;
+	var usedNoteTypes:Array<String>;
 }
 
 class Song
@@ -100,5 +101,10 @@ class Song
 		}
 		
 		return swagShit;
+	}
+
+	public inline static function getSongStuff(name:String):Array<String>
+	{
+		return CoolUtil.coolTextFile("data/${Highscore.formatSong(name)}/song.txt");
 	}
 }

@@ -104,7 +104,7 @@ class HudThing extends FlxGroup
 					//text += "TotalNotes:"+noteThing;
 				case "engine":
 					//todo: remember that this one should always show on the hud thing in the corner
-					text += Translation.getTranslation(Options.botplay ? "hud_engine_botplay" : "hud_engine", "playstate");
+					text += Translation.getTranslation(Options.botplay ? "hud_engine botplay" : "hud_engine", "playstate");
 					//text += Options.botplay ? "VMan Engine (Botplay)" : "VMan Engine";
 			}
 		}

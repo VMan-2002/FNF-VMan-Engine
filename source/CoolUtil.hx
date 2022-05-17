@@ -7,6 +7,8 @@ import flixel.FlxG;
 import Paths;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
+import haxe.format.JsonParser;
+import haxe.Json;
 #if polymod
 import polymod.backends.PolymodAssets;
 #end
@@ -93,5 +95,18 @@ class CoolUtil
 		var fun = spr.frames.frames[spr.animation.curAnim.frames[0]].sourceSize;
 		spr.offset.x = fun.x/2;
 		spr.offset.y = fun.y/2;
+	}
+	
+	public static function loadJsonFromString(rawJson:String) {
+		rawJson = rawJson.trim();
+		if (!rawJson.endsWith("}")) {
+			rawJson = rawJson.substr(0, rawJson.lastIndexOf("}"));
+			// LOL GOING THROUGH THE BULLSHIT TO CLEAN IDK WHATS STRANGE
+		}
+		return Json.parse(rawJson);
+	}
+	
+	public static function loadJsonFromFile(thing:String) {
+		return loadJsonFromString(Assets.getText(thing));
 	}
 }

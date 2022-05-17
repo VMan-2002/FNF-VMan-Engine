@@ -18,6 +18,7 @@ import lime.net.curl.CURLCode;
 import CoolUtil;
 
 import Translation;
+//import flixel.text.FlxTextFormat;
 using StringTools;
 
 class StoryMenuState extends MusicBeatState
@@ -215,7 +216,9 @@ class StoryMenuState extends MusicBeatState
 		txtTracklist = new FlxText(FlxG.width * 0.05, yellowBG.x + yellowBG.height + 100, 0, "Tracks", 32);
 		txtTracklist.alignment = CENTER;
 		txtTracklist.font = rankText.font;
-		txtTracklist.color = 0xFFe55777;
+		var formatThing = new FlxTextFormat(0xFFe55777);
+		formatThing.leading = 36;
+		txtTracklist.addFormat(formatThing);
 		add(txtTracklist);
 		// add(rankText);
 		add(scoreText);

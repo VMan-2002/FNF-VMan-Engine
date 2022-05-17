@@ -287,7 +287,7 @@ class ManiaInfo {
 		18 => 33
 	];*/
 	
-	public static var splashNameDefault:Map<String, String> = [
+	/*public static var splashNameDefault:Map<String, String> = [
 		"purple" => "purple",
 		"red" => "red",
 		"yellow" => "yellow",
@@ -301,7 +301,7 @@ class ManiaInfo {
 		"13b" => "13b",
 		"13c" => "13c",
 		"13d" => "13d"
-	];
+	];*/
 	
 	public static function GetManiaInfo(mania:String):SwagMania {
 		//they're now string based
@@ -499,9 +499,10 @@ class ManiaInfo {
 		} else if (keys != arrows.length) {
 			trace('WRONG ARROW COUNT: want '+keys+' but have '+arrows.length);
 		}
-		if (splashName == null) {
-			splashName = splashNameDefault;
-		}
+		//todo: we gotta implement notesplashes somehow.
+		//if (splashName == null) {
+		//	splashName = splashNameDefault;
+		//}
 		var mi:SwagMania = {
 			keys: keys,
 			arrows: arrows,

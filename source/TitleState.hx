@@ -57,6 +57,8 @@ class TitleState extends MusicBeatState
 	var wackyImage:FlxSprite;
 	
 	var doCoolText = true;
+	
+	public static var enabledMods = new Array<String>();
 
 	override public function create():Void
 	{
@@ -75,7 +77,11 @@ class TitleState extends MusicBeatState
 		
 		
 		#if polymod
-		loadMods(['example']);
+		var modListThing:Array<String> = File.getContent("mods/modList.txt").split("\n");
+		for (i in modListThing) {
+			i = i.trim().replace("\r", "");
+		}
+		loadMods(modListThing);
 		//polymod.Polymod.init({modRoot: "mods", dirs: ['introMod']});
 		#end
 		//polymod.Polymod.init({
@@ -554,6 +560,10 @@ class TitleState extends MusicBeatState
 	private function loadMods(dirs:Array<String>)
 	{
 		trace('Loading mods: ${dirs}');
+		enabledMods = new Array<String>();
+		for (i in dirs) {
+			enabledMods.push(i.replace("\r", ""));
+		}
 		/*var modRoot = '../../../mods/';
 		#if mac
 		// account for <APPLICATION>.app/Contents/Resources
@@ -562,7 +572,7 @@ class TitleState extends MusicBeatState
 		var modRoot = './mods/';
 		var results = Polymod.init({
 			modRoot: modRoot,
-			dirs: dirs,
+			dirs: enabledMods.copy(),
 			errorCallback: onError,
 			ignoredFiles: Polymod.getDefaultIgnoreList(),
 			framework: Framework.FLIXEL,

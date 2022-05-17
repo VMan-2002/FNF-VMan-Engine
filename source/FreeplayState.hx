@@ -14,9 +14,23 @@ import flixel.util.FlxColor;
 import lime.utils.Assets;
 import CoolUtil;
 import flixel.util.FlxColor;
+#if polymod
+import polymod.Polymod;
+import polymod.Polymod.Framework;
+import sys.io.File;
+import sys.FileSystem;
+import json2object.JsonParser;
+#end
 
 import Translation;
 using StringTools;
+
+class SwagFreeplayFolders {
+	public var groupName:String;
+	public var folderIcons:Map<String, String>;
+	public var initFolder:String;
+	public var categories:Map<String, Array<Array<String>>>;
+}
 
 class FreeplayState extends MusicBeatState
 {
@@ -38,8 +52,9 @@ class FreeplayState extends MusicBeatState
 	private var icon2Array:Array<FolderIcon> = [];
 	
 	var categories:Map<Int, Array<SongMetadata>>;
-	public static var inFolder:Array<Int> = [-1];
+	public static var inFolder:Array<Int> = [0];
 	var nextCategoryInt:Int = 0;
+	var nothingIncluded:Bool = false;
 
 	override function create()
 	{
@@ -55,8 +70,73 @@ class FreeplayState extends MusicBeatState
 				trace('there are no 0-char song names allowed!');
 			}
 		}
+		
+		
+		var categoryList = new Array<SongMetadata>();
+		
+		categories = new Map<Int, Array<SongMetadata>>();
+		
+		var noFolders = new Array<SongMetadata>();
+		
+		nextCategoryInt = 1;
+		
+		for (iathing in TitleState.enabledMods) {
+			var parser = new JsonParser<SwagFreeplayFolders>();
+			//load it manually so it wont conflict with other mods!
+			var filelol = 'mods/${iathing}/folders_freeplay.json';
+			if (FileSystem.exists(filelol)) {
+				trace('adding folder structure for $filelol');
+				var rawJson:String = File.getContent(filelol);
+				if (!rawJson.endsWith("}")) {
+					rawJson = rawJson.substr(0, rawJson.lastIndexOf("}"));
+				}
+				
+				var folderStructure:SwagFreeplayFolders = parser.fromJson(rawJson);
+				
+				var folderIds = new Map<String, Int>();
+				var folderRootPut = 0;
+				//find where folders should go in the int-based system
+				for (cat in folderStructure.categories.keys()) {
+					folderIds.set(cat, nextCategoryInt);
+					if (cat == folderStructure.initFolder) {
+						folderRootPut = nextCategoryInt;
+					}
+					nextCategoryInt += 1;
+				}
+				//then make the the
+				for (cat in folderStructure.categories.keys()) {
+					var items:Array<Array<String>> = folderStructure.categories.get(cat);
+					var resultItems = new Array<SongMetadata>();
+					for (thing in items) {
+						switch(thing[1]) {
+							case "folder":
+								resultItems.push(new SongMetadata(thing[0], folderIds[thing[0]], folderStructure.folderIcons.get(thing[0]), 1, iathing));
+							default:
+								var icon = "face";
+								var songStuffPath = 'mods/${iathing}/data/${Highscore.formatSong(thing[0])}/song.txt';
+								if (FileSystem.exists(songStuffPath)) {
+									var thing = File.getContent(songStuffPath).split("\n");
+									var charstuff:Array<String> = thing[2].split("::");
+									icon = charstuff[charstuff.length > 1 ? 1 : 0].trim();
+								}
+								var justAdd = new SongMetadata(thing[0], 0, icon, 0, iathing);
+								resultItems.push(justAdd);
+								noFolders.push(justAdd);
+						}
+					}
+					categories.set(folderIds[cat], resultItems);
+				}
+				
+				//add to category list
+				trace('added ${iathing} (name ${folderStructure.groupName}) to category list');
+				categoryList.push(new SongMetadata(folderStructure.groupName, folderRootPut, folderStructure.folderIcons.get(folderStructure.initFolder), 1));
+			} else {
+				trace('not adding folder structure for $filelol');
+			}
+		}
+		
 		if (Options.freeplayFolders) {
-			var categoryList = [new SongMetadata("Friday Night Funkin", 0, "bf", 1)];
+			/*var categoryList = [new SongMetadata("Friday Night Funkin", 0, "bf", 1)];
 			
 			categories = [
 				0 => [
@@ -74,21 +154,27 @@ class FreeplayState extends MusicBeatState
 				4 => returnWeek(['Satin Panties', 'High', 'Milf'], 4, ['mom']),
 				5 => returnWeek(['Cocoa', 'Eggnog', 'Winter Horrorland'], 5, ['parents-christmas', 'parents-christmas', 'monster-christmas']),
 				6 => returnWeek(['Senpai', 'Roses', 'Thorns'], 6, ['senpai', 'senpai-angry', 'spirit'])
-			];
+			];*/
 			
 			if (uncategorized.length > 0) {
-				categories.set(7, uncategorized);
-				categoryList.push(new SongMetadata(Translation.getTranslation("Uncategorized", "freeplay"), 7, "face", 1));
+				categories.set(nextCategoryInt, uncategorized);
+				categoryList.push(new SongMetadata(Translation.getTranslation("Uncategorized", "freeplay"), nextCategoryInt, "face", 1));
 			}
-			categories.set(-1, categoryList);
 			
-			if (inFolder.length == 1) {
+			nextCategoryInt += 1;
+			
+			categories.set(0, categoryList);
+			
+			if (!categories.exists(inFolder[inFolder.length - 1])) {
+				inFolder = [0];
+			}
+			if (inFolder.length == 1 && !categories.keys().hasNext()) {
 				while (categories.get(inFolder[0]).length == 1 && categories.get(inFolder[0])[0].type == 1) {
 					inFolder[0] = categories.get(inFolder[0])[0].week;
 				}
 			}
 		} else {
-			//if (StoryMenuState.weekUnlocked[6] || isDebug)
+			/*//if (StoryMenuState.weekUnlocked[6] || isDebug)
 			if (inFolder.length > 1) {
 				//todo: Achievement Get
 				//name "Fired From The Office"
@@ -107,7 +193,7 @@ class FreeplayState extends MusicBeatState
 					.concat(returnWeek(['Senpai', 'Roses', 'Thorns'], 6, ['senpai', 'senpai', 'spirit']))
 				];
 				inFolder = [-1]; //Yes, there's otherwise a crash when you have folders enabled, enter a song in a folder in freeplay, enter options, disable folders, exit options, then exit the song.
-			}
+			}*/
 		}
 		
 
@@ -137,7 +223,19 @@ class FreeplayState extends MusicBeatState
 		var bg:FlxSprite = CoolUtil.makeMenuBackground('Blue');
 		add(bg);
 		
-		makeSonglist(categories.get(inFolder[inFolder.length-1]));
+		makeSonglist(Options.freeplayFolders ? categories.get(inFolder[inFolder.length-1]) : noFolders);
+		
+		nothingIncluded = songs.length <= 0;
+		
+		if (nothingIncluded) {
+			var txt:FlxText = new FlxText(0, 0, FlxG.width,
+				Translation.getTranslation("no songs", "freeplay"),
+			32);
+			txt.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, CENTER);
+			txt.screenCenter();
+			add(txt);
+			return;
+		}
 
 		scoreText = new FlxText(FlxG.width, 5, FlxG.width, Translation.getTranslation("personal best", "freeplay", ["1234567890"]), 32);
 		scoreText.x -= scoreText.textField.textWidth + 2;
@@ -286,6 +384,13 @@ class FreeplayState extends MusicBeatState
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
+		
+		if (nothingIncluded) {
+			if (controls.BACK) {
+				MainMenuState.returnToMenuFocusOn("freeplay");
+			}
+			return;
+		}
 
 		lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, 0.4));
 
@@ -432,12 +537,14 @@ class SongMetadata
 	public var week:Int = 0;
 	public var songCharacter:String = "";
 	public var type:Int = 0; //0: song, 1: folder
+	public var mod:String;
 
-	public function new(song:String, week:Int, songCharacter:String, ?type:Int = 0)
+	public function new(song:String, week:Int, songCharacter:String, ?type:Int = 0, ?mod:String = "")
 	{
 		this.songName = song;
 		this.week = week;
 		this.songCharacter = songCharacter;
 		this.type = type;
+		this.mod = mod;
 	}
 }

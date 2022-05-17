@@ -2,16 +2,45 @@ package;
 
 import flixel.FlxSprite;
 
+#if polymod
+import sys.io.File;
+import sys.FileSystem;
+#end
+
 class HealthIcon extends FlxSprite
 {
 	/**
 	 * Used for FreeplayState! If you use it elsewhere, prob gonna annoying
 	 */
 	public var sprTracker:FlxSprite;
+	
+	public var myMod:String;
 
 	public function new(char:String = 'bf', isPlayer:Bool = false)
 	{
 		super();
+		scrollFactor.set();
+		
+		//first, find icon that belongs to the char's mod
+		var path = 'mods/${myMod}/images/icons/${char}.png';
+		if (!FileSystem.exists(path)) {
+			//if it doesn't exist
+			path = 'mods/${myMod}/images/icons/${char}.png';
+		}
+		if (FileSystem.exists(path)) { //todo: this
+			//is there accompanying xml
+			if (false) {
+				
+			} else {
+				
+			}
+			//is there accompanying json
+			if (false) {
+				
+			}
+			//return animation.play(char);
+		}
+		
 		loadGraphic(Paths.image('iconGrid'), true, 150, 150);
 
 		antialiasing = !(char == "bf-pixel" || char == "senpai" || char == "senpai-angry" || char == "spirit");
@@ -38,8 +67,12 @@ class HealthIcon extends FlxSprite
 		animation.add('monster', [19, 20, 19], 0, false, isPlayer);
 		animation.add('monster-christmas', [19, 20, 19], 0, false, isPlayer);
 		animation.add('mr_placeholder_guy', [10, 11, 10], 0, false, isPlayer);
+		
+		if (animation.getNameList().indexOf(char) == -1) {
+			return animation.play('face');
+		}
+		
 		animation.play(char);
-		scrollFactor.set();
 	}
 
 	override function update(elapsed:Float)

@@ -22,6 +22,7 @@ class OptionsSubState extends OptionsSubStateBasic
 			'Scroll direction',
 			"Middlescroll",
 			"Ghost Tapping",
+			//"Enable modcharts",
 			"Invisi-Notes",
 			"Instant Respawn",
 			"Botplay",
@@ -30,7 +31,6 @@ class OptionsSubState extends OptionsSubStateBasic
 			"Activate New Mods",
 			#end
 			"Skip Title",
-			//"Enable modcharts",
 			"Language",
 			"Exit Without Saving"
 		];

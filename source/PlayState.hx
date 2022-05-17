@@ -155,6 +155,9 @@ class PlayState extends MusicBeatState
 	public static var instance:PlayState;
 	
 	public var hudThings = new FlxTypedGroup<HudThing>();
+	
+	//Scripting funny lol
+	//The only hscript your getting is me porting the basegame update's hscript support
 
 	override public function create()
 	{

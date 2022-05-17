@@ -27,6 +27,8 @@ class Note extends FlxSprite
 	public var isSustainNote:Bool = false;
 
 	public var noteScore:Float = 1;
+	
+	public var noteType:Int = -1;
 
 	public static var swagWidth:Float = 160 * 0.7;
 
@@ -99,7 +101,7 @@ class Note extends FlxSprite
 				animation.addByPrefix('${myArrow}Scroll', '${myArrow}0');
 				animation.addByPrefix('${myArrow}holdend', '${myArrow} hold end');
 				animation.addByPrefix('${myArrow}hold', '${myArrow} hold piece');
-				animation.appendByPrefix('purpleholdend', 'pruple end hold'); //develop your spritesheets properly challenge (impossible)
+				//animation.appendByPrefix('purpleholdend', 'pruple end hold'); //develop your spritesheets properly challenge (impossible)
 
 				antialiasing = true;
 		}
@@ -107,12 +109,11 @@ class Note extends FlxSprite
 		scale.x *= PlayState.instance.curManiaInfo.scale;
 		scale.y = scale.x;
 		
-		animation.play(myArrow+"Scroll");
+		animation.play('${myArrow}Scroll');
 
 		// trace(prevNote);
 
-		if (isSustainNote && prevNote != null)
-		{
+		if (isSustainNote && prevNote != null) {
 			prevNote.nextNote = this;
 			
 			flipY = Options.downScroll;
@@ -124,12 +125,13 @@ class Note extends FlxSprite
 
 			updateHitbox();
 
-			if (prevNote.isSustainNote)
-			{
+			if (prevNote.isSustainNote) {
 				prevNote.animation.play(myArrow+"hold");
 
-				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.5 * PlayState.SONG.speed;
-				prevNote.updateHitbox();
+				prevNote.scale.y = ((Conductor.stepCrochet / 1) * PlayState.SONG.speed * 0.45) / prevNote.frames.frames[prevNote.animation.curAnim.frames[0]].sourceSize.y;
+				CoolUtil.CenterOffsets(prevNote);
+				prevNote.offset.y = 0;
+				//prevNote.updateHitbox();
 				// prevNote.setGraphicSize();
 			}
 		}
@@ -137,7 +139,8 @@ class Note extends FlxSprite
 		updateHitbox();
 		CoolUtil.CenterOffsets(this);
 		if (isSustainNote) {
-			offset.y = 0;
+			//offset.y = flipY ? 0 : height;
+			offset.y = height;
 		}
 	}
 	
