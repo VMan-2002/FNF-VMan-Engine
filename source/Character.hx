@@ -24,6 +24,8 @@ class Character extends FlxSprite
 	public var holdTimer:Float = 0;
 	
 	public var danceType:Bool = false;
+	
+	public var positionOffset:Array<Float> = [0, 0];
 
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false) {
 		super(x, y);
@@ -171,6 +173,8 @@ class Character extends FlxSprite
 				addOffset("singDOWN", -50, -130);
 
 				playAnim('danceRight');
+				
+				positionOffset[1] = 200;
 			case 'mom':
 				tex = Paths.getSparrowAtlas('characters/Mom_Assets');
 				frames = tex;
@@ -225,6 +229,8 @@ class Character extends FlxSprite
 				addOffset("singLEFT", -30);
 				addOffset("singDOWN", -30, -40);
 				playAnim('idle');
+				
+				positionOffset[1] = 100;
 			case 'monster-christmas':
 				tex = Paths.getSparrowAtlas('characters/monsterChristmas');
 				frames = tex;
@@ -240,6 +246,8 @@ class Character extends FlxSprite
 				addOffset("singLEFT", -30);
 				addOffset("singDOWN", -40, -94);
 				playAnim('idle');
+				
+				positionOffset[1] = 130;
 			case 'pico':
 				tex = Paths.getSparrowAtlas('characters/Pico_FNF_assetss');
 				frames = tex;
@@ -268,7 +276,8 @@ class Character extends FlxSprite
 				playAnim('idle');
 
 				flipX = true;
-
+				
+				positionOffset[1] = 300;
 			case 'bf':
 				var tex = Paths.getSparrowAtlas('characters/BOYFRIEND');
 				frames = tex;
@@ -304,9 +313,11 @@ class Character extends FlxSprite
 
 				flipX = true;
 
+				positionOffset[1] = 350;
 			case 'bf-dead':
 				var tex = Paths.getSparrowAtlas('characters/BF_Death');
 				frames = tex;
+				animation.addByPrefix('idle', "BF dies", 24, false);
 				animation.addByPrefix('firstDeath', "BF dies", 24, false);
 				animation.addByPrefix('deathLoop', "BF Dead Loop", 24, true);
 				animation.addByPrefix('deathConfirm', "BF Dead confirm", 24, false);
@@ -319,6 +330,7 @@ class Character extends FlxSprite
 
 				flipX = true;
 
+				positionOffset[1] = 350;
 			case 'bf-christmas':
 				var tex = Paths.getSparrowAtlas('characters/bfChristmas');
 				frames = tex;
@@ -349,6 +361,7 @@ class Character extends FlxSprite
 				playAnim('idle');
 
 				flipX = true;
+				positionOffset[1] = 350;
 			case 'bf-car':
 				var tex = Paths.getSparrowAtlas('characters/bfCar');
 				frames = tex;
@@ -376,6 +389,7 @@ class Character extends FlxSprite
 				playAnim('idle');
 
 				flipX = true;
+				positionOffset[1] = 350;
 			case 'bf-pixel':
 				frames = Paths.getSparrowAtlas('characters/bfPixel');
 				animation.addByPrefix('idle', 'BF IDLE', 24, false);
@@ -411,9 +425,10 @@ class Character extends FlxSprite
 				antialiasing = false;
 
 				flipX = true;
+				positionOffset[1] = 350;
 			case 'bf-pixel-dead':
 				frames = Paths.getSparrowAtlas('characters/bfPixelsDEAD');
-				animation.addByPrefix('singUP', "BF Dies pixel", 24, false);
+				animation.addByPrefix('idle', "BF Dies pixel", 24, false);
 				animation.addByPrefix('firstDeath', "BF Dies pixel", 24, false);
 				animation.addByPrefix('deathLoop', "Retry Loop", 24, true);
 				animation.addByPrefix('deathConfirm', "RETRY CONFIRM", 24, false);
@@ -429,6 +444,7 @@ class Character extends FlxSprite
 				antialiasing = false;
 				flipX = true;
 
+				positionOffset[1] = 350;
 			case 'senpai':
 				frames = Paths.getSparrowAtlas('characters/senpai');
 				animation.addByPrefix('idle', 'Senpai Idle', 24, false);
@@ -449,6 +465,8 @@ class Character extends FlxSprite
 				updateHitbox();
 
 				antialiasing = false;
+				
+				positionOffset = [150, 360];
 			case 'senpai-angry':
 				frames = Paths.getSparrowAtlas('characters/senpai');
 				animation.addByPrefix('idle', 'Angry Senpai Idle', 24, false);
@@ -469,6 +487,7 @@ class Character extends FlxSprite
 
 				antialiasing = false;
 
+				positionOffset = [150, 360];
 			case 'spirit':
 				frames = Paths.getSparrowAtlas('characters/spirit');
 				animation.addByPrefix('idle', "idle spirit_", 24, false);
@@ -490,6 +509,7 @@ class Character extends FlxSprite
 
 				antialiasing = false;
 
+				positionOffset = [-150, 100];
 			case 'parents-christmas':
 				frames = Paths.getSparrowAtlas('characters/mom_dad_christmas_assets');
 				animation.addByPrefix('idle', 'Parent Christmas Idle', 24, false);
@@ -516,10 +536,14 @@ class Character extends FlxSprite
 
 				playAnim('idle');
 
+				positionOffset[0] = -500;
 			default: //placeholder guy
+				//try to load character
+				var charLoaded = false;
 				if (false) {
 					
-				} else {
+				}
+				if (!charLoaded) {
 					trace('using default character');
 					curCharacter = "mr_placeholder_guy";
 					
@@ -629,6 +653,11 @@ class Character extends FlxSprite
 			return playAnim('danceLeft');
 		}
 		playAnim('idle');
+	}
+	
+	public function applyPositionOffset() {
+		x += positionOffset[0];
+		y += positionOffset[1];
 	}
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void

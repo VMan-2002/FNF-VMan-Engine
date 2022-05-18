@@ -217,7 +217,9 @@ class StoryMenuState extends MusicBeatState
 		txtTracklist.alignment = CENTER;
 		txtTracklist.font = rankText.font;
 		var formatThing = new FlxTextFormat(0xFFe55777);
-		formatThing.leading = 36;
+		if (Translation.usesFont) {
+			formatThing.leading = -12;
+		}
 		txtTracklist.addFormat(formatThing);
 		add(txtTracklist);
 		// add(rankText);

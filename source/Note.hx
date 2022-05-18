@@ -50,7 +50,7 @@ class Note extends FlxSprite
 
 		var daStage:String = PlayState.curStage;
 
-		var myArrow = PlayState.instance.curManiaInfo.arrows[noteData];
+		var myArrow = PlayState.curManiaInfo.arrows[noteData];
 		
 		switch (daStage)
 		{
@@ -106,7 +106,7 @@ class Note extends FlxSprite
 				antialiasing = true;
 		}
 		
-		scale.x *= PlayState.instance.curManiaInfo.scale;
+		scale.x *= PlayState.curManiaInfo.scale;
 		scale.y = scale.x;
 		
 		animation.play('${myArrow}Scroll');

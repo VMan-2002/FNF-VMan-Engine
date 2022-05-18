@@ -114,12 +114,16 @@ class FreeplayState extends MusicBeatState
 							default:
 								var icon = "face";
 								var songStuffPath = 'mods/${iathing}/data/${Highscore.formatSong(thing[0])}/song.txt';
+								var diffAdd = "";
 								if (FileSystem.exists(songStuffPath)) {
 									var thing = File.getContent(songStuffPath).split("\n");
 									var charstuff:Array<String> = thing[2].split("::");
 									icon = charstuff[charstuff.length > 1 ? 1 : 0].trim();
+									if (thing.length > 4) {
+										diffAdd = thing[4];
+									}
 								}
-								var justAdd = new SongMetadata(thing[0], 0, icon, 0, iathing);
+								var justAdd = new SongMetadata(thing[0], 0, icon, 0, iathing, diffAdd);
 								resultItems.push(justAdd);
 								noFolders.push(justAdd);
 						}
@@ -462,10 +466,12 @@ class FreeplayState extends MusicBeatState
 	function changeDiff(change:Int = 0)
 	{
 		curDifficulty += change;
+		
+		var diffAmnt = CoolUtil.difficultyArray.length;
 
 		if (curDifficulty < 0)
-			curDifficulty = 2;
-		if (curDifficulty > 2)
+			curDifficulty = diffAmnt - 1;
+		if (curDifficulty >= diffAmnt)
 			curDifficulty = 0;
 
 		#if !switch
@@ -493,17 +499,34 @@ class FreeplayState extends MusicBeatState
 
 		// selector.y = (70 * curSelected) + 30;
 
+		var songSel = songs[curSelected];
+
 		#if !switch
-		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+		intendedScore = Highscore.getScore(songSel.songName, curDifficulty);
 		// lerpScore = 0;
 		#end
 
 		#if PRELOAD_ALL
-		if (songs[curSelected].type == 0) {
-			CoolUtil.playSongMusic(songs[curSelected].songName, 0);
+		if (songSel.type == 0) {
+			CoolUtil.playSongMusic(songSel.songName, 0);
 		}
 		#end
-		scoreText.visible = songs[curSelected].type == 0;
+		if (songSel.type == 0) {
+			scoreText.visible = true;
+			//load difficulty stuf
+			var songDiff = songSel.difficulties.length == 0 ? CoolUtil.defaultDifficultyArray : songSel.difficulties;
+			if (songDiff != CoolUtil.difficultyArray) {
+				var prevDifficulty = CoolUtil.difficultyArray[curDifficulty];
+				CoolUtil.difficultyArray = songDiff;
+				curDifficulty = songDiff.indexOf(prevDifficulty);
+				if (curDifficulty < 0) {
+					curDifficulty = 0;
+				}
+				changeDiff(0);
+			}
+		} else {
+			scoreText.visible = false;
+		}
 
 		var bullShit:Int = 0;
 
@@ -538,13 +561,20 @@ class SongMetadata
 	public var songCharacter:String = "";
 	public var type:Int = 0; //0: song, 1: folder
 	public var mod:String;
+	public var difficulties:Array<String> = new Array<String>();
 
-	public function new(song:String, week:Int, songCharacter:String, ?type:Int = 0, ?mod:String = "")
+	public function new(song:String, week:Int, songCharacter:String, ?type:Int = 0, ?mod:String = "", ?difficulties:String = "")
 	{
 		this.songName = song;
 		this.week = week;
 		this.songCharacter = songCharacter;
 		this.type = type;
 		this.mod = mod;
+		var diffAdd = difficulties == "" ? [] : difficulties.split(",");
+		if (diffAdd.length > 0) {
+			for (i in 0...difficulties.length) {
+				this.difficulties[i] = diffAdd[i].trim();
+			}
+		}
 	}
 }

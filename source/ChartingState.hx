@@ -149,6 +149,7 @@ class ChartingState extends MusicBeatState
 		bpmTxt = new FlxText(1000, 50, 0, "", 16);
 		bpmTxt.scrollFactor.set();
 		add(bpmTxt);
+		Translation.setObjectFont(bpmTxt);
 
 		strumLine = new FlxSprite(0, 50).makeGraphic(Std.int(FlxG.width / 2), 4);
 		add(strumLine);
@@ -157,12 +158,19 @@ class ChartingState extends MusicBeatState
 		add(dummyArrow);
 
 		var tabs = [
-			{name: "Song", label: 'Song'},
-			{name: "Section", label: 'Section'},
-			{name: "Note", label: 'Note'}
+			{name: "Song", label: Translation.getTranslation('tab_Song', "charteditor")},
+			{name: "Section", label: Translation.getTranslation('tab_Section', "charteditor")},
+			{name: "Note", label: Translation.getTranslation('tab_Note', "charteditor")}
 		];
 
 		UI_box = new FlxUITabMenu(null, tabs, true);
+		
+		//UI_box._tabs is private, so I must do this bullshit!
+		for (i in UI_box.members) {
+			if (Std.isOfType(i, FlxUIButton)) {
+				Translation.setUIObjectFont(cast(i, FlxUIButton));
+			}
+		}
 
 		UI_box.resize(300, 400);
 		UI_box.x = FlxG.width / 2;
@@ -185,7 +193,7 @@ class ChartingState extends MusicBeatState
 		typingShit = UI_songTitle;
 		//Translation.setUIObjectFont(UI_songTitle);
 
-		var check_voices = new FlxUICheckBox(10, 25, null, null, "Has voice track", 100);
+		var check_voices = new FlxUICheckBox(10, 25, null, null, Translation.getTranslation("Has voice track", "charteditor"), 100);
 		check_voices.checked = _song.needsVoices;
 		// _song.needsVoices = check_voices.checked;
 		check_voices.callback = function()
@@ -195,7 +203,7 @@ class ChartingState extends MusicBeatState
 		};
 		Translation.setUIObjectFont(check_voices);
 
-		var check_mute_inst = new FlxUICheckBox(10, 200, null, null, "Mute Instrumental (in editor)", 100);
+		var check_mute_inst = new FlxUICheckBox(10, 200, null, null, Translation.getTranslation("Mute Instrumental", "charteditor"), 100);
 		check_mute_inst.checked = false;
 		check_mute_inst.callback = function()
 		{
@@ -208,25 +216,32 @@ class ChartingState extends MusicBeatState
 		};
 		Translation.setUIObjectFont(check_mute_inst);
 
-		var saveButton:FlxUIButton = new FlxUIButton(110, 8, "Save", function()
+		var saveButton:FlxUIButton = new FlxUIButton(110, 8, Translation.getTranslation("Save", "charteditor"), function()
 		{
 			saveLevel();
 		});
 		Translation.setUIObjectFont(saveButton);
 
-		var reloadSong:FlxUIButton = new FlxUIButton(saveButton.x + saveButton.width + 10, saveButton.y, "Reload Audio", function()
+		var reloadSong:FlxUIButton = new FlxUIButton(saveButton.x + saveButton.width + 10, saveButton.y, Translation.getTranslation("Reload Audio", "charteditor"), function()
 		{
 			loadSong(_song.song);
 		});
 		Translation.setUIObjectFont(reloadSong);
 
-		var reloadSongJson:FlxUIButton = new FlxUIButton(reloadSong.x, saveButton.y + 30, "Reload JSON", function()
+		var reloadSongJson:FlxUIButton = new FlxUIButton(reloadSong.x, saveButton.y + 30, Translation.getTranslation("Reload JSON", "charteditor"), function()
 		{
 			loadJson(_song.song.toLowerCase());
 		});
 		Translation.setUIObjectFont(reloadSongJson);
 
-		var loadAutosaveBtn:FlxUIButton = new FlxUIButton(reloadSongJson.x, reloadSongJson.y + 30, 'load autosave', loadAutosave);
+		var loadAutosaveBtn:FlxUIButton = new FlxUIButton(reloadSongJson.x, reloadSongJson.y + 30, Translation.getTranslation('load autosave', "charteditor"), loadAutosave);
+		Translation.setUIObjectFont(loadAutosaveBtn);
+		
+		if (Translation.getUIObjectIsMultiline(reloadSong) || Translation.getUIObjectIsMultiline(reloadSongJson) || Translation.getUIObjectIsMultiline(loadAutosaveBtn)) {
+			reloadSong.resize(150, 20);
+			reloadSongJson.resize(150, 20);
+			loadAutosaveBtn.resize(150, 20);
+		}
 
 		var stepperSpeed:FlxUINumericStepper = new FlxUINumericStepper(10, 80, 0.1, 1, 0.1, 10, 1);
 		stepperSpeed.value = _song.speed;
@@ -249,7 +264,6 @@ class ChartingState extends MusicBeatState
 		{
 			_song.player2 = characters[Std.parseInt(character)];
 		});
-
 		player2DropDown.selectedLabel = _song.player2;
 		//Translation.setUIObjectFont(player2DropDown);
 
@@ -295,16 +309,20 @@ class ChartingState extends MusicBeatState
 		stepperSectionBPM.value = Conductor.bpm;
 		stepperSectionBPM.name = 'section_bpm';
 
-		var stepperCopy:FlxUINumericStepper = new FlxUINumericStepper(110, 130, 1, 1, -999, 999, 0);
+		var stepperCopy:FlxUINumericStepper = new FlxUINumericStepper(200, 130, 1, 1, -999, 999, 0);
 
-		var copyButton:FlxButton = new FlxButton(10, 130, "Copy last section", function()
+		var copyButton:FlxUIButton = new FlxUIButton(10, 130, Translation.getTranslation("Copy last", "charteditor"), function()
 		{
 			copySection(Std.int(stepperCopy.value));
 		});
+		copyButton.resize(180, 20);
+		Translation.setUIObjectFont(copyButton);
 
-		var clearSectionButton:FlxButton = new FlxButton(10, 150, "Clear", clearSection);
+		var clearSectionButton:FlxUIButton = new FlxUIButton(10, 150, Translation.getTranslation("Clear", "charteditor"), clearSection);
+		Translation.setUIObjectFont(clearSectionButton);
+		clearSectionButton.resize(180, 20);
 
-		var swapSection:FlxButton = new FlxButton(10, 170, "Swap section", function()
+		var swapSection:FlxUIButton = new FlxUIButton(10, 170, Translation.getTranslation("Swap section", "charteditor"), function()
 		{
 			for (i in 0..._song.notes[curSection].sectionNotes.length)
 			{
@@ -314,17 +332,22 @@ class ChartingState extends MusicBeatState
 				updateGrid();
 			}
 		});
+		swapSection.resize(180, 20);
+		Translation.setUIObjectFont(swapSection);
 
-		check_mustHitSection = new FlxUICheckBox(10, 30, null, null, "Must hit section", 100);
+		check_mustHitSection = new FlxUICheckBox(10, 30, null, null, Translation.getTranslation("Must hit section", "charteditor"), 100);
 		check_mustHitSection.name = 'check_mustHit';
 		check_mustHitSection.checked = true;
 		// _song.needsVoices = check_mustHit.checked;
+		Translation.setUIObjectFont(check_mustHitSection);
 
-		check_altAnim = new FlxUICheckBox(10, 400, null, null, "Alt Animation", 100);
+		check_altAnim = new FlxUICheckBox(10, 400, null, null, Translation.getTranslation("Alt Animation", "charteditor"), 100);
 		check_altAnim.name = 'check_altAnim';
+		Translation.setUIObjectFont(check_altAnim);
 
-		check_changeBPM = new FlxUICheckBox(10, 60, null, null, 'Change BPM', 100);
+		check_changeBPM = new FlxUICheckBox(10, 60, null, null, Translation.getTranslation("Change BPM", "charteditor"), 100);
 		check_changeBPM.name = 'check_changeBPM';
+		Translation.setUIObjectFont(check_changeBPM);
 
 		tab_group_section.add(stepperLength);
 		tab_group_section.add(stepperSectionBPM);
@@ -350,7 +373,8 @@ class ChartingState extends MusicBeatState
 		stepperSusLength.value = 0;
 		stepperSusLength.name = 'note_susLength';
 
-		var applyLength:FlxButton = new FlxButton(100, 10, 'Apply');
+		var applyLength:FlxUIButton = new FlxUIButton(100, 10, Translation.getTranslation("Apply", "charteditor"));
+		Translation.setUIObjectFont(applyLength);
 
 		tab_group_note.add(stepperSusLength);
 		tab_group_note.add(applyLength);
@@ -681,8 +705,8 @@ class ChartingState extends MusicBeatState
 		bpmTxt.text = bpmTxt.text = Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2))
 			+ " / "
 			+ Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2))
-			+ "\nSection: "
-			+ curSection;
+			+ "\n"
+			+ Translation.getTranslation("section number", "charteditor", [Std.string(curSection)]);
 		super.update(elapsed);
 	}
 

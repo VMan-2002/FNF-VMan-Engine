@@ -151,7 +151,7 @@ class PlayState extends MusicBeatState
 	public var songLength:Float = 0;
 	public var storyDifficultyText:String = "";
 	
-	public var curManiaInfo:SwagMania = ManiaInfo.GetManiaInfo("4k");
+	public static var curManiaInfo:SwagMania = ManiaInfo.GetManiaInfo("4k");
 	public static var instance:PlayState;
 	
 	public var hudThings = new FlxTypedGroup<HudThing>();
@@ -623,9 +623,21 @@ class PlayState extends MusicBeatState
 		}
 
 		dad = new Character(100, 100, SONG.player2);
+		
+
+		//var selector = new FlxSprite(100, 100).makeGraphic(10, 10, FlxColor.RED);
+		//add(selector);
 
 		gf = new Character(400, 130, gfVersion);
 		gf.scrollFactor.set(0.95, 0.95);
+		
+		boyfriend = new Boyfriend(770, 100, SONG.player1);
+		
+		boyfriend.applyPositionOffset();
+		
+		dad.applyPositionOffset();
+		
+		gf.applyPositionOffset();
 
 		var camPos:FlxPoint = new FlxPoint(dad.getGraphicMidpoint().x, dad.getGraphicMidpoint().y);
 
@@ -639,35 +651,13 @@ class PlayState extends MusicBeatState
 					camPos.x += 600;
 					tweenCamIn();
 				}
-
-			case "spooky":
-				dad.y += 200;
-			case "monster":
-				dad.y += 100;
-			case 'monster-christmas':
-				dad.y += 130;
 			case 'dad':
 				camPos.x += 400;
 			case 'pico':
 				camPos.x += 600;
-				dad.y += 300;
-			case 'parents-christmas':
-				dad.x -= 500;
-			case 'senpai':
-				dad.x += 150;
-				dad.y += 360;
-				camPos.set(dad.getGraphicMidpoint().x + 300, dad.getGraphicMidpoint().y);
-			case 'senpai-angry':
-				dad.x += 150;
-				dad.y += 360;
-				camPos.set(dad.getGraphicMidpoint().x + 300, dad.getGraphicMidpoint().y);
-			case 'spirit':
-				dad.x -= 150;
-				dad.y += 100;
+			case 'senpai' | 'senpai-angry' | 'spirit':
 				camPos.set(dad.getGraphicMidpoint().x + 300, dad.getGraphicMidpoint().y);
 		}
-
-		boyfriend = new Boyfriend(770, 450, SONG.player1);
 
 		// REPOSITIONING PER STAGE
 		switch (curStage)

@@ -79,4 +79,12 @@ class Translation
 			setObjectFont(a.getLabel());
 		}
 	}
+	
+	public inline static function getUIObjectLineNum(a:ILabeled) {
+		return a.getLabel().textField.numLines;
+	}
+	
+	public inline static function getUIObjectIsMultiline(a:ILabeled) {
+		return getUIObjectLineNum(a) > 1;
+	}
 }

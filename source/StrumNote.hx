@@ -69,12 +69,12 @@ class StrumNote extends FlxSprite
 
 				antialiasing = true;
 				
-				animation.addByPrefix('static', "arrow"+ManiaInfo.StrumlineArrow[PlayState.instance.curManiaInfo.arrows[noteData]]);
-				animation.addByPrefix('pressed', PlayState.instance.curManiaInfo.arrows[noteData]+' press', 24, false);
-				animation.addByPrefix('confirm', PlayState.instance.curManiaInfo.arrows[noteData]+' confirm', 24, false);
+				animation.addByPrefix('static', "arrow"+ManiaInfo.StrumlineArrow[PlayState.curManiaInfo.arrows[noteData]]);
+				animation.addByPrefix('pressed', PlayState.curManiaInfo.arrows[noteData]+' press', 24, false);
+				animation.addByPrefix('confirm', PlayState.curManiaInfo.arrows[noteData]+' confirm', 24, false);
 		}
 		
-		scale.x *= PlayState.instance.curManiaInfo.scale;
+		scale.x *= PlayState.curManiaInfo.scale;
 		scale.y = scale.x;
 		scrollFactor.set();
 		animation.play("static");

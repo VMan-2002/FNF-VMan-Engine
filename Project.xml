@@ -49,6 +49,7 @@
 	
 	<define name="MODS" unless="web" />
 	<define name="NO_MODS" unless="MODS"/>
+	<define name="VMAN_DEMO" if="web" unless="MODS"/>
 	
 	<section if="PRELOAD_ALL">
 		<library name="songs"    preload="true" />
@@ -122,6 +123,7 @@
 	<haxelib name="faxe" if='switch'/>
 	<haxelib name="polymod"/>
 	<haxelib name="discord_rpc" if="desktop"/>
+	<haxelib name="json2object"/>
 	<!-- <haxelib name="hxcpp-debug-server" if="desktop"/> -->
 
 	<!-- <haxelib name="markdown" /> -->
