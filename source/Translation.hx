@@ -8,6 +8,7 @@ import Paths;
 import flixel.addons.ui.interfaces.ILabeled;
 import flixel.util.typeLimit.OneOfTwo;
 import flixel.addons.ui.FlxUIText;
+import flixel.addons.ui.FlxUIDropDownMenu;
 
 using StringTools;
 
@@ -77,6 +78,16 @@ class Translation
 		if (usesFont && active) {
 			a.getLabel().size = Math.floor(a.getLabel().size * 1.25);
 			setObjectFont(a.getLabel());
+		}
+	}
+	
+	public static function setUIDropDownFont(a:FlxUIDropDownMenu, ?type:String = "font") {
+		if (usesFont && active) {
+			a.header.text.size = Math.floor(a.header.text.size * 1.25);
+			setObjectFont(a.header.text, type);
+			for (i in a.list) {
+				setUIObjectFont(i, type);
+			}
 		}
 	}
 	

@@ -189,7 +189,7 @@ class ChartingState extends MusicBeatState
 
 	function addSongUI():Void
 	{
-		var UI_songTitle = new FlxUIInputText(10, 10, 70, _song.song, 8);
+		var UI_songTitle = new FlxUIInputText(10, 10, 90, _song.song, 8);
 		typingShit = UI_songTitle;
 		//Translation.setUIObjectFont(UI_songTitle);
 
@@ -376,6 +376,28 @@ class ChartingState extends MusicBeatState
 		var applyLength:FlxUIButton = new FlxUIButton(100, 10, Translation.getTranslation("Apply", "charteditor"));
 		Translation.setUIObjectFont(applyLength);
 
+		//todo: have real
+		var noteTypes = [
+			"Normal Note",
+			"Hurt Note",
+			"Death Note",
+			"Warning Note",
+			"Angel Note",
+			"Alt Animation",
+			"Bob Note",
+			"Glitch Note",
+			"Hey"
+		];
+		var noteTypeSelect = new FlxUIDropDownMenu(10, 40, FlxUIDropDownMenu.makeStrIdLabelArray(noteTypes, true), function(character:String)
+		{
+			//_song.player1 = characters[Std.parseInt(character)];
+		});
+		//noteTypeSelect.resize(200, 20);
+		noteTypeSelect.selectedLabel = noteTypes[0];
+		
+		Translation.setUIDropDownFont(noteTypeSelect);
+
+		tab_group_note.add(noteTypeSelect);
 		tab_group_note.add(stepperSusLength);
 		tab_group_note.add(applyLength);
 
@@ -433,18 +455,18 @@ class ChartingState extends MusicBeatState
 		if (id == FlxUICheckBox.CLICK_EVENT)
 		{
 			var check:FlxUICheckBox = cast sender;
-			var label = check.getLabel().text;
+			var label = check.getLabel().name;
 			switch (label)
 			{
-				case 'Must hit section':
+				case 'check_mustHit':
 					_song.notes[curSection].mustHitSection = check.checked;
 
 					updateHeads();
 
-				case 'Change BPM':
+				case 'check_changeBPM':
 					_song.notes[curSection].changeBPM = check.checked;
 					FlxG.log.add('changed bpm shit');
-				case "Alt Animation":
+				case "check_altAnim":
 					_song.notes[curSection].altAnim = check.checked;
 			}
 		}
