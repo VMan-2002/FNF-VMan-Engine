@@ -111,15 +111,15 @@ class HudThing extends FlxGroup
 		return vertical ? text+"\n" : text; //vertical text needs an additional newline idk why
 	}
 	
-	public function updateInfo() {
+	public inline function updateInfo() {
 		textThing.text = getInfoText();
 	}
 	
-	inline function trimPercent(num:Float) {
+	public inline static function trimPercent(num:Float) {
 		return Math.isNaN(num) ? "0%" : FlxMath.roundDecimal(num * 100, 2) + "%";
 	}
 	
-	inline function trimNoPercent(num:Float):String {
+	public inline static function trimNoPercent(num:Float):String {
 		return Math.isNaN(num) ? "0" : Std.string(FlxMath.roundDecimal(num * 100, 2));
 	}
 }

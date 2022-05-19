@@ -6,8 +6,29 @@ import flixel.animation.FlxBaseAnimation;
 import flixel.graphics.frames.FlxAtlasFrames;
 import Boyfriend;
 import CoolUtil;
+import lime.utils.Assets;
+import haxe.Json;
+#if polymod
+import openfl.utils.Assets as OpenFlAssets;
+import json2object.JsonParser;
+import sys.io.File;
+import sys.FileSystem;
+#end
 
 using StringTools;
+
+typedef SwagCharacter = {
+	public var image:String;
+	public var healthIcon:String;
+	public var deathChar:String;
+	public var initAnim:String;
+	public var animations:Array<SwagCharacterAnim>;
+}
+
+typedef SwagCharacterAnim = {
+	public var name:String;
+	public var anim:String;
+}
 
 class Character extends FlxSprite
 {
@@ -26,8 +47,10 @@ class Character extends FlxSprite
 	public var danceType:Bool = false;
 	
 	public var positionOffset:Array<Float> = [0, 0];
+	
+	public var myMod:String;
 
-	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false) {
+	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false, ?myMod:String = "") {
 		super(x, y);
 
 		animOffsets = new Map<String, Array<Dynamic>>();
@@ -39,6 +62,8 @@ class Character extends FlxSprite
 			activeArray[thisId] = this;
 			nextId += 1;
 		}
+		
+		this.myMod = myMod;
 
 		var tex:FlxAtlasFrames;
 		antialiasing = true;
@@ -539,11 +564,21 @@ class Character extends FlxSprite
 				positionOffset[0] = -500;
 			default: //placeholder guy
 				//try to load character
-				var charLoaded = false;
-				if (false) {
-					
+				var successLoad = false;
+				#if polymod
+				var thing:String = 'assets/objects/characters/${curCharacter}.json';
+				var thingMy:String = 'mods/${myMod}/objects/characters/${curCharacter}.json';
+				var isMyMod = myMod != "" && FileSystem.exists(thingMy);
+				trace('loading custom char of ${isMyMod ? thingMy : thing}');
+				if (isMyMod ? FileSystem.exists(thingMy) : OpenFlAssets.exists(thing)) {
+					var parser = new JsonParser<SwagCharacter>();
+					//var loadedStuff:SwagCharacter = parser.fromJson(CoolUtil.loadJsonFromString(isMyMod ? File.getContent(thingMy) : Assets.getText(thing)));
+					var loadedStuff:SwagCharacter = cast CoolUtil.loadJsonFromString(CoolUtil.loadJsonFromString(isMyMod ? File.getContent(thingMy) : Assets.getText(thing)));
+					trace('loaded custom char: image ${loadedStuff.image}');
 				}
-				if (!charLoaded) {
+				#end
+				//otherwise, use da guy
+				if (!successLoad) {
 					trace('using default character');
 					curCharacter = "mr_placeholder_guy";
 					

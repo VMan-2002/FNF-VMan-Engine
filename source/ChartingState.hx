@@ -33,6 +33,8 @@ import openfl.media.Sound;
 import openfl.net.FileReference;
 import openfl.utils.ByteArray;
 
+import ManiaInfo;
+
 using StringTools;
 
 class ChartingState extends MusicBeatState
@@ -81,6 +83,11 @@ class ChartingState extends MusicBeatState
 
 	var leftIcon:HealthIcon;
 	var rightIcon:HealthIcon;
+	
+	var currentChartMania:SwagMania;
+	var gridBlackLine:FlxSprite;
+	
+	var xView:Float = 0;
 
 	override function create()
 	{
@@ -103,7 +110,7 @@ class ChartingState extends MusicBeatState
 		leftIcon.setPosition(0, -100);
 		rightIcon.setPosition(gridBG.width / 2, -100);
 
-		var gridBlackLine:FlxSprite = new FlxSprite(gridBG.x + gridBG.width / 2).makeGraphic(2, Std.int(gridBG.height), FlxColor.BLACK);
+		gridBlackLine = new FlxSprite().makeGraphic(2, Std.int(gridBG.height), FlxColor.BLACK);
 		add(gridBlackLine);
 
 		curRenderedNotes = new FlxTypedGroup<Note>();
@@ -130,6 +137,8 @@ class ChartingState extends MusicBeatState
 				usedNoteTypes: new Array<String>()
 			};
 		}
+		
+		currentChartMania = ManiaInfo.GetManiaInfo(_song.maniaStr);
 
 		FlxG.mouse.visible = true;
 		FlxG.save.bind('funkin', 'ninjamuffin99');
@@ -140,13 +149,13 @@ class ChartingState extends MusicBeatState
 
 		// sections = _song.notes;
 
-		updateGrid();
+		updateGridChangeMania();
 
 		loadSong(_song.song);
 		Conductor.changeBPM(_song.bpm);
 		Conductor.mapBPMChanges(_song);
 
-		bpmTxt = new FlxText(1000, 50, 0, "", 16);
+		bpmTxt = new FlxText(0, 5, 0, "", 16);
 		bpmTxt.scrollFactor.set();
 		add(bpmTxt);
 		Translation.setObjectFont(bpmTxt);
@@ -173,9 +182,10 @@ class ChartingState extends MusicBeatState
 		}
 
 		UI_box.resize(300, 400);
-		UI_box.x = FlxG.width / 2;
-		UI_box.y = 20;
+		UI_box.x = FlxG.width - 480;
+		UI_box.y = 70;
 		add(UI_box);
+		bpmTxt.x = UI_box.x;
 
 		addSongUI();
 		addSectionUI();
@@ -252,6 +262,7 @@ class ChartingState extends MusicBeatState
 		stepperBPM.name = 'song_bpm';
 
 		var characters:Array<String> = CoolUtil.coolTextFile('data/characterList');
+		var stages:Array<String> = CoolUtil.coolTextFile('data/stageList');
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
@@ -267,6 +278,30 @@ class ChartingState extends MusicBeatState
 		player2DropDown.selectedLabel = _song.player2;
 		//Translation.setUIObjectFont(player2DropDown);
 
+		var stageDropDown = new FlxUIDropDownMenu(140, 130, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(character:String)
+		{
+			_song.stage = stages[Std.parseInt(character)];
+		});
+		stageDropDown.selectedLabel = _song.player2;
+		//Translation.setUIObjectFont(stageDropDown);
+
+		//todo: have real
+		var arrMania = [
+			for (i in ManiaInfo.AvailableMania) {
+				i = ManiaInfo.GetManiaName(ManiaInfo.GetManiaInfo(i));
+			}
+		];
+		var maniaSelect = new FlxUIDropDownMenu(10, 160, FlxUIDropDownMenu.makeStrIdLabelArray(arrMania, true), function(character:String)
+		{
+			_song.maniaStr = ManiaInfo.AvailableMania[Std.parseInt(character)];
+			currentChartMania = ManiaInfo.GetManiaInfo(_song.maniaStr);
+			_song.keyCount = currentChartMania.keys;
+			_song.mania = ManiaInfo.ManiaConvertBack.get(_song.maniaStr);
+			updateGridChangeMania();
+		});
+		//noteTypeSelect.resize(200, 20);
+		maniaSelect.selectedLabel = arrMania[ManiaInfo.AvailableMania.indexOf(_song.maniaStr)];
+
 		var tab_group_song = new FlxUI(null, UI_box);
 		tab_group_song.name = "Song";
 		tab_group_song.add(UI_songTitle);
@@ -281,6 +316,8 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(stepperSpeed);
 		tab_group_song.add(player1DropDown);
 		tab_group_song.add(player2DropDown);
+		tab_group_song.add(stageDropDown);
+		tab_group_song.add(maniaSelect);
 
 		UI_box.addGroup(tab_group_song);
 		UI_box.scrollFactor.set();
@@ -620,6 +657,20 @@ class ChartingState extends MusicBeatState
 			changeNoteSustain(-Conductor.stepCrochet);
 		}
 
+		var spdSideways = elapsed * 64;
+		if (FlxG.keys.pressed.SHIFT) {
+			spdSideways *= 4;
+		}
+		if (FlxG.keys.pressed.I)
+		{
+			xView += spdSideways;
+		}
+		if (FlxG.keys.pressed.O)
+		{
+			xView -= spdSideways;
+		}
+		FlxG.camera.targetOffset.x = xView;
+
 		if (FlxG.keys.justPressed.TAB)
 		{
 			if (FlxG.keys.pressed.SHIFT)
@@ -869,6 +920,16 @@ class ChartingState extends MusicBeatState
 		if (curSelectedNote != null)
 			stepperSusLength.value = curSelectedNote[2];
 	}
+	
+	function updateGridChangeMania() {
+		var newGridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * currentChartMania.keys * 2, GRID_SIZE * 16);
+		insert(members.indexOf(gridBG), newGridBG);
+		remove(gridBG);
+		gridBG = newGridBG;
+		gridBlackLine.x = gridBG.x + gridBG.width / 2;
+		PlayState.curManiaInfo = currentChartMania;
+		updateGrid();
+	}
 
 	function updateGrid():Void
 	{
@@ -919,7 +980,7 @@ class ChartingState extends MusicBeatState
 			var daStrumTime = i[0];
 			var daSus = i[2];
 
-			var note:Note = new Note(daStrumTime, daNoteInfo % 4);
+			var note:Note = new Note(daStrumTime, daNoteInfo % currentChartMania.keys);
 			note.sustainLength = daSus;
 			note.setGraphicSize(GRID_SIZE, GRID_SIZE);
 			note.updateHitbox();
@@ -958,7 +1019,7 @@ class ChartingState extends MusicBeatState
 
 		for (i in _song.notes[curSection].sectionNotes)
 		{
-			if (i.strumTime == note.strumTime && i.noteData % 4 == note.noteData)
+			if (i.strumTime == note.strumTime && i.noteData % currentChartMania.keys == note.noteData)
 			{
 				curSelectedNote = _song.notes[curSection].sectionNotes[swagNum];
 			}
@@ -974,7 +1035,7 @@ class ChartingState extends MusicBeatState
 	{
 		for (i in _song.notes[curSection].sectionNotes)
 		{
-			if (i[0] == note.strumTime && i[1] % 4 == note.noteData)
+			if (i[0] == note.strumTime && i[1] % currentChartMania.keys == note.noteData)
 			{
 				FlxG.log.add('FOUND EVIL NUMBER');
 				_song.notes[curSection].sectionNotes.remove(i);

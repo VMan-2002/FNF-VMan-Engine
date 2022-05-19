@@ -100,7 +100,7 @@ class CoolUtil
 	public static function loadJsonFromString(rawJson:String) {
 		rawJson = rawJson.trim();
 		if (!rawJson.endsWith("}")) {
-			rawJson = rawJson.substr(0, rawJson.lastIndexOf("}"));
+			return Json.parse(rawJson.substr(0, rawJson.lastIndexOf("}")));
 			// LOL GOING THROUGH THE BULLSHIT TO CLEAN IDK WHATS STRANGE
 		}
 		return Json.parse(rawJson);

@@ -10,6 +10,7 @@ import flixel.group.FlxGroup;
 //import lime;
 
 import flixel.input.keyboard.FlxKey;
+import Translation;
 
 using StringTools;
 
@@ -553,7 +554,8 @@ class ManiaInfo {
 	}
 	
 	public static function GetManiaName(mania:SwagMania):String {
-		return mania.special ? '${mania.keys}K ${mania.specialTag}' : '${mania.keys}K';
+		var keysInd = Translation.getTranslation("keys", "mania", [Std.string(mania.keys)]);
+		return mania.special ? '${keysInd} ${Translation.getTranslation(mania.specialTag, "mania")}' : keysInd;
 	}
 	
 	public static function GetNoteScale(mania:SwagMania):Float {

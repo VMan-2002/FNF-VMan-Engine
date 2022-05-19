@@ -41,6 +41,8 @@ class FreeplayState extends MusicBeatState
 	public static var curDifficulty:Int = 1;
 
 	var scoreText:FlxText;
+	var scoreFCText:FlxText;
+	var scoreAccText:FlxText;
 	var diffText:FlxText;
 	var lerpScore:Int = 0;
 	var intendedScore:Int = 0;
@@ -264,6 +266,23 @@ class FreeplayState extends MusicBeatState
 		changeSelection();
 		changeDiff();
 
+		scoreFCText = new FlxText(FlxG.width, 60, FlxG.width, "Clear (1000)", 32);
+		scoreFCText.x -= scoreFCText.textField.textWidth + 2;
+		scoreFCText.fieldWidth -= scoreFCText.x;
+		// scoreFCText.autoSize = false;
+		scoreFCText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, LEFT);
+		Translation.setObjectFont(scoreFCText, "vcr font");
+
+		scoreAccText = new FlxText(FlxG.width, 90, FlxG.width, "99.99%", 32);
+		scoreAccText.x -= scoreAccText.textField.textWidth + 2;
+		scoreAccText.fieldWidth -= scoreAccText.x;
+		// scoreAccText.autoSize = false;
+		scoreAccText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, LEFT);
+		Translation.setObjectFont(scoreAccText, "vcr font");
+		
+		add(scoreFCText);
+		add(scoreAccText);
+
 		// FlxG.sound.playMusic(Paths.music('title'), 0);
 		// FlxG.sound.music.fadeIn(2, 0, 0.8);
 		//selector = new FlxText();
@@ -474,11 +493,23 @@ class FreeplayState extends MusicBeatState
 		if (curDifficulty >= diffAmnt)
 			curDifficulty = 0;
 
-		#if !switch
-		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
-		#end
+		updateScoreDisp();
 		
 		diffText.text = Translation.getTranslation(CoolUtil.difficultyArray[curDifficulty], "difficulty");
+	}
+
+	function updateScoreDisp()
+	{
+		#if !switch
+		var songSel = songs[curSelected];
+		//if (songSel.type == 0) {
+			var formatted = Highscore.formatSong(songSel.songName, curDifficulty);
+			intendedScore = Highscore.getScore(songSel.songName, curDifficulty);
+			//todo: WHY DOES THIS CRAHS
+			//scoreFCText.text = Highscore.getFC(songSel.songName, curDifficulty);
+			//scoreAccText.text = HudThing.trimPercent(Highscore.getAcc(songSel.songName, curDifficulty));
+		//}
+		#end
 	}
 
 	function changeSelection(change:Int = 0)
@@ -501,10 +532,7 @@ class FreeplayState extends MusicBeatState
 
 		var songSel = songs[curSelected];
 
-		#if !switch
-		intendedScore = Highscore.getScore(songSel.songName, curDifficulty);
-		// lerpScore = 0;
-		#end
+		updateScoreDisp();
 
 		#if PRELOAD_ALL
 		if (songSel.type == 0) {
