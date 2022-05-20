@@ -285,7 +285,6 @@ class ChartingState extends MusicBeatState
 		stageDropDown.selectedLabel = _song.player2;
 		//Translation.setUIObjectFont(stageDropDown);
 
-		//todo: have real
 		var arrMania = [
 			for (i in ManiaInfo.AvailableMania) {
 				i = ManiaInfo.GetManiaName(ManiaInfo.GetManiaInfo(i));
@@ -423,7 +422,8 @@ class ChartingState extends MusicBeatState
 			"Alt Animation",
 			"Bob Note",
 			"Glitch Note",
-			"Hey"
+			"Hey",
+			"Death Warning Note"
 		];
 		var noteTypeSelect = new FlxUIDropDownMenu(10, 40, FlxUIDropDownMenu.makeStrIdLabelArray(noteTypes, true), function(character:String)
 		{
@@ -1007,7 +1007,8 @@ class ChartingState extends MusicBeatState
 			mustHitSection: true,
 			sectionNotes: [],
 			typeOfSection: 0,
-			altAnim: false
+			altAnim: false,
+			gfSection: false
 		};
 
 		_song.notes.push(sec);

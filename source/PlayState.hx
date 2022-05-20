@@ -239,11 +239,7 @@ class PlayState extends MusicBeatState
 		}
 
 		// String that contains the mode defined here so it isn't necessary to call changePresence for each mode
-		if (isStoryMode) {
-			detailsText = "Story Mode: Week " + storyWeek;
-		} else {
-			detailsText = "Freeplay";
-		}
+		detailsText = isStoryMode ? "Story Mode: Week " + storyWeek : "Freeplay";
 
 		// String for when the game is paused
 		detailsPausedText = "Paused - " + detailsText;
@@ -2071,7 +2067,7 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	function badNoteCheck(dir:Int) //todo: it doesnt actually use this dir var yet
+	/*function badNoteCheck(dir:Int) //todo: is this unused
 	{
 		// just double pasting this shit cuz fuk u
 		// REDO THIS SYSTEM!
@@ -2080,9 +2076,9 @@ class PlayState extends MusicBeatState
 				noteMiss(i);
 			}
 		}
-	}
+	}*/
 
-	function noteCheck(keyP:Bool, note:Note):Void
+	/*function noteCheck(keyP:Bool, note:Note):Void
 	{
 		if (keyP)
 			goodNoteHit(note);
@@ -2090,7 +2086,7 @@ class PlayState extends MusicBeatState
 		{
 			badNoteCheck(note.noteData);
 		}
-	}
+	}*/
 
 	function goodNoteHit(note:Note):Void {
 		if (!note.wasGoodHit) {

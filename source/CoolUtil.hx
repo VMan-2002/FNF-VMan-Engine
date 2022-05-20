@@ -97,7 +97,7 @@ class CoolUtil
 		spr.offset.y = fun.y/2;
 	}
 	
-	public static function loadJsonFromString(rawJson:String) {
+	public static function loadJsonFromString(rawJson:String):Dynamic {
 		rawJson = rawJson.trim();
 		if (!rawJson.endsWith("}")) {
 			return Json.parse(rawJson.substr(0, rawJson.lastIndexOf("}")));

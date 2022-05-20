@@ -22,12 +22,18 @@ typedef SwagCharacter = {
 	public var healthIcon:String;
 	public var deathChar:String;
 	public var initAnim:String;
+	public var antialias:Null<Bool>;
 	public var animations:Array<SwagCharacterAnim>;
+	public var position:Null<Array<Float>>;
 }
 
 typedef SwagCharacterAnim = {
 	public var name:String;
 	public var anim:String;
+	public var framerate:Int;
+	public var offset:Null<Array<Float>>;
+	public var indicies:Null<Array<Int>>;
+	public var loop:Bool;
 }
 
 class Character extends FlxSprite
@@ -36,7 +42,7 @@ class Character extends FlxSprite
 	public static var activeArray:Array<Character>;
 	public var thisId:Int = 0;
 	
-	public var animOffsets:Map<String, Array<Dynamic>>;
+	public var animOffsets:Map<String, Array<Float>>;
 	public var debugMode:Bool = false;
 
 	public var isPlayer:Bool = false;
@@ -53,7 +59,7 @@ class Character extends FlxSprite
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false, ?myMod:String = "") {
 		super(x, y);
 
-		animOffsets = new Map<String, Array<Dynamic>>();
+		animOffsets = new Map<String, Array<Float>>();
 		curCharacter = character;
 		this.isPlayer = isPlayer;
 		
@@ -573,8 +579,32 @@ class Character extends FlxSprite
 				if (isMyMod ? FileSystem.exists(thingMy) : OpenFlAssets.exists(thing)) {
 					var parser = new JsonParser<SwagCharacter>();
 					//var loadedStuff:SwagCharacter = parser.fromJson(CoolUtil.loadJsonFromString(isMyMod ? File.getContent(thingMy) : Assets.getText(thing)));
-					var loadedStuff:SwagCharacter = cast CoolUtil.loadJsonFromString(CoolUtil.loadJsonFromString(isMyMod ? File.getContent(thingMy) : Assets.getText(thing)));
+					var loadStr = isMyMod ? File.getContent(thingMy) : Assets.getText(thing);
+					trace(loadStr);
+					var loadedStuff:SwagCharacter = cast CoolUtil.loadJsonFromString(loadStr);
 					trace('loaded custom char: image ${loadedStuff.image}');
+					
+					//Char stuff is load. now set up
+					frames = Paths.getSparrowAtlas(loadedStuff.image);
+					for (anim in loadedStuff.animations) {
+						if (anim.indicies != null && anim.indicies.length > 0) {
+							animation.addByIndices(anim.name, anim.anim, anim.indicies, "", anim.framerate, anim.loop);
+						} else {
+							animation.addByPrefix(anim.name, anim.anim, anim.framerate, anim.loop);
+						}
+						if (anim.offset != null && anim.offset.length > 0) {
+							addOffset(anim.name, anim.offset[0], anim.offset[1]);
+						}
+					}
+					if (loadedStuff.position != null && loadedStuff.position.length > 0) {
+						positionOffset = loadedStuff.position;
+						if (positionOffset.length < 2) {
+							positionOffset[1] = 0;
+						}
+					}
+					playAnim(loadedStuff.initAnim);
+					antialiasing = loadedStuff.antialias != false;
+					successLoad = true;
 				}
 				#end
 				//otherwise, use da guy
@@ -677,7 +707,7 @@ class Character extends FlxSprite
 	 * FOR GF DANCING SHIT
 	 */
 	public function dance() {
-		if ((animation.curAnim != null && animation.curAnim.name == 'hairBlow') || debugMode) {
+		if ((animation.curAnim != null && (animation.curAnim.name == 'hairBlow' || (animation.curAnim.name.startsWith('sing') && !animation.curAnim.finished))) || debugMode) {
 			return;
 		}
 		if (danceType) {

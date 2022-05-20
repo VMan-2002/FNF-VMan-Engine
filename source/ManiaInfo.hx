@@ -17,7 +17,6 @@ using StringTools;
 typedef SwagMania = {
 	var keys:Int;
 	var arrows:Array<String>;
-	var controls:Array<String>;
 	var special:Bool;
 	var specialTag:String;
 	var control_set:Null<Array<Array<Int>>>;
@@ -174,6 +173,42 @@ class ManiaInfo {
 		'pianoblack' => 4
 	];*/
 	
+	public static var AvailableManiaDefault:Array<String> = [ //for chart editor
+		'1k',
+		'2k', //2k
+		'3k', //3k
+		'4k', //4k
+		'5k', //5k
+		'6k', //6k
+		'7k', //7k
+		'8k', //8k
+		'9k', //9k
+		'10k', //10k
+		'11k', //11k
+		'12k', //12k
+		'13k', //13k
+		'14k', //14k
+		'15k', //15k
+		'16k', //16k
+		'17k', //17k
+		'18k', //18k
+		//27, //14k
+		//28, //15k
+		//29, //16k
+		//30, //17k
+		//31, //18k
+		'19k', //19k
+		//32, //20k
+		'21k', //21k
+		'50k', //50k
+		'piano', //Piano
+		'105k' //105
+	];
+	
+	public static function updateAvailableMania() {
+		
+	}
+	
 	public static var AvailableMania:Array<String> = [ //for chart editor
 		'1k',
 		'2k', //2k
@@ -309,7 +344,6 @@ class ManiaInfo {
 		trace('Accessed ManiaInfo for '+mania);
 		var keys:Int = -4;
 		var arrows:Array<String> = ['purple'];
-		var controls:Array<String> = ['undefinedmania'];
 		var splashName:Null<Map<String, String>> = null;
 		var special:Bool = false;
 		var specialTag:String = "";
@@ -321,180 +355,165 @@ class ManiaInfo {
 			specialTag: "undefined",
 			control_set: null
 		}*/
-		switch(mania) {
-			case "6k": //6K
-				arrows = ['purple', 'green', 'red', 'yellow', 'blue', 'dark']; //apparently that causes crashing as well
-				controls = ["6k0", "6k1", "6k2", "6k4", "6k5", "6k6"];
-			case "9k": //9K
-				arrows = ['purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark'];
-				controls = ["9k0", "9k1", "9k2", "9k3", "9k4", "9k5", "9k6", "9k7", "9k8"];
-			case "5k": //5K
-				arrows = ['purple', 'blue', 'white', 'green', 'red'];
-				controls = ["note_left", "note_down", "6k3", "note_up", "note_right"];
-			case "7k": //7K
-				arrows = ['purple', 'green', 'red', 'white', 'yellow', 'blue', 'dark'];
-				controls = ["6k0", "6k1", "6k2", "6k3", "6k4", "6k5", "6k6"];
-			case "8k": //8K
-				arrows = ['purple', 'blue', 'green', 'red', 'yellow', 'violet', 'darkred', 'dark'];
-				controls = ["9k0", "9k1", "9k2", "9k3", "9k5", "9k6", "9k7", "9k8"];
-			case "1k": //1K
-				arrows = ['white'];
-				controls = ["6k3"];
-			case "2k": //2K
-				arrows = ['purple', 'red'];
-				controls = ["note_left", "note_right"];
-			case "3k": //3K
-				arrows = ['purple', 'white', 'red'];
-				controls = ["note_left", "9k4", "note_right"];
-			case "13k": //13K
-				//arrows = ['yellow', 'violet', 'darkred', 'dark', 'purple', 'blue', 'white', 'green', 'red', 'yellow', 'violet', 'darkred', 'dark'];
-				arrows = ['purple', 'blue', 'green', 'red', '13a', '13b', 'white', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark'];
-				controls = ["9k0", "9k1", "9k2", "9k3", "note_left", "note_down", "9k4", "note_up", "note_right", "9k5", "9k6", "9k7", "9k8"];
-			case "12k": //12K
-				arrows = ['purple', 'blue', 'green', 'red', '13a', '13b', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark'];
-				controls = ["9k0", "9k1", "9k2", "9k3", "note_left", "note_down", "note_up", "note_right", "9k5", "9k6", "9k7", "9k8"];
-			case "21k": //21K
-			//no assets from the original 21 keys mod lol
-				arrows = [
-					'17a', '17b', '17c', '17d', 'purple', 'blue', 'green', 'red', '13a', '13b',
-					'white',
-					'13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17a', '17b', '17c','17d'
-				];
-				/*arrows = [
-					'21la', '21lb', '21lc', '21ld', '21le', '21lf', 
-					'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark'
-					'21ra', '21rb', '21rc', '21rd', '21re', '21rf', 
-				],*/
-				//this needs controls
-				//im gonna try this
-			case "19k": //19K (combined 4k+6k+9k)
-				arrows = [
-					'17a', '17c', '17d',
-					'purple', 'blue', 'green', 'red', 
-					'13a', '13b', 'white', '13c', '13d',
-					'yellow', 'violet', 'darkred', 'dark',
-					'17a', '17b', '17d'
-				];
-				/*arrows = [
-					'21la', '21lb', '21lc',
-					'purple', 'blue', 'green', 'red', 
-					'13a', '13b', 'white', '13c', '13d',
-					'yellow', 'violet', 'darkred', 'dark',
-					'21rd', '21re', '21rf'
-				];*/
-				controls = [
-					"6k0", "6k1", "6k2", 
-					"9k0", "9k1", "9k2", "9k3",
-					"note_left", "note_down", "9k4", "note_up", "note_right",
-					"9k5", "9k6", "9k7", "9k8",
-					"6k3", "6k4", "6k5"
-				];
-			//also add combined 19k and 21k (but wHYYY you are squeezing this game to death)
-			case "50k": //50k (this actually not controllable)
-			//"Y'know what I dare you to do it"
-			//-Mr.Shadow
-				arrows = [
-					'purple', 'blue', 'green', 'red', 'white', 'white', 'yellow', 'violet', 'darkred', 'dark',
-					'purple', 'blue', 'green', 'red', 'white', 'white', 'yellow', 'violet', 'darkred', 'dark',
-					'purple', 'blue', 'green', 'red', 'white', 'white', 'yellow', 'violet', 'darkred', 'dark',
-					'purple', 'blue', 'green', 'red', 'white', 'white', 'yellow', 'violet', 'darkred', 'dark',
-					'purple', 'blue', 'green', 'red', 'white', 'white', 'yellow', 'violet', 'darkred', 'dark'
-				];
-				/*arrows = [
-					'21la', '21lb', '21lc', '21ld', '21le', '21lf',
-					'purple', 'blue', 'green', 'red',
-					'yellow', 'violet', 'darkred', 'dark',
-					'13a', '13b', 'white', '13c', '13d',
-					'purple', 'green', 'red', '21la', '21lb', '21lc', '21ld', '21le', '21lf', 'yellow', 'blue', 'dark',
-					'13a', '13b', 'white', '13c', '13d',
-					'purple', 'blue', 'green', 'red',
-					'yellow', 'violet', 'darkred', 'dark',
-					'21ra', '21rb', '21rc', '21rd', '21re', '21rf'
-				],*/
-				//or maybe i can put some midi keyboard support
-			case "piano": //Piano
-				arrows = [
-					'piano1k',
-					'pianoblack',
-					'piano2k',
-					'pianoblack',
-					'piano3k',
-					'piano4k',
-					'pianoblack',
-					'piano5k',
-					'pianoblack',
-					'piano6k',
-					'pianoblack',
-					'piano7k',
-					'piano1k',
-					'pianoblack',
-					'piano2k',
-					'pianoblack',
-					'piano3k',
-					'piano4k',
-					'pianoblack',
-					'piano5k',
-					'pianoblack',
-					'piano6k',
-					'pianoblack',
-					'piano7k',
-					'piano8k',
-				];
-				//or maybe i can put some midi keyboard support
-				special = true;
-				specialTag = "piano";
-				splashName = [
-					"piano1k" => "purple",
-					"piano2k" => "blue",
-					"piano3k" => "green",
-					"piano4k" => "red",
-					"piano5k" => "yellow",
-					"piano6k" => "violet",
-					"piano7k" => "darkred",
-					"piano8k" => "dark",
-					"pianoblack" => "white"
-				];
-			case "105k": //105
-				arrows = [
-					'yellow', 'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark',
-					'white',
-					'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark','red',
-					'yellow', 'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark',
-					'white',
-					'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark','red',
-					'yellow', 'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark',
-					'white',
-					'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark','red',
-					'yellow', 'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark',
-					'white',
-					'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark','red',
-					'yellow', 'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark',
-					'white',
-					'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark','red'
-				];
-			case "10k": //10K
-				arrows = ['purple', 'blue', 'green', 'red', '13a', '13d', 'yellow', 'violet', 'darkred', 'dark'];
-				controls = ["9k0", "9k1", "9k2", "9k3", "note_left", "note_right", "9k5", "9k6", "9k7", "9k8"];
-			case "11k": //11K
-				arrows = ['purple', 'blue', 'green', 'red', '13a', 'white', '13d', 'yellow', 'violet', 'darkred', 'dark'];
-				controls = ["9k0", "9k1", "9k2", "9k3", "note_left", "9k4", "note_right", "9k5", "9k6", "9k7", "9k8"];
-			case "14k": //14K
-				arrows = ['17a', 'purple', 'blue', 'green', 'red', '13a', '13b', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17d'];
-			case "15k": //15K
-				arrows = ['17a', 'purple', 'blue', 'green', 'red', '13a', '13b', 'white', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17d'];
-			case "16k": //16K
-				arrows = ['17a', '17b', 'purple', 'blue', 'green', 'red', '13a', '13b', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17c', '17d'];
-			case "17k": //17K
-				arrows = ['17a', '17b', 'purple', 'blue', 'green', 'red', '13a', '13b', 'white', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17c', '17d'];
-			case "18k": //18K
-				arrows = ['17a', '17b', 'purple', 'blue', 'green', 'red', 'white', '13a', '13b', '13c', '13d', 'white', 'yellow', 'violet', 'darkred', 'dark', '17c', '17d'];
-			default: //4K
-				if (mania != '4k') {
-					trace('Mania not existant!');
-				}
-				arrows = ['purple', 'blue', 'green', 'red'];
-				controls = ["note_left", "note_down", "note_up", "note_right"]; //Controls in ManiaInfo are Not Unused kinda
-		};
+		//LOAD CUSTOM MANIA?????????????????????
+		if (false) {//todo: yea
+			
+		} else {
+			switch(mania) {
+				case "6k": //6K
+					arrows = ['purple', 'green', 'red', 'yellow', 'blue', 'dark']; //apparently that causes crashing as well
+				case "9k": //9K
+					arrows = ['purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark'];
+				case "5k": //5K
+					arrows = ['purple', 'blue', 'white', 'green', 'red'];
+				case "7k": //7K
+					arrows = ['purple', 'green', 'red', 'white', 'yellow', 'blue', 'dark'];
+				case "8k": //8K
+					arrows = ['purple', 'blue', 'green', 'red', 'yellow', 'violet', 'darkred', 'dark'];
+				case "1k": //1K
+					arrows = ['white'];
+				case "2k": //2K
+					arrows = ['purple', 'red'];
+				case "3k": //3K
+					arrows = ['purple', 'white', 'red'];
+				case "13k": //13K
+					//arrows = ['yellow', 'violet', 'darkred', 'dark', 'purple', 'blue', 'white', 'green', 'red', 'yellow', 'violet', 'darkred', 'dark'];
+					arrows = ['purple', 'blue', 'green', 'red', '13a', '13b', 'white', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark'];
+				case "12k": //12K
+					arrows = ['purple', 'blue', 'green', 'red', '13a', '13b', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark'];
+				case "21k": //21K
+				//no assets from the original 21 keys mod lol
+					arrows = [
+						'17a', '17b', '17c', '17d', 'purple', 'blue', 'green', 'red', '13a', '13b',
+						'white',
+						'13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17a', '17b', '17c','17d'
+					];
+					/*arrows = [
+						'21la', '21lb', '21lc', '21ld', '21le', '21lf', 
+						'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark'
+						'21ra', '21rb', '21rc', '21rd', '21re', '21rf', 
+					],*/
+					//this needs controls
+					//im gonna try this
+				case "19k": //19K (combined 4k+6k+9k)
+					arrows = [
+						'17a', '17c', '17d',
+						'purple', 'blue', 'green', 'red', 
+						'13a', '13b', 'white', '13c', '13d',
+						'yellow', 'violet', 'darkred', 'dark',
+						'17a', '17b', '17d'
+					];
+					/*arrows = [
+						'21la', '21lb', '21lc',
+						'purple', 'blue', 'green', 'red', 
+						'13a', '13b', 'white', '13c', '13d',
+						'yellow', 'violet', 'darkred', 'dark',
+						'21rd', '21re', '21rf'
+					];*/
+				//also add combined 19k and 21k (but wHYYY you are squeezing this game to death)
+				case "50k": //50k (this actually not controllable)
+				//"Y'know what I dare you to do it"
+				//-Mr.Shadow
+					arrows = [
+						'purple', 'blue', 'green', 'red', 'white', 'white', 'yellow', 'violet', 'darkred', 'dark',
+						'purple', 'blue', 'green', 'red', 'white', 'white', 'yellow', 'violet', 'darkred', 'dark',
+						'purple', 'blue', 'green', 'red', 'white', 'white', 'yellow', 'violet', 'darkred', 'dark',
+						'purple', 'blue', 'green', 'red', 'white', 'white', 'yellow', 'violet', 'darkred', 'dark',
+						'purple', 'blue', 'green', 'red', 'white', 'white', 'yellow', 'violet', 'darkred', 'dark'
+					];
+					/*arrows = [
+						'21la', '21lb', '21lc', '21ld', '21le', '21lf',
+						'purple', 'blue', 'green', 'red',
+						'yellow', 'violet', 'darkred', 'dark',
+						'13a', '13b', 'white', '13c', '13d',
+						'purple', 'green', 'red', '21la', '21lb', '21lc', '21ld', '21le', '21lf', 'yellow', 'blue', 'dark',
+						'13a', '13b', 'white', '13c', '13d',
+						'purple', 'blue', 'green', 'red',
+						'yellow', 'violet', 'darkred', 'dark',
+						'21ra', '21rb', '21rc', '21rd', '21re', '21rf'
+					],*/
+					//or maybe i can put some midi keyboard support
+				case "piano": //Piano
+					arrows = [
+						'piano1k',
+						'pianoblack',
+						'piano2k',
+						'pianoblack',
+						'piano3k',
+						'piano4k',
+						'pianoblack',
+						'piano5k',
+						'pianoblack',
+						'piano6k',
+						'pianoblack',
+						'piano7k',
+						'piano1k',
+						'pianoblack',
+						'piano2k',
+						'pianoblack',
+						'piano3k',
+						'piano4k',
+						'pianoblack',
+						'piano5k',
+						'pianoblack',
+						'piano6k',
+						'pianoblack',
+						'piano7k',
+						'piano8k',
+					];
+					//or maybe i can put some midi keyboard support
+					special = true;
+					specialTag = "piano";
+					splashName = [
+						"piano1k" => "purple",
+						"piano2k" => "blue",
+						"piano3k" => "green",
+						"piano4k" => "red",
+						"piano5k" => "yellow",
+						"piano6k" => "violet",
+						"piano7k" => "darkred",
+						"piano8k" => "dark",
+						"pianoblack" => "white"
+					];
+				case "105k": //105
+					arrows = [
+						'yellow', 'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark',
+						'white',
+						'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark','red',
+						'yellow', 'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark',
+						'white',
+						'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark','red',
+						'yellow', 'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark',
+						'white',
+						'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark','red',
+						'yellow', 'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark',
+						'white',
+						'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark','red',
+						'yellow', 'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark',
+						'white',
+						'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark','red'
+					];
+				case "10k": //10K
+					arrows = ['purple', 'blue', 'green', 'red', '13a', '13d', 'yellow', 'violet', 'darkred', 'dark'];
+				case "11k": //11K
+					arrows = ['purple', 'blue', 'green', 'red', '13a', 'white', '13d', 'yellow', 'violet', 'darkred', 'dark'];
+				case "14k": //14K
+					arrows = ['17a', 'purple', 'blue', 'green', 'red', '13a', '13b', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17d'];
+				case "15k": //15K
+					arrows = ['17a', 'purple', 'blue', 'green', 'red', '13a', '13b', 'white', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17d'];
+				case "16k": //16K
+					arrows = ['17a', '17b', 'purple', 'blue', 'green', 'red', '13a', '13b', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17c', '17d'];
+				case "17k": //17K
+					arrows = ['17a', '17b', 'purple', 'blue', 'green', 'red', '13a', '13b', 'white', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17c', '17d'];
+				case "18k": //18K
+					arrows = ['17a', '17b', 'purple', 'blue', 'green', 'red', 'white', '13a', '13b', '13c', '13d', 'white', 'yellow', 'violet', 'darkred', 'dark', '17c', '17d'];
+				default: //4K
+					if (mania != '4k') {
+						trace('Mania not existant!');
+					}
+					arrows = ['purple', 'blue', 'green', 'red'];
+			};
+		}
 		if (keys == -4) {
 			keys = arrows.length;
 		} else if (keys != arrows.length) {
@@ -507,7 +526,6 @@ class ManiaInfo {
 		var mi:SwagMania = {
 			keys: keys,
 			arrows: arrows,
-			controls: controls,
 			special: special,
 			specialTag: specialTag,
 			control_set: new Array<Array<Int>>(),
@@ -576,17 +594,16 @@ class ManiaInfo {
 		return 560 / (mania.keys + 1);
 	}
 	
-	//todo: StrumNote class
-	/*public static function DoNoteSpecial(spr:StrumNote, num:Int, maniaInfo:SwagMania) {
+	public static function DoNoteSpecial(spr:StrumNote, num:Int, maniaInfo:SwagMania) {
 		if (maniaInfo.special) {
 			switch(maniaInfo.specialTag) {
 				case "piano": {
 					var pos:Array<Int> = [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 26, 28];
-					spr.x += 12.5 * pos[num % maniaInfo.keys];
+					spr.x += 12.5 * (pos[num % maniaInfo.keys] - 14);
 				}
 			}
 		}
-	}*/
+	}
 	
 	/*public static function GetControlPress(controls:Array<String>):Array<String>
 	{

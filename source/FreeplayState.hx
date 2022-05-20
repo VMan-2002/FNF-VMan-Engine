@@ -182,7 +182,7 @@ class FreeplayState extends MusicBeatState
 		} else {
 			/*//if (StoryMenuState.weekUnlocked[6] || isDebug)
 			if (inFolder.length > 1) {
-				//todo: Achievement Get
+				//todo: put an achievement here? when i implement achievemnets anyway
 				//name "Fired From The Office"
 				//description "How can you fail at folders!?"
 				categories.set(-4, [new SongMetadata('oof', 0, 'face', 1)]);
