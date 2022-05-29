@@ -153,6 +153,7 @@ class PlayState extends MusicBeatState
 	
 	public static var curManiaInfo:SwagMania = ManiaInfo.GetManiaInfo("4k");
 	public static var instance:PlayState;
+	public static var modName:String = "";
 	
 	public var hudThings = new FlxTypedGroup<HudThing>();
 	
@@ -618,16 +619,16 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		dad = new Character(100, 100, SONG.player2);
+		dad = new Character(100, 100, SONG.player2, false, modName);
 		
 
 		//var selector = new FlxSprite(100, 100).makeGraphic(10, 10, FlxColor.RED);
 		//add(selector);
 
-		gf = new Character(400, 130, gfVersion);
+		gf = new Character(400, 130, gfVersion, false, modName);
 		gf.scrollFactor.set(0.95, 0.95);
 		
-		boyfriend = new Boyfriend(770, 100, SONG.player1);
+		boyfriend = new Boyfriend(770, 100, SONG.player1, modName);
 		
 		boyfriend.applyPositionOffset();
 		
@@ -1348,14 +1349,14 @@ class PlayState extends MusicBeatState
 		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
 
 		if (healthBar.percent < 20) { //enemy winning
-			iconP1.animation.curAnim.curFrame = 1;
-			iconP2.animation.curAnim.curFrame = 2;
+			iconP1.setState(1);
+			iconP2.setState(2);
 		} else if (healthBar.percent > 80) { //player winning
-			iconP1.animation.curAnim.curFrame = 2;
-			iconP2.animation.curAnim.curFrame = 1;
+			iconP1.setState(2);
+			iconP2.setState(1);
 		} else {
-			iconP1.animation.curAnim.curFrame = 0;
-			iconP2.animation.curAnim.curFrame = 0;
+			iconP1.setState(0);
+			iconP2.setState(0);
 		}
 
 		/* if (FlxG.keys.justPressed.NINE)

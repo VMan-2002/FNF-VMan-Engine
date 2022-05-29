@@ -1,0 +1,4 @@
+en_us
+test
+es_mx
+ja_jp

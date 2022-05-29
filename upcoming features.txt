@@ -1,0 +1,4 @@
+- multiplayer
+- scripting (using lua)
+- loading psych engine mods (probably??)
+- some things idk (check translations files)

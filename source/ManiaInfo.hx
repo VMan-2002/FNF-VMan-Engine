@@ -514,7 +514,7 @@ class ManiaInfo {
 					arrows = ['purple', 'blue', 'green', 'red'];
 			};
 		}
-		if (keys == -4) {
+		if (keys <= 0) {
 			keys = arrows.length;
 		} else if (keys != arrows.length) {
 			trace('WRONG ARROW COUNT: want '+keys+' but have '+arrows.length);

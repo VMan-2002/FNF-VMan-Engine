@@ -96,20 +96,6 @@ class ChartingState extends MusicBeatState
 		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * 16);
 		add(gridBG);
 
-		leftIcon = new HealthIcon('bf');
-		rightIcon = new HealthIcon('dad');
-		leftIcon.scrollFactor.set(1, 1);
-		rightIcon.scrollFactor.set(1, 1);
-
-		leftIcon.setGraphicSize(0, 45);
-		rightIcon.setGraphicSize(0, 45);
-
-		add(leftIcon);
-		add(rightIcon);
-
-		leftIcon.setPosition(0, -100);
-		rightIcon.setPosition(gridBG.width / 2, -100);
-
 		gridBlackLine = new FlxSprite().makeGraphic(2, Std.int(gridBG.height), FlxColor.BLACK);
 		add(gridBlackLine);
 
@@ -137,6 +123,20 @@ class ChartingState extends MusicBeatState
 				usedNoteTypes: new Array<String>()
 			};
 		}
+
+		leftIcon = new HealthIcon(_song.player1);
+		rightIcon = new HealthIcon(_song.player2);
+		leftIcon.scrollFactor.set(1, 1);
+		rightIcon.scrollFactor.set(1, 1);
+
+		leftIcon.setGraphicSize(0, 45);
+		rightIcon.setGraphicSize(0, 45);
+
+		add(leftIcon);
+		add(rightIcon);
+
+		leftIcon.setPosition(0, -100);
+		rightIcon.setPosition(0, -100);
 		
 		currentChartMania = ManiaInfo.GetManiaInfo(_song.maniaStr);
 
@@ -169,7 +169,8 @@ class ChartingState extends MusicBeatState
 		var tabs = [
 			{name: "Song", label: Translation.getTranslation('tab_Song', "charteditor")},
 			{name: "Section", label: Translation.getTranslation('tab_Section', "charteditor")},
-			{name: "Note", label: Translation.getTranslation('tab_Note', "charteditor")}
+			{name: "Note", label: Translation.getTranslation('tab_Note', "charteditor")},
+			{name: "Event", label: Translation.getTranslation('tab_Event', "charteditor")}
 		];
 
 		UI_box = new FlxUITabMenu(null, tabs, true);
@@ -190,6 +191,7 @@ class ChartingState extends MusicBeatState
 		addSongUI();
 		addSectionUI();
 		addNoteUI();
+		addEventUI();
 
 		add(curRenderedNotes);
 		add(curRenderedSustains);
@@ -276,6 +278,13 @@ class ChartingState extends MusicBeatState
 			_song.player2 = characters[Std.parseInt(character)];
 		});
 		player2DropDown.selectedLabel = _song.player2;
+		//Translation.setUIObjectFont(player2DropDown);
+
+		var girlfriendDropDown = new FlxUIDropDownMenu(140, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
+		{
+			_song.gfVersion = characters[Std.parseInt(character)];
+		});
+		girlfriendDropDown.selectedLabel = _song.gfVersion;
 		//Translation.setUIObjectFont(player2DropDown);
 
 		var stageDropDown = new FlxUIDropDownMenu(140, 130, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(character:String)
@@ -439,6 +448,37 @@ class ChartingState extends MusicBeatState
 		tab_group_note.add(applyLength);
 
 		UI_box.addGroup(tab_group_note);
+	}
+
+	function addEventUI():Void
+	{
+		var tab_group_event = new FlxUI(null, UI_box);
+		tab_group_event.name = 'Event';
+
+		/*var applyLength:FlxUIButton = new FlxUIButton(100, 10, Translation.getTranslation("Add event here", "charteditor"));
+		Translation.setUIObjectFont(applyLength);*/
+
+		//todo: have real
+		var noteTypes = [
+			"Hey",
+			"Play Animation",
+			"Zoom Hit",
+			"Set GF Speed",
+			"Blammed Lights"
+		];
+		var noteTypeSelect = new FlxUIDropDownMenu(10, 40, FlxUIDropDownMenu.makeStrIdLabelArray(noteTypes, true), function(character:String)
+		{
+			//_song.player1 = characters[Std.parseInt(character)];
+		});
+		//noteTypeSelect.resize(200, 20);
+		noteTypeSelect.selectedLabel = noteTypes[0];
+		
+		Translation.setUIDropDownFont(noteTypeSelect);
+
+		tab_group_event.add(noteTypeSelect);
+		//tab_group_event.add(stepperSusLength);
+
+		UI_box.addGroup(tab_group_event);
 	}
 
 	function loadSong(daSong:String):Void
@@ -657,9 +697,9 @@ class ChartingState extends MusicBeatState
 			changeNoteSustain(-Conductor.stepCrochet);
 		}
 
-		var spdSideways = elapsed * 64;
+		var spdSideways = elapsed * 128;
 		if (FlxG.keys.pressed.SHIFT) {
-			spdSideways *= 4;
+			spdSideways *= 6;
 		}
 		if (FlxG.keys.pressed.I)
 		{
@@ -928,6 +968,7 @@ class ChartingState extends MusicBeatState
 		gridBG = newGridBG;
 		gridBlackLine.x = gridBG.x + gridBG.width / 2;
 		PlayState.curManiaInfo = currentChartMania;
+		rightIcon.x = gridBG.width / 2;
 		updateGrid();
 	}
 

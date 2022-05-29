@@ -1,8 +1,7 @@
-lang_english language name::English
-lang_native language name::English
-lang_translation description::VMan_2002
+lang_english language name::Spanish (Mexico)
+lang_native language name::Español (México)
+lang_translation description::someone lol
 game_vman engine::VMan Engine
-//if you change this, it'll also show the original
 options_controls::Controls
 options_controls_desc::Change your controls.
 options_scroll direction::Scroll direction
@@ -19,7 +18,6 @@ options_botplay::Botplay
 options_botplay_desc::Watch the game go brrr
 options_freeplay folders::Freeplay Folders
 options_freeplay folders_desc::Categorize the songs in the Freeplay menu.\nContent Warning: may scare some players.
-//the content warning is there because funny :> you may leave it out
 options_activate new mods::Activate New Mods
 options_activate new mods_desc::The state that any new mods in the mods folder have if they hadn't been added before.
 options_skip title::Skip Title
@@ -36,7 +34,6 @@ options_vocals volume::Vocals Volume
 options_vocals volume_desc::Volume of song vocals.
 options_enable modcharts::Enable modcharts
 options_enable modcharts_desc::Enable modcharts
-//yes, i didn't properly explain modcharts!
 options_antialiasing::Antialiasing
 options_antialiasing_desc::Whether or not stuff gets a bit of smoothing, disabling this can boost framerates
 options_change mania::Change Mania
@@ -72,7 +69,7 @@ options_noteskin creator_desc::Create noteskins.
 options_spritesheet tool::Spritesheet Tool
 options_spritesheet tool_desc::Convert spritesheets to or from individual frames.
 optionsMenu_unknown option::Unknown option.
-optionsMenu_will return to::Will return to #0
+optionsMenu_will return to::Will return to #1
 optionsMenu_enabled::Enabled
 optionsMenu_disabled::Disabled
 optionsMenu_upscroll::Upscroll
@@ -92,19 +89,17 @@ optionsKeys_space::SPACE
 optionsKeys_pageup::PgUp
 optionsKeys_pagedown::PgDn
 optionsKeys_none::---
-//any key can be translated, see https://api.haxeflixel.com/flixel/input/keyboard/FlxKeyList.html
 freeplay_uncategorized::Uncategorized
-freeplay_personal best::PERSONAL BEST:#0
-storymenu_week score::WEEK SCORE:#0
+freeplay_personal best::PERSONAL BEST: #1
+storymenu_week score::WEEK SCORE:#1
 storymenu_tracks::TRACKS
 mania_piano::piano
-mania_keys::#0K
+mania_keys::#1K
 difficulty_easy::Easy
 difficulty_normal::Normal
 difficulty_hard::Hard
 difficulty_mania::Mania
 difficulty_extra::Extra
-//^ extra keys
 mainmenu_story mode::STORY MODE
 mainmenu_free play::FREE PLAY
 mainmenu_donate::DONATE
@@ -125,7 +120,7 @@ charteditor_reload audio::Reload Audio
 charteditor_reload json::Reload JSON
 charteditor_load autosave::load autosave
 charteditor_mute instrumental::Mute Instrumental\n(in editor)
-charteditor_section number::Section: #0
+charteditor_section number::Section: #1
 charteditor_note type::Note Type
 charteditor_notetype_normal note::Normal Note
 charteditor_notetype_hurt note::Hurt Note
@@ -152,23 +147,23 @@ charteditor_event_zoom hit_hud zoom::HUD Zoom
 charteditor_event_set gf speed::Set GF Speed
 charteditor_event_set gf speed_desc::Set the speed at which Girlfriend's idle animation plays.
 charteditor_event_set gf speed_speed::Speed
-playstate_hud_score::Score:#0
-playstate_hud_misses::Misses:#0
+playstate_hud_score::Score:#1
+playstate_hud_misses::Misses:#1
 playstate_fc_sfc::SFC
 playstate_fc_gfc::GFC
 playstate_fc_fc::FC
 playstate_fc_sdcb::SDCB
 playstate_fc_clear::Clear
-playstate_hud_accrating::AccRating:#0%
-playstate_hud_accsimple::AccSimple:#0%
-playstate_hud_health::Health:#0%
-playstate_hud_hits::Hits:#0
-playstate_hud_sicks::Sicks:#0
-playstate_hud_goods::Goods:#0
-playstate_hud_bads::Bads:#0
-playstate_hud_shits::Shits:#0
-playstate_hud_misses::Misses:#0
-playstate_hud_totalnotes::TotalNotes:#0
+playstate_hud_accrating::AccRating:#1%
+playstate_hud_accsimple::AccSimple:#1%
+playstate_hud_health::Health:#1%
+playstate_hud_hits::Hits:#1
+playstate_hud_sicks::Sicks:#1
+playstate_hud_goods::Goods:#1
+playstate_hud_bads::Bads:#1
+playstate_hud_shits::Shits:#1
+playstate_hud_misses::Misses:#1
+playstate_hud_totalnotes::TotalNotes:#1
 playstate_hud_engine::VMan Engine
 playstate_hud_engine botplay::VMan Engine (Botplay)
 playstate_pause_resume::Resume
@@ -182,89 +177,16 @@ announcechecker_security_update::Security Update!
 modbrowser_search::Search
 modbrowser_download::Download
 modbrowser_downloaded::Downloaded
-modbrowser_author::by #0
+modbrowser_author::by #1
 modbrowser_more from this author::More from this author
 modbrowser_my downloads::My Downloads
 modbrowser_submit::Submit
 modbrowser_tag_song::Song
 modbrowser_tag_week::Week
-modbrowser_tag_playable::Playable Character
+modbrowser_tag_playable::Playable
 modbrowser_tag_girlfriend::Girlfriend
 modbrowser_supportedlanguage::Supports English
 mods_enable::Enabled
 mods_disabled::Disabled
 mods_enable all::Enable All
 mods_disable all::Disable All
-//the new stuff
-playstate_hud_ghost hits::GhostHits:#0
-modbrowser_tag_song_desc::Playable song with chart
-modbrowser_tag_week_desc::Week containing multiple songs
-modbrowser_tag_playable_desc::Playable character / Boyfriend replacement
-modbrowser_tag_girlfriend_desc::Girlfriend replacement
-modbrowser_tag_multiple weeks::Multiple Weeks
-modbrowser_tag_multiple weeks_desc::Kinda like a full game mod
-modbrowser_tag_port::Port
-modbrowser_tag_port_desc::Ported from another source\n(you should probably ask for permission!)
-modbrowser_tag_extra::Extra Keys
-modbrowser_tag_extra_desc::Includes charts with more than 4 keys
-modbrowser_tag_mania::Mania/Expert
-modbrowser_tag_mania_desc::Includes charts with difficulties harder than Hard (not including Extra Keys)
-modbrowser_tag_erect::Erect
-modbrowser_tag_erect_desc::Includes Erect remixes
-//probably leave "Erect" untranslated, because OST.
-modbrowser_tag_oc::OC
-modbrowser_tag_oc_desc::Contains original characters
-mainmenu_mods::MODS
-mods_mod browser::Mod Browser
-options_flashing lights::Flashing Lights
-options_flashing lights_desc::Whether flashing lights should be allowed to appear.\nIf you're photosensitve and/or prone to seziures, disable this!
-announcechecker_wait::Checking for announcements...
-multiplayer_winners::Winners
-multiplayer_leaderboard::Leaderboard
-multiplayer_promote to leader::Promote to Leader
-multiplayer_leader changed::#0 is now the leader.
-multiplayer_rule_allowcharacters::Allow Characters
-multiplayer_rule_allowcharacters_desc::Allow players to choose custom playable characters.
-multiplayer_rule_maxplayers::Max Players
-multiplayer_rule_maxplayers_desc::The maximum amount of players that may join this lobby.
-multiplayer_rule_gfchoice::GF Choice
-multiplayer_gfchoice_turns::Turns
-multiplayer_gfchoice_turns_desc::Each player takes turns having their selected GF appear.
-multiplayer_gfchoice_random::Random
-multiplayer_gfchoice_random_desc::A random player's selected GF appears every time.
-multiplayer_gfchoice_host::Host
-multiplayer_gfchoice_host_desc::The host's selected GF always appears.
-multiplayer_rule_mode::Game Mode
-multiplayer_mode_royale::Battle Royale
-multiplayer_mode_royale_desc::All players play the player side notes.
-multiplayer_mode_1v1::Duel
-multiplayer_mode_1v1_desc::1st player on the player side, 2nd player on the opponent side, the rest spectate.
-multiplayer_mode_teamup::Team-up Extra
-multiplayer_mode_teamup_desc::Split each player between different keys.
-multiplayer_mode_choice::Choice
-multiplayer_mode_choice_desc::Let each player select how they want to play.
-multiplayer_host::Host server
-multiplayer_join::Join server
-multiplayer_host_password::Password
-multiplayer_host_name::Server Name
-multiplayer_host_create::Create
-multiplayer_join_enter password::Enter Password
-//new ones that could possibly be used rn
-options_language::Language
-options_language_desc::Change the language of the game's text.
-freeplay_no songs::You have no songs!\nYou need to enable a mod first.
-storymenu_no weeks::You have no weeks!\nYou need to enable a mod first.
-difficulty_erect::Erect
-//probably leave "Erect" untranslated, because OST
-difficulty_expert::Expert
-difficulty_insane::Insane
-charteditor_event_blammed lights::Blammed Lights
-charteditor_event_blammed lights_desc::Please stop overusing Blammed Lights *dies*
-charteditor_event_blammed lights_desc_rare::Uncle Ben what happened!? BLAMMED LIGHTS!!
-charteditor_event_blammed lights_action::Action
-charteditor_event_blammed lights_blue::Blue
-charteditor_event_blammed lights_green::Green
-charteditor_event_blammed lights_pink::Pink
-charteditor_event_blammed lights_red::Red
-charteditor_event_blammed lights_orange::Orange
-charteditor_event_blammed lights_end::End

@@ -76,4 +76,24 @@ class MusicBeatState extends FlxUIState
 	{
 		//do literally nothing dumbass
 	}
+	
+	//Script Stuff
+	public var luaScripts = new Array<LuaScript>();
+	
+	public function initLua():Void {
+		var scriptType = Type.getClassName(Type.getClass(this));
+		trace('starting lua for ${scriptType}');
+		luaScripts.push(new LuaScript('mods/${ModLoad.primaryMod}/scripts/${scriptType}'));
+		if (scriptType == "PlayState") {
+			//load song/character/stage/etc stuff
+			//Song
+			luaScripts.push(new LuaScript('mods/${ModLoad.primaryMod}/data/${Highscore.formatSong(PlayState.SONG.song)}/script'));
+			//Characters
+			for (i in Character.activeArray) {
+				luaScripts.push(new LuaScript('mods/${i.myMod}/objects/characters/${i.curCharacter}'));
+			}
+			//Stage
+			luaScripts.push(new LuaScript('mods/${ModLoad.primaryMod}/objects/stages/${i.curCharacter}'));
+		}
+	}
 }

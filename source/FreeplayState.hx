@@ -82,7 +82,7 @@ class FreeplayState extends MusicBeatState
 		
 		nextCategoryInt = 1;
 		
-		for (iathing in TitleState.enabledMods) {
+		for (iathing in ModLoad.enabledMods) {
 			var parser = new JsonParser<SwagFreeplayFolders>();
 			//load it manually so it wont conflict with other mods!
 			var filelol = 'mods/${iathing}/folders_freeplay.json';
@@ -336,7 +336,7 @@ class FreeplayState extends MusicBeatState
 			grpSongs.add(songText);
 			var folder:FolderIcon = new FolderIcon();
 
-			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
+			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter, false, songs[i].mod);
 			icon.sprTracker = songText;
 			folder.sprTracker = icon;
 			if (songs[i].type == 1) {
@@ -470,7 +470,10 @@ class FreeplayState extends MusicBeatState
 				var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
 
 				trace(poop);
+				
+				ModLoad.primaryMod = songs[curSelected].mod;
 
+				PlayState.modName = ModLoad.primaryMod;
 				PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
 				PlayState.isStoryMode = false;
 				PlayState.storyDifficulty = curDifficulty;

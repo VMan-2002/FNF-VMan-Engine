@@ -81,7 +81,7 @@ class TitleState extends MusicBeatState
 		for (i in modListThing) {
 			i = i.trim().replace("\r", "");
 		}
-		loadMods(modListThing);
+		ModLoad.loadMods(modListThing);
 		//polymod.Polymod.init({modRoot: "mods", dirs: ['introMod']});
 		#end
 		//polymod.Polymod.init({
@@ -553,56 +553,5 @@ class TitleState extends MusicBeatState
 			return FlxG.switchState(new OptionsWarningState());
 		}
 		FlxG.switchState(new MainMenuState());
-	}
-	
-	//copied from polymod flixel sample
-
-	private function loadMods(dirs:Array<String>)
-	{
-		trace('Loading mods: ${dirs}');
-		enabledMods = new Array<String>();
-		for (i in dirs) {
-			enabledMods.push(i.replace("\r", ""));
-		}
-		/*var modRoot = '../../../mods/';
-		#if mac
-		// account for <APPLICATION>.app/Contents/Resources
-		var modRoot = '../../../../../../mods';
-		#end*/
-		var modRoot = './mods/';
-		var results = Polymod.init({
-			modRoot: modRoot,
-			dirs: enabledMods.copy(),
-			errorCallback: onError,
-			ignoredFiles: Polymod.getDefaultIgnoreList(),
-			framework: Framework.FLIXEL,
-			frameworkParams: {
-				assetLibraryPaths: [
-					"default" => "./assets",
-					"shared" => "./assets/shared",
-					"week1" => "./assets/week1",
-					"week2" => "./assets/week2",
-					"week3" => "./assets/week3",
-					"week4" => "./assets/week4",
-					"week5" => "./assets/week5",
-					"week6" => "./assets/week6",
-					"songs" => "./assets/songs"
-				]
-			}
-		});
-		// Reload graphics before rendering again.
-		if (results == null) {
-			return;
-		}
-		var loadedMods = results.map(function(item:ModMetadata)
-		{
-			return item.id;
-		});
-		trace('Loaded mods: ${loadedMods}');
-	}
-
-	private function onError(error:PolymodError)
-	{
-		trace('[${error.severity}] (${error.code.toUpperCase()}): ${error.message}');
 	}
 }
