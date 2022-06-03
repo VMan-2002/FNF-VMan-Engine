@@ -93,7 +93,7 @@ class MusicBeatState extends FlxUIState
 				luaScripts.push(new LuaScript('mods/${i.myMod}/objects/characters/${i.curCharacter}'));
 			}
 			//Stage
-			luaScripts.push(new LuaScript('mods/${ModLoad.primaryMod}/objects/stages/${i.curCharacter}'));
+			luaScripts.push(new LuaScript('mods/${ModLoad.primaryMod}/objects/stages/${PlayState.curStage}'));
 		}
 	}
 }

@@ -47,7 +47,7 @@ class ModLoad
 	
 	//copied from polymod flixel sample
 
-	private function loadMods(dirs:Array<String>) {
+	public static function loadMods(dirs:Array<String>) {
 		trace('Loading mods: ${dirs}');
 		enabledMods = new Array<String>();
 		for (i in dirs) {
@@ -91,7 +91,7 @@ class ModLoad
 		trace('Loaded mods: ${loadedMods}');
 	}
 
-	private function onError(error:PolymodError) {
+	public static function onError(error:PolymodError) {
 		trace('[${error.severity}] (${error.code.toUpperCase()}): ${error.message}');
 	}
 }
