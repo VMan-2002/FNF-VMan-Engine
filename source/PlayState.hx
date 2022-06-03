@@ -157,6 +157,9 @@ class PlayState extends MusicBeatState
 	
 	public var hudThings = new FlxTypedGroup<HudThing>();
 	
+	public var currentSection:Int; //todo: So im making variable length sections (for example: with non 4/4 time signatures)
+	public var focusCharacter:Character;
+	
 	//Scripting funny lol
 	//The only hscript your getting is me porting the basegame update's hscript support
 
@@ -2064,7 +2067,7 @@ class PlayState extends MusicBeatState
 				boyfriend.stunned = false;
 			});*/
 			
-			boyfriend.playAnim('sing'+ManiaInfo.Dir[curManiaInfo.arrows[direction]]+'miss', true);
+			boyfriend.playAnim('sing${ManiaInfo.Dir[curManiaInfo.arrows[direction]]}miss', true);
 		}
 	}
 
