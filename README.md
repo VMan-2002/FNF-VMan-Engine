@@ -28,7 +28,7 @@ This game was made with love to Newgrounds and its community. Extra love to Tom 
 
 THESE INSTRUCTIONS ARE FOR COMPILING THE GAME'S SOURCE CODE!!!
 
-IF YOU WANT TO JUST DOWNLOAD AND INSTALL AND PLAY THE GAME NORMALLY, GO TO [releases](https://github.com/VMan_2002/FNF-VMan-Engine/releases)
+IF YOU WANT TO JUST DOWNLOAD AND INSTALL AND PLAY THE GAME NORMALLY, GO TO [releases](https://github.com/VMan-2002/FNF-VMan-Engine/releases)
 
 IF YOU WANT TO COMPILE THE GAME YOURSELF, CONTINUE READING!!!
 
