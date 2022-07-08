@@ -82,7 +82,10 @@ class Options
 	public static var noteMissAction:Int = 0;
 	public static var noteMissAction_Vocals:Array<Bool> = [true, false, true, false];
 	public static var noteMissAction_MissSound:Array<Bool> = [true, true, false, false];
-	public static var showFPS:Bool = false;
+	public static var showFPS:Bool = #if mobile false #else true #end;
+	public static var soundVolume:Float = 1;
+	public static var instrumentalVolume:Float = 1;
+	public static var vocalsVolume:Float = 1;
 	
 	//PlayState changeables
 	public static var playstate_opponentmode:Bool = false;

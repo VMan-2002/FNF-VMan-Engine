@@ -25,6 +25,7 @@ class Main extends Sprite
 	var framerate:Int = 60; // How many frames per second the game should run at.
 	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
 	var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets
+	public static var fps:FPS;
 	
 	#if debug
 	public static var debug:debugger.Local;
@@ -86,6 +87,9 @@ class Main extends Sprite
 		initialState = TitleState;
 		#end
 		
+		fps = new FPS(10, 3, 0xFFFFFF);
+		fps.visible = Options.showFPS;
+		
 		#if html5
 		var stupid:String = Browser.location.href;
 		//trace(stupid);
@@ -96,9 +100,6 @@ class Main extends Sprite
 		{
 			addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
 		}
-		
-		#if !mobile
-		addChild(new FPS(10, 3, 0xFFFFFF));
-		#end
+		addChild(fps);
 	}
 }

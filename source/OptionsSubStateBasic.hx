@@ -6,6 +6,7 @@ import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
+import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -95,8 +96,7 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 		if (textTween != null) {
 			textTween.cancel();
 		}
-		//vertically scroll the list of items, where the selected item is curSelected, the amount of items is textMenuItems.length and the screen height is FlxG.height
-		textTween = FlxTween.tween(grpOptionsTexts, {y: -(curSelected * 50) + (FlxG.height / 2) - (textMenuItems.length * 50) / 2}, 1, {ease: FlxEase.expoOut});
+		textTween = FlxTween.tween(grpOptionsTexts, {y: Math.min(FlxMath.lerp(0, (OptionsMenu.wasInPlayState ? -70 : -40) + (grpOptionsTexts.members.length * -50) + FlxG.height, curSelected / (grpOptionsTexts.members.length - 1)), 0)}, 1, {ease: FlxEase.expoOut});
 		updateDescription();
 		
 		FlxG.sound.play(Paths.sound('scrollMenu'));
