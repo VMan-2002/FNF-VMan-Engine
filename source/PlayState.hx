@@ -632,6 +632,10 @@ class PlayState extends MusicBeatState
 				add(currentStageBack);
 				add(currentStageFront);
 				defaultCamZoom = currentStage.defaultCamZoom;
+				if (defaultCamZoom == 0) {
+					trace("something went wrong with the stage loading");
+					defaultCamZoom = 0.9;
+				}
 				customStageCharPos = currentStage.charPosition;
 			}
 		}
@@ -2035,13 +2039,7 @@ class PlayState extends MusicBeatState
 
 			boyfriend.playAnim('sing${ManiaInfo.Dir[curManiaInfo.arrows[note.noteData]]}', true);
 
-			playerStrums.forEach(function(spr:StrumNote)
-			{
-				if (Math.abs(note.noteData) == spr.ID)
-				{
-					spr.playAnim('confirm', true);
-				}
-			});
+			playerStrums.members[note.noteData].playAnim('confirm', true);
 
 			note.wasGoodHit = true;
 			vocals.volume = 1;

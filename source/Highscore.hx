@@ -40,7 +40,7 @@ class Highscore
 		var fc:Int = getPlayStateFCStore(PlayState.instance);
 		var saveScore = setScore(daSong, score);
 		var saveFC = setFC(daSong, fc);
-		var saveAcc = setAcc(daSong, PlayState.instance.songScore / ((PlayState.instance.songHits - PlayState.instance.songMisses) * 350));
+		var saveAcc = setAcc(daSong, PlayState.instance.songScore / ((PlayState.instance.songHits + PlayState.instance.songMisses) * 350));
 		return saveScore || saveFC || saveAcc; //return true if you got a high score
 	}
 	

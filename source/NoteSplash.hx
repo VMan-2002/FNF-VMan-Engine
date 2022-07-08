@@ -65,6 +65,7 @@ class NoteSplash extends FlxSprite
 
 		frames = Paths.getSparrowAtlas("normal/notesplash");
 		animation.addByPrefix("splash", "NoteSplash", 24, false);
+		animation.play("splash");
 		updateHitbox();
 		
 		CoolUtil.CenterOffsets(this);

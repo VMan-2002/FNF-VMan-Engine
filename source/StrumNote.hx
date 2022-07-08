@@ -16,8 +16,8 @@ class StrumNote extends FlxSprite
 			if (animation.curAnim.name == "static") {
 				playAnim("pressed");
 			}
-			if (returnTime <= 0) {
-				returnTime = 0.01;
+			if (returnTime < 0) {
+				returnTime = 0;
 			}
 		}
 		isHeld = invar;
@@ -39,7 +39,7 @@ class StrumNote extends FlxSprite
 			CoolUtil.CenterOffsets(this);
 			return;
 		}
-		if (!isHeld && returnTime > 0) {
+		if (!isHeld && returnTime >= 0) {
 			returnTime -= elapsed;
 			if (returnTime < 0) {
 				playAnim("static");
