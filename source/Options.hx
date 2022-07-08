@@ -85,7 +85,7 @@ class Options
 	public static var showFPS:Bool = false;
 	
 	//PlayState changeables
-	public static var playstate_opponentmode
+	public static var playstate_opponentmode:Bool = false;
 	
 	public static function SaveOptions() {
 		var svd = GetSaveObj();

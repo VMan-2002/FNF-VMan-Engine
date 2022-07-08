@@ -31,14 +31,14 @@ class Note extends FlxSprite
 	
 	public var noteType:Int = -1;
 
-	public var scrollDirection(default, set):Float = 0;
+	//public var scrollDirection(default, set):Float = 0;
 
-	function set_scrollDirection(n:Float) {
+	/*function set_scrollDirection(n:Float) {
 		if (isSustainNote) {
 			angle += n - scrollDirection;
 		}
 		scrollDirection = n;
-	}
+	}*/
 
 	public static var swagWidth:Float = 160 * 0.7;
 
@@ -66,7 +66,7 @@ class Note extends FlxSprite
 		var myArrow = mania.arrows[noteData];
 
 		if (Options.downScroll) {
-			scrollDirection = 180;
+			//scrollDirection = 180;
 		}
 		
 		switch (daStage)
@@ -117,7 +117,7 @@ class Note extends FlxSprite
 		if (isSustainNote && prevNote != null) {
 			prevNote.nextNote = this;
 			
-			//flipY = Options.downScroll;
+			flipY = Options.downScroll;
 			
 			noteScore * 0.2;
 			alpha = 0.6;

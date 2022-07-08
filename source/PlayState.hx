@@ -229,7 +229,7 @@ class PlayState extends MusicBeatState
 			//	dialogue = CoolUtil.coolTextFile('data/${sn}/${sn}Dialogue');
 		}
 
-		var dialoguePath:String = Paths.getModOrGamePath('data/${sn}/dialogue/start.json', modName);
+		var dialoguePath:String = Paths.getModOrGamePath('data/${sn}/dialogue/start.json', modName, null);
 		if (FileSystem.exists(dialoguePath)) {
 			trace('found start dialogue');
 			dialogueVMan = new DialogueBoxVMan(dialoguePath);

@@ -39,15 +39,15 @@ class Paths
 		return getPreloadPath(file);
 	}
 
-	public static function getModPath(path:String, modName:String, type:AssetType) {
-		return modName == "" ? getPath(path, type) : 'mods/${modName}/' + path;
+	public static function getModPath(path:String, modName:String, type:AssetType):String {
+		return modName == "" ? getPath(path, type, null) : 'mods/${modName}/' + path;
 	}
 
-	public static function getModOrGamePath(path:String, modName:String, type:AssetType) {
+	public static function getModOrGamePath(path:String, modName:String, type:AssetType):String {
 		var modThing = getModPath(path, modName, type);
 		if (FileSystem.exists(modThing))
 			return modThing;
-		return getPath(path, type);
+		return getPath(path, type, null);
 	}
 
 	static public function getLibraryPath(file:String, library = "preload")
