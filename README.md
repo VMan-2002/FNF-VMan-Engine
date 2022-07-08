@@ -47,6 +47,7 @@ hscript
 polymod
 hxcpp-debugger
 json2object
+extension-networking
 ```
 So for each of those type `haxelib install [library]` so shit like `haxelib install polymod`
 
