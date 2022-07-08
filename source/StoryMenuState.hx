@@ -3,6 +3,8 @@ package;
 #if desktop
 import Discord.DiscordClient;
 #end
+import CoolUtil;
+import Translation;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.transition.FlxTransitionableState;
@@ -15,11 +17,9 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.net.curl.CURLCode;
-import CoolUtil;
 
-import Translation;
-//import flixel.text.FlxTextFormat;
 using StringTools;
+//import flixel.text.FlxTextFormat;
 
 class StoryMenuState extends MusicBeatState
 {
@@ -61,6 +61,7 @@ class StoryMenuState extends MusicBeatState
 	var txtWeekTitle:FlxText;
 
 	var curWeek:Int = 0;
+	var curWeekName:String = "week0";
 
 	var txtTracklist:FlxText;
 
@@ -322,7 +323,7 @@ class StoryMenuState extends MusicBeatState
 			PlayState.storyDifficulty = curDifficulty;
 
 			PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0].toLowerCase() + CoolUtil.difficultyPostfixString(), PlayState.storyPlaylist[0].toLowerCase());
-			PlayState.storyWeek = curWeek;
+			PlayState.storyWeek = curWeekName;
 			PlayState.campaignScore = 0;
 			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
@@ -359,10 +360,10 @@ class StoryMenuState extends MusicBeatState
 
 		// USING THESE WEIRD VALUES SO THAT IT DOESNT FLOAT UP
 		sprDifficulty.y = leftArrow.y - 15;
-		intendedScore = Highscore.getWeekScore(curWeek, curDifficulty);
+		intendedScore = Highscore.getWeekScore(curWeekName, curDifficulty);
 
 		#if !switch
-		intendedScore = Highscore.getWeekScore(curWeek, curDifficulty);
+		intendedScore = Highscore.getWeekScore(curWeekName, curDifficulty);
 		#end
 
 		FlxTween.tween(sprDifficulty, {y: leftArrow.y + 15, alpha: 1}, 0.07);
@@ -379,6 +380,12 @@ class StoryMenuState extends MusicBeatState
 			curWeek = 0;
 		if (curWeek < 0)
 			curWeek = weekData.length - 1;
+
+		//todo: the actual week name via weeks.hx
+		curWeekName = 'week${curWeek}';
+		if (curWeekName == "week0") {
+			curWeekName = "tutorial";
+		}
 
 		var bullShit:Int = 0;
 
@@ -441,7 +448,7 @@ class StoryMenuState extends MusicBeatState
 		txtTracklist.x -= FlxG.width * 0.35;
 
 		#if !switch
-		intendedScore = Highscore.getWeekScore(curWeek, curDifficulty);
+		intendedScore = Highscore.getWeekScore(curWeekName, curDifficulty);
 		#end
 	}
 }

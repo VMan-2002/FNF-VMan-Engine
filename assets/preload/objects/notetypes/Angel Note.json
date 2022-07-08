@@ -1,0 +1,9 @@
+{
+	"healthHit": 0.5,
+	"healthHitSick": 1,
+	"healthHitBad": 0,
+	"healthHitShit": 0,
+	"healthMiss": 0.0,
+	"maxHealthMult": 2,
+	"imagePrefix": "angel"
+}

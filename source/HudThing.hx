@@ -1,15 +1,14 @@
 package;
 
+import Translation;
 import flixel.FlxSprite;
-import flixel.math.FlxMath;
 import flixel.group.FlxGroup;
+import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
-import Translation;
 
 class HudThing extends FlxGroup
 {
-	//Todo: replace scoreTxt with this
 	public var items = new Array<String>();
 	public var vertical:Bool = false;
 	public var textThing:FlxText;
@@ -79,7 +78,7 @@ class HudThing extends FlxGroup
 				case "totalnotes":
 					text += Translation.getTranslation("hud_totalnotes", "playstate", [Std.string(noteThing)]);
 				case "engine":
-					//todo: remember that this one should always show on the hud thing in the corner
+					//this one should always show on the hud thing in the corner
 					text += Translation.getTranslation(Options.botplay ? "hud_engine botplay" : "hud_engine", "playstate");
 			}
 		}

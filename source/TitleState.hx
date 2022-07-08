@@ -4,6 +4,10 @@ package;
 import Discord.DiscordClient;
 import sys.thread.Thread;
 #end
+import CoolUtil;
+import NoteColor;
+import Options;
+import Translation;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -27,18 +31,14 @@ import flixel.util.FlxTimer;
 import io.newgrounds.NG;
 import lime.app.Application;
 import openfl.Assets;
-import Options;
 
-import CoolUtil;
-import NoteColor;
-import Translation;
+using StringTools;
 #if polymod
-import polymod.Polymod;
 import polymod.Polymod.Framework;
+import polymod.Polymod;
 import sys.io.File;
 #end
 
-using StringTools;
 
 class TitleState extends MusicBeatState
 {
@@ -376,8 +376,10 @@ class TitleState extends MusicBeatState
 			//NGio.unlockMedal(60960);
 
 			// If it's Friday according to da clock
-			if (Date.now().getDay() == 5)
+			if (Date.now().getDay() == 5) {
+				trace("It's Friday! swag");
 				//NGio.unlockMedal(61034);
+			}
 			#end
 
 			titleText.animation.play('press');

@@ -1,14 +1,13 @@
 package;
 
+import CoolUtil;
+import Options;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSubState;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
-import Options;
-
-import CoolUtil;
 
 class GameOverSubstate extends MusicBeatSubstate
 {
@@ -29,6 +28,15 @@ class GameOverSubstate extends MusicBeatSubstate
 			default:
 				daBf = 'bf-dead';
 		}
+		if (PlayState.instance.boyfriend.deathChar != null) {
+			daBf = PlayState.instance.boyfriend.deathChar;
+		}
+		var deathSound:String = "fnf_loss_sfx";
+		if (PlayState.instance.boyfriend.deathSound != null) {
+			deathSound = PlayState.instance.boyfriend.deathSound;
+		} else {
+			deathSound += stageSuffix;
+		}
 
 		super();
 
@@ -40,7 +48,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		camFollow = new FlxObject(bf.getGraphicMidpoint().x, bf.getGraphicMidpoint().y, 1, 1);
 		add(camFollow);
 
-		FlxG.sound.play(Paths.sound('fnf_loss_sfx' + stageSuffix));
+		FlxG.sound.play(Paths.sound(deathSound));
 		Conductor.changeBPM(100);
 
 		// FlxG.camera.followLerp = 1;

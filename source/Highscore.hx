@@ -9,13 +9,20 @@ class Highscore
 	#else
 	public static var songScores:Map<String, Int> = new Map<String, Int>();
 	#end
+	public static var weekScores:Map<String, Int> = new Map<String, Int>();
 	public static var songScoreAcc:Map<String, Float> = new Map<String, Float>();
 	public static var songScoreFC:Map<String, Int> = new Map<String, Int>();
 
+	inline static function modPrefix(song:String, ?mod:String) {
+		if (mod == null) {
+			mod = PlayState.modName;
+		}
+		return '${mod}:${song}';
+	}
 
 	public static function saveScore(song:String, score:Int = 0, ?diff:Int = 0):Bool
 	{
-		var daSong:String = formatSong(song, diff);
+		var daSong:String = modPrefix(formatSong(song, diff));
 
 
 		#if !switch
@@ -33,7 +40,7 @@ class Highscore
 		var fc:Int = getPlayStateFCStore(PlayState.instance);
 		var saveScore = setScore(daSong, score);
 		var saveFC = setFC(daSong, fc);
-		var saveAcc = setAcc(daSong, PlayState.instance.songScore / (PlayState.instance.songHits - PlayState.instance.songMisses));
+		var saveAcc = setAcc(daSong, PlayState.instance.songScore / ((PlayState.instance.songHits - PlayState.instance.songMisses) * 350));
 		return saveScore || saveFC || saveAcc; //return true if you got a high score
 	}
 	
@@ -68,7 +75,7 @@ class Highscore
 	
 	public static function formatFC(num:Int) {
 		if (num < 0) {
-			return '${num <= -10 ? "Clear" : "SDCB"} (${num})';
+			return '${num <= -10 ? "Clear" : "SDCB"} (${-num})';
 		}
 		switch(num) {
 			case 0:
@@ -81,7 +88,7 @@ class Highscore
 		return "???";
 	}
 
-	public static function saveWeekScore(week:Int = 1, score:Int = 0, ?diff:Int = 0):Void
+	public static function saveWeekScore(week:String, score:Int = 0, ?diff:Int = 0):Bool
 	{
 
 		#if !switch
@@ -89,15 +96,21 @@ class Highscore
 		#end
 
 
-		var daWeek:String = formatSong('week' + week, diff);
+		var daWeek:String = modPrefix(formatSong(week, diff));
 
 		if (songScores.exists(daWeek))
 		{
 			if (songScores.get(daWeek) < score)
-				setScore(daWeek, score);
+				weekScores.set(daWeek, score);
+			else
+				return false;
 		}
 		else
-			setScore(daWeek, score);
+			weekScores.set(daWeek, score);
+
+		FlxG.save.data.weekScores = weekScores;
+		FlxG.save.flush();
+		return true;
 	}
 
 	/**
@@ -107,7 +120,8 @@ class Highscore
 	{
 		// Reminder that I don't need to format this song, it should come formatted!
 		var formatted = formatSong(song);
-		if (songScores.exists(formatted) && songScores.get(formatSong(song)) < score) {
+		trace('setting score for ${formatted}');
+		if (songScores.exists(formatted) && songScores.get(formatSong(song)) > score) {
 			return false;
 		}
 		songScores.set(formatSong(song), score);
@@ -120,7 +134,7 @@ class Highscore
 	{
 		// Reminder that I don't need to format this song, it should come formatted!
 		var formatted = formatSong(song);
-		if (songScoreFC.exists(formatted) && songScoreFC.get(formatted) < score) {
+		if (songScoreFC.exists(formatted) && songScoreFC.get(formatted) > score) {
 			return false;
 		}
 		songScoreFC.set(formatSong(song), score);
@@ -133,7 +147,7 @@ class Highscore
 	{
 		// Reminder that I don't need to format this song, it should come formatted!
 		var formatted = formatSong(song);
-		if (songScoreAcc.exists(formatted) && songScoreAcc.get(formatted) < score) {
+		if (songScoreAcc.exists(formatted) && songScoreAcc.get(formatted) > score) {
 			return false;
 		}
 		songScoreAcc.set(formatSong(song), score);
@@ -155,13 +169,14 @@ class Highscore
 	public static function getScore(song:String, diff:Int):Int
 	{
 		var daSong = formatSong(song, diff);
+		trace('getting score for ${daSong}');
 		if (!songScores.exists(daSong))
 			setScore(daSong, 0);
 
 		return songScores.get(daSong);
 	}
 
-	public static function getFC(song:String, diff:Int):String
+	public static function getFCFormatted(song:String, diff:Int):String
 	{
 		var daSong = formatSong(song, diff);
 		if (!songScoreFC.exists(daSong))
@@ -179,12 +194,13 @@ class Highscore
 		return songScoreAcc.get(daSong);
 	}
 
-	public static function getWeekScore(week:Int, diff:Int):Int
+	public static function getWeekScore(week:String, diff:Int):Int
 	{
-		if (!songScores.exists(formatSong('week' + week, diff)))
-			setScore(formatSong('week' + week, diff), 0);
+		var daWeek = modPrefix(formatSong(week, diff));
+		if (!weekScores.exists(daWeek))
+			weekScores.set(daWeek, 0);
 
-		return songScores.get(formatSong('week' + week, diff));
+		return weekScores.get(daWeek);
 	}
 
 	public static function load():Void

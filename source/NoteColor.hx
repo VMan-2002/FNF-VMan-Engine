@@ -1,24 +1,26 @@
 package;
 
+import ManiaInfo;
+import Math;
+import flash.display.PNGEncoderOptions;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
+import flixel.addons.util.PNGEncoder;
 import flixel.graphics.frames.FlxFramesCollection;
+import flixel.util.FlxColor;
+import haxe.io.Bytes;
+import lime.ui.FileDialog;
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;
-import flixel.util.FlxColor;
-import Math;
 import openfl.geom.Point;
-import lime.ui.FileDialog;
-import ManiaInfo;
 import openfl.geom.Rectangle;
 import openfl.utils.ByteArray;
-import flixel.addons.util.PNGEncoder;
-import flash.display.PNGEncoderOptions;
 import sys.io.File;
-import haxe.io.Bytes;
 
 class NoteColor
 {
+	//todo: this doesn't really work, but it's a start
+	
 	public static function TestThing() {
 		var arrs = makeNoteSet(
 			"pixelUI", //style

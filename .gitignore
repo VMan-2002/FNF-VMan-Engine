@@ -1,7 +1,6 @@
 export/
 .vscode/
 vman_mods/
-assets/preload/data/thunderstorm/
-assets/songs/thunderstorm/
-assets/preload/data/space-breaker/
-assets/songs/space-breaker/
+assets/ignore
+
+!export/debug/windows/bin/mods/fnf_cornflower_week*

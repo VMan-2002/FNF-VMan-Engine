@@ -1,0 +1,8 @@
+{
+	"healthHit": -99,
+	"healthHitSick": -99,
+	"healthHitBad": -99,
+	"healthHitShit": -2,
+	"healthMiss": 0.0,
+	"imagePrefix": "death"
+}

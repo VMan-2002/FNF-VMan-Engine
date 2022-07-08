@@ -1,0 +1,20 @@
+{
+	"texts": [
+		{
+			"text": "Not bad for an ugly worm.",
+			"boxStyle": "roses"
+		},
+		{
+			"text": "But this time I'll rip your nuts off right after your girlfriend finishes gargling mine."
+		},
+		{
+			"text": "Bop beep be be skdoo bep",
+			"portraitEvents": [
+				{
+					"character": "bf-pixel",
+					"side": 1
+				}
+			]
+		}
+	]
+}

@@ -1,15 +1,16 @@
 package;
 
+import CoolUtil;
+import ManiaInfo.SwagMania;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxMath;
 import flixel.util.FlxColor;
+
+using StringTools;
 /*#if polymod
 import polymod.format.ParseRules.TargetSignatureElement;
 #end*/
-import CoolUtil;
-
-using StringTools;
 
 class Note extends FlxSprite
 {
@@ -30,14 +31,26 @@ class Note extends FlxSprite
 	
 	public var noteType:Int = -1;
 
+	public var scrollDirection(default, set):Float = 0;
+
+	function set_scrollDirection(n:Float) {
+		if (isSustainNote) {
+			angle += n - scrollDirection;
+		}
+		scrollDirection = n;
+	}
+
 	public static var swagWidth:Float = 160 * 0.7;
 
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false)
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?mania:SwagMania)
 	{
 		super();
 
 		if (prevNote == null)
 			prevNote = this;
+
+		if (mania == null)
+			mania = PlayState.curManiaInfo;
 
 		this.prevNote = prevNote;
 		isSustainNote = sustainNote;
@@ -50,7 +63,11 @@ class Note extends FlxSprite
 
 		var daStage:String = PlayState.curStage;
 
-		var myArrow = PlayState.curManiaInfo.arrows[noteData];
+		var myArrow = mania.arrows[noteData];
+
+		if (Options.downScroll) {
+			scrollDirection = 180;
+		}
 		
 		switch (daStage)
 		{
@@ -81,32 +98,16 @@ class Note extends FlxSprite
 
 			default:
 				frames = Paths.getSparrowAtlas('normal/NOTE_assets');
-
-				/*animation.addByPrefix('greenScroll', 'green0');
-				animation.addByPrefix('redScroll', 'red0');
-				animation.addByPrefix('blueScroll', 'blue0');
-				animation.addByPrefix('purpleScroll', 'purple0');
-
-				animation.addByPrefix('purpleholdend', 'purple end hold');
-				animation.addByPrefix('purpleholdend', 'purple hold end');
-				animation.addByPrefix('greenholdend', 'green hold end');
-				animation.addByPrefix('redholdend', 'red hold end');
-				animation.addByPrefix('blueholdend', 'blue hold end');
-
-				animation.addByPrefix('purplehold', 'purple hold piece');
-				animation.addByPrefix('greenhold', 'green hold piece');
-				animation.addByPrefix('redhold', 'red hold piece');
-				animation.addByPrefix('bluehold', 'blue hold piece');*/
 				
-				animation.addByPrefix('${myArrow}Scroll', '${myArrow}0');
-				animation.addByPrefix('${myArrow}holdend', '${myArrow} hold end');
-				animation.addByPrefix('${myArrow}hold', '${myArrow} hold piece');
+				animation.addByPrefix('${myArrow}Scroll', '${myArrow}0', 24);
+				animation.addByPrefix('${myArrow}holdend', '${myArrow} hold end', 24);
+				animation.addByPrefix('${myArrow}hold', '${myArrow} hold piece', 24);
 				//animation.appendByPrefix('purpleholdend', 'pruple end hold'); //develop your spritesheets properly challenge (impossible)
 
 				antialiasing = true;
 		}
 		
-		scale.x *= PlayState.curManiaInfo.scale;
+		scale.x *= mania.scale;
 		scale.y = scale.x;
 		
 		animation.play('${myArrow}Scroll');
@@ -116,7 +117,7 @@ class Note extends FlxSprite
 		if (isSustainNote && prevNote != null) {
 			prevNote.nextNote = this;
 			
-			flipY = Options.downScroll;
+			//flipY = Options.downScroll;
 			
 			noteScore * 0.2;
 			alpha = 0.6;

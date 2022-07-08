@@ -1,0 +1,27 @@
+{
+	"texts": [
+		{
+			"text": "Direct contact with real humans, after being trapped in here for so long...",
+			"boxStyle": "thorns",
+			"portraitEvents": [
+				{
+					"character": "spirit-pixel",
+					"side": -1
+				}
+			]
+		},
+		{
+			"text": "and HER of all people."
+		},
+		{
+			"text": "I'll make her father pay for what he's done to me and all the others,,,,"
+		},
+		{
+			"text": "I'll beat you and make you take my place."
+		},
+		{
+			"text": "You don't mind your bodies being borrowed right? It's only fair..."
+		}
+	],
+	"music": "LunchboxScary"
+}

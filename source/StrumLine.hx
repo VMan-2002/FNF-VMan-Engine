@@ -1,18 +1,18 @@
 package;
 
+import ManiaInfo;
+import Options;
+import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import ManiaInfo;
-import flixel.FlxG;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import Options;
 
 using StringTools;
 
 class StrumLine extends FlxTypedGroup<StrumNote>
 {
-	var ThisManiaInfo:SwagMania;
+	public var thisManiaInfo:SwagMania;
 	var notes:Array<Note>;
 	
 	public static var nextId:Int;
@@ -31,29 +31,28 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 	}
 	
 	public function SwitchMania(mania:SwagMania) {
-		ThisManiaInfo = mania;
+		thisManiaInfo = mania;
 		while (members.length > 1) {
 			members.pop().destroy();
 		}
-		for (i in 0...ThisManiaInfo.keys) {
+		for (i in 0...thisManiaInfo.keys) {
 			// FlxG.log.add(i);
 			var style = PlayState.curStage.startsWith('school') ? 'pixel' : 'normal';
 			var babyArrow:StrumNote = new StrumNote(x, y, i, style);
 			
-			babyArrow.x += ((ThisManiaInfo.spacing) * i);
-			babyArrow.x -= ((ThisManiaInfo.spacing) * (ThisManiaInfo.keys - 1)) / 2;
+			babyArrow.x += ((thisManiaInfo.spacing) * i);
+			babyArrow.x -= ((thisManiaInfo.spacing) * (thisManiaInfo.keys - 1)) / 2;
 
 			babyArrow.updateHitbox();
 			babyArrow.scrollFactor.set();
 			babyArrow.visible = babyArrow.visible && !Options.invisibleNotes;
+			babyArrow.parent = this;
 
 			if (!PlayState.isStoryMode && PlayState.instance.startingSong) {
 				babyArrow.y -= 10;
 				babyArrow.alpha = 0;
-				FlxTween.tween(babyArrow, {y: babyArrow.y + 10, alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.5 + (0.2 * i)});
+				FlxTween.tween(babyArrow, {y: babyArrow.y + 10, alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.5 + (1.6 * i / Math.max(thisManiaInfo.keys, 8))});
 			}
-
-			babyArrow.ID = i;
 
 			babyArrow.animation.play('static');
 

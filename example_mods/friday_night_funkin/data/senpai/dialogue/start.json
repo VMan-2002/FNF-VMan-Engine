@@ -1,0 +1,31 @@
+{
+	"texts": [
+		{
+			"text": "Ah, a new fair maiden has come in search of true love!",
+			"portraitEvents": [
+				{
+					"character": "senpai-pixel",
+					"side": -1
+				}
+			],
+			"boxStyle": "senpai"
+		},
+		{
+			"text": "A serenade between gentlemen shall decide where her beautiful heart shall reside."
+		},
+		{
+			"text": "Beep bo bop",
+			"portraitEvents": [
+				{
+					"number": 1,
+					"character": "bf-pixel",
+					"side": 1
+				},
+				{
+					"removeCharacter": true
+				}
+			]
+		}
+	],
+	"music": "Lunchbox"
+}

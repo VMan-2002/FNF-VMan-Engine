@@ -1,0 +1,8 @@
+{
+	"healthHit": 0.0475,
+	"healthHitSick": 0.0475,
+	"healthHitBad": 0.0475,
+	"healthHitShit": 0.0475,
+	"healthMiss": 0.0,
+	"imagePrefix": "hurt"
+}

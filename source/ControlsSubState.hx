@@ -2,19 +2,20 @@ package;
 
 //some things in here are copied from my own code in a psych engine mod (this should be fine, right?)
 
+import ManiaInfo;
+import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
+import flixel.graphics.frames.FlxFramesCollection;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.input.keyboard.FlxKey;
+import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
-import flixel.FlxG;
-import ManiaInfo;
-import flixel.math.FlxMath;
-import flixel.graphics.frames.FlxFramesCollection;
-import flixel.input.keyboard.FlxKey;
-//import 
 
 using StringTools;
+//import 
+
 
 class ControlsSubState extends OptionsSubStateBasic
 {
@@ -163,7 +164,7 @@ class ControlsSubState extends OptionsSubStateBasic
 		//optionsImage.visible = false;
 		
 		#if mobile
-		add(new FlxText(8, FlxG.height - 48, 0, "Playing on Mobile - You'll need to connect a keyboard, the game is not touch compatible yet.", 16));
+		add(new FlxText(8, FlxG.height - 48, 0, "Playing on Mobile - You'll need to connect a keyboard, the game is not touch compatible right now.", 16));
 		#end
 		
 		add(grpNoteStuff);

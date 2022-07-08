@@ -92,6 +92,7 @@ class CoolUtil
 	}
 	
 	public static function CenterOffsets(spr:FlxSprite) {
+		if (spr.animation.curAnim == null) {return;}
 		var fun = spr.frames.frames[spr.animation.curAnim.frames[0]].sourceSize;
 		spr.offset.x = fun.x/2;
 		spr.offset.y = fun.y/2;

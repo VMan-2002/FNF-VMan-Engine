@@ -10,6 +10,7 @@ typedef SwagWeek =
 	var visibleStoryMenu:Bool;
 	var previous:Null<String>;
 	var requiredToUnlock:Null<Array<String>>;
+	var id:String;
 }
 
 class Weeks //we REALYL gettin in the deep stuff!
@@ -45,12 +46,12 @@ class Weeks //we REALYL gettin in the deep stuff!
 			getWeek("week5"),
 			getWeek("week6")
 		]; //todo: yes it's hardcoded. make the unhardcoded lol
-		haxe.ds.ArraySort.sort(weeks, SortWeeks)
+		haxe.ds.ArraySort.sort(weeks, function(a, b) {return SortWeeks(a, b);});
 		return weeks;
 	}
 	
 	public function isWeekUnlocked(w:SwagWeek) {
-		if (w.requiredToUnlock == null or w.requiredToUnlock.length == 0) {
+		if (w.requiredToUnlock == null || w.requiredToUnlock.length == 0) {
 			return true; //theres no requirement
 		}
 		return true; //todo: make week unlocks Real

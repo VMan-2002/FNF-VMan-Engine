@@ -1,0 +1,9 @@
+{
+	"healthHit": 0,
+	"healthHitSick": 0,
+	"healthHitBad": 0,
+	"healthHitShit": 0,
+	"healthMiss": 0,
+	"imagePrefix": "bob",
+	"bob": true
+}

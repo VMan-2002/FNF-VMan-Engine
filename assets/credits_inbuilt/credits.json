@@ -11,9 +11,12 @@
 			"amongus burger",
 			"it's why vman exists, tf2 created australia"
 		]},
-		{"order": 4, "name": "ninjamuffin99", "link": "https://twitter.com/ninja_muffin99", "description": "Programmer of Friday Night Funkin"},
-		{"order": 5, "name": "PhantomArcade", "link": "https://twitter.com/PhantomArcade3K", "description": "Animator of Friday Night Funkin"},
-		{"order": 6, "name": "evilsk8r", "link": "https://twitter.com/evilsk8r", "description": "Artist of Friday Night Funkin"},
-		{"order": 7, "name": "Kawai Sprite", "link": "https://twitter.com/kawaisprite", "description": "Composer of Friday Night Funkin"}
+		{"order": 4, "name": "ThatAzazelFire", "link": "twitter.com/ThatAzazelFire", "description": "Week 6 losing icons", "funny": [
+			"Oka"
+		]},
+		{"order": 5, "name": "ninjamuffin99", "link": "https://twitter.com/ninja_muffin99", "description": "Programmer of Friday Night Funkin"},
+		{"order": 6, "name": "PhantomArcade", "link": "https://twitter.com/PhantomArcade3K", "description": "Animator of Friday Night Funkin"},
+		{"order": 7, "name": "evilsk8r", "link": "https://twitter.com/evilsk8r", "description": "Artist of Friday Night Funkin"},
+		{"order": 8, "name": "Kawai Sprite", "link": "https://twitter.com/kawaisprite", "description": "Composer of Friday Night Funkin"}
 	]
 }

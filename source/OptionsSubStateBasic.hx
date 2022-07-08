@@ -1,12 +1,15 @@
 package;
 
+import Translation;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
 import flixel.FlxSubState;
-import Translation;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
+import flixel.text.FlxText;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxColor;
 
 class OptionsSubStateBasic extends MusicBeatSubstate
 {
@@ -22,7 +25,7 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 	//var selector:FlxSprite;
 	var curSelected:Int = 0;
 
-	var grpOptionsTexts:FlxTypedGroup<FlxText>;
+	var grpOptionsTexts:FlxTypedSpriteGroup<FlxText>;
 	
 	var currentOptionText:FlxText;
 	var optionsImage:FlxSprite;
@@ -34,13 +37,15 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 	
 	var curSelectedName:String = "finish the green one ash!!";
 
+	var textTween:FlxTween;
+
 	public function new()
 	{
 		super();
 		
 		textMenuItems = optionList();
 
-		grpOptionsTexts = new FlxTypedGroup<FlxText>();
+		grpOptionsTexts = new FlxTypedSpriteGroup<FlxText>();
 		add(grpOptionsTexts);
 
 		//selector = new FlxSprite().makeGraphic(5, 5, FlxColor.RED);
@@ -80,13 +85,18 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 
 		if (curSelected < 0)
 			curSelected = textMenuItems.length - 1;
-
-		if (curSelected >= textMenuItems.length)
+		else if (curSelected >= textMenuItems.length)
 			curSelected = 0;
 		
 		curSelectedName = textMenuItems[curSelected].toLowerCase();
 			
 		grpOptionsTexts.members[curSelected].color = FlxColor.YELLOW;
+
+		if (textTween != null) {
+			textTween.cancel();
+		}
+		//vertically scroll the list of items, where the selected item is curSelected, the amount of items is textMenuItems.length and the screen height is FlxG.height
+		textTween = FlxTween.tween(grpOptionsTexts, {y: -(curSelected * 50) + (FlxG.height / 2) - (textMenuItems.length * 50) / 2}, 1, {ease: FlxEase.expoOut});
 		updateDescription();
 		
 		FlxG.sound.play(Paths.sound('scrollMenu'));
@@ -96,7 +106,7 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 		var description:Array<String> = optionDescription(curSelectedName);
 		if (Translation.active) {
 			var translationKey:String = optionDescriptionTranslation(curSelectedName);
-			currentOptionText.text = description.length > 1 ? (Translation.getTranslation(translationKey, "options") + "\n\n" + Translation.getTranslation(description[1], "optionsMenu")) : Translation.getTranslation(translationKey, "options");
+			currentOptionText.text = description.length > 1 ? (Translation.getTranslation(translationKey, "options", null, description[0]) + "\n\n" + Translation.getTranslation(description[1], "optionsMenu")) : Translation.getTranslation(translationKey, "options");
 		} else {
 			currentOptionText.text = description.length > 1 ? (description[0] + "\n\n" + description[1]) : description[0];
 		}

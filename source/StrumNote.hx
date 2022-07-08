@@ -1,12 +1,13 @@
 package;
 
-import flixel.FlxSprite;
 import CoolUtil;
+import flixel.FlxSprite;
 
 class StrumNote extends FlxSprite
 {
 	public var noteData:Int;
 	public var isHeld(default, set):Bool = false;
+	public var parent:StrumLine;
 	function set_isHeld(invar:Bool):Bool {
 		if (invar == isHeld) {
 			return isHeld;

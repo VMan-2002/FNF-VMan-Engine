@@ -12,7 +12,7 @@ class DiscordClient
 	{
 		trace("Discord Client starting...");
 		DiscordRpc.start({
-			clientID: "814588678700924999",
+			clientID: "983954658231975946",
 			onReady: onReady,
 			onError: onError,
 			onDisconnected: onDisconnected
@@ -71,7 +71,51 @@ class DiscordClient
 		trace("Discord Client initialized");
 	}
 
-	public static function changePresence(details:String, state:Null<String>, ?smallImageKey : String, ?hasStartTimestamp : Bool, ?endTimestamp: Float)
+	public static function changePresenceSimple(type:String) {
+		if (!isActivated) {
+			return;
+		}
+		var songName:String = "No song lmao";
+		if (PlayState.SONG != null) {
+			songName = PlayState.SONG.song;
+		}
+		var detailsText:String = PlayState.isStoryMode ? "Story Mode: Week " + PlayState.storyWeek : "Freeplay";
+		var songText:String = songName + " (" + PlayState.instance.storyDifficultyText + ")";
+		switch(type) {
+			case "paused":
+				changePresence("Paused - "+detailsText, songText, PlayState.instance.iconRPC);
+			case "not_playing":
+				changePresence(detailsText, songText, PlayState.instance.iconRPC);
+			case "playing":
+				changePresence(detailsText, songText, PlayState.instance.iconRPC, true, PlayState.instance.songLength);
+			case "menu":
+				changePresence("Main Menu");
+			case "options":
+				if (OptionsMenu.wasInPlayState) {
+					changePresence("Options Menu", songText, PlayState.instance.iconRPC);
+				} else {
+					changePresence("Options Menu");
+				}
+			case "credits":
+				changePresence("Credits");
+			case "story":
+				changePresence("Story Mode");
+			case "editor":
+				changePresence("Song Editor", songText);
+			case "character_editor":
+				changePresence("Character Editor");
+			case "dialogue_editor":
+				changePresence("Dialogue Editor");
+			case "not_playing_multi":
+				changePresence("Multiplayer - "+detailsText, songText, PlayState.instance.iconRPC);
+			case "playing_multi":
+				changePresence("Multiplayer - "+detailsText, songText, PlayState.instance.iconRPC, true, PlayState.instance.songLength);
+			default:
+				changePresence((type.charAt(0).toUpperCase() + type.substring(1)).replace("_", " "));
+		}
+	}
+
+	public static function changePresence(details:String, ?state:Null<String>, ?smallImageKey : String, ?hasStartTimestamp : Bool, ?endTimestamp: Float)
 	{
 		if (!isActivated) {
 			return;

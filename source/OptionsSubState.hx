@@ -1,28 +1,27 @@
 package;
 
+import Translation;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 
-import Translation;
-
 class OptionsSubState extends OptionsSubStateBasic
 {
 	override function optionList() {
 		return [
-			/*'Master Volume',
+			'Master Volume',
 			'Sound Volume',
 			'Instrumental Volume',
-			'Vocals Volume',*/
+			'Vocals Volume',
 			#if !switch
 			'Controls',
 			#end
 			'Scroll direction',
 			"Middlescroll",
 			"Ghost Tapping",
-			//"Enable modcharts",
+			"Enable modcharts",
 			"Invisi-Notes",
 			"Instant Respawn",
 			"Botplay",
@@ -32,6 +31,10 @@ class OptionsSubState extends OptionsSubStateBasic
 			#end
 			"Skip Title",
 			"Language",
+			"Flashing Lights",
+			"Silent Countdown",
+			"Show FPS",
+			"Audio On Miss",
 			"Exit Without Saving"
 		];
 	}
@@ -80,9 +83,18 @@ class OptionsSubState extends OptionsSubStateBasic
 			case "language":
 				return ["Change the language. Some mods may make use of this option.", Translation.getTranslation("native language name")];
 			case "enable modcharts":
-				return ["Enable modcharts", "idk"];
+				return ["Enable modcharts", Options.modchartEnabled ? "Enabled" : "Disabled"];
 			case "antialiasing":
 				return ["Whether or not stuff gets a bit of smoothing, disabling this can boost framerates", "idk"];
+			case "flashing lights":
+				return ["Turn this off if you suffer from epilepsy or similar conditions.", Options.flashingLights ? "Enabled" : "Disabled"];
+			case "silent countdown":
+				return ["Silence the countdown, that's about it.", Options.silentCountdown ? "Enabled" : "Disabled"];
+			case "show fps":
+				return ["Show the framerate in the top left corner.", Options.showFPS ? "Enabled" : "Disabled"];
+			case "audio on miss":
+				var values = ["Miss sound + Mute vocals", "Miss sound only", "Mute vocals only", "Do nothing"];
+				return ["Change what you hear when you miss a note.", values[Options.noteMissAction]];
 			case "exit without saving":
 				return ["Exit the options menu, and discard your changes.", '', 'unknownOption'];
 		}
@@ -128,6 +140,12 @@ class OptionsSubState extends OptionsSubStateBasic
 				FlxG.state.closeSubState();
 				FlxG.state.openSubState(new LanguageOptionSubState());
 				return false;
+			case "enable modcharts":
+				Options.modchartEnabled = !Options.modchartEnabled;
+			case "antialiasing":
+				Options.antialiasing = !Options.antialiasing;
+			case "flashing lights":
+				Options.flashingLights = !Options.flashingLights;
 			case "exit without saving":
 				var oldLang:String = Options.language;
 				Options.LoadOptions();

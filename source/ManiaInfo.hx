@@ -89,34 +89,6 @@ class ManiaInfo {
 	
 	public static var PixelNoteSheetWide:Int = 13; //this one is used
 	
-	/*public static var PixelArrowTypeNum:Map<String, Int> = [ //not actually used yet
-		'purple' => 0,
-		'blue' => 1,
-		'green' => 2,
-		'red' => 3,
-		'white' => 4,
-		'yellow' => 0,
-		'violet' => 1,
-		'darkred' => 2,
-		'dark' => 3,
-		'13a' => 5,
-		'13b' => 6,
-		'13c' => 7,
-		'13d' => 8,
-		'piano1k' => 0,
-		'piano2k' => 1,
-		'piano3k' => 2,
-		'piano4k' => 3,
-		'piano5k' => 10,
-		'piano6k' => 11,
-		'piano7k' => 5,
-		'piano8k' => 6,
-		'piano9k' => 7,
-		'pianoblack' => 8
-	];
-	
-	public static var PixelNoteTypeSheetWide:Int = 9; //also not actually used yet*/
-	
 	public static var Dir:Map<String, String> = [
 		'purple' => "LEFT",
 		'blue' => "DOWN",
@@ -228,11 +200,6 @@ class ManiaInfo {
 		'16k', //16k
 		'17k', //17k
 		'18k', //18k
-		//27, //14k
-		//28, //15k
-		//29, //16k
-		//30, //17k
-		//31, //18k
 		'19k', //19k
 		//32, //20k
 		'21k', //21k
@@ -300,44 +267,6 @@ class ManiaInfo {
 		"piano" => 25, //Piano
 		"105k" => 26 //105
 	];
-	
-	
-	/*public static var LeatherConvert:Map<Int, Int> = [
-		1 => 6,
-		2 => 7,
-		3 => 8,
-		4 => 0,
-		5 => 3,
-		6 => 1,
-		7 => 4,
-		8 => 5,
-		9 => 2,
-		10 => 27,
-		11 => 28,
-		12 => 21,
-		13 => 20,
-		14 => 29,
-		15 => 30,
-		16 => 31,
-		17 => 32,
-		18 => 33
-	];*/
-	
-	/*public static var splashNameDefault:Map<String, String> = [
-		"purple" => "purple",
-		"red" => "red",
-		"yellow" => "yellow",
-		"blue" => "blue",
-		"violet" => "violet",
-		"dark" => "dark",
-		"darkred" => "darkred",
-		"green" => "green",
-		"white" => "white",
-		"13a" => "13a",
-		"13b" => "13b",
-		"13c" => "13c",
-		"13d" => "13d"
-	];*/
 	
 	public static function GetManiaInfo(mania:String):SwagMania {
 		//they're now string based

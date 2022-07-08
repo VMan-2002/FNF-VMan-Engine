@@ -1,5 +1,7 @@
 package;
 
+import ManiaInfo;
+import MultiWindow;
 import flixel.FlxGame;
 import flixel.FlxState;
 import openfl.Assets;
@@ -7,14 +9,12 @@ import openfl.Lib;
 import openfl.display.FPS;
 import openfl.display.Sprite;
 import openfl.events.Event;
-import ManiaInfo;
 #if html5
 import js.Browser;
 #end
 #if desktop
 import Sys;
 #end
-import MultiWindow;
 
 class Main extends Sprite
 {

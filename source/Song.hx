@@ -1,11 +1,10 @@
 package;
 
+import ManiaInfo;
 import Section.SwagSection;
 import haxe.Json;
 import haxe.format.JsonParser;
 import lime.utils.Assets;
-
-import ManiaInfo;
 
 using StringTools;
 
@@ -27,6 +26,11 @@ typedef SwagSong =
 	var keyCount:Null<Int>; //for Leather
 	var stage:String;
 	var usedNoteTypes:Array<String>;
+
+	var healthDrain:Float;
+	var healthDrainMin:Float;
+	
+	var moreCharacters:Array<String>;
 }
 
 class Song
@@ -44,6 +48,11 @@ class Song
 	public var maniaStr:String = "4k";
 	
 	public var stage:String = "";
+
+	public var usedNoteTypes:Array<String> = new Array<String>();
+	public var healthDrain:Float = 0;
+	public var healthDrainMin:Float = 0;
+	public var moreCharacters:Array<String> = new Array<String>();
 
 	public function new(song, notes, bpm)
 	{
@@ -98,6 +107,10 @@ class Song
 				//no mania specified
 				swagShit.maniaStr = "4k";
 			}
+		}
+
+		if (swagShit.usedNoteTypes == null || swagShit.usedNoteTypes.length == 0) {
+			swagShit.usedNoteTypes = ["Normal Note"];
 		}
 		
 		return swagShit;

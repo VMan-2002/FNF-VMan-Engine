@@ -5,11 +5,11 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.display.FlxGridOverlay;
+import flixel.addons.ui.FlxUIButton;
+import flixel.addons.ui.FlxUIInputText;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
-import flixel.addons.ui.FlxUIButton;
-import flixel.addons.ui.FlxUIInputText;
 
 /**
 	*DEBUG MODE
@@ -19,6 +19,7 @@ class AnimationDebug extends MusicBeatState
 	var bf:Boyfriend;
 	var dad:Character;
 	var char:Character;
+	var charGhost:Character;
 	var textAnim:FlxText;
 	var dumbTexts:FlxTypedGroup<FlxText>;
 	var animList:Array<String> = [];
@@ -64,7 +65,6 @@ class AnimationDebug extends MusicBeatState
 			add(dad);
 
 			char = dad;
-			dad.flipX = false;
 		}
 		else
 		{
@@ -73,8 +73,14 @@ class AnimationDebug extends MusicBeatState
 			add(bf);
 
 			char = bf;
-			bf.flipX = false;
 		}
+
+		charGhost = new Character(xPositionThing, 0, daAnim);
+		charGhost.debugMode = true;
+		charGhost.alpha = 0.5;
+		charGhost.color = FlxColor.GRAY;
+		charGhost.visible = false;
+		add(charGhost);
 		
 		char.applyPositionOffset();
 
@@ -169,6 +175,21 @@ class AnimationDebug extends MusicBeatState
 			if (FlxG.keys.justPressed.W)
 			{
 				curAnim -= 1;
+			}
+
+			if (FlxG.keys.justPressed.Z)
+			{
+				charGhost.playAnim(char.animation.curAnim.name, true);
+				charGhost.offset.x = char.offset.x;
+				charGhost.offset.y = char.offset.y;
+				charGhost.x = char.x;
+				charGhost.y = char.y;
+				charGhost.visible = true;
+			}
+
+			if (FlxG.keys.justPressed.X)
+			{
+				charGhost.visible = false;
 			}
 
 			if (FlxG.keys.justPressed.S)

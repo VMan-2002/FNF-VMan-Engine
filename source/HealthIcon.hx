@@ -1,13 +1,23 @@
 package;
 
+import Character;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import openfl.display.BitmapData;
-
 #if polymod
-import sys.io.File;
+import json2object.JsonParser;
 import sys.FileSystem;
+import sys.io.File;
 #end
+
+typedef SwagHealthIcon = {
+	public var image:String;
+	public var imagePlayer:String;
+	public var initAnim:String;
+	public var antialias:Null<Bool>;
+	public var animations:Array<SwagCharacterAnim>;
+	public var scale:Array<Float>;
+}
 
 class HealthIcon extends FlxSprite
 {
@@ -17,23 +27,24 @@ class HealthIcon extends FlxSprite
 	public var sprTracker:FlxSprite;
 	
 	public var myMod:String;
+	public var curCharacter:String;
 	public var folderType:String;
 	
 	private final defaultStuff:Map<String, Array<Int>> = [
 		'bf' => [0, 1, 0],
 		'bf-car' => [0, 1, 0],
 		'bf-christmas' => [0, 1, 0],
-		'bf-pixel' => [21, 21, 21],
+		'bf-pixel' => [21, 24, 21],
 		'spooky' => [2, 3, 2],
 		'pico' => [4, 5, 4],
 		'mom' => [6, 7, 6],
 		'mom-car' => [6, 7, 6],
 		'tankman' => [8, 9, 8],
-		'face' => [10, 11, 10],
+		'face' => [10, 11, 29],
 		'dad' => [12, 13, 12],
-		'senpai' => [22, 22, 22],
-		'senpai-angry' => [22, 22, 22],
-		'spirit' => [23, 23, 23],
+		'senpai' => [22, 25, 22],
+		'senpai-angry' => [22, 25, 22],
+		'spirit' => [23, 26, 23],
 		'bf-old' => [14, 15, 14],
 		'gf' => [16, 16, 16],
 		'gf-christmas' => [16, 16, 16],
@@ -44,21 +55,49 @@ class HealthIcon extends FlxSprite
 		'monster-christmas' => [19, 20, 19]
 	];
 
+	var iconOffsets:Array<Float> = [0, 0];
+
 	public function new(char:String = 'bf', isPlayer:Bool = false, ?myMod:String = "")
 	{
 		super();
 		scrollFactor.set();
-		
+
+		changeCharacter(char, isPlayer, myMod);
+	}
+
+	public function changeCharacter(char:String, isPlayer:Bool = false, ?myMod:String) {
+		if (myMod == this.myMod && char == this.curCharacter) {
+			return;
+		}
+
 		hasWinning = true;
 		hasLosing = true;
+
+		this.myMod = myMod;
+		this.curCharacter = char;
 		
 		//first, find icon that belongs to the char's mod
-		var path = 'mods/${myMod}/images/icons/${char}';
+		var pathPrefix = 'mods/${myMod}/images/icons/';
+		var path = '${pathPrefix}${char}';
 		/*if (!FileSystem.exists(path)) {
 			//if it doesn't exist
 			path = 'mods/${myMod}/images/icons/${char}';
 		}*/
 		if (FileSystem.exists('${path}.png')) { //todo: this
+			trace('found health icon ${char}');
+			var isJson = FileSystem.exists('${path}.json');
+			var jsonData:Null<SwagHealthIcon> = null;
+			//is there accompanying json
+			if (isJson) {
+				trace('json found for health icon ${char}');
+				jsonData = cast CoolUtil.loadJsonFromString(File.getContent('${path}.json'));
+				if (jsonData.image != null && jsonData.image.length > 0) {
+					path = '${pathPrefix}${jsonData.image}';
+				}
+				if (isPlayer && jsonData.imagePlayer != null && jsonData.imagePlayer != "") {
+					path = '${pathPrefix}${jsonData.imagePlayer}';
+				}
+			}
 			//is there accompanying xml
 			var isSheet = FileSystem.exists('${path}.xml');
 			var bitmap = BitmapData.fromFile('${path}.png');
@@ -89,15 +128,23 @@ class HealthIcon extends FlxSprite
 					hasWinning = false;
 					hasLosing = false;
 				}
+				iconOffsets[0] = (width - 150) / 2;
+				iconOffsets[1] = iconOffsets[0];
+				//if (isPlayer) {
+				//	iconOffsets[0] = width - iconOffsets[0];
+				//}
+				updateHitbox();
 			}
-			folderType = "";
-			//is there accompanying json
-			if (FileSystem.exists('${path}.json')) {
-				trace('json found for health icon ${char}');
+			if (isJson && jsonData != null) { //i have to do that or else compiler says no. brugh
+				antialiasing = jsonData.antialias != false;
+				//todo: put more loads!
 			} else {
 				antialiasing = true;
 			}
+			folderType = "";
 			return animation.play("neutral");
+		} else {
+			trace('using inbuilt health icon for ${char}');
 		}
 		
 		loadGraphic(Paths.image('iconGrid'), true, 150, 150);
@@ -139,5 +186,11 @@ class HealthIcon extends FlxSprite
 		if (sprTracker != null) {
 			setPosition(sprTracker.x + sprTracker.width + 10, sprTracker.y - 30);
 		}
+	}
+
+	override function updateHitbox() {
+		super.updateHitbox();
+		offset.x += iconOffsets[0];
+		offset.y += iconOffsets[1];
 	}
 }

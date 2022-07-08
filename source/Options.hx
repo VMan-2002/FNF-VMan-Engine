@@ -1,7 +1,7 @@
 package;
+import flixel.input.keyboard.FlxKey;
 import flixel.util.FlxSave;
 import lime.ui.ScanCode;
-import flixel.input.keyboard.FlxKey;
 
 class Options
 {
@@ -19,6 +19,7 @@ class Options
 	public static var newModsActive:Bool = true;
 	public static var tappingHorizontal:Bool = false;
 	public static var skipTitle:Bool = false;
+	public static var flashingLights:Bool = true;
 	public static var controls:Map<String, Array<Array<Int>>> = [
 		"4k" => [
 			[FlxKey.A, FlxKey.LEFT],
@@ -74,8 +75,17 @@ class Options
 	];
 	public static var uiControls = new Map<String, Array<Int>>();
 	public static var language = "en_us";
-	public static var modchartEnabled = "en_us";
+	public static var modchartEnabled:Bool = false;
+	public static var antialiasing:Bool = true;
 	public static var seenOptionsWarning = false;
+	public static var silentCountdown:Bool = false;
+	public static var noteMissAction:Int = 0;
+	public static var noteMissAction_Vocals:Array<Bool> = [true, false, true, false];
+	public static var noteMissAction_MissSound:Array<Bool> = [true, true, false, false];
+	public static var showFPS:Bool = false;
+	
+	//PlayState changeables
+	public static var playstate_opponentmode
 	
 	public static function SaveOptions() {
 		var svd = GetSaveObj();
@@ -97,7 +107,13 @@ class Options
 		svd.data.uiControls = uiControls;
 		svd.data.language = language;
 		svd.data.modchartEnabled = modchartEnabled;
+		svd.data.flashingLights = flashingLights;
+		svd.data.antialiasing = antialiasing;
 		svd.data.seenOptionsWarning = seenOptionsWarning;
+		svd.data.playstate_opponentmode = playstate_opponentmode;
+		svd.data.silentCountdown = silentCountdown;
+		svd.data.noteMissAction = noteMissAction;
+		svd.data.showFPS = showFPS;
 		svd.close();
 	}
 	
@@ -120,7 +136,13 @@ class Options
 		controls = ifNotNull(svd.data.controls, controls);
 		language = ifNotNull(svd.data.language, language);
 		modchartEnabled = ifNotNull(svd.data.modchartEnabled, modchartEnabled);
+		flashingLights = ifNotNull(svd.data.flashingLights, flashingLights);
+		antialiasing = ifNotNull(svd.data.antialiasing, antialiasing);
 		seenOptionsWarning = ifNotNull(svd.data.seenOptionsWarning, seenOptionsWarning);
+		playstate_opponentmode = ifNotNull(playstate_opponentmode, playstate_opponentmode);
+		silentCountdown = ifNotNull(svd.data.silentCountdown, silentCountdown);
+		noteMissAction = ifNotNull(svd.data.noteMissAction, noteMissAction);
+		showFPS = ifNotNull(svd.data.showFPS, showFPS);
 		/*var insertControls = new Map<String, Array<Array<Int>>>();
 		insertControls = ifNotNull(svd.data.controls, controls);
 		for (i in insertControls.keys()) {

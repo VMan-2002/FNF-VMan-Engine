@@ -1,6 +1,8 @@
 package;
 
 import Controls.Control;
+import OptionsMenu;
+import Translation;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
@@ -12,9 +14,6 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
-
-import OptionsMenu;
-import Translation;
 
 class PauseSubState extends MusicBeatSubstate
 {

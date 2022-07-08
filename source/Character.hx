@@ -1,30 +1,34 @@
 package;
 
+import Boyfriend;
+import CoolUtil;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.animation.FlxBaseAnimation;
 import flixel.graphics.frames.FlxAtlasFrames;
-import Boyfriend;
-import CoolUtil;
-import lime.utils.Assets;
 import haxe.Json;
-#if polymod
-import openfl.utils.Assets as OpenFlAssets;
-import json2object.JsonParser;
-import sys.io.File;
-import sys.FileSystem;
-#end
+import lime.utils.Assets;
 
 using StringTools;
+#if polymod
+import json2object.JsonParser;
+import openfl.utils.Assets as OpenFlAssets;
+import sys.FileSystem;
+import sys.io.File;
+#end
+
 
 typedef SwagCharacter = {
 	public var image:String;
 	public var healthIcon:String;
 	public var deathChar:String;
+	public var deathSound:String;
 	public var initAnim:String;
 	public var antialias:Null<Bool>;
 	public var animations:Array<SwagCharacterAnim>;
 	public var position:Null<Array<Float>>;
+	public var isPlayer:Null<Bool>;
+	public var scale:Null<Float>;
 }
 
 typedef SwagCharacterAnim = {
@@ -55,6 +59,10 @@ class Character extends FlxSprite
 	public var positionOffset:Array<Float> = [0, 0];
 	
 	public var myMod:String;
+	
+	public var healthIcon:String;
+	public var deathChar:Null<String> = null;
+	public var deathSound:Null<String> = null;
 
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false, ?myMod:String = "") {
 		super(x, y);
@@ -62,6 +70,7 @@ class Character extends FlxSprite
 		animOffsets = new Map<String, Array<Float>>();
 		curCharacter = character;
 		this.isPlayer = isPlayer;
+		healthIcon = curCharacter;
 		
 		if (activeArray != null) {
 			thisId = nextId;
@@ -168,6 +177,7 @@ class Character extends FlxSprite
 				updateHitbox();
 				antialiasing = false;
 
+				deathSound = 'fnf_loss_sfx-pixel';
 			case 'dad':
 				// DAD ANIMATION LOADING CODE
 				tex = Paths.getSparrowAtlas('characters/DADDY_DEAREST');
@@ -457,6 +467,8 @@ class Character extends FlxSprite
 
 				flipX = true;
 				positionOffset[1] = 350;
+				deathSound = 'fnf-loss-sfx-pixel';
+				deathChar = 'bf-pixel-dead';
 			case 'bf-pixel-dead':
 				frames = Paths.getSparrowAtlas('characters/bfPixelsDEAD');
 				animation.addByPrefix('idle', "BF Dies pixel", 24, false);
@@ -498,6 +510,7 @@ class Character extends FlxSprite
 				antialiasing = false;
 				
 				positionOffset = [150, 360];
+				deathSound = 'fnf-loss-sfx-pixel';
 			case 'senpai-angry':
 				frames = Paths.getSparrowAtlas('characters/senpai');
 				animation.addByPrefix('idle', 'Angry Senpai Idle', 24, false);
@@ -519,6 +532,7 @@ class Character extends FlxSprite
 				antialiasing = false;
 
 				positionOffset = [150, 360];
+				deathSound = 'fnf-loss-sfx-pixel';
 			case 'spirit':
 				frames = Paths.getSparrowAtlas('characters/spirit');
 				animation.addByPrefix('idle', "idle spirit_", 24, false);
@@ -541,6 +555,7 @@ class Character extends FlxSprite
 				antialiasing = false;
 
 				positionOffset = [-150, 100];
+				deathSound = 'fnf-loss-sfx-pixel';
 			case 'parents-christmas':
 				frames = Paths.getSparrowAtlas('characters/mom_dad_christmas_assets');
 				animation.addByPrefix('idle', 'Parent Christmas Idle', 24, false);
@@ -572,26 +587,14 @@ class Character extends FlxSprite
 				//try to load character
 				var successLoad = false;
 				#if polymod
-				var thing:String = 'assets/objects/characters/${curCharacter}.json';
-				var thingMy:String = 'mods/${myMod}/objects/characters/${curCharacter}.json';
-				var isMyMod = myMod != "" && FileSystem.exists(thingMy);
-				trace('loading custom char of ${isMyMod ? thingMy : thing}');
-				if (isMyMod ? FileSystem.exists(thingMy) : OpenFlAssets.exists(thing)) {
-					var parser = new JsonParser<SwagCharacter>();
-					//var loadedStuff:SwagCharacter = parser.fromJson(CoolUtil.loadJsonFromString(isMyMod ? File.getContent(thingMy) : Assets.getText(thing)));
-					var loadStr = isMyMod ? File.getContent(thingMy) : Assets.getText(thing);
-					trace(loadStr);
-					var loadedStuff:SwagCharacter = cast CoolUtil.loadJsonFromString(loadStr);
+				var loadedStuff:SwagCharacter = loadCharacterJson(curCharacter, myMod);
+				if (loadedStuff != null) {
 					trace('loaded custom char: image ${loadedStuff.image}');
 					
 					//Char stuff is load. now set up
 					frames = Paths.getSparrowAtlas(loadedStuff.image);
 					for (anim in loadedStuff.animations) {
-						if (anim.indicies != null && anim.indicies.length > 0) {
-							animation.addByIndices(anim.name, anim.anim, anim.indicies, "", anim.framerate, anim.loop);
-						} else {
-							animation.addByPrefix(anim.name, anim.anim, anim.framerate, anim.loop);
-						}
+						loadAnimation(this, anim);
 						if (anim.offset != null && anim.offset.length > 0) {
 							addOffset(anim.name, anim.offset[0], anim.offset[1]);
 						}
@@ -601,6 +604,22 @@ class Character extends FlxSprite
 						if (positionOffset.length < 2) {
 							positionOffset[1] = 0;
 						}
+					}
+					if (loadedStuff.healthIcon != null && loadedStuff.healthIcon.length > 0) {
+						healthIcon = loadedStuff.healthIcon;
+					}
+					if (loadedStuff.isPlayer != null) {
+						flipX = loadedStuff.isPlayer;
+					}
+					if (loadedStuff.scale != null) {
+						scale.x = loadedStuff.scale;
+						scale.y = scale.x;
+					}
+					if (loadedStuff.deathChar != null) {
+						this.deathChar = loadedStuff.deathChar;
+					}
+					if (loadedStuff.deathSound != null) {
+						this.deathSound = loadedStuff.deathSound;
 					}
 					playAnim(loadedStuff.initAnim);
 					antialiasing = loadedStuff.antialias != false;
@@ -625,39 +644,36 @@ class Character extends FlxSprite
 					animation.addByPrefix('singRIGHTmiss', 'right miss', 24, false);
 
 					addOffset('idle');
-					addOffset("singUP", 47, -1);
-					addOffset("singDOWN", -25, -50);
-					addOffset("singLEFT", 46, 2);
+					addOffset("singUP", 57, -1);
+					addOffset("singDOWN", -58, -73);
+					addOffset("singLEFT", 66, 2);
 					addOffset("singRIGHT", 0, 0);
 					
-					addOffset("singUPmiss", 39, -1);
-					addOffset("singDOWNmiss", -16, -43);
-					addOffset("singLEFTmiss", 57, 2);
-					addOffset("singRIGHTmiss", -32, 0);
+					addOffset("singUPmiss", 45, -1);
+					addOffset("singDOWNmiss", -45, -63);
+					addOffset("singLEFTmiss", 80, 2);
+					addOffset("singRIGHTmiss", -46, 0);
 
 					playAnim('idle');
 				}
 		}
+		
+		if (flipX != isPlayer && animation.getByName("singRIGHT") != null && animation.getByName("singLEFT") != null) {
+			// var animArray
+			var oldRight = animation.getByName('singRIGHT').frames;
+			animation.getByName('singRIGHT').frames = animation.getByName('singLEFT').frames;
+			animation.getByName('singLEFT').frames = oldRight;
+
+			// IF THEY HAVE MISS ANIMATIONS??
+			if (animation.getByName('singRIGHTmiss') != null) {
+				var oldMiss = animation.getByName('singRIGHTmiss').frames;
+				animation.getByName('singRIGHTmiss').frames = animation.getByName('singLEFTmiss').frames;
+				animation.getByName('singLEFTmiss').frames = oldMiss;
+			}
+		}
 
 		if (isPlayer) {
 			flipX = !flipX;
-
-			// Doesn't flip for BF, since his are already in the right place???
-			if (!curCharacter.startsWith('bf'))
-			{
-				// var animArray
-				var oldRight = animation.getByName('singRIGHT').frames;
-				animation.getByName('singRIGHT').frames = animation.getByName('singLEFT').frames;
-				animation.getByName('singLEFT').frames = oldRight;
-
-				// IF THEY HAVE MISS ANIMATIONS??
-				if (animation.getByName('singRIGHTmiss') != null)
-				{
-					var oldMiss = animation.getByName('singRIGHTmiss').frames;
-					animation.getByName('singRIGHTmiss').frames = animation.getByName('singLEFTmiss').frames;
-					animation.getByName('singLEFTmiss').frames = oldMiss;
-				}
-			}
 		}
 		
 		if (frames == null) {
@@ -674,9 +690,44 @@ class Character extends FlxSprite
 		}
 	}
 
+	public static var charHealthIcons:Map<String, String> = new Map<String, String>();
+
+	public static function loadCharacterJson(name:String, mod:String) {
+		var thing:String = 'assets/objects/characters/${name}.json';
+		var thingMy:String = 'mods/${mod}/objects/characters/${name}.json';
+		var isMyMod = mod != "" && FileSystem.exists(thingMy);
+		trace('loading custom char of ${isMyMod ? thingMy : thing}');
+		if (isMyMod ? FileSystem.exists(thingMy) : OpenFlAssets.exists(thing)) {
+			var loadStr = isMyMod ? File.getContent(thingMy) : Assets.getText(thing);
+			trace(loadStr);
+			var loadedStuff:SwagCharacter = cast CoolUtil.loadJsonFromString(loadStr);
+			charHealthIcons.set('${mod}:${name}', loadedStuff.healthIcon);
+			return loadedStuff;
+		}
+		return null;
+	}
+
+	public static function getHealthIcon(name:String, mod:String, ?force:Bool = false) {
+		if (force || !charHealthIcons.exists('${mod}:${name}')) {
+			var json = loadCharacterJson(name, mod);
+			if (json != null) {
+				return json.healthIcon;
+			}
+			return name;
+		}
+		return charHealthIcons.get('${mod}:${name}');
+	}
+
+	public static function loadAnimation(sprite:FlxSprite, anim:SwagCharacterAnim) {
+		if (anim.indicies != null && anim.indicies.length > 0) {
+			sprite.animation.addByIndices(anim.name, anim.anim, anim.indicies, "", anim.framerate, anim.loop);
+		} else {
+			sprite.animation.addByPrefix(anim.name, anim.anim, anim.framerate, anim.loop);
+		}
+	}
+
 	override function update(elapsed:Float) {
-		if (!Std.isOfType(this, Boyfriend))
-		{
+		if (!Std.isOfType(this, Boyfriend)) {
 			if (animation.curAnim.name.startsWith('sing'))
 			{
 				holdTimer += elapsed;
@@ -707,7 +758,7 @@ class Character extends FlxSprite
 	 * FOR GF DANCING SHIT
 	 */
 	public function dance() {
-		if ((animation.curAnim != null && (animation.curAnim.name == 'hairBlow' || (animation.curAnim.name.startsWith('sing') && !animation.curAnim.finished))) || debugMode) {
+		if (debugMode || (animation.curAnim != null && (animation.curAnim.name == 'hairBlow' || (animation.curAnim.name.startsWith('sing') && !animation.curAnim.finished)))) {
 			return;
 		}
 		if (danceType) {
@@ -725,13 +776,17 @@ class Character extends FlxSprite
 		y += positionOffset[1];
 	}
 
-	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
-	{
+	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void {
 		animation.play(AnimName, Force, Reversed, Frame);
 
 		var daOffset = animOffsets.get(AnimName);
 		if (animOffsets.exists(AnimName)) {
 			offset.set(daOffset[0], daOffset[1]);
+			if (flipX) {
+				//get width of the current animation frame
+				var framewidth = frames.frames[animation.curAnim.curFrame].sourceSize.x;
+				offset.x = (framewidth * scale.x) - offset.x;
+			}
 		} else {
 			offset.set(0, 0);
 		}

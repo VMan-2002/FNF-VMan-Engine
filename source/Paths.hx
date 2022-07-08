@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.graphics.frames.FlxAtlasFrames;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
+import sys.FileSystem;
 #if polymod
 import polymod.backends.PolymodAssets;
 #end
@@ -36,6 +37,17 @@ class Paths
 			return levelPath;
 
 		return getPreloadPath(file);
+	}
+
+	public static function getModPath(path:String, modName:String, type:AssetType) {
+		return modName == "" ? getPath(path, type) : 'mods/${modName}/' + path;
+	}
+
+	public static function getModOrGamePath(path:String, modName:String, type:AssetType) {
+		var modThing = getModPath(path, modName, type);
+		if (FileSystem.exists(modThing))
+			return modThing;
+		return getPath(path, type);
 	}
 
 	static public function getLibraryPath(file:String, library = "preload")
@@ -90,12 +102,16 @@ class Paths
 
 	inline static public function voices(song:String)
 	{
-		return 'songs:assets/songs/${Highscore.formatSong(song)}/Voices.$SOUND_EXT';
+		return getSongPathThing(song, 'Voices');
 	}
 
 	inline static public function inst(song:String)
 	{
-		return 'songs:assets/songs/${Highscore.formatSong(song)}/Inst.$SOUND_EXT';
+		return getSongPathThing(song, 'Inst');
+	}
+
+	inline static function getSongPathThing(song:String, type:String) {
+		return 'songs:assets/songs/${Highscore.formatSong(song)}/${type}.$SOUND_EXT';
 	}
 
 	inline static public function image(key:String, ?library:String)
