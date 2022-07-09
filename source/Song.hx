@@ -31,6 +31,8 @@ typedef SwagSong =
 	var healthDrainMin:Float;
 	
 	var moreCharacters:Array<String>;
+
+	var actions:Array<String>;
 }
 
 class Song
@@ -53,6 +55,8 @@ class Song
 	public var healthDrain:Float = 0;
 	public var healthDrainMin:Float = 0;
 	public var moreCharacters:Array<String> = new Array<String>();
+
+	public var actions:Array<String> = new Array<String>();
 
 	public function new(song, notes, bpm)
 	{
@@ -111,6 +115,10 @@ class Song
 
 		if (swagShit.usedNoteTypes == null || swagShit.usedNoteTypes.length == 0) {
 			swagShit.usedNoteTypes = ["Normal Note"];
+		}
+
+		if (swagShit.actions == null) {
+			swagShit.actions = new Array<String>();
 		}
 		
 		return swagShit;

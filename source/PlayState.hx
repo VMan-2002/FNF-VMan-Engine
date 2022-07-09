@@ -73,9 +73,14 @@ class PlayState extends MusicBeatState
 	public var strumLine:FlxSprite;
 	private var curSection:Int = 0;
 
-	private var camFollow:FlxObject;
+	public var camFollow:FlxObject;
+	public var camFollowPos:FlxObject;
+	public var camFollowOffset:FlxObject;
+	public var camFollowSpeed:Float = 1;
+	public var camOffset:FlxPoint = new FlxPoint(0, 0);
+	public var camIsFollowing:Bool = true;
 
-	private static var prevCamFollow:FlxObject;
+	public static var prevCamFollow:FlxObject;
 
 	public var strumLineNotes = new Array<StrumNote>();
 	public var strumLines:FlxTypedGroup<StrumLine>;
@@ -529,7 +534,7 @@ class PlayState extends MusicBeatState
 				bgGirls = new BackgroundDancer(-100, 190, "bgFreaks");
 				bgGirls.scrollFactor.set(0.9, 0.9);
 
-				if (sn == 'roses') {
+				if (SONG.actions.indexOf("bgFreaksAngry") > -1) {
 					bgGirls.getScared();
 				}
 
@@ -659,10 +664,6 @@ class PlayState extends MusicBeatState
 		}
 
 		dad = new Character(100, 100, SONG.player2, false, modName);
-		
-
-		//var selector = new FlxSprite(100, 100).makeGraphic(10, 10, FlxColor.RED);
-		//add(selector);
 
 		gf = new Character(400, 130, gfVersion, false, modName);
 		gf.scrollFactor.set(0.95, 0.95);
@@ -717,16 +718,22 @@ class PlayState extends MusicBeatState
 			case 'schoolEvil':
 				// trailArea.scrollFactor.set();
 
-				var evilTrail = new FlxTrail(dad, null, 4, 24, 0.3, 0.069);
-				// evilTrail.changeValuesEnabled(false, false, false, false);
-				// evilTrail.changeGraphic()
-				add(evilTrail);
-				// evilTrail.scrollFactor.set(1.1, 1.1);
-
 				boyfriend.x += 200;
 				boyfriend.y += 220;
 				gf.x += 180;
 				gf.y += 300;
+		}
+
+		if (SONG.actions.indexOf("spookyEnemy") != -1) {
+			var evilTrail = new FlxTrail(dad, null, 4, 24, 0.3, 0.069);
+			// evilTrail.changeValuesEnabled(false, false, false, false);
+			// evilTrail.changeGraphic()
+			add(evilTrail);
+			// evilTrail.scrollFactor.set(1.1, 1.1);
+		}
+		if (SONG.actions.indexOf("spookyPlayer") != -1) {
+			var evilTrail = new FlxTrail(boyfriend, null, 4, 24, 0.3, 0.069);
+			add(evilTrail);
 		}
 		if (customStageCharPos != null) {
 			for (i in 0...Character.activeArray.length) {
@@ -785,18 +792,19 @@ class PlayState extends MusicBeatState
 		// add(strumLine);
 
 		camFollow = new FlxObject(0, 0, 1, 1);
+		camFollowPos = new FlxObject(0, 0, 1, 1);
+		camFollowOffset = new FlxObject(0, 0, 1, 1);
 
 		camFollow.setPosition(camPos.x, camPos.y);
 
-		if (prevCamFollow != null)
-		{
+		if (prevCamFollow != null) {
 			camFollow = prevCamFollow;
 			prevCamFollow = null;
 		}
 
 		add(camFollow);
 
-		FlxG.camera.follow(camFollow, LOCKON, 0.04);
+		FlxG.camera.follow(camFollowPos, LOCKON, 1);
 		// FlxG.camera.setScrollBounds(0, FlxG.width, 0, FlxG.height);
 		FlxG.camera.zoom = defaultCamZoom;
 		FlxG.camera.focusOn(camFollow.getPosition());
@@ -816,6 +824,7 @@ class PlayState extends MusicBeatState
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
 			'health', 0, 2);
 		healthBar.scrollFactor.set();
+		//todo: healthbar colors
 		healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
 		// healthBar
 		add(healthBar);
@@ -857,45 +866,47 @@ class PlayState extends MusicBeatState
 		// cameras = [FlxG.cameras.list[1]];
 		startingSong = true;
 
-		if (isStoryMode)
-		{
-			switch (curSong.toLowerCase())
-			{
-				case "winter-horrorland":
-					var blackScreen:FlxSprite = new FlxSprite(0, 0).makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2), FlxColor.BLACK);
-					add(blackScreen);
-					blackScreen.scrollFactor.set();
-					camHUD.visible = false;
+		if (isStoryMode) {
+			if (SONG.actions.indexOf("winterHorrorlandIntro") > -1) {
+				var blackScreen:FlxSprite = new FlxSprite(0, 0).makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2), FlxColor.BLACK);
+				add(blackScreen);
+				blackScreen.scrollFactor.set();
+				camHUD.visible = false;
 
-					new FlxTimer().start(0.1, function(tmr:FlxTimer)
+				new FlxTimer().start(0.1, function(tmr:FlxTimer)
+				{
+					remove(blackScreen);
+					FlxG.sound.play(Paths.sound('Lights_Turn_On'));
+					camFollow.y = -2050;
+					camFollow.x += 200;
+					FlxG.camera.focusOn(camFollow.getPosition());
+					FlxG.camera.zoom = 1.5;
+
+					new FlxTimer().start(0.8, function(tmr:FlxTimer)
 					{
+						camHUD.visible = true;
 						remove(blackScreen);
-						FlxG.sound.play(Paths.sound('Lights_Turn_On'));
-						camFollow.y = -2050;
-						camFollow.x += 200;
-						FlxG.camera.focusOn(camFollow.getPosition());
-						FlxG.camera.zoom = 1.5;
-
-						new FlxTimer().start(0.8, function(tmr:FlxTimer)
-						{
-							camHUD.visible = true;
-							remove(blackScreen);
-							FlxTween.tween(FlxG.camera, {zoom: defaultCamZoom}, 2.5, {
-								ease: FlxEase.quadInOut,
-								onComplete: function(twn:FlxTween)
-								{
-									startCountdown();
-								}
-							});
+						FlxTween.tween(FlxG.camera, {zoom: defaultCamZoom}, 2.5, {
+							ease: FlxEase.quadInOut,
+							onComplete: function(twn:FlxTween)
+							{
+								startCountdown();
+							}
 						});
 					});
+				});
+			}
+			switch (curSong.toLowerCase())
+			{
 				case 'senpai' | 'thorns':
 					schoolIntro(doof);
 				case 'roses':
 					FlxG.sound.play(Paths.sound('ANGRY'));
 					schoolIntro(doof);
 				default:
-					startCountdown();
+					if (SONG.actions.indexOf("winterHorrorlandIntro") <= -1) {
+						startCountdown();
+					}
 			}
 		}
 		else
@@ -1454,49 +1465,11 @@ class PlayState extends MusicBeatState
 				// trace(PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection);
 			}*/
 
-			if (!SONG.notes[currentSection].mustHitSection && focusCharacter != dad) {
-				focusCharacter = dad;
-				camFollow.setPosition(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
-				// camFollow.setPosition(lucky.getMidpoint().x - 120, lucky.getMidpoint().y + 210);
+			var newFocus:Character = SONG.notes[currentSection].mustHitSection ? boyfriend : dad;
 
-				switch (dad.curCharacter) {
-					case 'mom':
-						camFollow.y = dad.getMidpoint().y;
-					case 'senpai' | 'senpai-angry':
-						camFollow.y = dad.getMidpoint().y - 430;
-						camFollow.x = dad.getMidpoint().x - 100;
-				}
-
-				if (dad.curCharacter == 'mom')
-					vocals.volume = 1;
-
-				if (SONG.song.toLowerCase() == 'tutorial') {
-					tweenCamIn();
-				}
-			}
-
-			if (SONG.notes[currentSection].mustHitSection && focusCharacter != boyfriend) {
-				focusCharacter = boyfriend;
-				camFollow.setPosition(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
-
-				switch (curStage)
-				{
-					case 'limo':
-						camFollow.x = boyfriend.getMidpoint().x - 300;
-					case 'mall':
-						camFollow.y = boyfriend.getMidpoint().y - 200;
-					case 'school':
-						camFollow.x = boyfriend.getMidpoint().x - 200;
-						camFollow.y = boyfriend.getMidpoint().y - 200;
-					case 'schoolEvil':
-						camFollow.x = boyfriend.getMidpoint().x - 200;
-						camFollow.y = boyfriend.getMidpoint().y - 200;
-				}
-
-				if (SONG.song.toLowerCase() == 'tutorial')
-				{
-					FlxTween.tween(FlxG.camera, {zoom: 1}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut});
-				}
+			if (focusCharacter != newFocus) {
+				camFollowSetOnCharacter(newFocus);
+				focusCharacter = newFocus;
 			}
 		}
 
@@ -1659,6 +1632,12 @@ class PlayState extends MusicBeatState
 			});
 		}
 
+		if (camIsFollowing) {
+			var speed = Math.min(camFollowSpeed * 2 * elapsed, 1);
+			camFollowPos.x = FlxMath.lerp(camFollowPos.x, camFollow.x + camFollowOffset.x, speed);
+			camFollowPos.y = FlxMath.lerp(camFollowPos.y, camFollow.y + camFollowOffset.y, speed);
+		}
+
 		if (!inCutscene)
 			keyShit();
 
@@ -1666,6 +1645,46 @@ class PlayState extends MusicBeatState
 		if (FlxG.keys.justPressed.ONE)
 			endSong();
 		#end
+	}
+
+	public function camFollowSetOnCharacter(char:Character) {
+		if (char == dad) {
+			focusCharacter = dad;
+			camFollow.setPosition(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
+
+			if (SONG.song.toLowerCase() == 'tutorial') {
+				tweenCamIn();
+			}
+		}
+
+		if (char == boyfriend) {
+			focusCharacter = boyfriend;
+			camFollow.setPosition(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
+
+			switch (curStage)
+			{
+				case 'limo':
+					camFollow.x = char.getMidpoint().x - 300;
+				case 'mall':
+					camFollow.y = char.getMidpoint().y - 200;
+				case 'school' | 'schoolEvil':
+					camFollow.x = char.getMidpoint().x - 200;
+					camFollow.y = char.getMidpoint().y - 200;
+			}
+
+			if (SONG.song.toLowerCase() == 'tutorial') {
+				FlxTween.tween(FlxG.camera, {zoom: 1}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut});
+			}
+		}
+
+		switch (char.curCharacter) {
+			case 'mom':
+				camFollow.y = char.getMidpoint().y;
+				vocals.volume = 1;
+			case 'senpai' | 'senpai-angry':
+				camFollow.y = char.getMidpoint().y - 430;
+				camFollow.x = char.getMidpoint().x - 100;
+		}
 	}
 
 	function endSong():Void
@@ -1718,8 +1737,7 @@ class PlayState extends MusicBeatState
 				trace('LOADING NEXT SONG');
 				trace(PlayState.storyPlaylist[0].toLowerCase() + difficulty);
 
-				if (SONG.song.toLowerCase() == 'eggnog')
-				{
+				if (SONG.actions.indexOf("lightsOffEnding") > -1) {
 					var blackShit:FlxSprite = new FlxSprite(-FlxG.width * FlxG.camera.zoom,
 						-FlxG.height * FlxG.camera.zoom).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
 					blackShit.scrollFactor.set();
@@ -1733,7 +1751,7 @@ class PlayState extends MusicBeatState
 				FlxTransitionableState.skipNextTransOut = true;
 				prevCamFollow = camFollow;
 
-				PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0].toLowerCase() + difficulty, PlayState.storyPlaylist[0]);
+				PlayState.SONG = Song.loadFromJson(Highscore.formatSong(PlayState.storyPlaylist[0], PlayState.storyDifficulty), PlayState.storyPlaylist[0]);
 				FlxG.sound.music.stop();
 
 				LoadingState.loadAndSwitchState(new PlayState());
