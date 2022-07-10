@@ -104,7 +104,9 @@ difficulty_normal::Normal
 difficulty_hard::Hard
 difficulty_mania::Mania
 difficulty_extra::Extra
-//^ extra keys
+//extra = extra keys
+mainmenu_is textbased::false
+//whether the main menu buttons are text or sprites. this isn't actually implemented yet tho
 mainmenu_story mode::STORY MODE
 mainmenu_free play::FREE PLAY
 mainmenu_donate::DONATE
@@ -126,6 +128,8 @@ charteditor_reload json::Reload JSON
 charteditor_load autosave::load autosave
 charteditor_mute instrumental::Mute Instrumental\n(in editor)
 charteditor_section number::Section: #0
+charteditor_step number::Step: #0
+charteditor_snap mult::Snap mult: #0
 charteditor_note type::Note Type
 charteditor_notetype_normal note::Normal Note
 charteditor_notetype_hurt note::Hurt Note

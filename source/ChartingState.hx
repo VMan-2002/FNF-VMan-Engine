@@ -95,6 +95,16 @@ class ChartingState extends MusicBeatState
 	var chartNoteHitSfx:FlxSound = new FlxSound().loadEmbedded(Paths.sound("chartHit", "shared"));
 	var notesPast:Map<Int, Bool> = new Map<Int, Bool>();
 
+	var snapMults:Array<Float> = [
+		16/12,
+		16/16,
+		16/24,
+		16/32,
+		16/48,
+		16/64
+	];
+	var curSnapMult:Int = 1;
+
 	override function create()
 	{
 		curSection = lastSection;
@@ -196,7 +206,7 @@ class ChartingState extends MusicBeatState
 
 		UI_box.resize(300, 400);
 		UI_box.x = FlxG.width - 480;
-		UI_box.y = 70;
+		UI_box.y = 24 * 4;
 		add(UI_box);
 		bpmTxt.x = UI_box.x;
 
@@ -559,25 +569,29 @@ class ChartingState extends MusicBeatState
 
 	override function getEvent(id:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>)
 	{
-		if (id == FlxUICheckBox.CLICK_EVENT)
-		{
+		if (id != "over_button" && id != "out_button") {
+			//that just spams the log otherwise
+			FlxG.log.add('ui event type ${id} | sender ${sender} | data ${data} | params ${params}');
+		}
+
+		if (id == FlxUICheckBox.CLICK_EVENT) {
 			var check:FlxUICheckBox = cast sender;
-			var label = check.getLabel().name;
-			switch (label)
-			{
+			var label = check.name;
+			trace('checkbox - ${label}');
+			switch (label) {
 				case 'check_mustHit':
 					_song.notes[curSection].mustHitSection = check.checked;
+					FlxG.log.add('changed must hit of ${curSection} to ${check.checked}');
 					updateHeads();
-
 				case 'check_changeBPM':
 					_song.notes[curSection].changeBPM = check.checked;
-					FlxG.log.add('changed bpm shit');
+					FlxG.log.add('changed bpm shit of ${curSection} to ${check.checked}');
 				case "check_altAnim":
 					_song.notes[curSection].altAnim = check.checked;
-
+					FlxG.log.add('changed alt anim of ${curSection} to ${check.checked}');
 				case 'check_changeMania':
 					_song.notes[curSection].changeMania = check.checked;
-					FlxG.log.add('changed mania shit');
+					FlxG.log.add('changed mania shit of ${curSection} to ${check.checked}');
 					updateGridChangeMania();
 			}
 		}
@@ -586,6 +600,7 @@ class ChartingState extends MusicBeatState
 			var nums:FlxUINumericStepper = cast sender;
 			var wname = nums.name;
 			FlxG.log.add(wname);
+			trace('numeric stepper - ${wname}');
 			if (wname == 'section_length')
 			{
 				_song.notes[curSection].lengthInSteps = Std.int(nums.value);
@@ -612,8 +627,6 @@ class ChartingState extends MusicBeatState
 				updateGrid();
 			}
 		}
-
-		// FlxG.log.add(id + " WEED " + sender + " WEED " + data + " WEED " + params);
 	}
 
 	var updatedSection:Bool = false;
@@ -708,8 +721,10 @@ class ChartingState extends MusicBeatState
 			dummyArrow.x = Math.floor(FlxG.mouse.x / GRID_SIZE) * GRID_SIZE;
 			if (FlxG.keys.pressed.SHIFT)
 				dummyArrow.y = FlxG.mouse.y;
-			else
-				dummyArrow.y = Math.floor(FlxG.mouse.y / GRID_SIZE) * GRID_SIZE;
+			else {
+				var funnySnap = GRID_SIZE * snapMults[curSnapMult];
+				dummyArrow.y = Math.floor(FlxG.mouse.y / funnySnap) * funnySnap;
+			}	
 		}
 
 		if (FlxG.keys.justPressed.ENTER)
@@ -857,6 +872,10 @@ class ChartingState extends MusicBeatState
 			changeSection(curSection + shiftThing);
 		if (FlxG.keys.justPressed.LEFT || FlxG.keys.justPressed.A)
 			changeSection(curSection - shiftThing);
+		if (FlxG.keys.justPressed.COMMA && curSnapMult >= 0)
+			curSnapMult -= 1;
+		if (FlxG.keys.justPressed.PERIOD && curSnapMult + 1 < snapMults.length)
+			curSnapMult += 1;
 
 		bpmTxt.text = bpmTxt.text = Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2))
 			+ " / "
@@ -864,7 +883,9 @@ class ChartingState extends MusicBeatState
 			+ "\n"
 			+ Translation.getTranslation("section number", "charteditor", [Std.string(curSection)])
 			+ "\n"
-			+ Translation.getTranslation("step number", "charteditor", [Std.string(curStep)]);
+			+ Translation.getTranslation("step number", "charteditor", [Std.string(curStep)])
+			+ "\n"
+			+ Translation.getTranslation("snap mult", "charteditor", [Std.string(snapMults[curSnapMult])]);
 		super.update(elapsed);
 	}
 
@@ -988,8 +1009,7 @@ class ChartingState extends MusicBeatState
 
 	function updateHeads():Void
 	{
-		if (check_mustHitSection.checked)
-		{
+		if (check_mustHitSection.checked) {
 			leftIcon.changeCharacter(_song.player1);
 			rightIcon.changeCharacter(_song.player2);
 		} else {
