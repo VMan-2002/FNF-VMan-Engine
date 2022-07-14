@@ -22,6 +22,7 @@ class DialogueFile {
 	public var texts:Array<DialogueLine> = new Array<DialogueLine>();
 	public var dontClose:Bool = false;
 	public var music:String = "";
+	public var usedInFreeplay:Bool = false;
 }
 
 class DialogueLine {

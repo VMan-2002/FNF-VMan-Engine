@@ -129,7 +129,7 @@ charteditor_load autosave::load autosave
 charteditor_mute instrumental::Mute Instrumental\n(in editor)
 charteditor_section number::Section: #0
 charteditor_step number::Step: #0
-charteditor_snap mult::Snap mult: #0
+charteditor_snap mult::Snap mult ##1: #0
 charteditor_note type::Note Type
 charteditor_notetype_normal note::Normal Note
 charteditor_notetype_hurt note::Hurt Note
@@ -199,6 +199,7 @@ mods_enable::Enabled
 mods_disabled::Disabled
 mods_enable all::Enable All
 mods_disable all::Disable All
+mods_view in mod browser::View in Mod Browser
 //the new stuff
 playstate_hud_ghost hits::GhostHits:#0
 modbrowser_tag_song_desc::Playable song with chart
@@ -229,15 +230,17 @@ multiplayer_promote to leader::Promote to Leader
 multiplayer_leader changed::#0 is now the leader.
 multiplayer_rule_allowcharacters::Allow Characters
 multiplayer_rule_allowcharacters_desc::Allow players to choose custom playable characters.
+multiplayer_rule_allowscriptcharacters::Allow Scripted Characters
+multiplayer_rule_allowscriptcharacters_desc::Allow custom playable characters to run scripts.
 multiplayer_rule_maxplayers::Max Players
 multiplayer_rule_maxplayers_desc::The maximum amount of players that may join this lobby.
 multiplayer_rule_gfchoice::GF Choice
 multiplayer_gfchoice_turns::Turns
-multiplayer_gfchoice_turns_desc::Each player takes turns having their selected GF appear.
+multiplayer_gfchoice_turns_desc::Each player takes turns having their selected Girlfriend appear.
 multiplayer_gfchoice_random::Random
-multiplayer_gfchoice_random_desc::A random player's selected GF appears every time.
+multiplayer_gfchoice_random_desc::A random player's selected Girlfriend appears every time.
 multiplayer_gfchoice_host::Host
-multiplayer_gfchoice_host_desc::The host's selected GF always appears.
+multiplayer_gfchoice_host_desc::The host's selected Girlfriend always appears.
 multiplayer_rule_mode::Game Mode
 multiplayer_mode_royale::Battle Royale
 multiplayer_mode_royale_desc::All players play the player side notes.
@@ -259,6 +262,8 @@ options_language_desc::Change the language of the game's text.
 freeplay_no songs::You have no songs!\nYou need to enable a mod first.
 storymenu_no weeks::You have no weeks!\nYou need to enable a mod first.
 difficulty_erect::Erect
+difficulty_fair::Fair
+difficulty_unfair::Unfair
 //probably leave "Erect" untranslated, because OST
 difficulty_expert::Expert
 difficulty_insane::Insane
@@ -272,3 +277,4 @@ charteditor_event_blammed lights_pink::Pink
 charteditor_event_blammed lights_red::Red
 charteditor_event_blammed lights_orange::Orange
 charteditor_event_blammed lights_end::End
+charteditor_event_philly glow::Philly Glow

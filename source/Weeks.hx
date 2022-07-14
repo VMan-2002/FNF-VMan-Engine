@@ -1,21 +1,24 @@
 package;
+import sys.FileSystem;
+import sys.io.File;
+
+using StringTools;
 
 typedef SwagWeek =
 {
-	var songs:Array<Array<String>>;
+	var songs:Array<String>;
 	var title:String;
 	var name:String;
 	var menuChars:Array<String>;
-	var visibleFreeplay:Bool;
 	var visibleStoryMenu:Bool;
 	var previous:Null<String>;
 	var requiredToUnlock:Null<Array<String>>;
 	var id:String;
+	var modName:String;
 }
 
 class Weeks //we REALYL gettin in the deep stuff!
 {
-	//todo: implement this
 	inline function EmptyThing(a:Null<String>):Null<String> {
 		return a == "" ? null : a;
 	}
@@ -37,15 +40,31 @@ class Weeks //we REALYL gettin in the deep stuff!
 	}
 	
 	public function getAllWeeks():Array<SwagWeek> {
-		var weeks:Array<SwagWeek> = [
-			getWeek("tutorial"),
-			getWeek("week1"),
-			getWeek("week2"),
-			getWeek("week3"),
-			getWeek("week4"),
-			getWeek("week5"),
-			getWeek("week6")
-		]; //todo: yes it's hardcoded. make the unhardcoded lol
+		//for every mod folder, read the weeks folder
+		//add the weeks an array
+		var weeks:Array<SwagWeek> = new Array<SwagWeek>();
+		for (thing in ModLoad.enabledMods) {
+			var path = "mods/" + thing + "/weeks/";
+			//if the folder exists, read it
+			if (FileSystem.exists(path)) {
+				var files = FileSystem.readDirectory(path);
+				for (file in files) {
+					if (file.endsWith(".json")) {
+						var week = CoolUtil.loadJsonFromString(File.getContent(path + file));
+						week.id = file.substring(0, file.length - 5);
+						week.name = week.name == null ? week.id : week.name;
+						week.title = week.title == null ? week.name : week.title;
+						week.menuChars = week.menuChars == null ? new Array<String>() : week.menuChars;
+						week.visibleStoryMenu = week.visibleStoryMenu == null ? false : week.visibleStoryMenu;
+						week.previous = week.previous == null ? null : week.previous;
+						week.requiredToUnlock = week.requiredToUnlock == null ? null : week.requiredToUnlock;
+						week.songs = week.songs == null ? new Array<String>() : week.songs;
+						week.modName = thing;
+						weeks.push(week);
+					}
+				}
+			}
+		}
 		haxe.ds.ArraySort.sort(weeks, function(a, b) {return SortWeeks(a, b);});
 		return weeks;
 	}
@@ -57,6 +76,7 @@ class Weeks //we REALYL gettin in the deep stuff!
 		return true; //todo: make week unlocks Real
 	}
 	
+	/*
 	public function getWeek(name:String) {
 		switch(name) {
 			case "tutorial":
@@ -161,4 +181,5 @@ class Weeks //we REALYL gettin in the deep stuff!
 			id: "my_week"
 		}
 	}
+	*/
 }

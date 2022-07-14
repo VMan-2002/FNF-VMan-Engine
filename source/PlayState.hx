@@ -799,6 +799,7 @@ class PlayState extends MusicBeatState
 
 		if (prevCamFollow != null) {
 			camFollow = prevCamFollow;
+			camFollowPos = prevCamFollow;
 			prevCamFollow = null;
 		}
 
@@ -824,8 +825,8 @@ class PlayState extends MusicBeatState
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
 			'health', 0, 2);
 		healthBar.scrollFactor.set();
-		//todo: healthbar colors
-		healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
+		//healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
+		healthBar.createFilledBar(dad.healthBarColor, boyfriend.healthBarColor);
 		// healthBar
 		add(healthBar);
 
@@ -865,6 +866,9 @@ class PlayState extends MusicBeatState
 
 		// cameras = [FlxG.cameras.list[1]];
 		startingSong = true;
+		if (SONG.actions.indexOf("loadLuaTest") > -1) {
+			luaScripts.push(new LuaScript(Paths.txt('${Highscore.formatSong(SONG.song)}/test.lua'), this));
+		}
 
 		if (isStoryMode) {
 			if (SONG.actions.indexOf("winterHorrorlandIntro") > -1) {
@@ -1590,12 +1594,11 @@ class PlayState extends MusicBeatState
 					&& (isComputer || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit))))
 				{
 					//todo: make this better in downscroll
-					var swagRect = new FlxRect(0, (strumLine.y + (Note.swagWidth / 2)) - daNote.y, daNote.width * 2, daNote.height * 2);
-					swagRect.y /= daNote.scale.y;
+					var since = Conductor.songPosition - daNote.strumTime;
+					var clipEnd = daNote.strumTime + Conductor.crochet;
+					var clipFraction = (clipEnd - since) / Conductor.crochet;
+					var swagRect = new FlxRect(0, clipFraction * daNote.height / daNote.scale.x, daNote.width / daNote.scale.x, daNote.height * daNote.scale.x);
 					swagRect.height -= swagRect.y;
-					if (Options.downScroll) {
-						swagRect.y = 0;
-					}
 
 					daNote.clipRect = swagRect;
 				}
@@ -1800,6 +1803,7 @@ class PlayState extends MusicBeatState
 			goods += 1;
 		} else {
 			sicks += 1;
+			//todo: sometimes notesplashes are the wrong color
 			grpNoteSplashes.recycle(NoteSplash, NoteSplash.new).playNoteSplash(playerStrums.members[daNote.noteData]);
 		}
 		if (Options.botplay) {

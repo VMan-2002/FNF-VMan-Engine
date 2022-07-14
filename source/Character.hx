@@ -6,6 +6,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.animation.FlxBaseAnimation;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.util.FlxColor;
 import haxe.Json;
 import lime.utils.Assets;
 
@@ -29,6 +30,9 @@ typedef SwagCharacter = {
 	public var position:Null<Array<Float>>;
 	public var isPlayer:Null<Bool>;
 	public var scale:Null<Float>;
+	public var danceModulo:Null<Int>;
+	public var cameraOffset:Null<Array<Float>>;
+	public var healthBarColor:Null<Array<Int>>;
 }
 
 typedef SwagCharacterAnim = {
@@ -61,8 +65,14 @@ class Character extends FlxSprite
 	public var myMod:String;
 	
 	public var healthIcon:String;
+	public var healthBarColor:FlxColor;
 	public var deathChar:Null<String> = null;
 	public var deathSound:Null<String> = null;
+
+	public var curDances:Int = 0;
+	public var moduloDances:Int = 1;
+
+	public var cameraOffset:Array<Float> = [0, 0];
 
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false, ?myMod:String = "") {
 		super(x, y);
@@ -82,6 +92,8 @@ class Character extends FlxSprite
 
 		var tex:FlxAtlasFrames;
 		antialiasing = true;
+
+		healthBarColor = new FlxColor(0xFF888888);
 
 		switch (curCharacter)
 		{
@@ -117,6 +129,7 @@ class Character extends FlxSprite
 
 				playAnim('danceRight');
 
+				healthBarColor.setRGB(165, 0, 77);
 			case 'gf-christmas':
 				tex = Paths.getSparrowAtlas('characters/gfChristmas');
 				frames = tex;
@@ -148,6 +161,7 @@ class Character extends FlxSprite
 
 				playAnim('danceRight');
 
+				healthBarColor.setRGB(165, 0, 77);
 			case 'gf-car':
 				tex = Paths.getSparrowAtlas('characters/gfCar');
 				frames = tex;
@@ -161,6 +175,7 @@ class Character extends FlxSprite
 
 				playAnim('danceRight');
 
+				healthBarColor.setRGB(165, 0, 77);
 			case 'gf-pixel':
 				tex = Paths.getSparrowAtlas('characters/gfPixel');
 				frames = tex;
@@ -178,6 +193,8 @@ class Character extends FlxSprite
 				antialiasing = false;
 
 				deathSound = 'fnf_loss_sfx-pixel';
+
+				healthBarColor.setRGB(165, 0, 77);
 			case 'dad':
 				// DAD ANIMATION LOADING CODE
 				tex = Paths.getSparrowAtlas('characters/DADDY_DEAREST');
@@ -195,6 +212,8 @@ class Character extends FlxSprite
 				addOffset("singDOWN", 0, -30);
 
 				playAnim('idle');
+
+				healthBarColor.setRGB(170, 99, 200);
 			case 'spooky':
 				tex = Paths.getSparrowAtlas('characters/spooky_kids_assets');
 				frames = tex;
@@ -216,6 +235,8 @@ class Character extends FlxSprite
 				playAnim('danceRight');
 				
 				positionOffset[1] = 200;
+
+				healthBarColor.setRGB(213, 126, 0);
 			case 'mom':
 				tex = Paths.getSparrowAtlas('characters/Mom_Assets');
 				frames = tex;
@@ -236,6 +257,7 @@ class Character extends FlxSprite
 
 				playAnim('idle');
 
+				healthBarColor.setRGB(216, 85, 142);
 			case 'mom-car':
 				tex = Paths.getSparrowAtlas('characters/momCar');
 				frames = tex;
@@ -255,6 +277,8 @@ class Character extends FlxSprite
 				addOffset("singDOWN", 20, -160);
 
 				playAnim('idle');
+
+				healthBarColor.setRGB(216, 85, 142);
 			case 'monster':
 				tex = Paths.getSparrowAtlas('characters/Monster_Assets');
 				frames = tex;
@@ -272,6 +296,8 @@ class Character extends FlxSprite
 				playAnim('idle');
 				
 				positionOffset[1] = 100;
+
+				healthBarColor.setRGB(243, 255, 110);
 			case 'monster-christmas':
 				tex = Paths.getSparrowAtlas('characters/monsterChristmas');
 				frames = tex;
@@ -289,6 +315,8 @@ class Character extends FlxSprite
 				playAnim('idle');
 				
 				positionOffset[1] = 130;
+
+				healthBarColor.setRGB(243, 255, 110);
 			case 'pico':
 				tex = Paths.getSparrowAtlas('characters/Pico_FNF_assetss');
 				frames = tex;
@@ -319,6 +347,8 @@ class Character extends FlxSprite
 				flipX = true;
 				
 				positionOffset[1] = 300;
+
+				healthBarColor.setRGB(183, 216, 85);
 			case 'bf':
 				var tex = Paths.getSparrowAtlas('characters/BOYFRIEND');
 				frames = tex;
@@ -355,6 +385,8 @@ class Character extends FlxSprite
 				flipX = true;
 
 				positionOffset[1] = 350;
+
+				healthBarColor.setRGB(43, 176, 209);
 			case 'bf-dead':
 				var tex = Paths.getSparrowAtlas('characters/BF_Death');
 				frames = tex;
@@ -372,6 +404,8 @@ class Character extends FlxSprite
 				flipX = true;
 
 				positionOffset[1] = 350;
+
+				healthBarColor.setRGB(43, 176, 209);
 			case 'bf-christmas':
 				var tex = Paths.getSparrowAtlas('characters/bfChristmas');
 				frames = tex;
@@ -403,6 +437,8 @@ class Character extends FlxSprite
 
 				flipX = true;
 				positionOffset[1] = 350;
+
+				healthBarColor.setRGB(43, 176, 209);
 			case 'bf-car':
 				var tex = Paths.getSparrowAtlas('characters/bfCar');
 				frames = tex;
@@ -431,6 +467,8 @@ class Character extends FlxSprite
 
 				flipX = true;
 				positionOffset[1] = 350;
+
+				healthBarColor.setRGB(43, 176, 209);
 			case 'bf-pixel':
 				frames = Paths.getSparrowAtlas('characters/bfPixel');
 				animation.addByPrefix('idle', 'BF IDLE', 24, false);
@@ -469,6 +507,8 @@ class Character extends FlxSprite
 				positionOffset[1] = 350;
 				deathSound = 'fnf-loss-sfx-pixel';
 				deathChar = 'bf-pixel-dead';
+
+				healthBarColor.setRGB(123, 214, 246);
 			case 'bf-pixel-dead':
 				frames = Paths.getSparrowAtlas('characters/bfPixelsDEAD');
 				animation.addByPrefix('idle', "BF Dies pixel", 24, false);
@@ -488,6 +528,8 @@ class Character extends FlxSprite
 				flipX = true;
 
 				positionOffset[1] = 350;
+
+				healthBarColor.setRGB(123, 214, 246);
 			case 'senpai':
 				frames = Paths.getSparrowAtlas('characters/senpai');
 				animation.addByPrefix('idle', 'Senpai Idle', 24, false);
@@ -511,6 +553,8 @@ class Character extends FlxSprite
 				
 				positionOffset = [150, 360];
 				deathSound = 'fnf-loss-sfx-pixel';
+
+				healthBarColor.setRGB(255, 170, 111);
 			case 'senpai-angry':
 				frames = Paths.getSparrowAtlas('characters/senpai');
 				animation.addByPrefix('idle', 'Angry Senpai Idle', 24, false);
@@ -533,6 +577,8 @@ class Character extends FlxSprite
 
 				positionOffset = [150, 360];
 				deathSound = 'fnf-loss-sfx-pixel';
+
+				healthBarColor.setRGB(255, 170, 111);
 			case 'spirit':
 				frames = Paths.getSparrowAtlas('characters/spirit');
 				animation.addByPrefix('idle', "idle spirit_", 24, false);
@@ -556,6 +602,8 @@ class Character extends FlxSprite
 
 				positionOffset = [-150, 100];
 				deathSound = 'fnf-loss-sfx-pixel';
+
+				healthBarColor.setRGB(255, 60, 110);
 			case 'parents-christmas':
 				frames = Paths.getSparrowAtlas('characters/mom_dad_christmas_assets');
 				animation.addByPrefix('idle', 'Parent Christmas Idle', 24, false);
@@ -583,13 +631,20 @@ class Character extends FlxSprite
 				playAnim('idle');
 
 				positionOffset[0] = -500;
+
+				healthBarColor.setRGB(Std.int(217+175/2), Std.int(85+102/2), Std.int(142+206/2));
 			default: //placeholder guy
 				//try to load character
 				var successLoad = false;
 				#if polymod
-				var loadedStuff:SwagCharacter = loadCharacterJson(curCharacter, myMod);
+				var loadedStuff:Null<SwagCharacter> = null;
+				try {
+					loadedStuff = loadCharacterJson(curCharacter, myMod);
+				} catch(e) {
+					trace("Error loading character "+curCharacter+": " + e.message);
+				}
 				if (loadedStuff != null) {
-					trace('loaded custom char: image ${loadedStuff.image}');
+					trace('loaded custom char for ' + curCharacter);
 					
 					//Char stuff is load. now set up
 					frames = Paths.getSparrowAtlas(loadedStuff.image);
@@ -597,6 +652,8 @@ class Character extends FlxSprite
 						loadAnimation(this, anim);
 						if (anim.offset != null && anim.offset.length > 0) {
 							addOffset(anim.name, anim.offset[0], anim.offset[1]);
+						} else {
+							addOffset(anim.name);
 						}
 					}
 					if (loadedStuff.position != null && loadedStuff.position.length > 0) {
@@ -620,6 +677,15 @@ class Character extends FlxSprite
 					}
 					if (loadedStuff.deathSound != null) {
 						this.deathSound = loadedStuff.deathSound;
+					}
+					if (loadedStuff.danceModulo != null) {
+						this.moduloDances = loadedStuff.danceModulo;
+					}
+					if (loadedStuff.cameraOffset != null) {
+						this.cameraOffset = loadedStuff.cameraOffset;
+					}
+					if (loadedStuff.healthBarColor != null) {
+						this.healthBarColor.setRGB(loadedStuff.healthBarColor[0], loadedStuff.healthBarColor[1], loadedStuff.healthBarColor[2]);
 					}
 					playAnim(loadedStuff.initAnim);
 					antialiasing = loadedStuff.antialias != false;
@@ -678,16 +744,14 @@ class Character extends FlxSprite
 		
 		if (frames == null) {
 			trace('INVALID SPRITE SHEET for $curCharacter');
-		} else {
-			trace('sprite sheet for $curCharacter has '+numFrames+" frames");
 		}
-		
-		danceType = animOffsets.exists("danceLeft");
-		dance();
 		
 		if (animation.curAnim == null) {
 			trace("Animation for char "+curCharacter+" is null somehow! This will cause a crash!");
 		}
+		
+		danceType = animOffsets.exists("danceLeft");
+		dance();
 	}
 
 	public static var charHealthIcons:Map<String, String> = new Map<String, String>();
@@ -761,9 +825,14 @@ class Character extends FlxSprite
 		if (debugMode || (animation.curAnim != null && (animation.curAnim.name == 'hairBlow' || (animation.curAnim.name.startsWith('sing') && !animation.curAnim.finished)))) {
 			return;
 		}
+		if (curDances >= moduloDances) {
+			curDances = 1;
+		} else {
+			curDances++;
+			return;
+		}
 		if (danceType) {
 			danced = !danced;
-
 			if (danced)
 				return playAnim('danceRight');
 			return playAnim('danceLeft');
@@ -783,7 +852,7 @@ class Character extends FlxSprite
 		if (animOffsets.exists(AnimName)) {
 			offset.set(daOffset[0], daOffset[1]);
 			if (flipX) {
-				//get width of the current animation frame
+				//todo: this needs work
 				var framewidth = frames.frames[animation.curAnim.curFrame].sourceSize.x;
 				offset.x = (framewidth * scale.x) - offset.x;
 			}

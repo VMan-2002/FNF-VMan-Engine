@@ -1,5 +1,3 @@
-if anything that is Unused is Translated wrong,
+if anything is Mistranslated,
 
-don't message the translator about it
-
-message me (vman)
+report it as an issue on Github

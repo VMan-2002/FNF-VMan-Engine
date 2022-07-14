@@ -95,18 +95,29 @@ class ChartingState extends MusicBeatState
 	var chartNoteHitSfx:FlxSound = new FlxSound().loadEmbedded(Paths.sound("chartHit", "shared"));
 	var notesPast:Map<Int, Bool> = new Map<Int, Bool>();
 
-	var snapMults:Array<Float> = [
-		16/12,
-		16/16,
-		16/24,
-		16/32,
-		16/48,
-		16/64
-	];
+	var snapMults:Array<Float> = [];
+	var snapMultNames:Array<String> = [];
 	var curSnapMult:Int = 1;
 
 	override function create()
 	{
+		if (snapMults.length == 0) {
+			//read from data/charting_snapMults.txt
+			var snapMultsStr:String = Assets.getText(Paths.txt("charting_snapMults.txt"));
+			var snapMultsArr:Array<String> = snapMultsStr.split("\n");
+			for (snapMultStr in snapMultsArr) {
+				//format: "16/12" = 16 divided by 12
+				var snapMultArr:Array<String> = snapMultStr.split("/");
+				snapMults.push(Std.parseFloat(snapMultArr[0].trim()) / Std.parseFloat(snapMultArr[1].trim()));
+				snapMultNames.push(snapMultStr);
+			}
+			if (snapMults.length == 0) {
+				snapMults.push(1);
+			}
+			if (snapMults.length == 1) {
+				curSnapMult = 0;
+			}
+		}
 		curSection = lastSection;
 
 		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * 16);
@@ -885,7 +896,7 @@ class ChartingState extends MusicBeatState
 			+ "\n"
 			+ Translation.getTranslation("step number", "charteditor", [Std.string(curStep)])
 			+ "\n"
-			+ Translation.getTranslation("snap mult", "charteditor", [Std.string(snapMults[curSnapMult])]);
+			+ Translation.getTranslation("snap mult", "charteditor", [Std.string(snapMultNames[curSnapMult]), Std.string(curSnapMult)]);
 		super.update(elapsed);
 	}
 

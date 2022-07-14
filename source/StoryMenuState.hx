@@ -123,9 +123,9 @@ class StoryMenuState extends MusicBeatState
 		DiscordClient.changePresence("In the Menus", null);
 		#end
 
-		for (i in 0...weekData.length)
-		{
-			var weekThing:MenuItem = new MenuItem(0, yellowBG.y + yellowBG.height + 10, i);
+		//todo: use Weeks.hx stuff
+		for (i in 0...weekData.length) {
+			var weekThing:MenuItem = new MenuItem(0, yellowBG.y + yellowBG.height + 10, i == 0 ? "tutorial" : 'week${i}');
 			weekThing.y += ((weekThing.height + 20) * i);
 			weekThing.targetY = i;
 			grpWeekText.add(weekThing);
@@ -315,6 +315,8 @@ class StoryMenuState extends MusicBeatState
 				grpWeekCharacters.members[1].animation.play('bfConfirm');
 				stopspamming = true;
 			}
+
+			PlayState.modName = "friday_night_funkin";
 
 			PlayState.storyPlaylist = weekData[curWeek];
 			PlayState.isStoryMode = true;

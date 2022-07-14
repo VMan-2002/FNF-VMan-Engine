@@ -1,27 +1,27 @@
 package;
 
+import Paths;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.graphics.frames.FlxAtlasFrames;
+import haxe.Json;
+import haxe.format.JsonParser;
 import lime.utils.Assets;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
-import flixel.FlxG;
-import Paths;
-import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
-import haxe.format.JsonParser;
-import haxe.Json;
+
+using StringTools;
 #if polymod
 import polymod.backends.PolymodAssets;
 #end
 
-using StringTools;
 
 class CoolUtil
 {
 	public static var defaultDifficultyArray:Array<String> = ['Easy', "Normal", "Hard"];
 	public static var difficultyArray:Array<String> = defaultDifficultyArray;
 
-	public static function difficultyString():String
-	{
+	public static function difficultyString():String {
 		return difficultyArray[PlayState.storyDifficulty];
 	}
 
@@ -109,5 +109,9 @@ class CoolUtil
 	
 	public static function loadJsonFromFile(thing:String) {
 		return loadJsonFromString(Assets.getText(thing));
+	}
+
+	public static function clamp(val:Float, min:Float, max:Float):Float {
+		return Math.max(min, Math.min(max, val));
 	}
 }

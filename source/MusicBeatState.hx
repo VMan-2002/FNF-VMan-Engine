@@ -81,7 +81,8 @@ class MusicBeatState extends FlxUIState
 	public var luaScripts = new Array<LuaScript>();
 	
 	public function initLua():Void {
-		var scriptType = Type.getClassName(Type.getClass(this));
+		//todo: get lua shit working first and THEN do this
+		/*var scriptType = Type.getClassName(Type.getClass(this));
 		trace('starting lua for ${scriptType}');
 		luaScripts.push(new LuaScript('mods/${ModLoad.primaryMod}/scripts/${scriptType}'));
 		if (scriptType == "PlayState") {
@@ -94,6 +95,12 @@ class MusicBeatState extends FlxUIState
 			}
 			//Stage
 			luaScripts.push(new LuaScript('mods/${ModLoad.primaryMod}/objects/stages/${PlayState.curStage}'));
+		}*/
+	}
+
+	public function runLuaCallback(name:String, ?args:Null<Array<Dynamic>>) {
+		for (luaThing in luaScripts) {
+			luaThing.runFunction(name, args);
 		}
 	}
 }

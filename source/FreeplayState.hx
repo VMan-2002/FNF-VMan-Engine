@@ -31,22 +31,24 @@ class SwagFreeplayFolders {
 	public var folderIcons:Map<String, String>;
 	public var initFolder:String;
 	public var categories:Map<String, Array<Array<String>>>;
+	public var iAmCornflower:Bool;
 }
 
 class FreeplayState extends MusicBeatState
 {
-	var songs:Array<SongMetadata> = [];
+	public var songs:Array<SongMetadata> = [];
 
 	var selector:FlxText;
 	public static var curSelected:Int = 0;
 	public static var curDifficulty:Int = 1;
 
-	var scoreText:FlxText;
-	var scoreFCText:FlxText;
-	var scoreAccText:FlxText;
-	var diffText:FlxText;
-	var lerpScore:Int = 0;
-	var intendedScore:Int = 0;
+	public var scoreText:FlxText;
+	public var scoreFCText:FlxText;
+	public var scoreAccText:FlxText;
+	public var diffText:FlxText;
+	public var lerpScore:Int = 0;
+	public var intendedScore:Int = 0;
+	public var folderDirText:FlxText;
 
 	private var grpSongs:FlxTypedGroup<Alphabet>;
 	private var curPlaying:Bool = false;
@@ -56,8 +58,13 @@ class FreeplayState extends MusicBeatState
 	
 	var categories:Map<Int, Array<SongMetadata>>;
 	public static var inFolder:Array<Int> = [0];
+	public var folderNames:Array<String> = [Translation.getTranslation("root folder", "freeplay", null, "Freeplay")];
 	var nextCategoryInt:Int = 0;
 	var nothingIncluded:Bool = false;
+
+	var isCornflower:Bool = false; //too lazy to implement scripting right now, so it's hardcoded
+	var cornflowerMenus:Array<Int> = new Array<Int>();
+	var cornflowerClass:CornflowerFreeplay;
 
 	override function create()
 	{
@@ -95,12 +102,14 @@ class FreeplayState extends MusicBeatState
 				}
 				
 				var folderStructure:SwagFreeplayFolders = parser.fromJson(rawJson);
+				var iAmCornflower = folderStructure.iAmCornflower;
 				
 				var folderIds = new Map<String, Int>();
 				var folderRootPut = 0;
 				//find where folders should go in the int-based system
 				for (cat in folderStructure.categories.keys()) {
 					folderIds.set(cat, nextCategoryInt);
+					folderNames[nextCategoryInt] = cat;
 					if (cat == folderStructure.initFolder) {
 						folderRootPut = nextCategoryInt;
 					}
@@ -137,6 +146,13 @@ class FreeplayState extends MusicBeatState
 				//add to category list
 				trace('added ${iathing} (name ${folderStructure.groupName}) to category list');
 				categoryList.push(new SongMetadata(folderStructure.groupName, folderRootPut, folderStructure.folderIcons.get(folderStructure.initFolder), 1, iathing));
+				folderNames[folderRootPut] = folderStructure.groupName;
+				if (iAmCornflower) {
+					cornflowerMenus.push(folderRootPut);
+					if (!Options.freeplayFolders) {
+						iAmCornflower = true; //if you're not using folders, you're a cornflower
+					}
+				}
 			} else {
 				trace('not adding folder structure for $filelol');
 			}
@@ -229,6 +245,14 @@ class FreeplayState extends MusicBeatState
 
 		var bg:FlxSprite = CoolUtil.makeMenuBackground('Blue');
 		add(bg);
+
+		folderDirText = new FlxText(2, 2, FlxG.width - 4, "hi :)", 12);
+		if (Options.freeplayFolders) {
+			add(folderDirText);
+		}
+		if (Options.showFPS) {
+			folderDirText.y += 16; //so it's not on top of the fps counter
+		}
 		
 		makeSonglist(Options.freeplayFolders ? categories.get(inFolder[inFolder.length-1]) : noFolders);
 		
@@ -251,6 +275,8 @@ class FreeplayState extends MusicBeatState
 		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, LEFT);
 		Translation.setObjectFont(scoreText, "vcr font");
 		// scoreText.alignment = RIGHT;
+		
+		folderDirText.font = scoreText.font;
 
 		var scoreBG:FlxSprite = new FlxSprite(scoreText.x - 6, 0);
 		scoreBG.makeGraphic(Std.int(FlxG.width + 1 - scoreBG.x), 66, 0xFF000000);
@@ -319,6 +345,14 @@ class FreeplayState extends MusicBeatState
 
 			trace(md);
 		 */
+		if (Options.freeplayFolders && cornflowerMenus.indexOf(inFolder[1]) > -1) {
+			isCornflower = true;
+		}
+		
+		if (isCornflower) {
+			updateIsCornflower();
+			cornflowerClass.makeSonglist(this);
+		}
 
 		super.create();
 	}
@@ -363,6 +397,12 @@ class FreeplayState extends MusicBeatState
 			// songText.x += 40;
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 			// songText.screenCenter(X);
+		}
+
+		var slash = Translation.getTranslation("folder seperator", "freeplay", null, "/");
+		folderDirText.text = inFolder.map(function(a:Int):String {return folderNames[a];}).join(slash)+slash;
+		if (isCornflower) {
+			cornflowerClass.makeSonglist(this);
 		}
 	}
 
@@ -448,6 +488,10 @@ class FreeplayState extends MusicBeatState
 
 		if (controls.BACK) {
 			if (inFolder.length > 1) {
+				if (cornflowerMenus.indexOf(inFolder[inFolder.length-1]) > -1) {
+					isCornflower = false; //you are no longer Corn flower
+					updateIsCornflower();
+				}
 				var was = inFolder.pop();
 				makeSonglist(categories.get(inFolder[inFolder.length-1]));
 				curSelected = 0;
@@ -459,18 +503,27 @@ class FreeplayState extends MusicBeatState
 				}
 				changeSelection();
 			} else {
+				if (cornflowerClass != null) {
+					cornflowerClass.destroy();
+				}
 				MainMenuState.returnToMenuFocusOn("freeplay");
 			}
 		}
 
-		if (accepted)
-		{
+		if (accepted) {
 			if (songs[curSelected].type == 1) {
+				//a folder
+				if (cornflowerMenus.indexOf(songs[curSelected].week) > -1) {
+					isCornflower = true; //This is corn flower
+					updateIsCornflower();
+				}
+
 				inFolder.push(songs[curSelected].week);
 				makeSonglist(categories.get(songs[curSelected].week));
 				curSelected = 0;
 				changeSelection();
 			} else {
+				//a song
 				var poop:String = Highscore.formatSong(songs[curSelected].songName.toLowerCase(), curDifficulty);
 
 				trace(poop);
@@ -486,6 +539,20 @@ class FreeplayState extends MusicBeatState
 				PlayState.storyWeek = "week1";
 				trace('CUR WEEK' + PlayState.storyWeek);
 				LoadingState.loadAndSwitchState(new PlayState());
+			}
+		}
+	}
+
+	function updateIsCornflower() {
+		if (isCornflower) {
+			if (cornflowerClass == null) {
+				cornflowerClass = new CornflowerFreeplay(this);
+			} else {
+				cornflowerClass.enable();
+			}
+		} else {
+			if (cornflowerClass != null) {
+				cornflowerClass.disable();
 			}
 		}
 	}
@@ -523,6 +590,9 @@ class FreeplayState extends MusicBeatState
 			scoreAccText.text = HudThing.trimPercent(Highscore.getAcc(songId, curDifficulty));
 		}
 		#end
+		if (isCornflower) {
+			cornflowerClass.changeDifficulty(this);
+		}
 	}
 
 	function changeSelection(change:Int = 0)
@@ -593,6 +663,9 @@ class FreeplayState extends MusicBeatState
 				item.alpha = 1;
 				// item.setGraphicSize(Std.int(item.width));
 			}
+		}
+		if (isCornflower) {
+			cornflowerClass.changeSelection(this);
 		}
 	}
 }

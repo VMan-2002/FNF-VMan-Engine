@@ -5,7 +5,8 @@ import networking.Network;
 using StringTools;
 
 class Multiplayer {
-	public static var server:Net;
+	//todo: i don't know what i'm doing
+	//public static var server:Net;
 	public static var myName:String = "Nameless somehow";
 	public static var myID:Int = 0;
 	public static var valid:Bool = false;

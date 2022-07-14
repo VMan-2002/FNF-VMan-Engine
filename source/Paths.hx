@@ -121,7 +121,7 @@ class Paths
 
 	inline static public function font(key:String)
 	{
-		return 'assets/fonts/$key';
+		return getPath('fonts/$key', FONT, null);
 	}
 
 	inline static public function getSparrowAtlas(key:String, ?library:String)
