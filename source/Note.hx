@@ -1,16 +1,51 @@
 package;
 
+import Character.SwagCharacterAnim;
 import CoolUtil;
 import ManiaInfo.SwagMania;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxMath;
 import flixel.util.FlxColor;
+import json2object.JsonParser;
+import lime.utils.Assets;
+import openfl.utils.Assets;
+import sys.FileSystem;
+import sys.io.File;
 
 using StringTools;
 /*#if polymod
 import polymod.format.ParseRules.TargetSignatureElement;
 #end*/
+
+class SwagNoteSkin {
+	public var image:String;
+	public var scale:Null<Float>;
+	public var antialias:Null<Bool>;
+	public var arrows:Map<String, Array<SwagCharacterAnim>>;
+
+	public static function loadNoteSkin(name:String, ?modName:String) {
+		if (Note.loadedNoteSkins.get('${modName}:${name}') != null) {
+			return Note.loadedNoteSkins.get('${modName}:${name}');
+		}
+		var parser = new JsonParser<SwagNoteSkin>();
+		var noteSkin:SwagNoteSkin;
+		if (FileSystem.exists(modName + "/objects/noteskins/" + name + ".json")) {
+			noteSkin = parser.fromJson(File.getContent(modName + "/objects/noteskins/" + name + ".json"));
+		} else if (Assets.exists("objects/noteskins/" + name + ".json")) {
+			noteSkin = parser.fromJson(Assets.getText("objects/noteskins/" + name + ".json"));
+		} else {
+			return null;
+		}
+		noteSkin.scale = noteSkin.scale != null ? noteSkin.scale : 1.0;
+		noteSkin.antialias = noteSkin.antialias != null ? noteSkin.antialias : false;
+		return noteSkin;
+	}
+
+	public static function clearLoadedNoteSkins() {
+		Note.loadedNoteSkins.clear();
+	}
+}
 
 class Note extends FlxSprite
 {
@@ -30,6 +65,18 @@ class Note extends FlxSprite
 	public var noteScore:Float = 1;
 	
 	public var noteType:Int = -1;
+
+	public var maniaPart:Int = 0;
+	public var maniaFract:Float = 0;
+
+	public static var loadedNoteSkins:Map<String, SwagNoteSkin> = new Map<String, SwagNoteSkin>();
+
+	public static var noteAnimExclude:Array<String> = [
+		"static",
+		"pressed",
+		"confirm",
+		"appear"
+	];
 
 	//public var scrollDirection(default, set):Float = 0;
 
@@ -52,6 +99,8 @@ class Note extends FlxSprite
 		if (mania == null)
 			mania = PlayState.curManiaInfo;
 
+		maniaFract = noteData / mania.keys;
+
 		this.prevNote = prevNote;
 		isSustainNote = sustainNote;
 
@@ -69,9 +118,9 @@ class Note extends FlxSprite
 			//scrollDirection = 180;
 		}
 		
-		switch (daStage)
+		switch (PlayState.SONG.noteSkin)
 		{
-			case 'school' | 'schoolEvil':
+			/*case 'school' | 'schoolEvil':
 				loadGraphic(Paths.image('pixelUI/arrows-pixels'), true, 17, 17);
 
 				animation.add('greenScroll', [6]);
@@ -94,9 +143,20 @@ class Note extends FlxSprite
 					animation.add('bluehold', [1]);
 				}
 
-				scale.x = PlayState.daPixelZoom * 1.5;
+				scale.x = PlayState.daPixelZoom * 1.5;*/
 
-			default:
+			case 'pixel':
+				frames = Paths.getSparrowAtlas('pixelUI/NOTE_assets-pixel');
+				
+				animation.addByPrefix('${myArrow}Scroll', '${myArrow}0', 24);
+				animation.addByPrefix('${myArrow}holdend', '${myArrow} hold end', 24);
+				animation.addByPrefix('${myArrow}hold', '${myArrow} hold piece', 24);
+				//animation.appendByPrefix('purpleholdend', 'pruple end hold'); //develop your spritesheets properly challenge (impossible)
+
+				scale.x = PlayState.daPixelZoom * 1.5;
+				antialiasing = false;
+
+			case 'normal' | "" | null:
 				frames = Paths.getSparrowAtlas('normal/NOTE_assets');
 				
 				animation.addByPrefix('${myArrow}Scroll', '${myArrow}0', 24);
@@ -105,6 +165,25 @@ class Note extends FlxSprite
 				//animation.appendByPrefix('purpleholdend', 'pruple end hold'); //develop your spritesheets properly challenge (impossible)
 
 				antialiasing = true;
+
+			default:
+				//load custom
+				var noteSkin:SwagNoteSkin = SwagNoteSkin.loadNoteSkin(PlayState.SONG.noteSkin, PlayState.modName);
+				frames = Paths.getSparrowAtlas(noteSkin.image);
+
+				for (anim in noteSkin.arrows[myArrow]) {
+					if (noteAnimExclude.indexOf(anim.name) > -1) {
+						continue;
+					}
+					animation.addByPrefix(
+						'${myArrow}${anim.name}',
+						'${anim.anim}',
+						anim.framerate,
+						anim.loop
+					);
+				}
+				antialiasing = noteSkin.antialias;
+				scale.x = noteSkin.scale;
 		}
 		
 		scale.x *= mania.scale;

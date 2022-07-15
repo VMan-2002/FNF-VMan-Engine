@@ -33,6 +33,7 @@ typedef SwagSong =
 	var moreCharacters:Array<String>;
 
 	var actions:Array<String>;
+	var noteSkin:String;
 }
 
 class Song

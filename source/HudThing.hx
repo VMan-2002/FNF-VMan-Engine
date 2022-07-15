@@ -12,12 +12,21 @@ class HudThing extends FlxGroup
 	public var items = new Array<String>();
 	public var vertical:Bool = false;
 	public var textThing:FlxText;
+	static var botplayExclude:Array<String> = [
+		"misses",
+		"fc"
+	];
 	
 	public function new(x:Float, y:Float, list:Array<String>, ?vertical:Bool = false)
 	{
 		super();
 		
-		items = list;
+		items = list.filter(function(item) {
+			if (Options.botplay && botplayExclude.indexOf(item) <= -1) {
+				return false;
+			}
+			return true;
+		});
 		this.vertical = vertical;
 		textThing = new FlxText(x, y, 0, "", 20);
 		textThing.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT);

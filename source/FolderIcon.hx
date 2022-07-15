@@ -16,6 +16,11 @@ class FolderIcon extends FlxSprite
 		antialiasing = true;
 	}
 
+	public function setTheme(?name:String = "") {
+		loadGraphic(Paths.image(name == "" ? 'menu/folder' : 'menu/folder-' + name));
+		antialiasing = sprTracker.antialiasing;
+	}
+
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);

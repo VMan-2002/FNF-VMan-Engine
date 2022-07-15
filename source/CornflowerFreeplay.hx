@@ -52,6 +52,9 @@ class CornflowerFreeplay {
 		songTitle.setFormat(Paths.font("mont-regular.ttf"), 120, 0xffffffff, "right");
 		songStats.setFormat(Paths.font("mont-regular.ttf"), 32, 0xffffffff, "right");
 		songComment.setFormat(Paths.font("mont-regular.ttf"), 32, 0xffffffff, "left");
+		songTitle.setBorderStyle(FlxTextBorderStyle.OUTLINE, 5, 0xff000000);
+		songStats.setBorderStyle(FlxTextBorderStyle.OUTLINE, 3, 0xff000000);
+		songComment.setBorderStyle(FlxTextBorderStyle.OUTLINE, 3, 0xff000000);
 		Translation.setObjectFont(songTitle, "font");
 		Translation.setObjectFont(songStats, "font");
 		Translation.setObjectFont(songComment, "font");
@@ -167,14 +170,14 @@ class CornflowerFreeplay {
 			//todo: also add the others later
 			//Weeks
 			case 'week-1':
-				songComment.text = "A new friend";
+				songComment.text = "Whom this guy be";
 			case 'week-2':
-				songComment.text = "End of the line";
+				songComment.text = "This cant be good";
 			case 'cornstupid-week':
-				songComment.text = "What is this?";
+				songComment.text = "I dunno man";
 			//Extras
 			case 'extras-1':
-				songComment.text = "Past and present";
+				songComment.text = "The past and present";
 			case 'extras-2':
 				songComment.text = "Seen differently";
 			case 'extras-cornstupid':

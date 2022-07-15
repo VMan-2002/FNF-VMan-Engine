@@ -174,6 +174,10 @@ class PlayState extends MusicBeatState
 	public var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
 
 	var usedBotplay = false;
+
+	var currentManiaPart:Int = 0;
+	var currentManiaPartName:Array<String> = [];
+	var maniaPartArr:Array<Array<String>> = [];
 	
 	//Scripting funny lol
 	//The only hscript your getting is me porting the basegame update's hscript support
@@ -336,10 +340,12 @@ class PlayState extends MusicBeatState
 				phillyCityLights = new FlxTypedGroup<FlxSprite>();
 				add(phillyCityLights);
 
+				var lightColors = CoolUtil.uncoolTextFile('phillyWindowColors');
 				for (i in 0...5) {
-					var light:FlxSprite = new FlxSprite(city.x).loadGraphic(Paths.image('philly/win' + i));
+					var light:FlxSprite = new FlxSprite(city.x).loadGraphic(Paths.image('philly/window'));
 					light.scrollFactor.set(0.3, 0.3);
 					light.visible = false;
+					light.color = FlxColor.fromString(lightColors[i]);
 					light.setGraphicSize(Std.int(light.width * 0.85));
 					light.updateHitbox();
 					light.antialiasing = true;
@@ -366,6 +372,7 @@ class PlayState extends MusicBeatState
 
 				var skyBG:FlxSprite = new FlxSprite(-120, -50).loadGraphic(Paths.image('limo/limoSunset'));
 				skyBG.scrollFactor.set(0.1, 0.1);
+				skyBG.scale.set(2, 2);
 				add(skyBG);
 
 				var bgLimo:FlxSprite = new FlxSprite(-200, 480);
@@ -1563,8 +1570,13 @@ class PlayState extends MusicBeatState
 			if (Options.downScroll) {
 				speed = 0 - speed;
 			}
-			notes.forEachAlive(function(daNote:Note)
-			{
+			var strumlineLengthX:Array<Float> = [];
+			var strumlineLengthY:Array<Float> = [];
+			strumLines.forEach(function(aStrumLine:StrumLine) {
+				strumlineLengthX.push(aStrumLine.members[aStrumLine.members.length - 1].x - aStrumLine.members[0].x);
+				strumlineLengthY.push(aStrumLine.members[aStrumLine.members.length - 1].y - aStrumLine.members[0].y);
+			});
+			notes.forEachAlive(function(daNote:Note) {
 				/*if (daNote.y > FlxG.height)
 				{
 					daNote.active = false;
@@ -1581,9 +1593,16 @@ class PlayState extends MusicBeatState
 					daNote.visible = false;
 				}*/
 				
-				var daStrum:StrumNote = (daNote.mustPress ? playerStrums : opponentStrums).members[daNote.noteData];
+				var strumNumber = daNote.mustPress ? 1 : 0;
+				//todo: i guess
+				var isInManiaChange:Bool = false; //currentManiaPartName[strumNumber] == maniaPartArr[daNote.maniaPart][strumNumber];
+				var daStrum:StrumNote = strumLines.members[strumNumber].members[isInManiaChange ? 0 : daNote.noteData];
 				daNote.y = (daStrum.y - (Conductor.songPosition - daNote.strumTime) * speed);
 				daNote.x = daStrum.x;
+				if (isInManiaChange) {
+					daNote.y += strumlineLengthX[strumNumber] * daNote.maniaFract;
+					daNote.x += strumlineLengthY[strumNumber] * daNote.maniaFract;
+				}
 				var isComputer = (!daNote.mustPress) || Options.botplay;
 				var isPass = daNote.strumTime <= Conductor.songPosition;
 
@@ -1603,6 +1622,7 @@ class PlayState extends MusicBeatState
 					daNote.clipRect = swagRect;
 				}
 
+				//todo: sometimes the opponent misses notes. why is this
 				if (isComputer && isPass) {
 					if (daNote.mustPress) {
 						goodNoteHit(daNote);
@@ -2095,12 +2115,11 @@ class PlayState extends MusicBeatState
 
 			dad.holdTimer = 0;
 
-			opponentStrums.forEach(function(spr:StrumNote) {
-				if (Math.abs(note.noteData) == spr.ID) {
-					spr.playAnim('confirm', true);
-					spr.returnTime = (Conductor.crochet / 3750) + 0.1;
-				}
-			});
+			var spr = opponentStrums.members[note.noteData];
+			if (spr != null) {
+				spr.playAnim('confirm', true);
+				spr.returnTime = (Conductor.crochet / 3750) + 0.1;
+			}
 
 			note.wasGoodHit = true;
 			vocals.volume = 1;

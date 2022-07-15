@@ -13,25 +13,39 @@
 	"initFolder": "rootFolder",
 	"categories": {
 		"Week 1": [
-			["week1", "week"]
+			["Bopeebo", "song"],
+			["Fresh", "song"],
+			["Dad Battle", "song"]
 		],
 		"Week 2": [
-			["week2", "week"]
+			["Spookeez", "song"],
+			["South", "song"],
+			["Monster", "song"]
 		],
 		"Week 3": [
-			["week3", "week"]
+			["Pico", "song"],
+			["Philly Nice", "song"],
+			["Blammed", "song"]
 		],
 		"Week 4": [
-			["week4", "week"]
+			["Satin Panties", "song"],
+			["High", "song"],
+			["Milf", "song"]
 		],
 		"Week 5": [
-			["week5", "week"]
+			["Cocoa", "song"],
+			["Eggnog", "song"],
+			["Winter Horrorland", "song"]
 		],
 		"Week 6": [
-			["week6", "week"]
+			["Senpai", "song"],
+			["Roses", "song"],
+			["Thorns", "song"]
 		],
 		"Week 7": [
-			["week7", "week"]
+			["Ugh", "song"],
+			["Guns", "song"],
+			["Stress", "song"]
 		],
 		"rootFolder": [
 			["Tutorial", "song"],

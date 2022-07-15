@@ -763,7 +763,7 @@ class Character extends FlxSprite
 		trace('loading custom char of ${isMyMod ? thingMy : thing}');
 		if (isMyMod ? FileSystem.exists(thingMy) : OpenFlAssets.exists(thing)) {
 			var loadStr = isMyMod ? File.getContent(thingMy) : Assets.getText(thing);
-			trace(loadStr);
+			//trace(loadStr);
 			var loadedStuff:SwagCharacter = cast CoolUtil.loadJsonFromString(loadStr);
 			charHealthIcons.set('${mod}:${name}', loadedStuff.healthIcon);
 			return loadedStuff;

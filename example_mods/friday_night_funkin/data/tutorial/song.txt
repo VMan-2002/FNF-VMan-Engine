@@ -2,3 +2,4 @@
 Tutorial
 bf::gf
 Kawai Sprite
+Normal,Hard

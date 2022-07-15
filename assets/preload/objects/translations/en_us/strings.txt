@@ -278,3 +278,17 @@ charteditor_event_blammed lights_red::Red
 charteditor_event_blammed lights_orange::Orange
 charteditor_event_blammed lights_end::End
 charteditor_event_philly glow::Philly Glow
+options_hudthing editor_score::Score
+options_hudthing editor_misses::Misses
+options_hudthing editor_health::Health
+options_hudthing editor_song::Song Name
+options_hudthing editor_difficulty::Difficulty
+options_hudthing editor_accSimple::AccSimple
+options_hudthing editor_accRating::AccRating
+options_hudthing editor_fc::FC
+options_hudthing editor_sicks::Sicks
+options_hudthing editor_goods::Goods
+options_hudthing editor_bads::Bads
+options_hudthing editor_shits::Shits
+options_hudthing editor_hits::Hits
+options_hudthing editor_totalnotes::TotalNotes

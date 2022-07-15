@@ -35,13 +35,14 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 		while (members.length > 1) {
 			members.pop().destroy();
 		}
+		var left:Float = ((thisManiaInfo.spacing) * (thisManiaInfo.keys - 1)) / 2;
 		for (i in 0...thisManiaInfo.keys) {
 			// FlxG.log.add(i);
-			var style = PlayState.curStage.startsWith('school') ? 'pixel' : 'normal';
+			var style = PlayState.SONG.noteSkin;
 			var babyArrow:StrumNote = new StrumNote(x, y, i, style);
 			
 			babyArrow.x += ((thisManiaInfo.spacing) * i);
-			babyArrow.x -= ((thisManiaInfo.spacing) * (thisManiaInfo.keys - 1)) / 2;
+			babyArrow.x -= left;
 
 			babyArrow.updateHitbox();
 			babyArrow.scrollFactor.set();
@@ -51,7 +52,9 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 			if (!PlayState.isStoryMode && PlayState.instance.startingSong) {
 				babyArrow.y -= 10;
 				babyArrow.alpha = 0;
-				FlxTween.tween(babyArrow, {y: babyArrow.y + 10, alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.5 + (1.6 * i / Math.max(thisManiaInfo.keys, 8))});
+				var delay = 0.5 + (1.6 * i / Math.max(thisManiaInfo.keys, 8));
+				FlxTween.tween(babyArrow, {y: babyArrow.y + 10}, 1, {ease: FlxEase.circOut, startDelay: delay});
+				babyArrow.playAppearAnim(delay);
 			}
 
 			babyArrow.animation.play('static');

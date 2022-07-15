@@ -6,9 +6,12 @@ import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import haxe.Json;
 import haxe.format.JsonParser;
+import json2object.JsonParser;
 import lime.utils.Assets;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
+import sys.FileSystem;
+import sys.io.File;
 
 using StringTools;
 #if polymod
@@ -113,5 +116,23 @@ class CoolUtil
 
 	public static function clamp(val:Float, min:Float, max:Float):Float {
 		return Math.max(min, Math.min(max, val));
+	}
+
+	public static function useJson2Object(parser:Dynamic, input:String) {
+		if (!input.endsWith("}")) {
+			input = input.substr(0, input.lastIndexOf("}"));
+		}
+		var result = parser.fromJson(input);
+		return result;
+	}
+
+	public static function tryPathBoth(path:String, modName:String) {
+		if (FileSystem.exists(modName + "/" + path)) {
+			return File.getContent(modName + "/" + path);
+		} else if (Assets.exists(path)) {
+			return Assets.getText(path);
+		} else {
+			return null;
+		}
 	}
 }

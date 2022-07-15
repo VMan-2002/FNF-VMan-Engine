@@ -152,7 +152,8 @@ class ChartingState extends MusicBeatState
 				healthDrain: 0,
 				healthDrainMin: 0,
 				moreCharacters: new Array<String>(),
-				actions: new Array<String>()
+				actions: new Array<String>(),
+				noteSkin: ""
 			};
 			curNoteTypeArr = _song.usedNoteTypes;
 		}

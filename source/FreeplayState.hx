@@ -387,6 +387,7 @@ class FreeplayState extends MusicBeatState
 				icon2Array.push(folder);
 				folder.x = icon.x;
 				folder.y = icon.y;
+				folder.setTheme(icon.folderType);
 				add(folder);
 			}
 

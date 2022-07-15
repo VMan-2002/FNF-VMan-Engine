@@ -15,7 +15,7 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			//"Week Editor",
 			//"Folder Editor",
 			//"Menu Character Editor",
-			//"Intro Text Test",
+			"Intro Text Test",
 			//"Stage Editor",
 			//"Spritesheet Tool",
 			//"Noteskin Creator"
@@ -49,13 +49,17 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			case "menu character editor":
 				return ["Edit characters for the Story Mode menu.", "", "animation debug"];
 			case "intro text test":
-				return ["Preview and edit the randomized intro text."];
+				return ["Preview the randomized intro text."];
 			case "stage editor":
 				return ["Edit stages, including positions of stage sprites."];
 			case "spritesheet tool":
 				return ["Convert spritesheets to or from individual frames.", "", "animation debug"];
 			case "noteskin creator":
 				return ["Create noteskins.", "", "change color advanced"];
+			case "character editor":
+				return ["Edit characters.", "", "animation debug"];
+			case "dialogue editor":
+				return ["Edit dialogue."];
 		}
 		return ["Unknown option.", '', 'unknownOption'];
 	}
@@ -69,6 +73,9 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			case "animation debug":
 				FlxG.state.closeSubState();
 				FlxG.switchState(new AnimationDebug());
+			case "intro text test":
+				FlxG.state.closeSubState();
+				FlxG.switchState(new IntroTextTest());
 		}
 		return false;
 	}

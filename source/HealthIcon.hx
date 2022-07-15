@@ -17,6 +17,7 @@ typedef SwagHealthIcon = {
 	public var antialias:Null<Bool>;
 	public var animations:Array<SwagCharacterAnim>;
 	public var scale:Array<Float>;
+	public var folderType:String;
 }
 
 class HealthIcon extends FlxSprite
@@ -139,11 +140,12 @@ class HealthIcon extends FlxSprite
 			}
 			if (isJson && jsonData != null) { //i have to do that or else compiler says no. brugh
 				antialiasing = jsonData.antialias != false;
+				folderType = jsonData.folderType != null ? jsonData.folderType : "";
 				//todo: put more loads!
 			} else {
 				antialiasing = true;
+				folderType = "";
 			}
-			folderType = "";
 			return animation.play("neutral");
 		} else {
 			trace('using inbuilt health icon for ${char}');
@@ -153,7 +155,7 @@ class HealthIcon extends FlxSprite
 
 		var isPixel = (char == "bf-pixel" || char == "senpai" || char == "senpai-angry" || char == "spirit");
 		antialiasing = !isPixel;
-		folderType = isPixel ? "-pixel" : "";
+		folderType = isPixel ? "pixel" : "";
 		
 		var thing:Array<Int> = defaultStuff.get(defaultStuff.exists(char) ? char : "face");
 		animation.add('winning', [thing[2]], 0, false, isPlayer);

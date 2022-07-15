@@ -1,7 +1,11 @@
 package;
 
 import CoolUtil;
+import Note.SwagNoteSkin;
 import flixel.FlxSprite;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.util.FlxTimer;
 
 class StrumNote extends FlxSprite
 {
@@ -45,16 +49,21 @@ class StrumNote extends FlxSprite
 				playAnim("static");
 			}
 		}
+		if (animation.curAnim.name == "appear" && animation.curAnim.finished) {
+			playAnim(isHeld ? "press" : "static");
+		}
 	}
 	
 	public function setStyle(style:String) {
+		var myArrow = PlayState.curManiaInfo.arrows[noteData];
+		var myStrumArrow = ManiaInfo.StrumlineArrow[PlayState.curManiaInfo.arrows[noteData]];
 		switch(style) {
-			case "pixel":
+			/*case "pixel":
 				loadGraphic(Paths.image('pixelUI/arrows-pixels'), true, 17, 17);
-				/*animation.add('green', [6]);
-				animation.add('red', [7]);
-				animation.add('blue', [5]);
-				animation.add('purplel', [4]);*/ //what does this even do, if anything
+				//animation.add('green', [6]);
+				//animation.add('red', [7]);
+				//animation.add('blue', [5]);
+				//animation.add('purplel', [4]); //what does this even do, if anything
 
 				scale.x = PlayState.daPixelZoom * 1.5;
 				antialiasing = false;
@@ -63,16 +72,44 @@ class StrumNote extends FlxSprite
 				var wide = 4;
 				animation.add('static', [i]);
 				animation.add('pressed', [wide+i, (wide * 2)+i], 12, false);
-				animation.add('confirm', [(wide * 3)+i, (wide * 4)+i], 24, false);
+				animation.add('confirm', [(wide * 3)+i, (wide * 4)+i], 24, false);*/
 			
-			default:
+			case "pixel":
+				frames = Paths.getSparrowAtlas('pixelUI/NOTE_assets-pixel');
+
+				scale.x = PlayState.daPixelZoom * 1.5;
+				antialiasing = false;
+				
+				animation.addByPrefix('appear', "appear"+myStrumArrow, 6, false);
+				animation.addByPrefix('static', "arrow"+myStrumArrow, 24, true);
+				animation.addByPrefix('pressed', myArrow+' press', 12, false);
+				animation.addByPrefix('confirm', myArrow+' confirm', 24, false);
+			
+			case "normal" | "" | null:
 				frames = Paths.getSparrowAtlas('normal/NOTE_assets');
 
 				antialiasing = true;
 				
-				animation.addByPrefix('static', "arrow"+ManiaInfo.StrumlineArrow[PlayState.curManiaInfo.arrows[noteData]]);
-				animation.addByPrefix('pressed', PlayState.curManiaInfo.arrows[noteData]+' press', 24, false);
-				animation.addByPrefix('confirm', PlayState.curManiaInfo.arrows[noteData]+' confirm', 24, false);
+				animation.addByPrefix('static', "arrow"+myStrumArrow, 24, true);
+				animation.addByPrefix('pressed', myArrow+' press', 24, false);
+				animation.addByPrefix('confirm', myArrow+' confirm', 24, false);
+
+			default:
+				//load custom
+				var noteSkin:SwagNoteSkin = SwagNoteSkin.loadNoteSkin(PlayState.SONG.noteSkin, PlayState.modName);
+				frames = Paths.getSparrowAtlas(noteSkin.image);
+
+				for (anim in noteSkin.arrows[myArrow]) {
+					animation.addByPrefix(
+						'${anim.name}',
+						'${anim.anim}',
+						anim.framerate,
+						anim.loop
+					);
+					trace('strum arrow ${myArrow} add animation ${anim.name}');
+				}
+				antialiasing = noteSkin.antialias;
+				scale.x = noteSkin.scale;
 		}
 		
 		scale.x *= PlayState.curManiaInfo.scale;
@@ -81,6 +118,20 @@ class StrumNote extends FlxSprite
 		animation.play("static");
 		dirty = true; //i dont care
 		CoolUtil.CenterOffsets(this);
+	}
+
+	public function playAppearAnim(?delay:Float = 0) {
+		alpha = 0;
+		new FlxTimer().start(delay, function(timer) {
+			if (animation.getNameList().indexOf("appear") != -1) {
+				playAnim("appear");
+				alpha = 1;
+			} else {
+				playAnim("static");
+				alpha = 0;
+				FlxTween.tween(this, {alpha: 1}, 1, {ease: FlxEase.circOut});
+			}
+		});
 	}
 	
 	public function playAnim(name:String, ?force:Bool = false) {
