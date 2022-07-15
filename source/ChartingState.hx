@@ -103,7 +103,7 @@ class ChartingState extends MusicBeatState
 	{
 		if (snapMults.length == 0) {
 			//read from data/charting_snapMults.txt
-			var snapMultsStr:String = Assets.getText(Paths.txt("charting_snapMults.txt"));
+			var snapMultsStr:String = Assets.getText(Paths.txt("charting_snapMults"));
 			var snapMultsArr:Array<String> = snapMultsStr.split("\n");
 			for (snapMultStr in snapMultsArr) {
 				//format: "16/12" = 16 divided by 12

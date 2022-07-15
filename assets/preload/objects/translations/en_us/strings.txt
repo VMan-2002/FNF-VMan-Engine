@@ -292,3 +292,6 @@ options_hudthing editor_bads::Bads
 options_hudthing editor_shits::Shits
 options_hudthing editor_hits::Hits
 options_hudthing editor_totalnotes::TotalNotes
+modbrowser_downloadstarted::Your download has started.\nKeep the game open while it downloads.
+modbrowser_downloadstarted_ok::Ok
+modbrowser_downloadstarted_dontremind::Don't remind me again

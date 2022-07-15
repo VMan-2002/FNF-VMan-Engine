@@ -27,6 +27,8 @@ class StrumNote extends FlxSprite
 		isHeld = invar;
 		return invar;
 	}
+	public var curStyle:String;
+	public var myArrow:String;
 	
 	public var returnTime:Float = -60;
 
@@ -55,8 +57,9 @@ class StrumNote extends FlxSprite
 	}
 	
 	public function setStyle(style:String) {
-		var myArrow = PlayState.curManiaInfo.arrows[noteData];
+		myArrow = PlayState.curManiaInfo.arrows[noteData];
 		var myStrumArrow = ManiaInfo.StrumlineArrow[PlayState.curManiaInfo.arrows[noteData]];
+		curStyle = style;
 		switch(style) {
 			/*case "pixel":
 				loadGraphic(Paths.image('pixelUI/arrows-pixels'), true, 17, 17);

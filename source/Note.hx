@@ -23,6 +23,7 @@ class SwagNoteSkin {
 	public var scale:Null<Float>;
 	public var antialias:Null<Bool>;
 	public var arrows:Map<String, Array<SwagCharacterAnim>>;
+	public var arrowColors:Map<String, Array<Int>>;
 
 	public static function loadNoteSkin(name:String, ?modName:String) {
 		if (Note.loadedNoteSkins.get('${modName}:${name}') != null) {
@@ -39,6 +40,7 @@ class SwagNoteSkin {
 		}
 		noteSkin.scale = noteSkin.scale != null ? noteSkin.scale : 1.0;
 		noteSkin.antialias = noteSkin.antialias != null ? noteSkin.antialias : false;
+		noteSkin.arrowColors = noteSkin.arrowColors != null ? noteSkin.arrowColors : new Map<String, Array<Int>>();
 		return noteSkin;
 	}
 
