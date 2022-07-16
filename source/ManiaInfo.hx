@@ -1,18 +1,17 @@
 package;
 
-import lime.utils.Assets;
 import Controls;
 import Math;
-
+import Translation;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
+import flixel.input.keyboard.FlxKey;
+import lime.utils.Assets;
+
+using StringTools;
 //import ClientPrefs;
 //import lime;
 
-import flixel.input.keyboard.FlxKey;
-import Translation;
-
-using StringTools;
 
 typedef SwagMania = {
 	var keys:Int;
@@ -87,7 +86,7 @@ class ManiaInfo {
 		'pianoblack' => 8
 	];
 	
-	public static var PixelNoteSheetWide:Int = 13; //this one is used
+	//public static var PixelNoteSheetWide:Int = 13; //this one is used
 	
 	public static var Dir:Map<String, String> = [
 		'purple' => "LEFT",

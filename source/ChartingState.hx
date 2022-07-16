@@ -99,6 +99,8 @@ class ChartingState extends MusicBeatState
 	var snapMultNames:Array<String> = [];
 	var curSnapMult:Int = 1;
 
+	var headPositions:Array<Float> = new Array<Float>();
+
 	override function create()
 	{
 		if (snapMults.length == 0) {
@@ -153,7 +155,8 @@ class ChartingState extends MusicBeatState
 				healthDrainMin: 0,
 				moreCharacters: new Array<String>(),
 				actions: new Array<String>(),
-				noteSkin: ""
+				noteSkin: "",
+				uiStyle: ""
 			};
 			curNoteTypeArr = _song.usedNoteTypes;
 		}
@@ -171,6 +174,9 @@ class ChartingState extends MusicBeatState
 
 		leftIcon.setPosition(0, -100);
 		rightIcon.setPosition(0, -100);
+
+		headPositions[0] = leftIcon.x;
+		headPositions[1] = rightIcon.x;
 		
 		currentChartMania = ManiaInfo.GetManiaInfo(_song.maniaStr);
 
@@ -1021,12 +1027,19 @@ class ChartingState extends MusicBeatState
 
 	function updateHeads():Void
 	{
-		if (check_mustHitSection.checked) {
+		/*if (check_mustHitSection.checked) {
 			leftIcon.changeCharacter(_song.player1);
 			rightIcon.changeCharacter(_song.player2);
 		} else {
 			leftIcon.changeCharacter(_song.player2);
 			rightIcon.changeCharacter(_song.player1);
+		}*/
+		if (check_mustHitSection.checked) {
+			leftIcon.x = headPositions[0];
+			rightIcon.x = headPositions[1];
+		} else {
+			leftIcon.x = headPositions[1];
+			rightIcon.x = headPositions[0];
 		}
 	}
 
@@ -1069,6 +1082,9 @@ class ChartingState extends MusicBeatState
 			curRenderedNoteTypes.members.shift().destroy();
 		}
 
+		if (_song.notes[curSection].sectionNotes == null) {
+			_song.notes[curSection].sectionNotes = new Array<Array<Dynamic>>();
+		}
 		var sectionInfo:Array<Dynamic> = _song.notes[curSection].sectionNotes;
 
 		if (_song.notes[curSection].changeBPM && _song.notes[curSection].bpm > 0) {

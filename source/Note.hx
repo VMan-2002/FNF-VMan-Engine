@@ -24,6 +24,9 @@ class SwagNoteSkin {
 	public var antialias:Null<Bool>;
 	public var arrows:Map<String, Array<SwagCharacterAnim>>;
 	public var arrowColors:Map<String, Array<Int>>;
+	public var noteSplashImage:String;
+	public var noteSplashScale:Null<Float>;
+	public var noteSplashFramerate:Null<Int>;
 
 	public static function loadNoteSkin(name:String, ?modName:String) {
 		if (Note.loadedNoteSkins.get('${modName}:${name}') != null) {
@@ -31,21 +34,94 @@ class SwagNoteSkin {
 		}
 		var parser = new JsonParser<SwagNoteSkin>();
 		var noteSkin:SwagNoteSkin;
-		if (FileSystem.exists(modName + "/objects/noteskins/" + name + ".json")) {
+		/*if (FileSystem.exists(modName + "/objects/noteskins/" + name + ".json")) {
 			noteSkin = parser.fromJson(File.getContent(modName + "/objects/noteskins/" + name + ".json"));
 		} else if (Assets.exists("objects/noteskins/" + name + ".json")) {
 			noteSkin = parser.fromJson(Assets.getText("objects/noteskins/" + name + ".json"));
 		} else {
 			return null;
+		}*/
+		noteSkin = parser.fromJson(CoolUtil.tryPathBoth("objects/noteskins/" + name + ".json", modName));
+		if (noteSkin == null) {
+			return null;
 		}
 		noteSkin.scale = noteSkin.scale != null ? noteSkin.scale : 1.0;
 		noteSkin.antialias = noteSkin.antialias != null ? noteSkin.antialias : false;
 		noteSkin.arrowColors = noteSkin.arrowColors != null ? noteSkin.arrowColors : new Map<String, Array<Int>>();
+		noteSkin.noteSplashScale = noteSkin.noteSplashScale != null ? noteSkin.noteSplashScale : 1.0;
+		noteSkin.noteSplashFramerate = noteSkin.noteSplashFramerate != null ? noteSkin.noteSplashFramerate : 24;
+		noteSkin.noteSplashImage = noteSkin.noteSplashImage != null ? noteSkin.noteSplashImage : "normal/notesplash";
+		trace('loaded noteskin ${modName}:${name}');
 		return noteSkin;
 	}
 
 	public static function clearLoadedNoteSkins() {
 		Note.loadedNoteSkins.clear();
+	}
+}
+
+class SwagUIStyle {
+	public var three:String;
+	public var two:String;
+	public var one:String;
+	public var go:String;
+	public var numbers:Array<String>;
+	public var combo:String;
+	public var sick:String;
+	public var good:String;
+	public var bad:String;
+	public var shit:String;
+	public var healthBar:String;
+	public var threeSound:String;
+	public var twoSound:String;
+	public var oneSound:String;
+	public var goSound:String;
+	public var countdownScale:Null<Float>;
+	public var ratings:Map<String, String>;
+	public var ratingScale:Null<Float>;
+	public var comboScale:Null<Float>;
+	public var comboSpacing:Null<Float>;
+	public var antialias:Null<Bool>;
+	public var healthBarSides:Array<Float>;
+
+	public static function loadUIStyle(name:String, ?modName:String) {
+		if (Note.loadedUIStyles.get('${modName}:${name}') != null) {
+			return Note.loadedUIStyles.get('${modName}:${name}');
+		}
+		var parser = new JsonParser<SwagUIStyle>();
+		var uiStyle:SwagUIStyle;
+		uiStyle = parser.fromJson(CoolUtil.tryPathBoth("objects/uiStyles/" + name + ".json", modName));
+		if (uiStyle == null) {
+			return null;
+		}
+		uiStyle.three = uiStyle.three != null ? uiStyle.three : "";
+		uiStyle.two = uiStyle.two != null ? uiStyle.two : "normal/ready";
+		uiStyle.one = uiStyle.one != null ? uiStyle.one : "normal/set";
+		uiStyle.go = uiStyle.go != null ? uiStyle.go : "normal/go";
+		uiStyle.numbers = uiStyle.numbers != null ? uiStyle.numbers : ["normal/num0", "normal/num1", "normal/num2", "normal/num3", "normal/num4", "normal/num5", "normal/num6", "normal/num7", "normal/num8", "normal/num9"];
+		uiStyle.combo = uiStyle.combo != null ? uiStyle.combo : "normal/combo";
+		uiStyle.sick = uiStyle.sick != null ? uiStyle.sick : "normal/sick";
+		uiStyle.good = uiStyle.good != null ? uiStyle.good : "normal/good";
+		uiStyle.bad = uiStyle.bad != null ? uiStyle.bad : "normal/bad";
+		uiStyle.shit = uiStyle.shit != null ? uiStyle.shit : "normal/shit";
+		uiStyle.healthBar = uiStyle.healthBar != null ? uiStyle.healthBar : "normal/healthBar";
+		uiStyle.threeSound = uiStyle.threeSound != null ? uiStyle.threeSound : "intro3";
+		uiStyle.twoSound = uiStyle.twoSound != null ? uiStyle.twoSound : "intro2";
+		uiStyle.oneSound = uiStyle.oneSound != null ? uiStyle.oneSound : "intro1";
+		uiStyle.goSound = uiStyle.goSound != null ? uiStyle.goSound : "introGo";
+		uiStyle.countdownScale = uiStyle.countdownScale != null ? uiStyle.countdownScale : 1.0;
+		uiStyle.ratings = ["sick" => uiStyle.sick, "good" => uiStyle.good, "bad" => uiStyle.bad, "shit" => uiStyle.shit];
+		uiStyle.ratingScale = uiStyle.ratingScale != null ? uiStyle.ratingScale : 1.0;
+		uiStyle.comboScale = uiStyle.comboScale != null ? uiStyle.comboScale : uiStyle.ratingScale;
+		uiStyle.comboSpacing = uiStyle.comboSpacing != null ? uiStyle.comboSpacing : 43;
+		uiStyle.antialias = uiStyle.antialias != null ? uiStyle.antialias : true;
+		uiStyle.healthBarSides = uiStyle.healthBarSides != null ? uiStyle.healthBarSides : [4, 4, 4, 4];
+		trace('loaded uistyle ${modName}:${name}');
+		return uiStyle;
+	}
+
+	public static function clearLoadedUIStyles() {
+		Note.loadedUIStyles.clear();
 	}
 }
 
@@ -72,6 +148,7 @@ class Note extends FlxSprite
 	public var maniaFract:Float = 0;
 
 	public static var loadedNoteSkins:Map<String, SwagNoteSkin> = new Map<String, SwagNoteSkin>();
+	public static var loadedUIStyles:Map<String, SwagUIStyle> = new Map<String, SwagUIStyle>();
 
 	public static var noteAnimExclude:Array<String> = [
 		"static",

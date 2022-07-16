@@ -2,6 +2,7 @@ package;
 
 import CoolUtil;
 import ManiaInfo;
+import Note.SwagUIStyle;
 import Section.SwagSection;
 import Song.SwagSong;
 import Stage;
@@ -178,6 +179,8 @@ class PlayState extends MusicBeatState
 	var currentManiaPart:Int = 0;
 	var currentManiaPartName:Array<String> = [];
 	var maniaPartArr:Array<Array<String>> = [];
+
+	public var currentUIStyle:SwagUIStyle;
 	
 	//Scripting funny lol
 	//The only hscript your getting is me porting the basegame update's hscript support
@@ -208,6 +211,9 @@ class PlayState extends MusicBeatState
 			SONG = Song.loadFromJson('tutorial');
 		
 		curManiaInfo = ManiaInfo.GetManiaInfo(SONG.maniaStr);
+
+		currentUIStyle = SwagUIStyle.loadUIStyle(SONG.uiStyle);
+		var validUIStyle = currentUIStyle != null;
 
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
@@ -821,7 +827,7 @@ class PlayState extends MusicBeatState
 
 		FlxG.fixedTimestep = false;
 
-		healthBarBG = new FlxSprite(0, FlxG.height * 0.9).loadGraphic(Paths.image('normal/healthBar'));
+		healthBarBG = new FlxSprite(0, FlxG.height * 0.9).loadGraphic(Paths.image(validUIStyle ? currentUIStyle.healthBar : 'normal/healthBar'));
 		healthBarBG.screenCenter(X);
 		healthBarBG.scrollFactor.set();
 		if (Options.downScroll) {
@@ -829,7 +835,11 @@ class PlayState extends MusicBeatState
 		}
 		add(healthBarBG);
 
-		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
+		var healthBarSides:Array<Float> = validUIStyle ? currentUIStyle.healthBarSides : [4, 4, 4, 4];
+		healthBarSides[3] += healthBarSides[1];
+		healthBarSides[2] += healthBarSides[0];
+
+		healthBar = new FlxBar(healthBarBG.x + healthBarSides[0], healthBarBG.y + healthBarSides[1], RIGHT_TO_LEFT, Std.int(healthBarBG.width - healthBarSides[2]), Std.int(healthBarBG.height - healthBarSides[3]), this,
 			'health', 0, 2);
 		healthBar.scrollFactor.set();
 		//healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
@@ -1031,19 +1041,28 @@ class PlayState extends MusicBeatState
 			boyfriend.playAnim('idle');
 
 			var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
-			introAssets.set('default', ['normal/ready', "normal/set", "normal/go"]);
-			introAssets.set('school', ['pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
-			introAssets.set('schoolEvil', ['pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
+			introAssets.set('default', ['', 'normal/ready', "normal/set", "normal/go"]);
+			introAssets.set('school', ['', 'pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
+			introAssets.set('schoolEvil', ['', 'pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
 
 			var introAlts:Array<String> = introAssets.get('default');
+			var introAltsSounds:Array<String> = ["intro3", "intro2", "intro1", "introGo"];
 			var altSuffix:String = "";
+			var scale:Float = 1;
 
-			for (value in introAssets.keys())
-			{
-				if (value == curStage)
+			if (currentUIStyle != null) {
+				introAlts = [currentUIStyle.three, currentUIStyle.two, currentUIStyle.one, currentUIStyle.go];
+				introAltsSounds = [currentUIStyle.threeSound, currentUIStyle.twoSound, currentUIStyle.oneSound, currentUIStyle.goSound];
+				scale = currentUIStyle.countdownScale;
+			} else {
+				for (value in introAssets.keys())
 				{
-					introAlts = introAssets.get(value);
-					altSuffix = '-pixel';
+					if (value == curStage)
+					{
+						introAlts = introAssets.get(value);
+						introAltsSounds = ["intro3-pixel", "intro2-pixel", "intro1-pixel", "introGo-pixel"];
+						scale = daPixelZoom;
+					}
 				}
 			}
 
@@ -1051,10 +1070,11 @@ class PlayState extends MusicBeatState
 
 			{
 				case 0:
-					if (!Options.silentCountdown)
-						FlxG.sound.play(Paths.sound('intro3'), 0.6);
+					/*if (!Options.silentCountdown)
+						FlxG.sound.play(Paths.sound('intro3'), 0.6);*/
+					playCountdownSprite(introAlts[0], scale, introAltsSounds[0]);
 				case 1:
-					var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[0]));
+					/*var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[0]));
 					ready.scrollFactor.set();
 					ready.updateHitbox();
 
@@ -1071,9 +1091,10 @@ class PlayState extends MusicBeatState
 						}
 					});
 					if (!Options.silentCountdown)
-						FlxG.sound.play(Paths.sound('intro2'), 0.6);
+						FlxG.sound.play(Paths.sound('intro2'), 0.6);*/
+					playCountdownSprite(introAlts[1], scale, introAltsSounds[1]);
 				case 2:
-					var set:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
+					/*var set:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
 					set.scrollFactor.set();
 
 					if (curStage.startsWith('school'))
@@ -1089,9 +1110,10 @@ class PlayState extends MusicBeatState
 						}
 					});
 					if (!Options.silentCountdown)
-						FlxG.sound.play(Paths.sound('intro1'), 0.6);
+						FlxG.sound.play(Paths.sound('intro1'), 0.6);*/
+					playCountdownSprite(introAlts[2], scale, introAltsSounds[2]);
 				case 3:
-					var go:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[2]));
+					/*var go:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[2]));
 					go.scrollFactor.set();
 
 					if (curStage.startsWith('school'))
@@ -1109,13 +1131,36 @@ class PlayState extends MusicBeatState
 						}
 					});
 					if (!Options.silentCountdown)
-						FlxG.sound.play(Paths.sound('introGo'), 0.6);
+						FlxG.sound.play(Paths.sound('introGo'), 0.6);*/
+					playCountdownSprite(introAlts[3], scale, introAltsSounds[3]);
 				case 4:
 			}
 
 			swagCounter += 1;
 			// generateSong('fresh');
 		}, 5);
+	}
+
+	public function playCountdownSprite(path:String, scale:Float, sound:String) {
+		var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image(path));
+		ready.scrollFactor.set();
+		ready.updateHitbox();
+
+		ready.scale.x = scale;
+		ready.scale.y = scale;
+
+		ready.screenCenter();
+		add(ready);
+		FlxTween.tween(ready, {y: ready.y += 100, alpha: 0}, Conductor.crochet / 1000, {
+			ease: FlxEase.cubeInOut,
+			onComplete: function(twn:FlxTween)
+			{
+				ready.destroy();
+			}
+		});
+		ready.visible = path != "";
+		if (!Options.silentCountdown)
+			FlxG.sound.play(Paths.sound(sound), 0.6);
 	}
 
 	var previousFrameTime:Int = 0;
@@ -1840,6 +1885,8 @@ class PlayState extends MusicBeatState
 				daRating = 'bad';
 		 */
 
+		var validUIStyle = currentUIStyle != null;
+
 		var pixelShitPart1:String = "normal/";
 		var pixelShitPart2:String = '';
 
@@ -1848,7 +1895,7 @@ class PlayState extends MusicBeatState
 			pixelShitPart2 = '-pixel';
 		}
 
-		rating.loadGraphic(Paths.image(pixelShitPart1 + daRating + pixelShitPart2));
+		rating.loadGraphic(Paths.image(validUIStyle ? currentUIStyle.ratings.get(daRating) : pixelShitPart1 + daRating + pixelShitPart2));
 		rating.screenCenter();
 		rating.x = coolText.x - 40;
 		rating.y -= 60;
@@ -1856,7 +1903,7 @@ class PlayState extends MusicBeatState
 		rating.velocity.y -= FlxG.random.int(140, 175);
 		rating.velocity.x -= FlxG.random.int(0, 10);
 
-		var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelShitPart1 + 'combo' + pixelShitPart2));
+		var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(validUIStyle ? currentUIStyle.combo : pixelShitPart1 + 'combo' + pixelShitPart2));
 		comboSpr.screenCenter();
 		comboSpr.x = coolText.x;
 		comboSpr.acceleration.y = 600;
@@ -1866,17 +1913,23 @@ class PlayState extends MusicBeatState
 		add(comboSpr);
 		add(rating);
 
-		if (!curStage.startsWith('school'))
-		{
-			rating.setGraphicSize(Std.int(rating.width * 0.7));
-			rating.antialiasing = true;
-			comboSpr.setGraphicSize(Std.int(comboSpr.width * 0.7));
-			comboSpr.antialiasing = true;
-		}
-		else
-		{
-			rating.setGraphicSize(Std.int(rating.width * daPixelZoom * 0.7));
-			comboSpr.setGraphicSize(Std.int(comboSpr.width * daPixelZoom * 0.7));
+		if (validUIStyle) {
+			rating.scale.x = currentUIStyle.ratingScale;
+			rating.scale.y = currentUIStyle.ratingScale;
+			comboSpr.scale.x = currentUIStyle.ratingScale;
+			comboSpr.scale.y = currentUIStyle.ratingScale;
+			comboSpr.antialiasing = currentUIStyle.antialias;
+			coolText.antialiasing = currentUIStyle.antialias;
+		} else {
+			if (!curStage.startsWith('school')) {
+				rating.setGraphicSize(Std.int(rating.width * 0.7));
+				rating.antialiasing = true;
+				comboSpr.setGraphicSize(Std.int(comboSpr.width * 0.7));
+				comboSpr.antialiasing = true;
+			} else {
+				rating.setGraphicSize(Std.int(rating.width * daPixelZoom * 0.7));
+				comboSpr.setGraphicSize(Std.int(comboSpr.width * daPixelZoom * 0.7));
+			}
 		}
 
 		comboSpr.updateHitbox();
@@ -1894,19 +1947,22 @@ class PlayState extends MusicBeatState
 			}
 
 			for (i in 0...seperatedScore.length) {
-				var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image('${pixelShitPart1}num${seperatedScore[i] + pixelShitPart2}'));
+				var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image(validUIStyle ? currentUIStyle.numbers[Std.parseInt(seperatedScore[i])] : '${pixelShitPart1}num${seperatedScore[i] + pixelShitPart2}'));
 				numScore.screenCenter();
-				numScore.x = coolText.x + (43 * i) - 90;
+				numScore.x = coolText.x + ((validUIStyle ? currentUIStyle.comboSpacing : 43) * i) - 90;
 				numScore.y += 80;
 
-				if (!curStage.startsWith('school'))
-				{
-					numScore.antialiasing = true;
-					numScore.setGraphicSize(Std.int(numScore.width * 0.5));
-				}
-				else
-				{
-					numScore.setGraphicSize(Std.int(numScore.width * daPixelZoom));
+				if (validUIStyle) {
+					numScore.scale.x = currentUIStyle.comboScale;
+					numScore.scale.y = currentUIStyle.comboScale;
+					numScore.antialiasing = currentUIStyle.antialias;
+				} else {
+					if (!curStage.startsWith('school')) {
+						numScore.antialiasing = true;
+						numScore.setGraphicSize(Std.int(numScore.width * 0.5));
+					} else {
+						numScore.setGraphicSize(Std.int(numScore.width * daPixelZoom));
+					}
 				}
 				numScore.updateHitbox();
 

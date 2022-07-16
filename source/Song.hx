@@ -34,6 +34,7 @@ typedef SwagSong =
 
 	var actions:Array<String>;
 	var noteSkin:String;
+	var uiStyle:String;
 }
 
 class Song

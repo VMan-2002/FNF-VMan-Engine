@@ -131,8 +131,7 @@ class CoolUtil
 			return File.getContent(modName + "/" + path);
 		} else if (Assets.exists(path)) {
 			return Assets.getText(path);
-		} else {
-			return null;
 		}
+		return null;
 	}
 }

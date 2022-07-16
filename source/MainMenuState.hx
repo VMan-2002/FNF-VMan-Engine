@@ -1,8 +1,9 @@
 package;
 
-#if desktop
-import Discord.DiscordClient;
-#end
+import CoolUtil;
+import Note.SwagNoteSkin;
+import Note.SwagUIStyle;
+import OptionsMenu;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -16,11 +17,11 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import io.newgrounds.NG;
 import lime.app.Application;
-import CoolUtil;
-
-import OptionsMenu;
 
 using StringTools;
+#if desktop
+import Discord.DiscordClient;
+#end
 
 class MainMenuState extends MusicBeatState
 {
@@ -57,6 +58,9 @@ class MainMenuState extends MusicBeatState
 		if (!FlxG.sound.music.playing) {
 			CoolUtil.playMenuMusic();
 		}
+
+		SwagNoteSkin.clearLoadedNoteSkins();
+		SwagUIStyle.clearLoadedUIStyles();
 
 		persistentUpdate = persistentDraw = true;
 
