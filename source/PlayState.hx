@@ -346,7 +346,7 @@ class PlayState extends MusicBeatState
 				phillyCityLights = new FlxTypedGroup<FlxSprite>();
 				add(phillyCityLights);
 
-				var lightColors = CoolUtil.uncoolTextFile('phillyWindowColors');
+				var lightColors = CoolUtil.uncoolTextFile('data/phillyWindowColors');
 				for (i in 0...5) {
 					var light:FlxSprite = new FlxSprite(city.x).loadGraphic(Paths.image('philly/window'));
 					light.scrollFactor.set(0.3, 0.3);
@@ -644,7 +644,7 @@ class PlayState extends MusicBeatState
 			default: //load custom stage
 			{
 				trace('loading custom stage '+curStage);
-				currentStage = new Stage(curStage);
+				currentStage = new Stage(curStage, modName);
 				currentStageBack = currentStage.elementsBack;
 				currentStageFront = currentStage.elementsFront;
 				add(currentStageBack);
@@ -677,11 +677,22 @@ class PlayState extends MusicBeatState
 		}
 
 		dad = new Character(100, 100, SONG.player2, false, modName);
+		
+		boyfriend = new Boyfriend(770, 100, SONG.player1, modName);
 
 		gf = new Character(400, 130, gfVersion, false, modName);
 		gf.scrollFactor.set(0.95, 0.95);
 		
-		boyfriend = new Boyfriend(770, 100, SONG.player1, modName);
+		if (customStageCharPos != null) {
+			for (i in 0...Character.activeArray.length) {
+				if (customStageCharPos.length <= i) {
+					break;
+				}
+				var char:Character = Character.activeArray[i];
+				char.x = customStageCharPos[i][0];
+				char.y = customStageCharPos[i][1];
+			}
+		}
 		
 		boyfriend.applyPositionOffset();
 		
@@ -747,16 +758,6 @@ class PlayState extends MusicBeatState
 		if (SONG.actions.indexOf("spookyPlayer") != -1) {
 			var evilTrail = new FlxTrail(boyfriend, null, 4, 24, 0.3, 0.069);
 			add(evilTrail);
-		}
-		if (customStageCharPos != null) {
-			for (i in 0...Character.activeArray.length) {
-				if (customStageCharPos.length <= i) {
-					break;
-				}
-				var char:Character = Character.activeArray[i];
-				char.x += customStageCharPos[i][0];
-				char.y += customStageCharPos[i][1];
-			}
 		}
 
 		add(gf);
@@ -846,16 +847,24 @@ class PlayState extends MusicBeatState
 		healthBar.createFilledBar(dad.healthBarColor, boyfriend.healthBarColor);
 		// healthBar
 		add(healthBar);
-
-		hudThings.add(new HudThing(healthBarBG.x, healthBarBG.y + 30, [
-			"score", "misses", "fc", "accRating", "accSimple", "health"
-		]));
-		hudThings.add(new HudThing(2, FlxG.height - 24, [
-			"song", "difficulty"
-		].concat(["engine"])));
-		hudThings.add(new HudThing(2, (FlxG.height / 2) - 100, [
- 			"hits", "sicks", "goods", "bads", "shits", "misses", "totalnotes"
-		], true));
+		
+		var hudThingLists:Array<Array<String>>;
+		if (Std.isOfType(this, PlayStateOffsetCalibrate)) {
+			hudThingLists = [
+				["hits", "offset_avg", "offset_min", "offset_max", "offset_range"],
+				["song"].concat(["engine"]),
+				["hits", "misses", "totalnotes", "health"]
+			];
+		} else {
+			hudThingLists = [
+				["score", "misses", "fc", "accRating", "accSimple", "health"],
+				["song", "difficulty"].concat(["engine"]),
+				["hits", "sicks", "goods", "bads", "shits", "misses", "totalnotes"]
+			];
+		}
+		hudThings.add(new HudThing(healthBarBG.x, healthBarBG.y + 30, hudThingLists[0]));
+		hudThings.add(new HudThing(2, FlxG.height - 24, hudThingLists[1]));
+		hudThings.add(new HudThing(2, (FlxG.height / 2) - 100, hudThingLists[2], true));
 
 		iconP1 = new HealthIcon(boyfriend.healthIcon, true, modName);
 		iconP1.y = healthBar.y - (iconP1.height / 2);

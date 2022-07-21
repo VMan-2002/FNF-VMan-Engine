@@ -803,14 +803,14 @@ class Character extends FlxSprite
 				dadVar = 6.1;
 			if (holdTimer >= Conductor.stepCrochet * dadVar * 0.001)
 			{
-				dance();
+				dance(true);
 				holdTimer = 0;
 			}
 		}
 		
 		if (animation.curAnim.name == 'hairFall' && animation.curAnim.finished) {
 			danced = false;
-			dance();
+			dance(true);
 		}
 
 		super.update(elapsed);
@@ -821,15 +821,17 @@ class Character extends FlxSprite
 	/**
 	 * FOR GF DANCING SHIT
 	 */
-	public function dance() {
+	public function dance(?anyway:Bool = false) {
 		if (debugMode || (animation.curAnim != null && (animation.curAnim.name == 'hairBlow' || (animation.curAnim.name.startsWith('sing') && !animation.curAnim.finished)))) {
 			return;
 		}
-		if (curDances >= moduloDances) {
-			curDances = 1;
-		} else {
-			curDances++;
-			return;
+		if (!anyway) {
+			if (curDances >= moduloDances) {
+				curDances = 1;
+			} else {
+				curDances++;
+				return;
+			}
 		}
 		if (danceType) {
 			danced = !danced;

@@ -35,6 +35,7 @@ class OptionsSubState extends OptionsSubStateBasic
 			"Silent Countdown",
 			"Show FPS",
 			"Audio On Miss",
+			"Input Offset Calibrate",
 			"Exit Without Saving"
 		];
 	}
@@ -95,6 +96,8 @@ class OptionsSubState extends OptionsSubStateBasic
 			case "audio on miss":
 				var values = ["Miss sound + Mute vocals", "Miss sound only", "Mute vocals only", "Do nothing"];
 				return ["Change what you hear when you miss a note.", values[Options.noteMissAction]];
+			case "input offset calibrate":
+				return ["Do a short song to see what input offset is good.", "idk lol"];
 			case "exit without saving":
 				return ["Exit the options menu, and discard your changes.", '', 'unknownOption'];
 		}
@@ -163,6 +166,9 @@ class OptionsSubState extends OptionsSubStateBasic
 				return false;
 			case "activate new mods":
 				Options.newModsActive = !Options.newModsActive;
+			case "input offset calibrate":
+				FlxG.state.closeSubState();
+				FlxG.switchState(new PlayStateOffsetCalibrate());
 			default:
 				trace("Tried to accept unknown option: " + name);
 		}

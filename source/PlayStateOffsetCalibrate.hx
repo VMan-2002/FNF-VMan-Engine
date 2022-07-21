@@ -9,7 +9,10 @@ using StringTools;
 
 class PlayStateOffsetCalibrate extends PlayState
 {
-	var hitOffsets = new Array<Float>();
+	public var hitOffsets = new Array<Float>();
+	public var hitOffsetMin:Float = 0;
+	public var hitOffsetMax:Float = 0;
+	public var hitOffsetAvg:Float = 0;
 
 	public function new() {
 		PlayState.modName = "";
@@ -26,17 +29,24 @@ class PlayStateOffsetCalibrate extends PlayState
 	}
 
 	override function goodNoteHit(note:Note) {
-		hitOffsets.push(Conductor.songPosition - note.strumTime);
+		var thisOffset = Conductor.songPosition - note.strumTime;
+		if (hitOffsets.length == 0) {
+			hitOffsetMin = hitOffsetMax = thisOffset; //i think this is a thing
+		} else {
+			hitOffsetMin = Math.min(hitOffsetMin, thisOffset);
+			hitOffsetMax = Math.max(hitOffsetMax, thisOffset);
+		}
+		hitOffsets.push(thisOffset);
+		hitOffsetAvg = 0;
+		for (n in hitOffsets) {
+			hitOffsetAvg += n;
+		}
+		hitOffsetAvg /= hitOffsets.length;
 		super.goodNoteHit(note);
 	}
 
 	override function endSong() {
-		var result:Float = 0;
-		for (n in hitOffsets) {
-			result += n;
-		}
-		result /= hitOffsets.length;
-		trace("Average offset: " + result);
+		trace("Average offset: " + hitOffsetAvg);
 		super.endSong();
 	}
 }

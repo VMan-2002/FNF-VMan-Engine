@@ -27,6 +27,9 @@ class PauseSubState extends MusicBeatSubstate
 	public function new(x:Float, y:Float)
 	{
 		super();
+		if (Std.isOfType(FlxG.state, PlayStateOffsetCalibrate)) {
+			menuItems.remove("Exit to menu");
+		}
 
 		//Dont use CoolUtil.playMusic here
 		pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfast'), true, true);
@@ -118,7 +121,7 @@ class PauseSubState extends MusicBeatSubstate
 						FlxG.switchState(new FreeplayState());
 				case "options":
 					FlxG.state.closeSubState();
-					OptionsMenu.wasInPlayState = true;
+					OptionsMenu.wasInPlayState = !Std.isOfType(FlxG.state, PlayStateOffsetCalibrate);
 					FlxG.switchState(new OptionsMenu());
 			}
 		}

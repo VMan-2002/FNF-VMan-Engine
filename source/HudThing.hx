@@ -89,9 +89,22 @@ class HudThing extends FlxGroup
 				case "engine":
 					//this one should always show on the hud thing in the corner
 					text += Translation.getTranslation(Options.botplay ? "hud_engine botplay" : "hud_engine", "playstate");
+				//For input offset calibrate
+				case "offset_min":
+					text += "MinOffset: "+offsetMilliseconds(getPlayState().hitOffsetMin);
+				case "offset_max":
+					text += "MaxOffset: "+offsetMilliseconds(getPlayState().hitOffsetMax);
+				case "offset_avg":
+					text += "AvgOffset: "+offsetMilliseconds(getPlayState().hitOffsetAvg);
+				case "offset_range":
+					text += "RngOffset: "+offsetMilliseconds(getPlayState().hitOffsetMin - getPlayState().hitOffsetMax);
 			}
 		}
 		return vertical ? text+"\n" : text; //vertical text needs an additional newline idk why
+	}
+	
+	public function getPlayState():Dynamic {
+		return PlayState.instance;
 	}
 	
 	public inline function updateInfo() {
@@ -104,5 +117,9 @@ class HudThing extends FlxGroup
 	
 	public inline static function trimNoPercent(num:Float):String {
 		return Math.isNaN(num) ? "0" : Std.string(FlxMath.roundDecimal(num * 100, 2));
+	}
+	
+	public inline static function offsetMilliseconds(num:Float) {
+		return Std.string(FlxMath.roundDecimal(num, 2))+"ms";
 	}
 }

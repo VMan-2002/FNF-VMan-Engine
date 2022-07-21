@@ -154,18 +154,23 @@ class Stage
 		if (name == null) {
 			return;
 		}
-		createStage(getStage(name, mod));
+		if (mod == null) {
+			mod = PlayState.modName;
+		}
+		createStage(getStage(name, mod), this);
 	}
 
-	public static function createStage(data:Null<SwagStage>):Stage {
+	public static function createStage(data:Null<SwagStage>, ?target:Stage):Stage {
 		if (data == null) {
 			return new Stage();
 		}
-		var stage = new Stage();
-		stage.charPosition = data.charPosition;
-		stage.defaultCamZoom = data.defaultCamZoom;
-		stage.elementsFront = makeElements(data.elementsFront);
-		stage.elementsBack = makeElements(data.elementsBack);
-		return stage;
+		if (target == null) {
+			target = new Stage();
+		}
+		target.charPosition = data.charPosition;
+		target.defaultCamZoom = data.defaultCamZoom;
+		target.elementsFront = makeElements(data.elementsFront);
+		target.elementsBack = makeElements(data.elementsBack);
+		return target;
 	}
 }
