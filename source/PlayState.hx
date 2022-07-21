@@ -248,6 +248,7 @@ class PlayState extends MusicBeatState
 		if (FileSystem.exists(dialoguePath)) {
 			trace('found start dialogue');
 			dialogueVMan = new DialogueBoxVMan(dialoguePath);
+			dialogueVMan.finishThing = startCountdown;
 		} else {
 			trace('no start dialogue (it would be ' + dialoguePath + ')');
 		}
@@ -644,7 +645,7 @@ class PlayState extends MusicBeatState
 			default: //load custom stage
 			{
 				trace('loading custom stage '+curStage);
-				currentStage = new Stage(curStage, modName);
+				currentStage = new Stage(curStage);
 				currentStageBack = currentStage.elementsBack;
 				currentStageFront = currentStage.elementsFront;
 				add(currentStageBack);
