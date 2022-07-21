@@ -13,20 +13,21 @@ typedef StageElement =
 	var name:String;
 	var image:String;
 	var animated:Bool;
-	var x:Float;
-	var y:Float;
-	var scaleX:Float;
-	var scaleY:Float;
-	var scrollX:Float;
-	var scrollY:Float;
-	var antialiasing:Bool;
+	var x:Null<Float>;
+	var y:Null<Float>;
+	var scaleX:Null<Float>;
+	var scaleY:Null<Float>;
+	var scrollX:Null<Float>;
+	var scrollY:Null<Float>;
+	var antialias:Bool;
 	var animations:Null<Array<SwagCharacterAnim>>;
+	var initAnim:String;
 }
 
 typedef SwagStage =
 {
 	var charPosition:Array<Array<Float>>;
-	var defaultCamZoom:Float;
+	var defaultCamZoom:Null<Float>;
 	var elementsFront:Array<StageElement>;
 	var elementsBack:Array<StageElement>;
 }
@@ -37,20 +38,31 @@ class Stage
 	public var defaultCamZoom:Float;
 	public var elementsFront:FlxTypedGroup<FlxSprite>;
 	public var elementsBack:FlxTypedGroup<FlxSprite>;
+	public var elementsAll:Array<FlxSprite>;
+	//public var namedElements:Map<String, FlxSprite>;
+	public static var animFollowup:Map<String, String> = [
+		"danceLeft" => "danceRight",
+		"danceRight" => "danceLeft",
+		"idle" => "idle"
+	];
 
 	public static function getStage(name:String, ?mod:Null<String>):Null<SwagStage> {
 		if (mod == null) {
 			mod = PlayState.modName;
 		}
-		#if !VMAN_DEMO
-		var path:String = "mods/${mod}/objects/stages/${name}.json";
+		//#if !VMAN_DEMO
+		var path:String = 'mods/${mod}/objects/stages/${name}.json';
 		var isJson = FileSystem.exists(path);
+		if (!isJson) {
+			path = 'assets/objects/stages/${name}.json';
+			isJson = FileSystem.exists(path);
+		}
 		if (isJson) {
 			trace("Found json for custom stage "+name);
 			var json:SwagStage = cast CoolUtil.loadJsonFromFile(path);
 			return json;
 		}
-		#end
+		//#end
 		//your hardcoded stage would go here
 		switch(name) {
 			case "poops":
@@ -72,10 +84,10 @@ class Stage
 				return {
 					charPosition: [[100, 100], [770, 100], [400, 130]],
 					defaultCamZoom: 0.9,
-					elementsFront: [
+					elementsBack: [
 						{
 							name: "bg",
-							image: Paths.image("stage/stageback"),
+							image: "stage/stageback",
 							animated: false,
 							x: -600,
 							y: -200,
@@ -83,12 +95,13 @@ class Stage
 							scaleY: 1,
 							scrollX: 0.9,
 							scrollY: 0.9,
-							antialiasing: true,
-							animations: null
+							antialias: true,
+							animations: null,
+							initAnim: null
 						},
 						{
 							name: "stageFront",
-							image: Paths.image("stage/stagefront"),
+							image: "stage/stagefront",
 							animated: false,
 							x: -650,
 							y: 600,
@@ -96,14 +109,15 @@ class Stage
 							scaleY: 1,
 							scrollX: 0.9,
 							scrollY: 0.9,
-							antialiasing: true,
-							animations: null
+							antialias: true,
+							animations: null,
+							initAnim: null
 						}
 					],
-					elementsBack: [
+					elementsFront: [
 						{
 							name: "stageCurtains",
-							image: Paths.image("stage/stagecurtains"),
+							image: "stage/stagecurtains",
 							animated: false,
 							x: -500,
 							y: -300,
@@ -111,8 +125,9 @@ class Stage
 							scaleY: 1,
 							scrollX: 1.3,
 							scrollY: 1.3,
-							antialiasing: true,
-							animations: null
+							antialias: true,
+							animations: null,
+							initAnim: null
 						}
 					]
 				};
@@ -127,23 +142,29 @@ class Stage
 		};
 	}
 
-	public static function makeElements(elementsList:Array<StageElement>):FlxTypedGroup<FlxSprite> {
+	public static function makeElements(elementsList:Null<Array<StageElement>>):FlxTypedGroup<FlxSprite> {
+		if (elementsList == null) {
+			return new FlxTypedGroup<FlxSprite>();
+		}
 		var result:FlxTypedGroup<FlxSprite> = new FlxTypedGroup<FlxSprite>();
 		for (element in elementsList) {
-			var sprite = new FlxSprite(element.x, element.y);
-			sprite.antialiasing = element.antialiasing;
+			var sprite = new FlxSprite(element.x == null ? 0 : element.x, element.y == null ? 0 : element.y);
+			sprite.antialiasing = element.antialias != false;
 			if (element.animated) {
 				sprite.frames = Paths.getSparrowAtlas(element.image);
 				for (anim in element.animations) {
 					Character.loadAnimation(sprite, anim);
 				}
 			} else {
-				sprite.loadGraphic(element.image);
+				sprite.loadGraphic(Paths.image(element.image));
 			}
-			sprite.scale.x = element.scaleX;
-			sprite.scale.y = element.scaleY;
-			sprite.scrollFactor.x = element.scrollX;
-			sprite.scrollFactor.y = element.scrollY;
+			sprite.scale.x = element.scaleX == null ? 1 : element.scaleX;
+			sprite.scale.y = element.scaleY == null ? 1 : element.scaleY;
+			sprite.scrollFactor.x = element.scrollX == null ? 1 : element.scrollX;
+			sprite.scrollFactor.y = element.scrollY == null ? 1 : element.scrollY;
+			if (element.animated && element.initAnim != null) {
+				sprite.animation.play(element.initAnim);
+			}
 			result.add(sprite);
 		}
 		return result;
@@ -168,9 +189,29 @@ class Stage
 			target = new Stage();
 		}
 		target.charPosition = data.charPosition;
-		target.defaultCamZoom = data.defaultCamZoom;
+		target.defaultCamZoom = data.defaultCamZoom == null ? 1 : data.defaultCamZoom;
 		target.elementsFront = makeElements(data.elementsFront);
 		target.elementsBack = makeElements(data.elementsBack);
+		target.elementsAll = target.elementsBack.members.concat(target.elementsFront.members);
 		return target;
+	}
+	
+	//update stuff
+	
+	public function beatHit() {
+		for (thing in elementsAll) {
+			var animname = thing.animation.curAnim != null ? thing.animation.curAnim.name : "";
+			if (animFollowup.exists(animname)) {
+				thing.animation.play(animFollowup.get(animname), true);
+			}
+		}
+	}
+	
+	public function playAnim(name:String, ?force:Bool = false) {
+		for (thing in elementsAll) {
+			if (thing.animation.getNameList().indexOf(name) >= 0) {
+				thing.animation.play(name, force);
+			}
+		}
 	}
 }

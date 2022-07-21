@@ -42,6 +42,8 @@ import sys.io.File;
 
 class TitleState extends MusicBeatState
 {
+	var stageObject:Stage;
+	
 	static var initialized:Bool = false;
 
 	var blackScreen:FlxSprite;
@@ -107,6 +109,8 @@ class TitleState extends MusicBeatState
 		FlxG.save.bind('funkin', 'ninjamuffin99');
 
 		Highscore.load();
+		
+		stageObject = new Stage("_FnfTitle");
 
 		if (FlxG.save.data.weekUnlocked != null)
 		{
@@ -170,7 +174,7 @@ class TitleState extends MusicBeatState
 		logoBl = new FlxSprite(-150, -100);
 		logoBl.frames = Paths.getSparrowAtlas('title/logoBumpin');
 		logoBl.antialiasing = true;
-		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
+		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24, false);
 		logoBl.animation.play('bump');
 		logoBl.updateHitbox();
 		// logoBl.screenCenter();
@@ -181,8 +185,8 @@ class TitleState extends MusicBeatState
 		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
 		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
 		gfDance.antialiasing = true;
-		titleGroup.add(gfDance);
-		titleGroup.add(logoBl);
+		//titleGroup.add(gfDance);
+		//titleGroup.add(logoBl);
 
 		titleText = new FlxSprite(100, FlxG.height * 0.8);
 		titleText.frames = Paths.getSparrowAtlas('title/titleEnter');
@@ -192,7 +196,9 @@ class TitleState extends MusicBeatState
 		titleText.animation.play('idle');
 		titleText.updateHitbox();
 		// titleText.screenCenter(X);
-		titleGroup.add(titleText);
+		//titleGroup.add(titleText);
+		titleGroup.add(stageObject.elementsBack);
+		titleGroup.add(stageObject.elementsFront);
 		
 		if (initialized) {
 			doCoolText = false;
@@ -327,7 +333,7 @@ class TitleState extends MusicBeatState
 			swagGoodArray.push(i.split('--'));
 		}
 		
-		swagGoodArray.push(["This intro text", "is Hardcoded Lmao"]);
+		swagGoodArray.push("This intro text--is Hardcoded Lmao".split("--"));
 
 		return swagGoodArray;
 	}
@@ -382,7 +388,8 @@ class TitleState extends MusicBeatState
 			}
 			#end
 
-			titleText.animation.play('press');
+			//titleText.animation.play('press');
+			stageObject.playAnim("press");
 
 			FlxG.camera.flash(FlxColor.WHITE, 1);
 			FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
@@ -455,7 +462,7 @@ class TitleState extends MusicBeatState
 	{
 		super.beatHit();
 
-		logoBl.animation.play('bump');
+		logoBl.animation.play('bump', true);
 		danceLeft = !danceLeft;
 
 		if (danceLeft)
@@ -464,6 +471,8 @@ class TitleState extends MusicBeatState
 			gfDance.animation.play('danceLeft');
 
 		FlxG.log.add(curBeat);
+		
+		stageObject.beatHit();
 		
 		if (skippedIntro || !doCoolText)
 			return;
