@@ -111,8 +111,8 @@ class SwagUIStyle {
 		uiStyle.goSound = uiStyle.goSound != null ? uiStyle.goSound : "introGo";
 		uiStyle.countdownScale = uiStyle.countdownScale != null ? uiStyle.countdownScale : 1.0;
 		uiStyle.ratings = ["sick" => uiStyle.sick, "good" => uiStyle.good, "bad" => uiStyle.bad, "shit" => uiStyle.shit];
-		uiStyle.ratingScale = uiStyle.ratingScale != null ? uiStyle.ratingScale : 1.0;
-		uiStyle.comboScale = uiStyle.comboScale != null ? uiStyle.comboScale : uiStyle.ratingScale;
+		uiStyle.ratingScale = uiStyle.ratingScale != null ? uiStyle.ratingScale : 0.7;
+		uiStyle.comboScale = uiStyle.comboScale != null ? uiStyle.comboScale : 0.5;
 		uiStyle.comboSpacing = uiStyle.comboSpacing != null ? uiStyle.comboSpacing : 43;
 		uiStyle.antialias = uiStyle.antialias != null ? uiStyle.antialias : true;
 		uiStyle.healthBarSides = uiStyle.healthBarSides != null ? uiStyle.healthBarSides : [4, 4, 4, 4];

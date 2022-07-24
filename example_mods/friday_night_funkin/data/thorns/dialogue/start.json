@@ -6,7 +6,8 @@
 			"portraitEvents": [
 				{
 					"character": "spirit-pixel",
-					"side": -1
+					"side": -1,
+					"isTalking": true
 				}
 			]
 		},

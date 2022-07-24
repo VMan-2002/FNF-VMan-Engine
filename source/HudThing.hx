@@ -13,8 +13,10 @@ class HudThing extends FlxGroup
 	public var vertical:Bool = false;
 	public var textThing:FlxText;
 	static var botplayExclude:Array<String> = [
-		"misses",
-		"fc"
+		"misses", "fc"
+	];
+	static var spoopyExclude:Array<String> = [
+		"hits", "totalnotes", "difficulty", "engine", "accSimple", "health", "fc", "offset_min", "offset_max", "offset_avg"
 	];
 	
 	public function new(x:Float, y:Float, list:Array<String>, ?vertical:Bool = false)
@@ -121,5 +123,14 @@ class HudThing extends FlxGroup
 	
 	public inline static function offsetMilliseconds(num:Float) {
 		return Std.string(FlxMath.roundDecimal(num, 2))+"ms";
+	}
+
+	public function doSpoop() {
+		items = items.filter(function(item:String):Bool {
+			return spoopyExclude.indexOf(item) < 0;
+		});
+		var a:FlxText = cast members[0];
+		a.font = Paths.font("NotoSansJP-Medium.otf");
+		Translation.setObjectFont(a, "vcr font");
 	}
 }

@@ -1,0 +1,1 @@
+{"elementsBack":[{"name":"bg","image":"halloween/halloween_bg","animated":true,"x":-200,"y":-100,"antialiasing":true,"animations":[{"name":"idle","anim":"halloweem bg0","framerate":24,"loop":false},{"name":"lightning","anim":"halloweem bg lightning strike","framerate":24,"loop":false}]}]}

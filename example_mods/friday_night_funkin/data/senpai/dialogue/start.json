@@ -5,7 +5,8 @@
 			"portraitEvents": [
 				{
 					"character": "senpai-pixel",
-					"side": -1
+					"side": -1,
+					"isTalking": true
 				}
 			],
 			"boxStyle": "senpai"
@@ -19,7 +20,8 @@
 				{
 					"number": 1,
 					"character": "bf-pixel",
-					"side": 1
+					"side": 1,
+					"isTalking": true
 				},
 				{
 					"removeCharacter": true

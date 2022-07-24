@@ -6,9 +6,12 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.text.FlxTypeText;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup;
 import flixel.input.FlxKeyManager;
 import flixel.text.FlxText;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import json2object.JsonParser;
@@ -88,6 +91,9 @@ class DialogueBoxVMan extends FlxSpriteGroup
 
 	public var dialogueFile:DialogueFile;
 
+	var charList:Array<String> = [];
+	var charObjects:FlxTypedSpriteGroup<DialogueCharacter> = new FlxTypedSpriteGroup<DialogueCharacter>();
+
 	public function new(?file:String, ?dialogueFile:DialogueFile) {
 		super();
 
@@ -119,6 +125,8 @@ class DialogueBoxVMan extends FlxSpriteGroup
 			if (bgFade.alpha > 0.7)
 				bgFade.alpha = 0.7;
 		}, 5);
+
+		add(charObjects);
 
 		box = new FlxSprite(-20, 45);
 
@@ -279,7 +287,31 @@ class DialogueBoxVMan extends FlxSpriteGroup
 	var isEnding:Bool = false;
 
 	function startDialogue():Void {
-		cleanDialog();
+		if (dialogueList[0].portraitEvents != null) {
+			for (ev in dialogueList[0].portraitEvents) {
+				if (ev.character.length > 0) {
+					charList[ev.number] = ev.character;
+					if (charObjects.members[ev.number] != null) {
+						charObjects.members[ev.number].setCharacter(ev.character);
+					} else {
+						charObjects.add(new DialogueCharacter(ev.character, PlayState.modName));
+					}
+				}
+				var charObject = charObjects.members[ev.number];
+				if (ev.isTalking) {
+					curCharacter = charList[ev.number];
+				}
+				charObject.setExpression(ev.expression);
+				charObject.setTalking(ev.isTalking);
+				charObject.setFlip(ev.flip);
+				charObject.setSide(ev.side);
+				if (ev.removeCharacter) {
+					charObject.exit();
+				}
+			}
+		}
+
+		trace("curCharacter: " + curCharacter);
 		// var theDialog:Alphabet = new Alphabet(0, 70, dialogueList[0], false, true);
 		// dialogue = theDialog;
 		// add(theDialog);
@@ -289,14 +321,14 @@ class DialogueBoxVMan extends FlxSpriteGroup
 		swagDialogue.start(0.04, true);
 
 		switch (curCharacter) {
-			case 'dad':
+			case 'senpai-pixel' | 'spirit-pixel':
 				portraitRight.visible = false;
 				if (!portraitLeft.visible)
 				{
 					portraitLeft.visible = true;
 					portraitLeft.animation.play('enter');
 				}
-			case 'bf':
+			case 'bf-pixel':
 				portraitLeft.visible = false;
 				if (!portraitRight.visible)
 				{
@@ -305,11 +337,104 @@ class DialogueBoxVMan extends FlxSpriteGroup
 				}
 		}
 	}
+}
 
-	function cleanDialog():Void {
-		//do nothing (it's already correct)
-		/*var splitName:Array<String> = dialogueList[0].split(":");
-		curCharacter = splitName[1];
-		dialogueList[0] = dialogueList[0].substr(splitName[1].length + 2).trim();*/
+class DialogueCharacter extends SpriteVMan {
+	var expression:String;
+	var talking:Bool;
+	var parent:DialogueBoxVMan;
+	var isJustAdded:Bool;
+	var myMod:String;
+
+	public function new(char:String, mod:String) {
+		super(0, 0);
+		expression = "normal";
+		talking = false;
+		isJustAdded = true;
+		setCharacter(char, mod);
+	}
+
+	public function setSide(side:Float) {
+		if (isJustAdded) {
+			if (side > 2/3) {
+				x = FlxG.width + 100;
+			} else if (side < 1/3) {
+				x = -100;
+			} else {
+				x = (FlxG.width - width) / 2;
+				y += 800;
+				FlxTween.tween(this, {y: y - 800}, 0.3, {ease: FlxEase.cubeInOut});
+			}
+			isJustAdded = false;
+			playAvailableAnim([talking ? "entertalk_"+expression : "enter_"+expression]);
+		}
+		FlxTween.tween(this, {x: side * (FlxG.width - width)}, 0.3, {ease: FlxEase.cubeInOut});
+	}
+
+	public function setCharacter(char:String, ?mod:Null<String>) {
+		var jsonThing = Character.loadCharacterJson("dialogue/"+char, mod == null ? this.myMod : mod);
+		if (jsonThing == null) {
+			trace("Could not load character " + char);
+			return;
+		}
+		frames = Paths.getSparrowAtlas(jsonThing.image);
+		for (anim in jsonThing.animations) {
+			Character.loadAnimation(this, anim);
+			addOffset(anim.name, anim.offset[0], anim.offset[1]);
+		}
+		if (jsonThing.initAnim != null) {
+			playAvailableAnim([jsonThing.initAnim]);
+		}
+	}
+
+	public function setFlip(flip:Bool) {
+		if (flipX == flip) {
+			return;
+		}
+		flipX = flip;
+		if (!talking) {
+			playAvailableAnim(["talkflip_"+expression, "flip_"+expression]);
+		}
+	}
+
+	public function setExpression(expression:String) {
+		if (this.expression == expression) {
+			return;
+		}
+		playAvailableAnim(talking ? ["talkswitch_"+this.expression+"_"+expression, "talking_"+this.expression] : ["idleswitch_"+this.expression+"_"+expression, "idle_"+this.expression]);
+		this.expression = expression;
+	}
+
+	public function setTalking(isTalking:Bool) {
+		if (talking == isTalking) {
+			return;
+		}
+		talking = isTalking;
+		if (talking) {
+			playAvailableAnim(["talkstart_"+this.expression, "talking_"+this.expression]);
+		}
+	}
+
+	public function exit() {
+		playAvailableAnim(["exit_"+expression]);
+		FlxTween.tween(this, {alpha:0.0}, 0.3, {onComplete:function(tween:FlxTween) {
+			kill();
+		}});
+	}
+
+	public override function update(elapsed:Float) {
+		if (animation.curAnim != null && animation.curAnim.finished) {
+			var animname = animation.curAnim.name;
+			if (animStartsWith("idle")) {
+				return super.update(elapsed); //do nothing
+			} else if (!talking && animStartsWith("talking")) {
+				playAvailableAnim(["stoptalk"+expression, "idle_"+expression]);
+			} else if (animStartsWith("starttalk") || animStartsWith("talkswitch")) {
+				playAvailableAnim(["talking_"+expression, "idle_"+expression]);
+			} else if (animStartsWith("stoptalk")) {
+				playAvailableAnim(["idle_"+expression]);
+			}
+		}
+		super.update(elapsed);
 	}
 }

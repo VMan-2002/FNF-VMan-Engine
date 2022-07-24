@@ -110,7 +110,7 @@ class PlayState extends MusicBeatState
 	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
 	var dialogueVMan:DialogueBoxVMan;
 
-	var halloweenBG:FlxSprite;
+	//var halloweenBG:FlxSprite;
 	var isHalloween:Bool = false;
 
 	var phillyCityLights:FlxTypedGroup<FlxSprite>;
@@ -168,8 +168,8 @@ class PlayState extends MusicBeatState
 	
 	public var currentSection:Int; //todo: So im making variable length sections (for example: with non 4/4 time signatures)
 	public var focusCharacter:Character;
-	public var currentStageFront:FlxTypedGroup<FlxSprite>;
-	public var currentStageBack:FlxTypedGroup<FlxSprite>;
+	public var currentStageFront:FlxTypedGroup<SpriteVMan>;
+	public var currentStageBack:FlxTypedGroup<SpriteVMan>;
 	public var currentStage:Stage;
 
 	public var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
@@ -249,6 +249,7 @@ class PlayState extends MusicBeatState
 			trace('found start dialogue');
 			dialogueVMan = new DialogueBoxVMan(dialoguePath);
 			dialogueVMan.finishThing = startCountdown;
+			dialogueVMan.cameras = [camHUD];
 		} else {
 			trace('no start dialogue (it would be ' + dialoguePath + ')');
 		}
@@ -320,18 +321,6 @@ class PlayState extends MusicBeatState
 
 		switch (curStage)
 		{
-			case 'spooky': 
-			{
-				halloweenBG = new FlxSprite(-200, -100);
-				halloweenBG.frames = Paths.getSparrowAtlas('halloween_bg');
-				halloweenBG.animation.addByPrefix('idle', 'halloweem bg0');
-				halloweenBG.animation.addByPrefix('lightning', 'halloweem bg lightning strike', 24, false);
-				halloweenBG.animation.play('idle');
-				halloweenBG.antialiasing = true;
-				add(halloweenBG);
-
-				isHalloween = true;
-			}
 		    case 'philly': 
             {
 				var bg:FlxSprite = new FlxSprite(-100).loadGraphic(Paths.image('philly/sky'));
@@ -419,7 +408,7 @@ class PlayState extends MusicBeatState
 				fastCar = new FlxSprite(-300, 160).loadGraphic(Paths.image('limo/fastCarLol'));
 				// add(limo);
 			}
-			case 'mall':
+			/*case 'mall':
 			{
 				defaultCamZoom = 0.80;
 
@@ -472,8 +461,8 @@ class PlayState extends MusicBeatState
 				santa.animation.addByPrefix('idle', 'santa idle in fear', 24, false);
 				santa.antialiasing = true;
 				add(santa);
-			}
-			case 'mallEvil':
+			}*/
+			/*case 'mallEvil':
 			{
 				var bg:FlxSprite = new FlxSprite(-400, -500).loadGraphic(Paths.image('christmas/evilBG'));
 				bg.antialiasing = true;
@@ -491,7 +480,7 @@ class PlayState extends MusicBeatState
 				var evilSnow:FlxSprite = new FlxSprite(-200, 700).loadGraphic(Paths.image("christmas/evilSnow"));
 				evilSnow.antialiasing = true;
 				add(evilSnow);
-			}
+			}*/
 			case 'school':
 			{
 				// defaultCamZoom = 0.9;
@@ -649,7 +638,6 @@ class PlayState extends MusicBeatState
 				currentStageBack = currentStage.elementsBack;
 				currentStageFront = currentStage.elementsFront;
 				add(currentStageBack);
-				add(currentStageFront);
 				defaultCamZoom = currentStage.defaultCamZoom;
 				if (defaultCamZoom == 0) {
 					trace("something went wrong with the stage loading");
@@ -657,6 +645,12 @@ class PlayState extends MusicBeatState
 				}
 				customStageCharPos = currentStage.charPosition;
 			}
+		}
+
+		isHalloween = SONG.actions.indexOf("isHalloween") > -1;
+
+		if (currentStage == null) {
+			currentStage = new Stage();
 		}
 
 		var gfVersion:String = 'gf';
@@ -676,12 +670,11 @@ class PlayState extends MusicBeatState
 					gfVersion = 'gf-pixel';
 			}
 		}
-
-		dad = new Character(100, 100, SONG.player2, false, modName);
 		
 		boyfriend = new Boyfriend(770, 100, SONG.player1, modName);
-
+		dad = new Character(100, 100, SONG.player2, false, modName);
 		gf = new Character(400, 130, gfVersion, false, modName);
+
 		gf.scrollFactor.set(0.95, 0.95);
 		
 		if (customStageCharPos != null) {
@@ -730,11 +723,6 @@ class PlayState extends MusicBeatState
 
 				resetFastCar();
 				add(fastCar);
-			case 'mall':
-				boyfriend.x += 200;
-			case 'mallEvil':
-				boyfriend.x += 320;
-				dad.y -= 80;
 			case 'school':
 				boyfriend.x += 200;
 				boyfriend.y += 220;
@@ -892,6 +880,22 @@ class PlayState extends MusicBeatState
 		// UI_camera.zoom = 1;
 
 		// cameras = [FlxG.cameras.list[1]];
+
+		if (currentStageFront != null) {
+			add(currentStageFront);
+		}
+
+		if ((sn == "monster" || sn == "winter-horrorland") && modName == "friday_night_funkin") {
+			for (thing in hudThings) {
+				thing.doSpoop(); //limited information is spoopy!!!!
+			}
+			var topThing:FlxText = cast hudThings.members[0].members[0];
+			topThing.x = 0;
+			topThing.fieldWidth = FlxG.width;
+			topThing.alignment = FlxTextAlign.CENTER;
+			topThing.size = Math.round(topThing.size * 1.5);
+		}
+
 		startingSong = true;
 		if (SONG.actions.indexOf("loadLuaTest") > -1) {
 			//luaScripts.push(new LuaScript(Paths.txt('${Highscore.formatSong(SONG.song)}/test').replace(".txt", ".lua"), this));
@@ -2080,7 +2084,7 @@ class PlayState extends MusicBeatState
 
 		if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && !FlxG.keys.anyPressed(curManiaInfo.control_any))
 		{
-			if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
+			if (boyfriend.animStartsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
 			{
 				boyfriend.playAnim('idle');
 			}
@@ -2145,8 +2149,10 @@ class PlayState extends MusicBeatState
 				health = Math.min(health + 0.023, maxHealth);
 			//else
 			//	health += 0.004;
-
-			boyfriend.playAnim('sing${ManiaInfo.Dir[curManiaInfo.arrows[note.noteData]]}', true);
+			
+			if (!note.isSustainNote || !boyfriend.animNoSustain) {
+				boyfriend.playAnim('sing${ManiaInfo.Dir[curManiaInfo.arrows[note.noteData]]}', true);
+			}
 
 			playerStrums.members[note.noteData].playAnim('confirm', true);
 
@@ -2178,7 +2184,9 @@ class PlayState extends MusicBeatState
 				health = Math.max(health - SONG.healthDrain, SONG.healthDrainMin);
 			}
 
-			dad.playAnim('sing${ManiaInfo.Dir[curManiaInfo.arrows[note.noteData]]}${altAnim}', true);
+			if (!note.isSustainNote || !dad.animNoSustain) {
+				dad.playAnim('sing${ManiaInfo.Dir[curManiaInfo.arrows[note.noteData]]}${altAnim}', true);
+			}
 
 			dad.holdTimer = 0;
 
@@ -2285,7 +2293,8 @@ class PlayState extends MusicBeatState
 	function lightningStrikeShit():Void
 	{
 		FlxG.sound.play(Paths.soundRandom('thunder_', 1, 2));
-		halloweenBG.animation.play('lightning');
+		//halloweenBG.animation.play('lightning');
+		currentStage.playAnim("lightning");
 
 		lightningStrikeBeat = curBeat;
 		lightningOffset = FlxG.random.int(8, 24);
@@ -2357,7 +2366,7 @@ class PlayState extends MusicBeatState
 			gf.dance();
 		}
 
-		if (!boyfriend.animation.curAnim.name.startsWith("sing")) {
+		if (!boyfriend.animStartsWith("sing")) {
 			boyfriend.playAnim('idle');
 		}
 
@@ -2369,15 +2378,12 @@ class PlayState extends MusicBeatState
 			boyfriend.playAnim('hey', true);
 			dad.playAnim('cheer', true);
 		}
+		
+		currentStage.beatHit();
 
 		switch (curStage) {
 			case 'school':
 				bgGirls.dance();
-
-			case 'mall':
-				upperBoppers.animation.play('bop', true);
-				bottomBoppers.animation.play('bop', true);
-				santa.animation.play('idle', true);
 
 			case 'limo':
 				grpLimoDancers.forEach(function(dancer:BackgroundDancer) {

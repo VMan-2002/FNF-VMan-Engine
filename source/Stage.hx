@@ -37,9 +37,9 @@ class Stage
 {
 	public var charPosition:Array<Array<Float>>;
 	public var defaultCamZoom:Float;
-	public var elementsFront:FlxTypedGroup<FlxSprite>;
-	public var elementsBack:FlxTypedGroup<FlxSprite>;
-	public var elementsAll:Array<FlxSprite>;
+	public var elementsFront:FlxTypedGroup<SpriteVMan>;
+	public var elementsBack:FlxTypedGroup<SpriteVMan>;
+	public var elementsAll:Array<SpriteVMan>;
 	//public var namedElements:Map<String, FlxSprite>;
 	public static var animFollowup:Map<String, String> = [
 		"danceLeft" => "danceRight",
@@ -80,81 +80,32 @@ class Stage
 			case "cornflower_erect3":
 				//funny
 		#end
-			case "stage":
-				trace("Basegame new format stage");
-				return {
-					charPosition: [[100, 100], [770, 100], [400, 130]],
-					defaultCamZoom: 0.9,
-					elementsBack: [
-						{
-							name: "bg",
-							image: "stage/stageback",
-							animated: false,
-							x: -600,
-							y: -200,
-							scaleX: 1,
-							scaleY: 1,
-							scrollX: 0.9,
-							scrollY: 0.9,
-							antialias: true,
-							animations: null,
-							initAnim: null
-						},
-						{
-							name: "stageFront",
-							image: "stage/stagefront",
-							animated: false,
-							x: -650,
-							y: 600,
-							scaleX: 1,
-							scaleY: 1,
-							scrollX: 0.9,
-							scrollY: 0.9,
-							antialias: true,
-							animations: null,
-							initAnim: null
-						}
-					],
-					elementsFront: [
-						{
-							name: "stageCurtains",
-							image: "stage/stagecurtains",
-							animated: false,
-							x: -500,
-							y: -300,
-							scaleX: 1,
-							scaleY: 1,
-							scrollX: 1.3,
-							scrollY: 1.3,
-							antialias: true,
-							animations: null,
-							initAnim: null
-						}
-					]
-				};
 		}
 		//the void
 		trace("No stage found, you'll be put in the void >:)");
 		return {
 			charPosition: [[100, 100], [770, 100], [400, 130]],
-			defaultCamZoom: 1,
+			defaultCamZoom: 1.05,
 			elementsFront: new Array<StageElement>(),
 			elementsBack: new Array<StageElement>()
 		};
 	}
 
-	public static function makeElements(elementsList:Null<Array<StageElement>>):FlxTypedGroup<FlxSprite> {
+	public static function makeElements(elementsList:Null<Array<StageElement>>):FlxTypedGroup<SpriteVMan> {
 		if (elementsList == null) {
-			return new FlxTypedGroup<FlxSprite>();
+			return new FlxTypedGroup<SpriteVMan>();
 		}
-		var result:FlxTypedGroup<FlxSprite> = new FlxTypedGroup<FlxSprite>();
+		var result:FlxTypedGroup<SpriteVMan> = new FlxTypedGroup<SpriteVMan>();
 		for (element in elementsList) {
-			var sprite = new FlxSprite(element.x == null ? 0 : element.x, element.y == null ? 0 : element.y);
+			var sprite = new SpriteVMan(element.x == null ? 0 : element.x, element.y == null ? 0 : element.y);
 			sprite.antialiasing = element.antialias != false;
-			if (element.animated) {
+			if (element.animated == true) {
 				sprite.frames = Paths.getSparrowAtlas(element.image);
 				for (anim in element.animations) {
 					Character.loadAnimation(sprite, anim);
+					if (anim.offset != null) {
+						sprite.addOffset(anim.name, anim.offset[0], anim.offset[1]);
+					}
 				}
 			} else {
 				sprite.loadGraphic(Paths.image(element.image));
@@ -163,9 +114,10 @@ class Stage
 			sprite.scale.y = element.scaleY == null ? 1 : element.scaleY;
 			sprite.scrollFactor.x = element.scrollX == null ? 1 : element.scrollX;
 			sprite.scrollFactor.y = element.scrollY == null ? 1 : element.scrollY;
-			if (element.animated && element.initAnim != null) {
-				sprite.animation.play(element.initAnim);
+			if (element.animated) {
+				sprite.playAvailableAnim([element.initAnim != null ? element.initAnim : "idle"]);
 			}
+			sprite.updateHitbox();
 			result.add(sprite);
 		}
 		return result;
@@ -174,6 +126,9 @@ class Stage
 	//constructor
 	public function new(?name:Null<String>, ?mod:Null<String>):Void {
 		if (name == null) {
+			elementsFront = new FlxTypedGroup<SpriteVMan>();
+			elementsBack = new FlxTypedGroup<SpriteVMan>();
+			elementsAll = new Array<SpriteVMan>();
 			return;
 		}
 		if (mod == null) {
@@ -189,8 +144,8 @@ class Stage
 		if (target == null) {
 			target = new Stage();
 		}
-		target.charPosition = data.charPosition;
-		target.defaultCamZoom = data.defaultCamZoom == null ? 1 : data.defaultCamZoom;
+		target.charPosition = data.charPosition == null ? [[770,100],[100,100],[400,130]] : data.charPosition;
+		target.defaultCamZoom = data.defaultCamZoom == null ? 1.05 : data.defaultCamZoom;
 		target.elementsFront = makeElements(data.elementsFront);
 		target.elementsBack = makeElements(data.elementsBack);
 		target.elementsAll = target.elementsBack.members.concat(target.elementsFront.members);
@@ -203,15 +158,15 @@ class Stage
 		for (thing in elementsAll) {
 			var animname = thing.animation.curAnim != null ? thing.animation.curAnim.name : "";
 			if (animFollowup.exists(animname)) {
-				thing.animation.play(animFollowup.get(animname), true);
+				thing.playAnim(animFollowup.get(animname), true);
 			}
 		}
 	}
 	
 	public function playAnim(name:String, ?force:Bool = false) {
 		for (thing in elementsAll) {
-			if (thing.animation.getNameList().indexOf(name) >= 0) {
-				thing.animation.play(name, force);
+			if (thing.hasAnim(name)) {
+				thing.playAnim(name, force);
 			}
 		}
 	}

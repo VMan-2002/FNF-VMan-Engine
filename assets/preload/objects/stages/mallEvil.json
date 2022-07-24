@@ -1,0 +1,1 @@
+{"charPosition":[[1090,100],[20,100],[400,130]],"elementsBack":[{"name":"bg","image":"christmas/evilBG","x":-400,"y":-500,"scrollX":0.2,"scrollY":0.2,"scaleX":0.8,"scaleY":0.8},{"name":"tree","image":"christmas/evilTree","x":300,"y":-300,"scrollX":0.2,"scrollY":0.2},{"name":"fgSnow","image":"christmas/evilSnow","x":-200,"y":700}]}

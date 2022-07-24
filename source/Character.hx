@@ -33,6 +33,7 @@ typedef SwagCharacter = {
 	public var danceModulo:Null<Int>;
 	public var cameraOffset:Null<Array<Float>>;
 	public var healthBarColor:Null<Array<Int>>;
+	public var animNoSustain:Null<Bool>;
 }
 
 typedef SwagCharacterAnim = {
@@ -44,13 +45,12 @@ typedef SwagCharacterAnim = {
 	public var loop:Bool;
 }
 
-class Character extends FlxSprite
+class Character extends SpriteVMan
 {
 	public static var nextId:Int = 0;
 	public static var activeArray:Array<Character>;
 	public var thisId:Int = 0;
-	
-	public var animOffsets:Map<String, Array<Float>>;
+
 	public var debugMode:Bool = false;
 
 	public var isPlayer:Bool = false;
@@ -73,11 +73,11 @@ class Character extends FlxSprite
 	public var moduloDances:Int = 1;
 
 	public var cameraOffset:Array<Float> = [0, 0];
+	public var animNoSustain:Bool = false;
 
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false, ?myMod:String = "") {
 		super(x, y);
 
-		animOffsets = new Map<String, Array<Float>>();
 		curCharacter = character;
 		this.isPlayer = isPlayer;
 		healthIcon = curCharacter;
@@ -687,6 +687,9 @@ class Character extends FlxSprite
 					if (loadedStuff.healthBarColor != null) {
 						this.healthBarColor.setRGB(loadedStuff.healthBarColor[0], loadedStuff.healthBarColor[1], loadedStuff.healthBarColor[2]);
 					}
+					if (loadedStuff.animNoSustain != null) {
+						this.animNoSustain = loadedStuff.animNoSustain;
+					}
 					playAnim(loadedStuff.initAnim);
 					antialiasing = loadedStuff.antialias != false;
 					successLoad = true;
@@ -724,14 +727,14 @@ class Character extends FlxSprite
 				}
 		}
 		
-		if (flipX != isPlayer && animation.getByName("singRIGHT") != null && animation.getByName("singLEFT") != null) {
+		if (flipX != isPlayer && hasAnim("singRIGHT") && hasAnim("singLEFT")) {
 			// var animArray
 			var oldRight = animation.getByName('singRIGHT').frames;
 			animation.getByName('singRIGHT').frames = animation.getByName('singLEFT').frames;
 			animation.getByName('singLEFT').frames = oldRight;
 
 			// IF THEY HAVE MISS ANIMATIONS??
-			if (animation.getByName('singRIGHTmiss') != null) {
+			if (hasAnim('singRIGHTmiss')) {
 				var oldMiss = animation.getByName('singRIGHTmiss').frames;
 				animation.getByName('singRIGHTmiss').frames = animation.getByName('singLEFTmiss').frames;
 				animation.getByName('singLEFTmiss').frames = oldMiss;
@@ -750,7 +753,7 @@ class Character extends FlxSprite
 			trace("Animation for char "+curCharacter+" is null somehow! This will cause a crash!");
 		}
 		
-		danceType = animOffsets.exists("danceLeft");
+		danceType = hasAnim("danceLeft");
 		dance();
 	}
 
@@ -792,8 +795,7 @@ class Character extends FlxSprite
 
 	override function update(elapsed:Float) {
 		if (!Std.isOfType(this, Boyfriend)) {
-			if (animation.curAnim.name.startsWith('sing'))
-			{
+			if (animStartsWith('sing')) {
 				holdTimer += elapsed;
 			}
 
@@ -847,20 +849,8 @@ class Character extends FlxSprite
 		y += positionOffset[1];
 	}
 
-	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void {
-		animation.play(AnimName, Force, Reversed, Frame);
-
-		var daOffset = animOffsets.get(AnimName);
-		if (animOffsets.exists(AnimName)) {
-			offset.set(daOffset[0], daOffset[1]);
-			if (flipX) {
-				//todo: this needs work
-				var framewidth = frames.frames[animation.curAnim.curFrame].sourceSize.x;
-				offset.x = (framewidth * scale.x) - offset.x;
-			}
-		} else {
-			offset.set(0, 0);
-		}
+	public override function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void {
+		super.playAnim(AnimName, Force, Reversed, Frame);
 
 		if (curCharacter.startsWith('gf')) {
 			if (AnimName == 'singLEFT')
@@ -870,9 +860,5 @@ class Character extends FlxSprite
 			else if (AnimName == 'singUP' || AnimName == 'singDOWN')
 				danced = !danced;
 		}
-	}
-
-	public function addOffset(name:String, x:Float = 0, y:Float = 0) {
-		animOffsets[name] = [x, y];
 	}
 }
