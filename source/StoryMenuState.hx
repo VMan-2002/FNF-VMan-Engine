@@ -67,6 +67,8 @@ class StoryMenuState extends MusicBeatState
 
 	var grpWeekText:FlxTypedGroup<MenuItem>;
 	var grpWeekCharacters:FlxTypedGroup<MenuCharacter>;
+	var grpDifficultyText:FlxTypedGroup<FlxSprite> = new FlxTypedGroup<FlxSprite>();
+	var difficultyTextSprites:Map<String, FlxSprite> = new Map<String, FlxSprite>();
 
 	var grpLocks:FlxTypedGroup<FlxSprite>;
 
@@ -159,7 +161,6 @@ class StoryMenuState extends MusicBeatState
 				case 'dad':
 					weekCharacterThing.setGraphicSize(Std.int(weekCharacterThing.width * 0.5));
 					weekCharacterThing.updateHitbox();
-
 				case 'bf':
 					weekCharacterThing.setGraphicSize(Std.int(weekCharacterThing.width * 0.9));
 					weekCharacterThing.updateHitbox();
@@ -189,19 +190,18 @@ class StoryMenuState extends MusicBeatState
 		leftArrow.animation.addByPrefix('press', "arrow push left");
 		leftArrow.animation.play('idle');
 		difficultySelectors.add(leftArrow);
-
+		
 		sprDifficulty = new FlxSprite(leftArrow.x + 130, leftArrow.y);
 		sprDifficulty.antialiasing = true;
 		sprDifficulty.frames = ui_tex;
 		sprDifficulty.animation.addByPrefix('easy', 'EASY');
-		sprDifficulty.animation.addByPrefix('normal', 'NORMAL');
-		sprDifficulty.animation.addByPrefix('hard', 'HARD');
 		sprDifficulty.animation.play('easy');
+		sprDifficulty.visible = false; //dont use it lol
 		changeDifficulty();
 
 		difficultySelectors.add(sprDifficulty);
 
-		rightArrow = new FlxSprite(sprDifficulty.x + sprDifficulty.width + 50, leftArrow.y);
+		rightArrow = new FlxSprite(leftArrow.x + 350, leftArrow.y);
 		rightArrow.antialiasing = true;
 		rightArrow.frames = ui_tex;
 		rightArrow.animation.addByPrefix('idle', 'arrow right');
@@ -214,7 +214,7 @@ class StoryMenuState extends MusicBeatState
 		add(yellowBG);
 		add(grpWeekCharacters);
 
-		txtTracklist = new FlxText(FlxG.width * 0.05, yellowBG.x + yellowBG.height + 100, 0, "Tracks", 32);
+		txtTracklist = new FlxText(FlxG.width * 0.05, yellowBG.x + yellowBG.height + 100, 0, "Tracks\n\nwe are\nplaying\nvideogames", 32);
 		txtTracklist.alignment = CENTER;
 		txtTracklist.font = rankText.font;
 		var formatThing = new FlxTextFormat(0xFFe55777);
@@ -303,34 +303,36 @@ class StoryMenuState extends MusicBeatState
 	var selectedWeek:Bool = false;
 	var stopspamming:Bool = false;
 
-	function selectWeek()
-	{
-		if (weekUnlocked[curWeek])
-		{
-			if (stopspamming == false)
-			{
-				FlxG.sound.play(Paths.sound('confirmMenu'));
-
-				grpWeekText.members[curWeek].startFlashing();
-				grpWeekCharacters.members[1].animation.play('bfConfirm');
-				stopspamming = true;
+	function selectWeek() {
+		if (weekUnlocked[curWeek]) {
+			if (stopspamming) {
+				return;
 			}
+			FlxG.sound.play(Paths.sound('confirmMenu'));
+
+			grpWeekText.members[curWeek].startFlashing();
+			grpWeekCharacters.members[1].animation.play('bfConfirm');
+			stopspamming = true;
 
 			PlayState.modName = "friday_night_funkin";
-
-			PlayState.storyPlaylist = weekData[curWeek];
 			PlayState.isStoryMode = true;
 			selectedWeek = true;
-
 			PlayState.storyDifficulty = curDifficulty;
-
-			PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0].toLowerCase() + CoolUtil.difficultyPostfixString(), PlayState.storyPlaylist[0].toLowerCase());
 			PlayState.storyWeek = curWeekName;
 			PlayState.campaignScore = 0;
-			new FlxTimer().start(1, function(tmr:FlxTimer)
-			{
-				LoadingState.loadAndSwitchState(new PlayState(), true);
-			});
+			
+			if (weekData[curWeek].length > 0) {
+				PlayState.storyPlaylist = weekData[curWeek];
+				PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0].toLowerCase() + CoolUtil.difficultyPostfixString(), PlayState.storyPlaylist[0].toLowerCase());
+				new FlxTimer().start(1, function(tmr:FlxTimer)
+				{
+					LoadingState.loadAndSwitchState(new PlayState(), true);
+				});
+			}
+		} else {
+			FlxG.sound.play(Paths.sound('cancelMenu'));
+			grpWeekText.members[curWeek].startFlashing();
+			grpWeekText.members[curWeek].redFlash = 50;
 		}
 	}
 
@@ -339,25 +341,28 @@ class StoryMenuState extends MusicBeatState
 		curDifficulty += change;
 
 		if (curDifficulty < 0)
-			curDifficulty = 2;
-		if (curDifficulty > 2)
+			curDifficulty = CoolUtil.difficultyArray.length - 1;
+		if (curDifficulty >= CoolUtil.difficultyArray.length)
 			curDifficulty = 0;
+		
+		var newDifficultyName:String = CoolUtil.difficultyString(curDifficulty).toLowerCase();
 
-		sprDifficulty.offset.x = 0;
-
-		switch (curDifficulty)
-		{
-			case 0:
-				sprDifficulty.animation.play('easy');
-				sprDifficulty.offset.x = 20;
-			case 1:
-				sprDifficulty.animation.play('normal');
-				sprDifficulty.offset.x = 70;
-			case 2:
-				sprDifficulty.animation.play('hard');
-				sprDifficulty.offset.x = 20;
+		if (!difficultyTextSprites.exists(newDifficultyName)) {
+			var a = new FlxSprite(leftArrow.x, leftArrow.y, Paths.image("menudifficulties/"+newDifficultyName));
+			a.offset.x = a.width / 2;
+			difficultyTextSprites.set(newDifficultyName, a);
+			trace("added sprite for " + newDifficultyName);
 		}
 
+		for (n in difficultyTextSprites.keys()) {
+			if (n == newDifficultyName) {
+				sprDifficulty = difficultyTextSprites.get(n);
+			} else {
+				difficultyTextSprites.get(n).visible = false;
+			}
+		}
+
+		sprDifficulty.visible = true;
 		sprDifficulty.alpha = 0;
 
 		// USING THESE WEIRD VALUES SO THAT IT DOESNT FLOAT UP
@@ -365,7 +370,7 @@ class StoryMenuState extends MusicBeatState
 		intendedScore = Highscore.getWeekScore(curWeekName, curDifficulty);
 
 		#if !switch
-		intendedScore = Highscore.getWeekScore(curWeekName, curDifficulty);
+		intendedScore = Highscore.getWeekScore(curWeekName, curDifficulty); //idk why we're getting this twice
 		#end
 
 		FlxTween.tween(sprDifficulty, {y: leftArrow.y + 15, alpha: 1}, 0.07);

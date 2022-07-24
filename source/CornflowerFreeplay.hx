@@ -208,7 +208,7 @@ class CornflowerFreeplay {
 	}
 
 	public function changeDifficulty(menu:FreeplayState) {
-		songStats.text = '${CoolUtil.difficultyArray[FreeplayState.curDifficulty]}: ${menu.intendedScore} | ${menu.scoreFCText.text} - ${menu.scoreAccText.text}';
+		songStats.text = '${CoolUtil.difficultyString(FreeplayState.curDifficulty)}: ${menu.intendedScore} | ${menu.scoreFCText.text} - ${menu.scoreAccText.text}';
 	}
 
 	public function setDuel(enable:Bool) {

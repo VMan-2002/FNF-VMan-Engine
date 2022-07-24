@@ -1093,9 +1093,10 @@ class ChartingState extends MusicBeatState
 		} else {
 			// get last bpm
 			var i:Int = curSection;
-			while (i > 0 && !_song.notes[i].changeBPM)
+			while (i > 0 && _song.notes[i].changeBPM != true)
 				i--;
 			Conductor.changeBPM(i < 0 ? _song.bpm : _song.notes[i].bpm);
+			trace("Using chart bpm of "+i+": "+Conductor.bpm);
 		}
 
 		/* // PORT BULLSHIT, INCASE THERE'S NO SUSTAIN DATA FOR A NOTE

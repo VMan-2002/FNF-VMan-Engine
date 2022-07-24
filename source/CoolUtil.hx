@@ -24,8 +24,8 @@ class CoolUtil
 	public static var defaultDifficultyArray:Array<String> = ['Easy', "Normal", "Hard"];
 	public static var difficultyArray:Array<String> = defaultDifficultyArray;
 
-	public static function difficultyString():String {
-		return difficultyArray[PlayState.storyDifficulty];
+	public static function difficultyString(?num:Null<Int> = null):String {
+		return difficultyArray[num == null ? PlayState.storyDifficulty : num];
 	}
 
 	public static function difficultyPostfixString(?diff:Null<Int> = null):String

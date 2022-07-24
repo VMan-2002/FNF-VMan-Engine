@@ -7,5 +7,6 @@
 	"menuChars": ["", "bf", "gf"],
 	"requiredToUnlock": [],
 	"visibleFreeplay": true,
-	"visibleStoryMenu": true
+	"visibleStoryMenu": true,
+	"difficulties": ["normal","hard"]
 }

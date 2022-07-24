@@ -894,7 +894,8 @@ class PlayState extends MusicBeatState
 		// cameras = [FlxG.cameras.list[1]];
 		startingSong = true;
 		if (SONG.actions.indexOf("loadLuaTest") > -1) {
-			luaScripts.push(new LuaScript(Paths.txt('${Highscore.formatSong(SONG.song)}/test.lua'), this));
+			//luaScripts.push(new LuaScript(Paths.txt('${Highscore.formatSong(SONG.song)}/test').replace(".txt", ".lua"), this));
+			luaScripts.push(new LuaScript('data/${Highscore.formatSong(SONG.song)}/test.lua', this));
 		}
 
 		if (isStoryMode) {

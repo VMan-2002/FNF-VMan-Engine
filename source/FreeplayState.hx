@@ -574,7 +574,7 @@ class FreeplayState extends MusicBeatState
 
 		trace('change diff from ${was} to ${curDifficulty}');
 		
-		diffText.text = Translation.getTranslation(CoolUtil.difficultyArray[curDifficulty], "difficulty");
+		diffText.text = Translation.getTranslation(CoolUtil.difficultyString(curDifficulty), "difficulty");
 	}
 
 	function updateScoreDisp()
@@ -629,7 +629,7 @@ class FreeplayState extends MusicBeatState
 			//load difficulty stuf
 			var songDiff = songSel.difficulties.length == 0 ? CoolUtil.defaultDifficultyArray : songSel.difficulties;
 			if (songDiff != CoolUtil.difficultyArray) {
-				var prevDifficulty = CoolUtil.difficultyArray[curDifficulty].toLowerCase();
+				var prevDifficulty = CoolUtil.difficultyString(curDifficulty).toLowerCase();
 				CoolUtil.difficultyArray = songDiff;
 				curDifficulty = songDiff.map(function(a) return a.toLowerCase()).indexOf(prevDifficulty);
 				if (curDifficulty < 0) {

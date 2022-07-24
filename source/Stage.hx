@@ -7,6 +7,7 @@ import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import io.newgrounds.NGLite;
 import sys.FileSystem;
+import sys.io.File;
 
 typedef StageElement =
 {
@@ -48,7 +49,7 @@ class Stage
 
 	public static function getStage(name:String, ?mod:Null<String>):Null<SwagStage> {
 		if (mod == null) {
-			mod = PlayState.modName;
+			mod = PlayState.modName == "" ? ModLoad.enabledMods[0] : PlayState.modName;
 		}
 		//#if !VMAN_DEMO
 		var path:String = 'mods/${mod}/objects/stages/${name}.json';
@@ -59,7 +60,7 @@ class Stage
 		}
 		if (isJson) {
 			trace("Found json for custom stage "+name);
-			var json:SwagStage = cast CoolUtil.loadJsonFromFile(path);
+			var json:SwagStage = cast CoolUtil.loadJsonFromString(File.getContent(path));
 			return json;
 		}
 		//#end
