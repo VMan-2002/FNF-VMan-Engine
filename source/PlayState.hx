@@ -1154,6 +1154,19 @@ class PlayState extends MusicBeatState
 			swagCounter += 1;
 			// generateSong('fresh');
 		}, 5);
+		
+		if (SONG.actions.indexOf("showSongCredit") > -1) {
+			var creditText = new FlxText(0, FlxG.height, FlxG.width, Assets.getText('data/${Highscore.formatSong(SONG.song)}/songCredit.txt').replace("\r\n", "\n"));
+			creditText.setFormat("vcr.ttf", 24, 0xFFFFFFFF, FlxTextAlign.CENTER);
+			creditText.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 1);
+			creditText.y -= ((creditText.textField.height * 2) + 4);
+			creditText.cameras = [camHUD];
+			add(creditText);
+			FlxTween.tween(creditText, {y: FlxG.height + 4}, 1, {startDelay: 2.5, ease: FlxEase.quartIn, onComplete: function(tw:FlxTween) {
+				remove(creditText);
+				creditText.destroy();
+			}});
+		}
 	}
 
 	public function playCountdownSprite(path:String, scale:Float, sound:String) {
