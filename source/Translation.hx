@@ -1,14 +1,14 @@
 package;
-import flixel.util.FlxSave;
-import lime.ui.ScanCode;
-import flixel.input.keyboard.FlxKey;
 import CoolUtil;
-import flixel.text.FlxText;
 import Paths;
-import flixel.addons.ui.interfaces.ILabeled;
-import flixel.util.typeLimit.OneOfTwo;
-import flixel.addons.ui.FlxUIText;
 import flixel.addons.ui.FlxUIDropDownMenu;
+import flixel.addons.ui.FlxUIText;
+import flixel.addons.ui.interfaces.ILabeled;
+import flixel.input.keyboard.FlxKey;
+import flixel.text.FlxText;
+import flixel.util.FlxSave;
+import flixel.util.typeLimit.OneOfTwo;
+import lime.ui.ScanCode;
 
 using StringTools;
 
@@ -22,7 +22,7 @@ class Translation
 		var a = CoolUtil.coolTextFile('objects/translations/${name}/strings');
 		var loadTranslat = new Map<String, Map<String, String>>();
 		for (tx in a) {
-			if (!tx.startsWith("//")) {
+			if (!tx.startsWith("//") && tx != "") {
 				var underscorepos = tx.indexOf("_");
 				var colonpos = tx.indexOf("::");
 				var a = tx.substr(0, colonpos).replace("\\n", "\n");

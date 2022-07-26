@@ -1,8 +1,18 @@
+//wow, it's a bit messy. cleaning this up though!
+//if you're using Notepad++, you should take the "vman_engine_lang_strings_udl.xml", it is a User Defined Language that you can import
+
+//Basic information
+//{
 lang_english language name::English
 lang_native language name::English
 lang_translation description::VMan_2002
-game_vman engine::VMan Engine
 //if you change this, it'll also show the original
+game_vman engine::VMan Engine
+//}
+//Options
+//{
+//	Standard
+//	{
 options_controls::Controls
 options_controls_desc::Change your controls.
 options_scroll direction::Scroll direction
@@ -18,8 +28,8 @@ options_instant respawn_desc::Respawn immediately upon dying.
 options_botplay::Botplay
 options_botplay_desc::Watch the game go brrr
 options_freeplay folders::Freeplay Folders
-options_freeplay folders_desc::Categorize the songs in the Freeplay menu.\nContent Warning: may scare some players.
 //the content warning is there because funny :> you may leave it out
+options_freeplay folders_desc::Categorize the songs in the Freeplay menu.\nContent Warning: may scare some players.
 options_activate new mods::Activate New Mods
 options_activate new mods_desc::The state that any new mods in the mods folder have if they hadn't been added before.
 options_skip title::Skip Title
@@ -35,10 +45,14 @@ options_instrumental volume_desc::Volume of song instrumentals.
 options_vocals volume::Vocals Volume
 options_vocals volume_desc::Volume of song vocals.
 options_enable modcharts::Enable modcharts
-options_enable modcharts_desc::Enable modcharts
-//yes, i didn't properly explain modcharts!
+options_enable modcharts_desc::Enable fancy movements for notes in songs that support them.
 options_antialiasing::Antialiasing
 options_antialiasing_desc::Whether or not stuff gets a bit of smoothing, disabling this can boost framerates
+options_flashing lights::Flashing Lights
+options_flashing lights_desc::Whether flashing lights should be allowed to appear.\nIf you're photosensitve and/or prone to seziures, disable this!
+//	}
+//	Contols
+//	{
 options_change mania::Change Mania
 options_change mania_desc::Left/Right to change the amount of keys.
 options_set bind::Set Bind
@@ -53,6 +67,9 @@ options_change color advanced::Change Color Advanced
 options_change color advanced_desc::Change the colors of notes in a more detailed way.
 options_change strumline color::Change Strumline Color
 options_change strumline color_desc::Change the color of the strumline.
+//	}
+//	Tools
+//	{
 options_chart editor::Chart Editor
 options_chart editor_desc::Edit song charting.
 options_animation debug::Animation Debug
@@ -71,6 +88,16 @@ options_noteskin creator::Noteskin Creator
 options_noteskin creator_desc::Create noteskins.
 options_spritesheet tool::Spritesheet Tool
 options_spritesheet tool_desc::Convert spritesheets to or from individual frames.
+//Keys. you can add a translation for any key that exists, see https://api.haxeflixel.com/flixel/input/keyboard/FlxKeyList.html
+optionsKeys_backspace::BckSp.
+optionsKeys_escape::Esc
+optionsKeys_space::SPACE
+optionsKeys_pageup::PgUp
+optionsKeys_pagedown::PgDn
+optionsKeys_none::---
+//	}
+//	Values and Other
+//	{
 optionsMenu_unknown option::Unknown option.
 optionsMenu_will return to::Will return to #0
 optionsMenu_enabled::Enabled
@@ -86,31 +113,42 @@ optionsMenu_note_fill::Fill
 optionsMenu_hue::Hue
 optionsMenu_sat::Sat
 optionsMenu_val::Val
-optionsKeys_backspace::BckSp.
-optionsKeys_escape::Esc
-optionsKeys_space::SPACE
-optionsKeys_pageup::PgUp
-optionsKeys_pagedown::PgDn
-optionsKeys_none::---
-//any key can be translated, see https://api.haxeflixel.com/flixel/input/keyboard/FlxKeyList.html
+//	}
+//}
+//Story Menu and Freeplay
+//{
 freeplay_uncategorized::Uncategorized
 freeplay_personal best::PERSONAL BEST:#0
 storymenu_week score::WEEK SCORE:#0
 storymenu_tracks::TRACKS
+//}
+//Mania and Difficulties
+//{
 mania_piano::piano
 mania_keys::#0K
 difficulty_easy::Easy
 difficulty_normal::Normal
 difficulty_hard::Hard
 difficulty_mania::Mania
-difficulty_extra::Extra
 //extra = extra keys
-mainmenu_is textbased::false
-//whether the main menu buttons are text or sprites. this isn't actually implemented yet tho
+difficulty_extra::Extra
+difficulty_erect::Erect
+difficulty_expert::Expert
+difficulty_insane::Insane
+difficulty_fair::Fair
+difficulty_unfair::Unfair
+//}
+//Main Menu
+//{
 mainmenu_story mode::STORY MODE
 mainmenu_free play::FREE PLAY
 mainmenu_donate::DONATE
 mainmenu_options::OPTIONS
+//whether the main menu buttons are text or sprites. this isn't actually implemented yet tho
+mainmenu_is textbased::false
+//}
+//Chart Editor
+//{
 charteditor_tab_note::Note
 charteditor_tab_section::Section
 charteditor_tab_song::Song
@@ -156,13 +194,16 @@ charteditor_event_zoom hit_hud zoom::HUD Zoom
 charteditor_event_set gf speed::Set GF Speed
 charteditor_event_set gf speed_desc::Set the speed at which Girlfriend's idle animation plays.
 charteditor_event_set gf speed_speed::Speed
-playstate_hud_score::Score:#0
-playstate_hud_misses::Misses:#0
+//}
+//PlayState Hud
+//{
 playstate_fc_sfc::SFC
 playstate_fc_gfc::GFC
 playstate_fc_fc::FC
 playstate_fc_sdcb::SDCB
 playstate_fc_clear::Clear
+playstate_hud_score::Score:#0
+playstate_hud_misses::Misses:#0
 playstate_hud_accrating::AccRating:#0%
 playstate_hud_accsimple::AccSimple:#0%
 playstate_hud_health::Health:#0%
@@ -175,14 +216,23 @@ playstate_hud_misses::Misses:#0
 playstate_hud_totalnotes::TotalNotes:#0
 playstate_hud_engine::VMan Engine
 playstate_hud_engine botplay::VMan Engine (Botplay)
+//}
+//Pause Menu
+//{
 playstate_pause_resume::Resume
 playstate_pause_restart song::Restart Song
 playstate_pause_options::Options
 playstate_pause_exit to menu::Exit to menu
+//}
+//Announcements (NYI)
+//{
 announcechecker_title::Announcement!
 announcechecker_update::New Update!
 announcechecker_security::IMPORTANT SECURITY ISSUE:
 announcechecker_security_update::Security Update!
+//}
+//Mod Browser (NYI)
+//{
 modbrowser_search::Search
 modbrowser_download::Download
 modbrowser_downloaded::Downloaded
@@ -200,7 +250,9 @@ mods_disabled::Disabled
 mods_enable all::Enable All
 mods_disable all::Disable All
 mods_view in mod browser::View in Mod Browser
-//the new stuff
+//}
+
+//the new stuff, gotta sort this!
 playstate_hud_ghost hits::GhostHits:#0
 modbrowser_tag_song_desc::Playable song with chart
 modbrowser_tag_week_desc::Week containing multiple songs
@@ -216,18 +268,21 @@ modbrowser_tag_mania::Mania/Expert
 modbrowser_tag_mania_desc::Includes charts with difficulties harder than Hard (not including Extra Keys)
 modbrowser_tag_erect::Erect
 modbrowser_tag_erect_desc::Includes Erect remixes
-//probably leave "Erect" untranslated, because OST.
 modbrowser_tag_oc::OC
 modbrowser_tag_oc_desc::Contains original characters
 mainmenu_mods::MODS
 mods_mod browser::Mod Browser
-options_flashing lights::Flashing Lights
-options_flashing lights_desc::Whether flashing lights should be allowed to appear.\nIf you're photosensitve and/or prone to seziures, disable this!
+mods_gamebanana::GameBanana
+modbrowser_temporary::Mod Browser is not finished right now, so for now you'll just see mods I made or mods that I like. For more, go to GameBanana.
 announcechecker_wait::Checking for announcements...
+//Multiplayer (NYI)
 multiplayer_winners::Winners
 multiplayer_leaderboard::Leaderboard
 multiplayer_promote to leader::Promote to Leader
 multiplayer_leader changed::#0 is now the leader.
+multiplayer_spectator::Spectator
+multiplayer_become spectator::Become Spectator
+multiplayer_stop spectating::Stop Spectating
 multiplayer_rule_allowcharacters::Allow Characters
 multiplayer_rule_allowcharacters_desc::Allow players to choose custom playable characters.
 multiplayer_rule_allowscriptcharacters::Allow Scripted Characters
@@ -245,7 +300,7 @@ multiplayer_rule_mode::Game Mode
 multiplayer_mode_royale::Battle Royale
 multiplayer_mode_royale_desc::All players play the player side notes.
 multiplayer_mode_1v1::Duel
-multiplayer_mode_1v1_desc::1st player on the player side, 2nd player on the opponent side, the rest spectate.
+multiplayer_mode_1v1_desc::1st player on the player side, 2nd player on the opponent side.
 multiplayer_mode_teamup::Team-up Extra
 multiplayer_mode_teamup_desc::Split each player between different keys.
 multiplayer_mode_choice::Choice
@@ -261,14 +316,9 @@ options_language::Language
 options_language_desc::Change the language of the game's text.
 freeplay_no songs::You have no songs!\nYou need to enable a mod first.
 storymenu_no weeks::You have no weeks!\nYou need to enable a mod first.
-difficulty_erect::Erect
-difficulty_fair::Fair
-difficulty_unfair::Unfair
-//probably leave "Erect" untranslated, because OST
-difficulty_expert::Expert
-difficulty_insane::Insane
 charteditor_event_blammed lights::Blammed Lights
 charteditor_event_blammed lights_desc::Please stop overusing Blammed Lights *dies*
+//Rare description for blammed lights, make it hillarious pls :>
 charteditor_event_blammed lights_desc_rare::Uncle Ben what happened!? BLAMMED LIGHTS!!
 charteditor_event_blammed lights_action::Action
 charteditor_event_blammed lights_blue::Blue
@@ -295,3 +345,12 @@ options_hudthing editor_totalnotes::TotalNotes
 modbrowser_downloadstarted::Your download has started.\nKeep the game open while it downloads.
 modbrowser_downloadstarted_ok::Ok
 modbrowser_downloadstarted_dontremind::Don't remind me again
+//
+charteditor_event_countdown tick::Countdown Tick
+charteditor_event_countdown tick_desc::a tick of the countdown
+charteditor_event_countdown tick_number::Number
+charteditor_event_countdown tick_3::3
+charteditor_event_countdown tick_2::2
+charteditor_event_countdown tick_1::1
+charteditor_event_countdown tick_go::Go
+charteditor_event_countdown tick_with sound::With Sound
