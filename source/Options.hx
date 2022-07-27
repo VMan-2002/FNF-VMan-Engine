@@ -89,6 +89,8 @@ class Options
 	
 	//PlayState changeables
 	public static var playstate_opponentmode:Bool = false;
+	public static var playstate_bothside:Bool = false;
+	public static var playstate_endless:Bool = false;
 	
 	public static function SaveOptions() {
 		var svd = GetSaveObj();
@@ -113,10 +115,13 @@ class Options
 		svd.data.flashingLights = flashingLights;
 		svd.data.antialiasing = antialiasing;
 		svd.data.seenOptionsWarning = seenOptionsWarning;
-		svd.data.playstate_opponentmode = playstate_opponentmode;
 		svd.data.silentCountdown = silentCountdown;
 		svd.data.noteMissAction = noteMissAction;
 		svd.data.showFPS = showFPS;
+
+		svd.data.playstate_opponentmode = playstate_opponentmode;
+		svd.data.playstate_bothside = playstate_bothside;
+		svd.data.playstate_endless = playstate_endless;
 		svd.close();
 	}
 	
@@ -142,10 +147,13 @@ class Options
 		flashingLights = ifNotNull(svd.data.flashingLights, flashingLights);
 		antialiasing = ifNotNull(svd.data.antialiasing, antialiasing);
 		seenOptionsWarning = ifNotNull(svd.data.seenOptionsWarning, seenOptionsWarning);
-		playstate_opponentmode = ifNotNull(playstate_opponentmode, playstate_opponentmode);
 		silentCountdown = ifNotNull(svd.data.silentCountdown, silentCountdown);
 		noteMissAction = ifNotNull(svd.data.noteMissAction, noteMissAction);
 		showFPS = ifNotNull(svd.data.showFPS, showFPS);
+		
+		playstate_opponentmode = ifNotNull(playstate_opponentmode, playstate_opponentmode);
+		playstate_bothside = ifNotNull(playstate_bothside, playstate_bothside);
+		playstate_endless = ifNotNull(playstate_endless, playstate_endless);
 		/*var insertControls = new Map<String, Array<Array<Int>>>();
 		insertControls = ifNotNull(svd.data.controls, controls);
 		for (i in insertControls.keys()) {

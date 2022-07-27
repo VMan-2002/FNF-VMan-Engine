@@ -20,9 +20,11 @@ class Highscore
 		return '${mod}:${song}';
 	}
 
-	public static function saveScore(song:String, score:Int = 0, ?diff:Int = 0):Bool
-	{
-		var daSong:String = modPrefix(formatSong(song, diff));
+	public static function saveScore(song:String, score:Int = 0, ?diff:Int = 0):Bool {
+		if (Multiplayer.valid) {
+			return false; //i'll implement it properly later
+		}
+		var daSong:String = modPrefix(formatSong(song, diff, true));
 
 
 		#if !switch
@@ -96,7 +98,7 @@ class Highscore
 		#end
 
 
-		var daWeek:String = modPrefix(formatSong(week, diff));
+		var daWeek:String = modPrefix(formatSong(week, diff, true));
 
 		if (songScores.exists(daWeek))
 		{
@@ -113,6 +115,19 @@ class Highscore
 		return true;
 	}
 
+	public static function getModeString() {
+		var result = "";
+		if (Options.playstate_bothside) {
+			result += "Both";
+		} else if (Options.playstate_opponentmode) {
+			result += "Opponent";
+		}
+		if (Options.playstate_endless && !PlayState.isStoryMode) {
+			result += "Endless";
+		}
+		return result;
+	}
+
 	/**
 	 * YOU SHOULD FORMAT SONG WITH formatSong() BEFORE TOSSING IN SONG VARIABLE... NOW!!
 	 */
@@ -121,10 +136,10 @@ class Highscore
 		// Reminder that I don't need to format this song, it should come formatted!
 		var formatted = formatSong(song);
 		trace('setting score for ${formatted}');
-		if (songScores.exists(formatted) && songScores.get(formatSong(song)) > score) {
+		if (songScores.exists(formatted) && songScores.get(formatted) > score) {
 			return false;
 		}
-		songScores.set(formatSong(song), score);
+		songScores.set(formatted, score);
 		FlxG.save.data.songScores = songScores;
 		FlxG.save.flush();
 		return true;
@@ -137,7 +152,7 @@ class Highscore
 		if (songScoreFC.exists(formatted) && songScoreFC.get(formatted) > score) {
 			return false;
 		}
-		songScoreFC.set(formatSong(song), score);
+		songScoreFC.set(formatted, score);
 		FlxG.save.data.songScoreFC = songScoreFC;
 		FlxG.save.flush();
 		return true;
@@ -150,15 +165,15 @@ class Highscore
 		if (songScoreAcc.exists(formatted) && songScoreAcc.get(formatted) > score) {
 			return false;
 		}
-		songScoreAcc.set(formatSong(song), score);
+		songScoreAcc.set(formatted, score);
 		FlxG.save.data.songScoreAcc = songScoreAcc;
 		FlxG.save.flush();
 		return true;
 	}
 
-	public static function formatSong(song:String, ?diff:Int = -1):String
+	public static function formatSong(song:String, ?diff:Int = -1, ?mode:Bool = false):String
 	{
-		var daSong:String = (~/ /g).replace(song.toLowerCase(), "-");
+		var daSong:String = (~/ /g).replace(song.toLowerCase(), "-") + (mode && getModeString() != "" ? "^" + getModeString().toLowerCase() : "");
 		
 		if (diff == -1)
 			return daSong;
@@ -166,9 +181,9 @@ class Highscore
 		return daSong + CoolUtil.difficultyPostfixString(diff);
 	}
 
-	public static function getScore(song:String, diff:Int):Int
+	public static function getScore(song:String, diff:Int, ?mode:Bool = false):Int
 	{
-		var daSong = formatSong(song, diff);
+		var daSong = formatSong(song, diff, mode);
 		trace('getting score for ${daSong}');
 		if (!songScores.exists(daSong))
 			setScore(daSong, 0);
@@ -176,27 +191,27 @@ class Highscore
 		return songScores.get(daSong);
 	}
 
-	public static function getFCFormatted(song:String, diff:Int):String
+	public static function getFCFormatted(song:String, diff:Int, ?mode:Bool = false):String
 	{
-		var daSong = formatSong(song, diff);
+		var daSong = formatSong(song, diff, mode);
 		if (!songScoreFC.exists(daSong))
 			return "???";
 
 		return formatFC(songScoreFC.get(daSong));
 	}
 
-	public static function getAcc(song:String, diff:Int):Float
+	public static function getAcc(song:String, diff:Int, ?mode:Bool = false):Float
 	{
-		var daSong = formatSong(song, diff);
+		var daSong = formatSong(song, diff, mode);
 		if (!songScores.exists(daSong))
 			return 0;
 
 		return songScoreAcc.get(daSong);
 	}
 
-	public static function getWeekScore(week:String, diff:Int):Int
+	public static function getWeekScore(week:String, diff:Int, ?mode:Bool = false):Int
 	{
-		var daWeek = modPrefix(formatSong(week, diff));
+		var daWeek = modPrefix(formatSong(week, diff, mode));
 		if (!weekScores.exists(daWeek))
 			weekScores.set(daWeek, 0);
 

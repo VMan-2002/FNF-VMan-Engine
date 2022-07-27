@@ -94,7 +94,7 @@ class PlayState extends MusicBeatState
 	public var gfSpeed:Int = 1;
 	public var health:Float = 1;
 	public var maxHealth:Float = 2;
-	private var combo:Int = 0;
+	public var combo:Int = 0;
 
 	private var healthBarBG:FlxSprite;
 	private var healthBar:FlxBar;
@@ -120,10 +120,6 @@ class PlayState extends MusicBeatState
 	var limo:FlxSprite;
 	var grpLimoDancers:FlxTypedGroup<BackgroundDancer>;
 	var fastCar:FlxSprite;
-
-	var upperBoppers:FlxSprite;
-	var bottomBoppers:FlxSprite;
-	var santa:FlxSprite;
 
 	var bgGirls:BackgroundDancer;
 	var wiggleShit:WiggleEffect = new WiggleEffect();
@@ -181,6 +177,9 @@ class PlayState extends MusicBeatState
 	var maniaPartArr:Array<Array<String>> = [];
 
 	public var currentUIStyle:SwagUIStyle;
+
+	public var allowGameplayChanges:Bool;
+	public var isMiddlescroll:Bool = Options.middleScroll;
 	
 	//Scripting funny lol
 	//The only hscript your getting is me porting the basegame update's hscript support
@@ -189,6 +188,7 @@ class PlayState extends MusicBeatState
 	override public function create()
 	{
 		instance = this;
+		allowGameplayChanges = Std.isOfType(this, PlayState);
 		
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
@@ -211,6 +211,17 @@ class PlayState extends MusicBeatState
 			SONG = Song.loadFromJson('tutorial');
 		
 		curManiaInfo = ManiaInfo.GetManiaInfo(SONG.maniaStr);
+		if (Options.playstate_bothside && allowGameplayChanges) {
+			var newKeys = curManiaInfo.keys * 2;
+			var newMania = ManiaInfo.GetManiaInfo(newKeys + "k");
+			if (newMania.keys != newKeys) {
+				Options.playstate_bothside = false;
+				trace("Tried to use mania " + newKeys + "k but it don't exist. So I disabled bothside mode.");
+			} else {
+				curManiaInfo = newMania;
+				isMiddlescroll = true;
+			}
+		}
 
 		currentUIStyle = SwagUIStyle.loadUIStyle(SONG.uiStyle);
 		var validUIStyle = currentUIStyle != null;
@@ -408,79 +419,6 @@ class PlayState extends MusicBeatState
 				fastCar = new FlxSprite(-300, 160).loadGraphic(Paths.image('limo/fastCarLol'));
 				// add(limo);
 			}
-			/*case 'mall':
-			{
-				defaultCamZoom = 0.80;
-
-				var bg:FlxSprite = new FlxSprite(-1000, -500).loadGraphic(Paths.image('christmas/bgWalls'));
-				bg.antialiasing = true;
-				bg.scrollFactor.set(0.2, 0.2);
-				bg.active = false;
-				bg.setGraphicSize(Std.int(bg.width * 0.8));
-				bg.updateHitbox();
-				add(bg);
-
-				upperBoppers = new FlxSprite(-240, -90);
-				upperBoppers.frames = Paths.getSparrowAtlas('christmas/upperBop');
-				upperBoppers.animation.addByPrefix('bop', "Upper Crowd Bob", 24, false);
-				upperBoppers.antialiasing = true;
-				upperBoppers.scrollFactor.set(0.33, 0.33);
-				upperBoppers.setGraphicSize(Std.int(upperBoppers.width * 0.85));
-				upperBoppers.updateHitbox();
-				add(upperBoppers);
-
-				var bgEscalator:FlxSprite = new FlxSprite(-1100, -600).loadGraphic(Paths.image('christmas/bgEscalator'));
-				bgEscalator.antialiasing = true;
-				bgEscalator.scrollFactor.set(0.3, 0.3);
-				bgEscalator.active = false;
-				bgEscalator.setGraphicSize(Std.int(bgEscalator.width * 0.9));
-				bgEscalator.updateHitbox();
-				add(bgEscalator);
-
-				var tree:FlxSprite = new FlxSprite(370, -250).loadGraphic(Paths.image('christmas/christmasTree'));
-				tree.antialiasing = true;
-				tree.scrollFactor.set(0.40, 0.40);
-				add(tree);
-
-				bottomBoppers = new FlxSprite(-300, 140);
-				bottomBoppers.frames = Paths.getSparrowAtlas('christmas/bottomBop');
-				bottomBoppers.animation.addByPrefix('bop', 'Bottom Level Boppers', 24, false);
-				bottomBoppers.antialiasing = true;
-				bottomBoppers.scrollFactor.set(0.9, 0.9);
-				bottomBoppers.setGraphicSize(Std.int(bottomBoppers.width * 1));
-				bottomBoppers.updateHitbox();
-				add(bottomBoppers);
-
-				var fgSnow:FlxSprite = new FlxSprite(-600, 700).loadGraphic(Paths.image('christmas/fgSnow'));
-				fgSnow.active = false;
-				fgSnow.antialiasing = true;
-				add(fgSnow);
-
-				santa = new FlxSprite(-840, 150);
-				santa.frames = Paths.getSparrowAtlas('christmas/santa');
-				santa.animation.addByPrefix('idle', 'santa idle in fear', 24, false);
-				santa.antialiasing = true;
-				add(santa);
-			}*/
-			/*case 'mallEvil':
-			{
-				var bg:FlxSprite = new FlxSprite(-400, -500).loadGraphic(Paths.image('christmas/evilBG'));
-				bg.antialiasing = true;
-				bg.scrollFactor.set(0.2, 0.2);
-				bg.active = false;
-				bg.setGraphicSize(Std.int(bg.width * 0.8));
-				bg.updateHitbox();
-				add(bg);
-
-				var evilTree:FlxSprite = new FlxSprite(300, -300).loadGraphic(Paths.image('christmas/evilTree'));
-				evilTree.antialiasing = true;
-				evilTree.scrollFactor.set(0.2, 0.2);
-				add(evilTree);
-
-				var evilSnow:FlxSprite = new FlxSprite(-200, 700).loadGraphic(Paths.image("christmas/evilSnow"));
-				evilSnow.antialiasing = true;
-				add(evilSnow);
-			}*/
 			case 'school':
 			{
 				// defaultCamZoom = 0.9;
@@ -1257,6 +1195,15 @@ class PlayState extends MusicBeatState
 				}
 
 				var gottaHitNote:Bool = (section.mustHitSection) != (songNotes[1] >= curManiaInfo.keys);
+				if (allowGameplayChanges) {
+					if (Options.playstate_opponentmode) {
+						gottaHitNote = !gottaHitNote;
+					}
+					if (Options.playstate_bothside && !gottaHitNote) {
+						gottaHitNote = true;
+						daNoteData = (daNoteData + Math.floor(curManiaInfo.keys / 2)) % curManiaInfo.keys;
+					}
+				}
 
 				var oldNote:Note;
 				if (unspawnNotes.length > 0)
@@ -1305,7 +1252,7 @@ class PlayState extends MusicBeatState
 	public function generateStaticArrows(player:Int) {
 		var xPos:Float = 0;
 		if (player == 1 || player == 0) {
-			if (Options.middleScroll) {
+			if (isMiddlescroll) {
 				xPos = player == 1 ? FlxG.width / 2 : FlxG.width * 8;
 			} else {
 				xPos = player == 1 ? FlxG.width * 0.75 : FlxG.width * 0.25;
@@ -1709,8 +1656,7 @@ class PlayState extends MusicBeatState
 
 				//if (daNote.y < -daNote.height)
 				//{
-					if (daNote.tooLate)
-					{
+					if (daNote.tooLate) {
 						if (daNote.mustPress && !daNote.wasGoodHit) {
 							noteMiss(daNote.noteData);
 							if (Options.noteMissAction_Vocals[Options.noteMissAction])
@@ -1797,6 +1743,19 @@ class PlayState extends MusicBeatState
 		if (Std.isOfType(this, PlayStateOffsetCalibrate)) {
 			var nextState = new OptionsMenu();
 			return FlxG.switchState(nextState);
+		}
+
+		if (!isStoryMode && Options.playstate_endless && allowGameplayChanges) {
+			var newState = new PlayState();
+			newState.songScore = songScore;
+			newState.songMisses = songMisses;
+			newState.songHits = songHits;
+			newState.sicks = sicks;
+			newState.goods = goods;
+			newState.bads = bads;
+			newState.shits = shits;
+			newState.combo = combo;
+			return FlxG.switchState(newState);
 		}
 
 		if (isStoryMode)
@@ -2157,23 +2116,20 @@ class PlayState extends MusicBeatState
 				lastHitNoteTime = note.strumTime;
 			}
 
-			//if (note.noteData >= 0)
 			if (health < maxHealth)
 				health = Math.min(health + 0.023, maxHealth);
-			//else
-			//	health += 0.004;
 			
-			if (!note.isSustainNote || !boyfriend.animNoSustain) {
+			/*if (!note.isSustainNote || !boyfriend.animNoSustain) {
 				boyfriend.playAnim('sing${ManiaInfo.Dir[curManiaInfo.arrows[note.noteData]]}', true);
-			}
+			}*/
+			animateForNote(note);
 
 			playerStrums.members[note.noteData].playAnim('confirm', true);
 
 			note.wasGoodHit = true;
 			vocals.volume = 1;
 
-			if (!note.isSustainNote)
-			{
+			if (!note.isSustainNote) {
 				note.kill();
 				notes.remove(note, true);
 				note.destroy();
@@ -2186,22 +2142,24 @@ class PlayState extends MusicBeatState
 			if (SONG.song != 'Tutorial')
 				camZooming = true;
 
-			var altAnim:String = "";
+			/*var altAnim:String = "";
 
 			if (SONG.notes[currentSection] != null) {
 				if (SONG.notes[currentSection].altAnim)
 					altAnim = '-alt';
 			}
 
-			if (health > SONG.healthDrainMin) {
-				health = Math.max(health - SONG.healthDrain, SONG.healthDrainMin);
-			}
-
 			if (!note.isSustainNote || !dad.animNoSustain) {
 				dad.playAnim('sing${ManiaInfo.Dir[curManiaInfo.arrows[note.noteData]]}${altAnim}', true);
 			}
 
-			dad.holdTimer = 0;
+			dad.holdTimer = 0;*/
+
+			animateForNote(note);
+
+			if (health > SONG.healthDrainMin) {
+				health = Math.max(health - SONG.healthDrain, SONG.healthDrainMin);
+			}
 
 			var spr = opponentStrums.members[note.noteData];
 			if (spr != null) {
@@ -2212,8 +2170,7 @@ class PlayState extends MusicBeatState
 			note.wasGoodHit = true;
 			vocals.volume = 1;
 
-			if (!note.isSustainNote)
-			{
+			if (!note.isSustainNote) {
 				note.kill();
 				notes.remove(note, true);
 				note.destroy();
@@ -2231,6 +2188,27 @@ class PlayState extends MusicBeatState
 			}
 			#end
 		}
+	}
+
+	function animateForNote(?note:Note):Void {
+		var isBoyfriend = note.mustPress;
+		if (allowGameplayChanges) {
+			if (Options.playstate_bothside) {
+				isBoyfriend = (note.noteData >= curManiaInfo.keys / 2) == Options.playstate_opponentmode;
+			} else if (Options.playstate_opponentmode) {
+				isBoyfriend = !isBoyfriend;
+			}
+		}
+		var char:Character = isBoyfriend ? boyfriend : dad;
+		char.holdTimer = 0;
+		if (note.isSustainNote && char.animNoSustain) {
+			return;
+		}
+		var anim = 'sing${ManiaInfo.Dir[curManiaInfo.arrows[note.noteData]]}';
+		if (SONG.notes[currentSection].altAnim && !isBoyfriend) {
+			anim += '-alt';
+		}
+		return char.playAnim(anim, true);
 	}
 
 	var fastCarCanDrive:Bool = true;

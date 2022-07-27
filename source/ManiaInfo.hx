@@ -200,8 +200,16 @@ class ManiaInfo {
 		'17k', //17k
 		'18k', //18k
 		'19k', //19k
-		//32, //20k
+		'20k', //20k
 		'21k', //21k
+		'22k', //22k
+		'24k', //24k
+		'26k', //26k
+		'28k', //28k
+		'30k', //30k
+		'32k', //32k
+		'34k', //34k
+		'36k', //36k
 		'50k', //50k
 		'piano', //Piano
 		'105k' //105
@@ -435,6 +443,26 @@ class ManiaInfo {
 					arrows = ['17a', '17b', 'purple', 'blue', 'green', 'red', '13a', '13b', 'white', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17c', '17d'];
 				case "18k": //18K
 					arrows = ['17a', '17b', 'purple', 'blue', 'green', 'red', 'white', '13a', '13b', '13c', '13d', 'white', 'yellow', 'violet', 'darkred', 'dark', '17c', '17d'];
+				//some doubles for both side mode
+				//wow, that's a lot of arrows!
+				case "20k": //20K
+					arrows = ['purple', 'blue', 'green', 'red', '13a', '13d', 'yellow', 'violet', 'darkred', 'dark', 'purple', 'blue', 'green', 'red', '13a', '13d', 'yellow', 'violet', 'darkred', 'dark'];
+				case "22k": //11K
+					arrows = ['purple', 'blue', 'green', 'red', '13a', 'white', '13d', 'yellow', 'violet', 'darkred', 'dark', 'purple', 'blue', 'green', 'red', '13a', 'white', '13d', 'yellow', 'violet', 'darkred', 'dark'];
+				case "24k": //12K
+					arrows = ['purple', 'blue', 'green', 'red', '13a', '13b', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', 'purple', 'blue', 'green', 'red', '13a', '13b', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark'];
+				case "26k": //13K
+					arrows = ['purple', 'blue', 'green', 'red', '13a', '13b', 'white', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark','purple', 'blue', 'green', 'red', '13a', '13b', 'white', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark'];
+				case "28k": //14K
+					arrows = ['17a', 'purple', 'blue', 'green', 'red', '13a', '13b', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17d', '17a', 'purple', 'blue', 'green', 'red', '13a', '13b', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17d'];
+				case "30k": //15K
+					arrows = ['17a', 'purple', 'blue', 'green', 'red', '13a', '13b', 'white', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17d', '17a', 'purple', 'blue', 'green', 'red', '13a', '13b', 'white', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17d'];
+				case "32k": //16K
+					arrows = ['17a', '17b', 'purple', 'blue', 'green', 'red', '13a', '13b', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17c', '17d', '17a', '17b', 'purple', 'blue', 'green', 'red', '13a', '13b', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17c', '17d'];
+				case "34k": //17K
+					arrows = ['17a', '17b', 'purple', 'blue', 'green', 'red', '13a', '13b', 'white', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17c', '17d', '17a', '17b', 'purple', 'blue', 'green', 'red', '13a', '13b', 'white', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17c', '17d'];
+				case "36k": //18K
+					arrows = ['17a', '17b', 'purple', 'blue', 'green', 'red', 'white', '13a', '13b', '13c', '13d', 'white', 'yellow', 'violet', 'darkred', 'dark', '17c', '17d', '17a', '17b', 'purple', 'blue', 'green', 'red', 'white', '13a', '13b', '13c', '13d', 'white', 'yellow', 'violet', 'darkred', 'dark', '17c', '17d'];
 				default: //4K
 					if (mania != '4k') {
 						trace('Mania not existant!');

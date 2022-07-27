@@ -24,10 +24,7 @@ class HudThing extends FlxGroup
 		super();
 		
 		items = list.filter(function(item) {
-			if (Options.botplay && botplayExclude.indexOf(item) <= -1) {
-				return false;
-			}
-			return true;
+			return !Options.botplay || botplayExclude.indexOf(item) == -1;
 		});
 		this.vertical = vertical;
 		textThing = new FlxText(x, y, 0, "", 20);
@@ -60,6 +57,10 @@ class HudThing extends FlxGroup
 					text += PlayState.instance.curSong;
 				case "difficulty":
 					text += Translation.getTranslation(PlayState.instance.storyDifficultyText, "difficulty");
+					var thing = Highscore.getModeString();
+					if (thing != "") {
+						text += "^" + thing;
+					}
 				case "accSimple":
 					text += Translation.getTranslation("hud_accsimple", "playstate", [trimNoPercent(PlayState.instance.songHits / noteThing)]);
 				case "accRating":

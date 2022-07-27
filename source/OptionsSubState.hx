@@ -36,7 +36,8 @@ class OptionsSubState extends OptionsSubStateBasic
 			"Show FPS",
 			"Audio On Miss",
 			"Input Offset Calibrate",
-			"Exit Without Saving"
+			"Exit Without Saving",
+			"Gameplay Changes"
 		];
 	}
 	
@@ -100,6 +101,8 @@ class OptionsSubState extends OptionsSubStateBasic
 				return ["Do a short song to see what input offset is good.", "idk lol"];
 			case "exit without saving":
 				return ["Exit the options menu, and discard your changes.", '', 'unknownOption'];
+			case "gameplay changes":
+				return ["Toggle gameplay changes.", Highscore.getModeString()];
 		}
 		return ["Unknown option.", name, 'unknownOption'];
 	}
@@ -169,6 +172,10 @@ class OptionsSubState extends OptionsSubStateBasic
 			case "input offset calibrate":
 				FlxG.state.closeSubState();
 				FlxG.switchState(new PlayStateOffsetCalibrate());
+			case "gameplay changes":
+				FlxG.state.closeSubState();
+				FlxG.state.openSubState(new PlayStateChangesSubState());
+				return false;
 			default:
 				trace("Tried to accept unknown option: " + name);
 		}

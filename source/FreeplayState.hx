@@ -583,12 +583,12 @@ class FreeplayState extends MusicBeatState
 		var songSel = songs[curSelected];
 		if (songSel.type == 0) {
 			var songId = '${songSel.mod}:${songSel.songName}';
-			intendedScore = Highscore.getScore(songId, curDifficulty);
+			intendedScore = Highscore.getScore(songId, curDifficulty, true);
 			if (scoreFCText == null) {
 				return;
 			}
-			scoreFCText.text = Highscore.getFCFormatted(songId, curDifficulty);
-			scoreAccText.text = HudThing.trimPercent(Highscore.getAcc(songId, curDifficulty));
+			scoreFCText.text = Highscore.getFCFormatted(songId, curDifficulty, true);
+			scoreAccText.text = HudThing.trimPercent(Highscore.getAcc(songId, curDifficulty, true));
 		}
 		#end
 		if (isCornflower) {
