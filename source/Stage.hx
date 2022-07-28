@@ -84,7 +84,7 @@ class Stage
 		//the void
 		trace("No stage found, you'll be put in the void >:)");
 		return {
-			charPosition: [[100, 100], [770, 100], [400, 130]],
+			charPosition: [[770, 100], [100, 100], [400, 130]],
 			defaultCamZoom: 1.05,
 			elementsFront: new Array<StageElement>(),
 			elementsBack: new Array<StageElement>()
