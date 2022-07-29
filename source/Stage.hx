@@ -5,9 +5,9 @@ import Character;
 import Paths;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import io.newgrounds.NGLite;
 import sys.FileSystem;
 import sys.io.File;
+//import io.newgrounds.NGLite;
 
 typedef StageElement =
 {

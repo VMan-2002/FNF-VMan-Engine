@@ -13,12 +13,12 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
-import io.newgrounds.NG;
 import lime.app.Application;
 import sys.FileSystem;
 import sys.io.File;
 
 using StringTools;
+//import io.newgrounds.NG;
 #if desktop
 import Discord.DiscordClient;
 #end
