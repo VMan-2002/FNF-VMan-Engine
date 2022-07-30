@@ -9,3 +9,6 @@ where A is whether it's enabled (1 or 0), and B is the mod folder name
 also the order of mods matters as well! higher mods will take priority for stuff such as menus
 
 to reload without restarting the game, return to title screen
+
+
+Code contributing: Do not steal code you dont have permission for pls :)
