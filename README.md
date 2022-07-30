@@ -4,6 +4,8 @@ Use the latest version of Polymod `haxelib update polymod`
 
 For mod makers: If you want new features in official vman engine, just make an [issue](https://github.com/VMan-2002/FNF-VMan-Engine/issues) (make sure you're on the latest release!) or a [pull request](https://github.com/VMan-2002/FNF-VMan-Engine/pulls)
 
+Please dont steal code that you don't own or dont have permission for
+
 If there is a security issue, let me know privately
 
 If you make a mod and distribute a modified / recompiled version of this engine, you must open source your mod as well [(well FNF already requires that anyway...)](https://github.com/ninjamuffin99/Funkin/blob/master/README.md)
