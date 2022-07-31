@@ -181,7 +181,7 @@ class CornflowerFreeplay {
 			case 'extras-2':
 				songComment.text = "Seen differently";
 			case 'extras-cornstupid':
-				songComment.text = "The cornstupid";
+				songComment.text = "Alternate universe";
 			default:
 				songComment.text = "";
 		}
