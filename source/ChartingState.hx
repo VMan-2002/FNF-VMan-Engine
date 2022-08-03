@@ -156,7 +156,10 @@ class ChartingState extends MusicBeatState
 				moreCharacters: new Array<String>(),
 				actions: new Array<String>(),
 				noteSkin: "",
-				uiStyle: ""
+				uiStyle: "",
+				vmanEventTime: new Array<Float>(),
+				vmanEventOrder: new Array<Int>(),
+				vmanEventData: new Array<Dynamic>()
 			};
 			curNoteTypeArr = _song.usedNoteTypes;
 		}
@@ -481,19 +484,18 @@ class ChartingState extends MusicBeatState
 		//todo: have real
 		var noteTypes = [
 			"Normal Note",
-			"Hurt Note",
-			"Death Note",
-			"Warning Note",
-			"Angel Note",
+			//"Hurt Note",
+			//"Death Note",
+			//"Warning Note",
+			//"Angel Note",
 			"Alt Animation",
-			"Bob Note",
-			"Glitch Note",
+			//"Bob Note",
+			//"Glitch Note",
 			"Hey",
-			"Death Warning Note",
-			"Guitar Note"
+			//"Death Warning Note",
+			//"Guitar Note"
 		];
-		var noteTypeSelect = new FlxUIDropDownMenu(10, 40, FlxUIDropDownMenu.makeStrIdLabelArray(noteTypes, true), function(character:String)
-		{
+		var noteTypeSelect = new FlxUIDropDownMenu(10, 40, FlxUIDropDownMenu.makeStrIdLabelArray(noteTypes, true), function(character:String) {
 			curNoteType = character;
 		});
 		//noteTypeSelect.resize(200, 20);
