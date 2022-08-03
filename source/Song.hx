@@ -126,6 +126,10 @@ class Song
 		if (swagShit.actions == null) {
 			swagShit.actions = new Array<String>();
 		}
+
+		if (swagShit.vmanEventOrder == null) {
+			swagShit.vmanEventOrder = new Array<Int>();
+		}
 		
 		return swagShit;
 	}
