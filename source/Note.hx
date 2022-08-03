@@ -125,6 +125,56 @@ class SwagUIStyle {
 	}
 }
 
+class SwagNoteType {
+	public var healthHit:Null<Float>;
+	public var healthHitSick:Null<Float>;
+	public var healthHitGood:Null<Float>;
+	public var healthHitBad:Null<Float>;
+	public var healthHitShit:Null<Float>;
+	public var healthMiss:Null<Float>;
+	public var healthMaxMult:Null<Float>;
+	public var ignoreMiss:Null<Bool>;
+	public var imagePrefix:String;
+	public var animPostfix:String;
+	public var animReplace:String;
+	public var bob:Null<Bool>;
+	public var glitch:Null<Bool>;
+	public var guitar:Null<Bool>;
+
+	public static function loadNoteType(name:String, modName:String) {
+		if (Note.loadedNoteTypes.get('${modName}:${name}') != null) {
+			return Note.loadedNoteTypes.get('${modName}:${name}');
+		}
+		var parser = new JsonParser<SwagNoteType>();
+		var noteType:SwagNoteType;
+		noteType = parser.fromJson(CoolUtil.tryPathBoth("objects/notetypes/" + name + ".json", modName));
+		if (noteType == null) {
+			return null;
+		}
+		noteType.healthHit = noteType.healthHit != null ? noteType.healthHit : 0.0475;
+		noteType.healthHitSick = noteType.healthHitSick != null ? noteType.healthHitSick : noteType.healthHit;
+		noteType.healthHitGood = noteType.healthHitGood != null ? noteType.healthHitGood : noteType.healthHit;
+		noteType.healthHitBad = noteType.healthHitBad != null ? noteType.healthHitBad : noteType.healthHit;
+		noteType.healthHitShit = noteType.healthHitShit != null ? noteType.healthHitShit : noteType.healthHit;
+		noteType.healthMiss = noteType.healthMiss != null ? noteType.healthMiss : -0.0475;
+		noteType.healthMaxMult = noteType.healthMaxMult != null ? noteType.healthMaxMult : 1;
+		noteType.ignoreMiss = noteType.ignoreMiss != null ? noteType.ignoreMiss : false;
+		noteType.imagePrefix = noteType.imagePrefix != null ? noteType.imagePrefix : "";
+		noteType.animPostfix = noteType.animPostfix != null ? noteType.animPostfix : "";
+		noteType.animReplace = noteType.animReplace != null ? noteType.animReplace : "";
+		noteType.bob = noteType.bob != null ? noteType.bob : false;
+		noteType.glitch = noteType.glitch != null ? noteType.glitch : false;
+		noteType.guitar = noteType.guitar != null ? noteType.guitar : false;
+		trace('loaded notetype ${modName}:${name}');
+		Note.loadedNoteTypes.set('${modName}:${name}', noteType);
+		return noteType;
+	}
+
+	public static function clearLoadedNoteTypes() {
+		Note.loadedNoteTypes.clear();
+	}
+}
+
 class Note extends FlxSprite
 {
 	public var strumTime:Float = 0;
@@ -149,6 +199,7 @@ class Note extends FlxSprite
 
 	public static var loadedNoteSkins:Map<String, SwagNoteSkin> = new Map<String, SwagNoteSkin>();
 	public static var loadedUIStyles:Map<String, SwagUIStyle> = new Map<String, SwagUIStyle>();
+	public static var loadedNoteTypes:Map<String, SwagNoteType> = new Map<String, SwagNoteType>();
 
 	public static var noteAnimExclude:Array<String> = [
 		"static",
@@ -305,6 +356,10 @@ class Note extends FlxSprite
 	
 	public function noteSetArrow(type:String) {
 		
+	}
+
+	public function getNoteType():String {
+		return PlayState.SONG.usedNoteTypes[noteType];
 	}
 
 	override function update(elapsed:Float)

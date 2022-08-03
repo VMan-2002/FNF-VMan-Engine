@@ -18,6 +18,9 @@ class HudThing extends FlxGroup
 	static var spoopyExclude:Array<String> = [
 		"hits", "totalnotes", "difficulty", "engine", "accSimple", "health", "fc", "offset_min", "offset_max", "offset_avg"
 	];
+	static var showoffOnly:Array<String> = [
+		"song", "engine"
+	];
 	
 	public function new(x:Float, y:Float, list:Array<String>, ?vertical:Bool = false)
 	{

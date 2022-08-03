@@ -35,6 +35,10 @@ typedef SwagSong =
 	var actions:Array<String>;
 	var noteSkin:String;
 	var uiStyle:String;
+	
+	var vmanEventTime:Array<Float>;
+	var vmanEventOrder:Array<Int>;
+	var vmanEventData:Array<Dynamic>;
 }
 
 class Song
