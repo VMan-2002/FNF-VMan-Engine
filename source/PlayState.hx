@@ -800,6 +800,13 @@ class PlayState extends MusicBeatState
 		hudThings.add(new HudThing(healthBarBG.x, healthBarBG.y + 30, hudThingLists[0]));
 		hudThings.add(new HudThing(2, FlxG.height - 24, hudThingLists[1]));
 		hudThings.add(new HudThing(2, (FlxG.height / 2) - 100, hudThingLists[2], true));
+		
+		var timerThing:HudThing = cast add(new HudThing(0, !Options.downScroll ? 10 : FlxG.height - 34, ["timer_down_notitle"]));
+		timerThing.autoUpdate = true;
+		var timerThingText:FlxText = cast timerThing.members[0];
+		timerThingText.alignment = CENTER;
+		timerThingText.fieldWidth = FlxG.width;
+		timerThing.cameras = [camHUD];
 
 		iconP1 = new HealthIcon(boyfriend.healthIcon, true, modName);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
@@ -1294,6 +1301,11 @@ class PlayState extends MusicBeatState
 		}
 		if (strumLines.members.indexOf(thing) <= -1) {
 			strumLines.add(thing);
+		}
+		for (i in 0 ... curManiaInfo.keys) {
+			if (thing.members[i] == null) {
+				trace('Null member of strumline ${player} at ${i}. This is really bad.');
+			}
 		}
 		return thing;
 	}

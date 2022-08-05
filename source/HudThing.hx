@@ -13,7 +13,7 @@ class HudThing extends FlxGroup
 	public var vertical:Bool = false;
 	public var textThing:FlxText;
 	static var botplayExclude:Array<String> = [
-		"misses", "fc"
+		"misses", "fc", "accSimple", "accRating"
 	];
 	static var spoopyExclude:Array<String> = [
 		"hits", "totalnotes", "difficulty", "engine", "accSimple", "health", "fc", "offset_min", "offset_max", "offset_avg"
@@ -21,6 +21,7 @@ class HudThing extends FlxGroup
 	static var showoffOnly:Array<String> = [
 		"song", "engine"
 	];
+	public var autoUpdate:Bool = false;
 	
 	public function new(x:Float, y:Float, list:Array<String>, ?vertical:Bool = false)
 	{
@@ -40,6 +41,8 @@ class HudThing extends FlxGroup
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+		if (autoUpdate)
+			updateInfo();
 	}
 	
 	public function getInfoText() {
@@ -104,6 +107,14 @@ class HudThing extends FlxGroup
 					text += "AvgOffset: "+offsetMilliseconds(getPlayState().hitOffsetAvg);
 				case "offset_range":
 					text += "RngOffset: "+offsetMilliseconds(getPlayState().hitOffsetMin - getPlayState().hitOffsetMax);
+				case "timer_up":
+					text += "TimerUp: "+formatTime(Conductor.songPosition);
+				case "timer_down":
+					text += "TimerDown: "+formatTime(PlayState.instance.songLength - Conductor.songPosition);
+				case "timer_down_notitle":
+					text += formatTime(PlayState.instance.songLength - Conductor.songPosition);
+				default:
+					text += "Unknown: "+items[i];
 			}
 		}
 		return vertical ? text+"\n" : text; //vertical text needs an additional newline idk why
@@ -127,6 +138,15 @@ class HudThing extends FlxGroup
 	
 	public inline static function offsetMilliseconds(num:Float) {
 		return Std.string(FlxMath.roundDecimal(num, 2))+"ms";
+	}
+
+	public static function formatTime(num:Float) {
+		var tNum:Int = Math.floor(num / 1000);
+		var min:String = Std.string(Math.floor(tNum / 60));
+		var sec:String = Std.string(Math.abs(tNum % 60));
+		if (sec.length == 1)
+			sec = "0" + sec;
+		return min + ":" + sec;
 	}
 
 	public function doSpoop() {
