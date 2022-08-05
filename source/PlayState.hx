@@ -39,6 +39,7 @@ import flixel.util.FlxSort;
 import flixel.util.FlxStringUtil;
 import flixel.util.FlxTimer;
 import haxe.Json;
+import haxe.ds.ArraySort;
 import lime.utils.Assets;
 import openfl.display.BlendMode;
 import openfl.display.StageQuality;
@@ -51,6 +52,10 @@ import Discord.DiscordClient;
 #end
 //import flixel.text.FlxTextBorderStyle;
 
+typedef SwagEvent = {
+	time:Float,
+	values:Array<Dynamic>
+}
 
 class PlayState extends MusicBeatState
 {
@@ -180,10 +185,13 @@ class PlayState extends MusicBeatState
 
 	public var allowGameplayChanges:Bool;
 	public var isMiddlescroll:Bool = Options.middleScroll;
+
+	public var events:Array<SwagEvent>;
 	
 	//Scripting funny lol
 	//The only hscript your getting is me porting the basegame update's hscript support
 	//todo: add the scripting
+	//this will be handled in MusicBeatState
 
 	override public function create()
 	{
@@ -1236,6 +1244,19 @@ class PlayState extends MusicBeatState
 			daBeats += 1;
 		}
 
+		for (thing in 0...songData.vmanEventOrder.length) {
+			events[thing] = {
+				time: songData.vmanEventTime[thing],
+				values: songData.vmanEventData[songData.vmanEventOrder[thing]]
+			};
+		}
+		ArraySort.sort(events, function(a:SwagEvent, b:SwagEvent):Int {
+			var d = Math.floor(a.time) - Math.floor(b.time);
+			if (d == 0)
+				return a.time > b.time ? 1 : -1;
+			return d;
+		});
+
 		// trace(unspawnNotes.length);
 		// playerCounter += 1;
 
@@ -1543,7 +1564,7 @@ class PlayState extends MusicBeatState
 		// better streaming of shit
 
 		// RESET = Quick Game Over Screen
-		if (controls.RESET)
+		if (controls.RESET && Options.resetButton)
 		{
 			health = 0;
 			trace("RESET = True");
@@ -1679,6 +1700,8 @@ class PlayState extends MusicBeatState
 			camFollowPos.x = FlxMath.lerp(camFollowPos.x, camFollow.x + camFollowOffset.x, speed);
 			camFollowPos.y = FlxMath.lerp(camFollowPos.y, camFollow.y + camFollowOffset.y, speed);
 		}
+
+		//handle events
 
 		if (!inCutscene)
 			keyShit();
@@ -1856,7 +1879,8 @@ class PlayState extends MusicBeatState
 		} else {
 			sicks += 1;
 			//todo: sometimes notesplashes are the wrong color
-			grpNoteSplashes.recycle(NoteSplash, NoteSplash.new).playNoteSplash(playerStrums.members[daNote.noteData]);
+			//todo: sometimes notesplashes crash.
+			//grpNoteSplashes.recycle(NoteSplash, NoteSplash.new).playNoteSplash(playerStrums.members[daNote.noteData]);
 		}
 		if (Options.botplay) {
 			usedBotplay = true;
@@ -2114,14 +2138,18 @@ class PlayState extends MusicBeatState
 				combo += 1;
 				songHits += 1;
 				lastHitNoteTime = note.strumTime;
+				
+				notes.forEachAlive(function(daNote:Note) {
+					if (daNote.noteData == note.noteData && note != daNote && daNote.canBeHit && daNote.mustPress && Math.abs(daNote.strumTime - note.strumTime) < 10) {
+						goodNoteHit(daNote); //Prevent stacked notes
+						trace("Found stacked note at " + daNote.strumTime);
+					}
+				});
 			}
-
+			
 			if (health < maxHealth)
 				health = Math.min(health + 0.023, maxHealth);
 			
-			/*if (!note.isSustainNote || !boyfriend.animNoSustain) {
-				boyfriend.playAnim('sing${ManiaInfo.Dir[curManiaInfo.arrows[note.noteData]]}', true);
-			}*/
 			animateForNote(note);
 
 			playerStrums.members[note.noteData].playAnim('confirm', true);
@@ -2141,19 +2169,6 @@ class PlayState extends MusicBeatState
 		if (!note.wasGoodHit) {
 			if (SONG.song != 'Tutorial')
 				camZooming = true;
-
-			/*var altAnim:String = "";
-
-			if (SONG.notes[currentSection] != null) {
-				if (SONG.notes[currentSection].altAnim)
-					altAnim = '-alt';
-			}
-
-			if (!note.isSustainNote || !dad.animNoSustain) {
-				dad.playAnim('sing${ManiaInfo.Dir[curManiaInfo.arrows[note.noteData]]}${altAnim}', true);
-			}
-
-			dad.holdTimer = 0;*/
 
 			animateForNote(note);
 
@@ -2205,8 +2220,11 @@ class PlayState extends MusicBeatState
 			return;
 		}
 		var anim = 'sing${ManiaInfo.Dir[curManiaInfo.arrows[note.noteData]]}';
-		if (SONG.notes[currentSection].altAnim && !isBoyfriend) {
+		if ((!isBoyfriend && SONG.notes[currentSection] != null && SONG.notes[currentSection].altAnim) || note.getNoteType() == "Alt Animation") {
 			anim += '-alt';
+		}
+		if (note.getNoteType() == "Hey") {
+			anim = "hey";
 		}
 		return char.playAnim(anim, true);
 	}
@@ -2411,4 +2429,10 @@ class PlayState extends MusicBeatState
 	}
 
 	var curLight:Int = 0;
+
+	public function setStage(stage:String):Void {
+		//todo: this isnt finished yet
+		curStage = stage;
+		FlxG.log.add('SET STAGE TO ' + stage);
+	}
 }

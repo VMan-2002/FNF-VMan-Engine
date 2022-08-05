@@ -86,6 +86,7 @@ class Options
 	public static var soundVolume:Float = 1;
 	public static var instrumentalVolume:Float = 1;
 	public static var vocalsVolume:Float = 1;
+	public static var resetButton:Bool = false;
 	
 	//PlayState changeables
 	public static var playstate_opponentmode:Bool = false;
@@ -118,6 +119,7 @@ class Options
 		svd.data.silentCountdown = silentCountdown;
 		svd.data.noteMissAction = noteMissAction;
 		svd.data.showFPS = showFPS;
+		svd.data.resetButton = resetButton;
 
 		svd.data.playstate_opponentmode = playstate_opponentmode;
 		svd.data.playstate_bothside = playstate_bothside;
@@ -150,6 +152,7 @@ class Options
 		silentCountdown = ifNotNull(svd.data.silentCountdown, silentCountdown);
 		noteMissAction = ifNotNull(svd.data.noteMissAction, noteMissAction);
 		showFPS = ifNotNull(svd.data.showFPS, showFPS);
+		resetButton = ifNotNull(svd.data.resetButton, resetButton);
 		
 		playstate_opponentmode = ifNotNull(playstate_opponentmode, playstate_opponentmode);
 		playstate_bothside = ifNotNull(playstate_bothside, playstate_bothside);

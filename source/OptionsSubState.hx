@@ -35,6 +35,7 @@ class OptionsSubState extends OptionsSubStateBasic
 			"Silent Countdown",
 			"Show FPS",
 			"Audio On Miss",
+			"Reset Button",
 			"Input Offset Calibrate",
 			"Exit Without Saving",
 			"Gameplay Changes"
@@ -103,6 +104,8 @@ class OptionsSubState extends OptionsSubStateBasic
 				return ["Exit the options menu, and discard your changes.", '', 'unknownOption'];
 			case "gameplay changes":
 				return ["Toggle gameplay changes.", Highscore.getModeString()];
+			case "reset button":
+				return ["Press R to die during a song.", Options.resetButton ? "Enabled" : "Disabled"];
 		}
 		return ["Unknown option.", name, 'unknownOption'];
 	}
@@ -176,6 +179,8 @@ class OptionsSubState extends OptionsSubStateBasic
 				FlxG.state.closeSubState();
 				FlxG.state.openSubState(new PlayStateChangesSubState());
 				return false;
+			case "reset button":
+				Options.resetButton = !Options.resetButton;
 			default:
 				trace("Tried to accept unknown option: " + name);
 		}
