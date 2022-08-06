@@ -10,16 +10,14 @@ class SpriteVMan extends FlxSprite {
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void {
 		animation.play(AnimName, Force, Reversed, Frame);
 
-		var daOffset = animOffsets.get(AnimName);
 		if (animOffsets.exists(AnimName)) {
+			var daOffset = animOffsets.get(AnimName);
 			offset.set(daOffset[0], daOffset[1]);
 			if (flipX) {
 				//todo: this needs work
 				var framewidth = frames.frames[animation.curAnim.curFrame].sourceSize.x;
 				offset.x = (framewidth * scale.x) - offset.x;
 			}
-		} else {
-			//offset.set(0, 0);
 		}
 	}
 
