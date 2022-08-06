@@ -29,7 +29,7 @@ class SwagNoteSkin {
 	public var noteSplashFramerate:Null<Int>;
 
 	public static function loadNoteSkin(name:String, ?modName:String) {
-		if (Note.loadedNoteSkins.get('${modName}:${name}') != null) {
+		if (Note.loadedNoteSkins.exists('${modName}:${name}')) {
 			return Note.loadedNoteSkins.get('${modName}:${name}');
 		}
 		var parser = new JsonParser<SwagNoteSkin>();
@@ -41,8 +41,9 @@ class SwagNoteSkin {
 		} else {
 			return null;
 		}*/
-		noteSkin = parser.fromJson(CoolUtil.tryPathBoth("objects/noteskins/" + name + ".json", modName));
+		noteSkin = parser.fromJson(CoolUtil.tryPathBoth('objects/noteskins/${name}.json', modName));
 		if (noteSkin == null) {
+			trace("Could not load note skin " + name);
 			return null;
 		}
 		noteSkin.scale = noteSkin.scale != null ? noteSkin.scale : 1.0;
@@ -85,13 +86,14 @@ class SwagUIStyle {
 	public var healthBarSides:Array<Float>;
 
 	public static function loadUIStyle(name:String, ?modName:String) {
-		if (Note.loadedUIStyles.get('${modName}:${name}') != null) {
+		if (Note.loadedUIStyles.exists('${modName}:${name}')) {
 			return Note.loadedUIStyles.get('${modName}:${name}');
 		}
 		var parser = new JsonParser<SwagUIStyle>();
 		var uiStyle:SwagUIStyle;
-		uiStyle = parser.fromJson(CoolUtil.tryPathBoth("objects/uiStyles/" + name + ".json", modName));
+		uiStyle = parser.fromJson(CoolUtil.tryPathBoth('objects/uiStyles/${name}.json', modName));
 		if (uiStyle == null) {
+			trace('failed to load ui style ${modName}:${name}');
 			return null;
 		}
 		uiStyle.three = uiStyle.three != null ? uiStyle.three : "";
@@ -142,13 +144,14 @@ class SwagNoteType {
 	public var guitar:Null<Bool>;
 
 	public static function loadNoteType(name:String, modName:String) {
-		if (Note.loadedNoteTypes.get('${modName}:${name}') != null) {
+		if (Note.loadedNoteTypes.exists('${modName}:${name}')) {
 			return Note.loadedNoteTypes.get('${modName}:${name}');
 		}
 		var parser = new JsonParser<SwagNoteType>();
 		var noteType:SwagNoteType;
-		noteType = parser.fromJson(CoolUtil.tryPathBoth("objects/notetypes/" + name + ".json", modName));
+		noteType = parser.fromJson(CoolUtil.tryPathBoth('objects/notetypes/${name}.json', modName));
 		if (noteType == null) {
+			trace('failed to load notetype ${modName}:${name}');
 			return null;
 		}
 		noteType.healthHit = noteType.healthHit != null ? noteType.healthHit : 0.0475;
@@ -164,7 +167,7 @@ class SwagNoteType {
 		noteType.animReplace = noteType.animReplace != null ? noteType.animReplace : "";
 		noteType.bob = noteType.bob != null ? noteType.bob : false;
 		noteType.glitch = noteType.glitch != null ? noteType.glitch : false;
-		noteType.guitar = noteType.guitar != null ? noteType.guitar : false;
+		noteType.guitar = Options.playstate_guitar || (noteType.guitar != null ? noteType.guitar : false);
 		trace('loaded notetype ${modName}:${name}');
 		Note.loadedNoteTypes.set('${modName}:${name}', noteType);
 		return noteType;
@@ -192,7 +195,7 @@ class Note extends FlxSprite
 
 	public var noteScore:Float = 1;
 	
-	public var noteType:Int = -1;
+	public var noteType:Int = 0;
 
 	public var maniaPart:Int = 0;
 	public var maniaFract:Float = 0;
@@ -358,8 +361,12 @@ class Note extends FlxSprite
 		
 	}
 
-	public function getNoteType():String {
+	public inline function getNoteType():String {
 		return PlayState.SONG.usedNoteTypes[noteType];
+	}
+
+	public inline function getNoteTypeData():SwagNoteType {
+		return SwagNoteType.loadNoteType(getNoteType(), PlayState.modName);
 	}
 
 	override function update(elapsed:Float)

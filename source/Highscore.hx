@@ -125,6 +125,9 @@ class Highscore
 		if (Options.playstate_endless && !PlayState.isStoryMode) {
 			result += "Endless";
 		}
+		if (Options.playstate_guitar) {
+			result += "Guitar";
+		}
 		return result;
 	}
 

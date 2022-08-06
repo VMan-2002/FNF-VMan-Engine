@@ -92,6 +92,7 @@ class Options
 	public static var playstate_opponentmode:Bool = false;
 	public static var playstate_bothside:Bool = false;
 	public static var playstate_endless:Bool = false;
+	public static var playstate_guitar:Bool = false;
 	
 	public static function SaveOptions() {
 		var svd = GetSaveObj();
@@ -124,6 +125,7 @@ class Options
 		svd.data.playstate_opponentmode = playstate_opponentmode;
 		svd.data.playstate_bothside = playstate_bothside;
 		svd.data.playstate_endless = playstate_endless;
+		svd.data.playstate_guitar = playstate_guitar;
 		svd.close();
 	}
 	
@@ -157,6 +159,7 @@ class Options
 		playstate_opponentmode = ifNotNull(playstate_opponentmode, playstate_opponentmode);
 		playstate_bothside = ifNotNull(playstate_bothside, playstate_bothside);
 		playstate_endless = ifNotNull(playstate_endless, playstate_endless);
+		playstate_guitar = ifNotNull(playstate_guitar, playstate_guitar);
 		/*var insertControls = new Map<String, Array<Array<Int>>>();
 		insertControls = ifNotNull(svd.data.controls, controls);
 		for (i in insertControls.keys()) {

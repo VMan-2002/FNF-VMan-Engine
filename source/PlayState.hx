@@ -2,6 +2,7 @@ package;
 
 import CoolUtil;
 import ManiaInfo;
+import Note.SwagNoteType;
 import Note.SwagUIStyle;
 import Section.SwagSection;
 import Song.SwagSong;
@@ -1195,6 +1196,11 @@ class PlayState extends MusicBeatState
 
 		//var playerCounter:Int = 0;
 
+		SwagNoteType.clearLoadedNoteTypes();
+		for (thing in songData.usedNoteTypes) {
+			SwagNoteType.loadNoteType(thing, modName);
+		}
+
 		var daBeats:Int = 0; // Not exactly representative of 'daBeats' lol, just how much it has looped
 		for (section in noteData)
 		{
@@ -2043,51 +2049,80 @@ class PlayState extends MusicBeatState
 		}
 		
 		var hitNotes = 0;
+		var possibleGuitarNotes:Array<Note> = [];
 
 		// FlxG.watch.addQuick('asdfa', upP);
-		if (FlxG.keys.anyJustPressed(curManiaInfo.control_any) && !boyfriend.stunned && generatedMusic)
-		{
-			boyfriend.holdTimer = 0;
+		if (!boyfriend.stunned && generatedMusic) {
+			//Standard hit notes
+			if (FlxG.keys.anyJustPressed(curManiaInfo.control_any) && !Options.playstate_guitar) {
+				boyfriend.holdTimer = 0;
 
-			var possibleNotes:Array<Note> = [];
+				var possibleNotes:Array<Note> = [];
 
-			var ignoreList:Array<Int> = [];
+				//var ignoreList:Array<Int> = [];
 
-			notes.forEachAlive(function(daNote:Note)
-			{
-				if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit)
+				notes.forEachAlive(function(daNote:Note)
 				{
-					possibleNotes.push(daNote);
-					possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
+					if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && !daNote.getNoteTypeData().guitar) {
+						possibleNotes.push(daNote);
 
-					ignoreList.push(daNote.noteData);
-				}
-			});
-			//even i can make a input system
-			for (daNote in possibleNotes) {
-				if (controlArray[daNote.noteData]) {
-					hitNotes += 1;
-					controlArray[daNote.noteData] = false;
-					goodNoteHit(daNote);
-				}
-			}
-			for (k in 0...controlArray.length) {
-				if (controlArray[k] && (!(Options.ghostTapping) || (((hitNotes + possibleNotes.length > 0) || (songHits > 0 && Math.abs(Conductor.songPosition - lastHitNoteTime) <= Conductor.horizontalThing)) && Options.tappingHorizontal))) {
-					noteMiss(k);
-				}
-			}
-		}
-
-		if (FlxG.keys.anyPressed(curManiaInfo.control_any) && !boyfriend.stunned && generatedMusic)
-		{
-			notes.forEachAlive(function(daNote:Note)
-			{
-				if (daNote.canBeHit && daNote.mustPress && daNote.isSustainNote)
-				{
-					if (keyHolding[daNote.noteData])
+						//ignoreList.push(daNote.noteData);
+					}
+				});
+				possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
+				//even i can make a input system
+				for (daNote in possibleNotes) {
+					if (controlArray[daNote.noteData]) {
+						hitNotes += 1;
+						controlArray[daNote.noteData] = false;
 						goodNoteHit(daNote);
+					}
 				}
-			});
+				for (k in 0...controlArray.length) {
+					if (controlArray[k] && (!(Options.ghostTapping) || (((hitNotes + possibleNotes.length > 0) || (songHits > 0 && Math.abs(Conductor.songPosition - lastHitNoteTime) <= Conductor.horizontalThing)) && Options.tappingHorizontal))) {
+						noteMiss(k);
+					}
+				}
+			}
+
+			//Guitar notes
+			if (FlxG.keys.anyPressed(curManiaInfo.control_any) && controls.GTSTRUM) {
+				var possibleNotes:Array<Note> = [];
+				var possibleNoteDatas:Array<Bool> = [];
+
+				notes.forEachAlive(function(daNote:Note) {
+					if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && (Options.playstate_guitar || daNote.getNoteTypeData().guitar)) {
+						possibleNotes.push(daNote);
+						possibleNoteDatas[daNote.noteData] = true;
+					}
+				});
+				possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
+				//even i can make a input system
+				for (daNote in possibleNotes) {
+					if (keyHolding[daNote.noteData] && possibleNoteDatas[daNote.noteData] == true) {
+						hitNotes += 1;
+						possibleNoteDatas[daNote.noteData] = false;
+						goodNoteHit(daNote);
+					}
+				}
+				for (k in 0...controlArray.length) {
+					if (possibleNoteDatas[k] && (!(Options.ghostTapping) || (((hitNotes + possibleNotes.length > 0) || (songHits > 0 && Math.abs(Conductor.songPosition - lastHitNoteTime) <= Conductor.horizontalThing)) && Options.tappingHorizontal))) {
+						noteMiss(k);
+					}
+				}
+			}
+
+			//Hold notes
+			if (FlxG.keys.anyPressed(curManiaInfo.control_any)) {
+				notes.forEachAlive(function(daNote:Note)
+				{
+					if (daNote.canBeHit && daNote.mustPress && daNote.isSustainNote)
+					{
+						if (keyHolding[daNote.noteData])
+							goodNoteHit(daNote);
+					}
+				});
+			}
 		}
 
 		if (boyfriend.holdTimer > Conductor.stepCrochet * 4 * 0.001 && !FlxG.keys.anyPressed(curManiaInfo.control_any))

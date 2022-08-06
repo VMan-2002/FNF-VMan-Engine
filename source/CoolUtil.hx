@@ -129,8 +129,8 @@ class CoolUtil
 	public static function tryPathBoth(path:String, modName:String) {
 		if (FileSystem.exists(modName + "/" + path)) {
 			return File.getContent(modName + "/" + path);
-		} else if (Assets.exists(path)) {
-			return Assets.getText(path);
+		} else if (Assets.exists("assets/" + path)) {
+			return Assets.getText("assets/" + path);
 		}
 		return null;
 	}
