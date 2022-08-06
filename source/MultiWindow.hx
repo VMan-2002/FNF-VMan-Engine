@@ -1,10 +1,10 @@
 package;
 
-import flixel.FlxSprite;
-import sys.io.Process;
 import Sys;
-import haxe.Json;
 import flixel.FlxBasic;
+import flixel.FlxSprite;
+import haxe.Json;
+import sys.io.Process;
 
 class MultiWindow extends FlxBasic
 {
@@ -42,6 +42,10 @@ class MultiWindow extends FlxBasic
 	}
 	
 	public function sendCommand(cmd:String) {
+		
+	}
+
+	public static function recieveCommand(cmd:String) {
 		
 	}
 }
