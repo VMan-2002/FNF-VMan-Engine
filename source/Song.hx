@@ -8,8 +8,7 @@ import lime.utils.Assets;
 
 using StringTools;
 
-typedef SwagSong =
-{
+typedef SwagSong = {
 	var song:String;
 	var notes:Array<SwagSection>;
 	var bpm:Float;
@@ -41,8 +40,7 @@ typedef SwagSong =
 	var vmanEventData:Array<Dynamic>;
 }
 
-class Song
-{
+class Song {
 	public var song:String;
 	public var notes:Array<SwagSection>;
 	public var bpm:Float;
@@ -64,15 +62,13 @@ class Song
 
 	public var actions:Array<String> = new Array<String>();
 
-	public function new(song, notes, bpm)
-	{
+	public function new(song, notes, bpm) {
 		this.song = song;
 		this.notes = notes;
 		this.bpm = bpm;
 	}
 
-	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong
-	{
+	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong {
 		var rawJson = Assets.getText(Paths.json('${Highscore.formatSong(folder)}/' + jsonInput.toLowerCase())).trim();
 
 		if (!rawJson.endsWith("}"))
@@ -100,8 +96,7 @@ class Song
 		return parseJSONshit(rawJson);
 	}
 
-	public static function parseJSONshit(rawJson:String):SwagSong
-	{
+	public static function parseJSONshit(rawJson:String):SwagSong {
 		var swagShit:SwagSong = cast Json.parse(rawJson).song;
 		swagShit.validScore = true;
 		
@@ -134,8 +129,7 @@ class Song
 		return swagShit;
 	}
 
-	public inline static function getSongStuff(name:String):Array<String>
-	{
-		return CoolUtil.coolTextFile("data/${Highscore.formatSong(name)}/song.txt");
+	public inline static function getSongStuff(name:String):Array<String> {
+		return CoolUtil.coolTextFile('data/${Highscore.formatSong(name)}/song.txt');
 	}
 }
