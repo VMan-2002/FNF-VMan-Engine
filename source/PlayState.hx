@@ -2186,12 +2186,12 @@ class PlayState extends MusicBeatState
 				songHits += 1;
 				lastHitNoteTime = note.strumTime;
 				
-				notes.forEachAlive(function(daNote:Note) {
+				/*notes.forEachAlive(function(daNote:Note) {
 					if (daNote.noteData == note.noteData && note != daNote && daNote.canBeHit && daNote.mustPress && Math.abs(daNote.strumTime - note.strumTime) < 10) {
-						goodNoteHit(daNote); //Prevent stacked notes
 						trace("Found stacked note at " + daNote.strumTime);
+						goodNoteHit(daNote); //Prevent stacked notes
 					}
-				});
+				});*/
 			}
 			
 			if (health < maxHealth)
@@ -2383,7 +2383,11 @@ class PlayState extends MusicBeatState
 			notes.sort(FlxSort.byY, Options.downScroll ? FlxSort.ASCENDING : FlxSort.DESCENDING);
 		}
 
-		currentSection = Math.floor(curStep / 16);
+		var newSection = Math.floor(curStep / 16);
+		if (newSection != currentSection) {
+			currentSection = newSection;
+			trace("now in section " + currentSection);
+		}
 		var thisSection = SONG.notes[currentSection];
 
 		if (thisSection != null) {
