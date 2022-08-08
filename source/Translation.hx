@@ -40,9 +40,33 @@ class Translation
 		//usesFont = loadTranslat.exists("font");
 		return loadTranslat;
 	}
+
+	static inline function makeSureThingExists(transl:Map<String, Map<String, String>>, names:Array<String>) {
+		for (name in names) {
+			if (!transl.exists(name)) {
+				transl.set(name, new Map<String, String>());
+			}
+		}
+	}
 	
 	public static function setTranslation(name:String) {
 		translation = loadTranslation(name);
+		makeSureThingExists(translation, [
+			"font",
+			"options",
+			"optionsKeys",
+			"optionsMenu",
+			"freeplay",
+			"storymenu",
+			"difficulty",
+			"mainmenu",
+			"charteditor",
+			"playstate",
+			"announcechecker",
+			"modbrowser",
+			"mods",
+			"multiplayer"
+		]);
 		usesFont = translation.exists("font") && translation["font"].exists("font");
 	}
 	
