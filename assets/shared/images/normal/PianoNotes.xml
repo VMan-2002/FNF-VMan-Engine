@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="PianoNotes.png">
+	<!-- No need for Adobe Animate. Lmao -->
+	<!-- This was made with VMan_2002's own converter -->
+	<SubTexture name="arrowPIANOBLACK0000" x="0" y="0" width="68" height="128" frameX="-79" frameY="-49" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="arrowPIANOLEFT0000" x="69" y="0" width="114" height="211" frameX="-56" frameY="-9" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="arrowPIANOMID0000" x="184" y="0" width="120" height="209" frameX="-53" frameY="-10" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="arrowPIANORIGHT0000" x="305" y="0" width="114" height="210" frameX="-56" frameY="-10" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="arrowPIANOZERO0000" x="420" y="0" width="119" height="210" frameX="-54" frameY="-9" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano1k confirm0000" x="540" y="0" width="218" height="326" frameX="-61" frameY="-8" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano1k confirm0001" x="759" y="0" width="205" height="306" frameX="-67" frameY="-18" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano1k confirm0002" x="965" y="0" width="196" height="293" frameX="-72" frameY="-24" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano1k confirm0003" x="1162" y="0" width="183" height="278" frameX="-78" frameY="-32" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano1k hold end0000" x="1346" y="0" width="50" height="64" frameX="0" frameY="0" frameWidth="50" frameHeight="64"/>
+	<SubTexture name="piano1k hold piece0000" x="1397" y="0" width="50" height="44" frameX="0" frameY="0" frameWidth="50" frameHeight="44"/>
+	<SubTexture name="piano1k press0000" x="1448" y="0" width="100" height="184" frameX="-63" frameY="-22" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano1k press0001" x="1549" y="0" width="110" height="203" frameX="-58" frameY="-13" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano1k press0002" x="1660" y="0" width="114" height="211" frameX="-56" frameY="-9" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano1k0000" x="1775" y="0" width="114" height="211" frameX="-56" frameY="-9" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano2k confirm0000" x="0" y="212" width="225" height="325" frameX="-57" frameY="-8" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano2k confirm0001" x="226" y="211" width="211" height="305" frameX="-64" frameY="-18" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano2k confirm0002" x="438" y="327" width="202" height="291" frameX="-69" frameY="-25" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano2k confirm0003" x="641" y="327" width="189" height="277" frameX="-75" frameY="-32" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano2k hold end0000" x="831" y="307" width="50" height="64" frameX="0" frameY="0" frameWidth="50" frameHeight="64"/>
+	<SubTexture name="piano2k hold piece0000" x="882" y="307" width="50" height="44" frameX="0" frameY="0" frameWidth="50" frameHeight="44"/>
+	<SubTexture name="piano2k press0000" x="933" y="307" width="106" height="182" frameX="-60" frameY="-23" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano2k press0001" x="1040" y="294" width="116" height="202" frameX="-55" frameY="-13" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano2k press0002" x="1157" y="294" width="120" height="209" frameX="-53" frameY="-10" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano2k0000" x="1278" y="279" width="120" height="209" frameX="-53" frameY="-10" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano3k confirm0000" x="1399" y="204" width="218" height="326" frameX="-60" frameY="-9" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano3k confirm0001" x="1618" y="212" width="205" height="306" frameX="-67" frameY="-19" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano3k confirm0002" x="1824" y="212" width="196" height="293" frameX="-71" frameY="-25" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano3k confirm0003" x="0" y="538" width="183" height="277" frameX="-78" frameY="-33" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano3k hold end0000" x="184" y="538" width="50" height="64" frameX="0" frameY="0" frameWidth="50" frameHeight="64"/>
+	<SubTexture name="piano3k hold piece0000" x="235" y="517" width="50" height="44" frameX="0" frameY="0" frameWidth="50" frameHeight="44"/>
+	<SubTexture name="piano3k press0000" x="286" y="517" width="100" height="184" frameX="-63" frameY="-23" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano3k press0001" x="387" y="619" width="110" height="204" frameX="-58" frameY="-13" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano3k press0002" x="498" y="619" width="114" height="210" frameX="-56" frameY="-10" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano3k0000" x="613" y="619" width="114" height="210" frameX="-56" frameY="-10" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano4k confirm0000" x="728" y="605" width="218" height="326" frameX="-61" frameY="-8" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano4k confirm0001" x="947" y="497" width="205" height="306" frameX="-67" frameY="-18" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano4k confirm0002" x="1153" y="504" width="196" height="293" frameX="-72" frameY="-24" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano4k confirm0003" x="1350" y="531" width="183" height="278" frameX="-78" frameY="-32" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano4k hold end0000" x="1534" y="531" width="50" height="64" frameX="0" frameY="0" frameWidth="50" frameHeight="64"/>
+	<SubTexture name="piano4k hold piece0000" x="1585" y="531" width="50" height="44" frameX="0" frameY="0" frameWidth="50" frameHeight="44"/>
+	<SubTexture name="piano4k press0000" x="1636" y="519" width="100" height="184" frameX="-63" frameY="-22" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano4k press0001" x="1737" y="519" width="110" height="203" frameX="-58" frameY="-13" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano4k press0002" x="1848" y="506" width="114" height="211" frameX="-56" frameY="-9" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano4k0000" x="0" y="816" width="114" height="211" frameX="-56" frameY="-9" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano5k confirm0000" x="115" y="816" width="225" height="325" frameX="-57" frameY="-8" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano5k confirm0001" x="341" y="830" width="211" height="305" frameX="-64" frameY="-18" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano5k confirm0002" x="553" y="932" width="202" height="291" frameX="-69" frameY="-25" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano5k confirm0003" x="756" y="932" width="189" height="277" frameX="-75" frameY="-32" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano5k hold end0000" x="946" y="932" width="50" height="64" frameX="0" frameY="0" frameWidth="50" frameHeight="64"/>
+	<SubTexture name="piano5k hold piece0000" x="997" y="804" width="50" height="44" frameX="0" frameY="0" frameWidth="50" frameHeight="44"/>
+	<SubTexture name="piano5k press0000" x="1048" y="804" width="106" height="182" frameX="-60" frameY="-23" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano5k press0001" x="1155" y="798" width="116" height="202" frameX="-55" frameY="-13" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano5k press0002" x="1272" y="810" width="120" height="209" frameX="-53" frameY="-10" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano5k0000" x="1393" y="810" width="120" height="209" frameX="-53" frameY="-10" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano6k confirm0000" x="1514" y="810" width="225" height="325" frameX="-57" frameY="-8" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano6k confirm0001" x="1740" y="723" width="211" height="305" frameX="-64" frameY="-18" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano6k confirm0002" x="0" y="1142" width="202" height="291" frameX="-69" frameY="-25" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano6k confirm0003" x="203" y="1142" width="189" height="277" frameX="-75" frameY="-32" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano6k hold end0000" x="393" y="1136" width="50" height="64" frameX="0" frameY="0" frameWidth="50" frameHeight="64"/>
+	<SubTexture name="piano6k hold piece0000" x="444" y="1136" width="50" height="44" frameX="0" frameY="0" frameWidth="50" frameHeight="44"/>
+	<SubTexture name="piano6k press0000" x="495" y="1224" width="106" height="182" frameX="-60" frameY="-23" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano6k press0001" x="602" y="1224" width="116" height="202" frameX="-55" frameY="-13" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano6k press0002" x="719" y="1224" width="120" height="209" frameX="-53" frameY="-10" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano6k0000" x="840" y="1210" width="120" height="209" frameX="-53" frameY="-10" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano7k confirm0000" x="961" y="1001" width="218" height="326" frameX="-60" frameY="-9" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano7k confirm0001" x="1180" y="1020" width="205" height="306" frameX="-67" frameY="-19" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano7k confirm0002" x="1386" y="1136" width="196" height="293" frameX="-71" frameY="-25" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano7k confirm0003" x="1583" y="1136" width="183" height="277" frameX="-78" frameY="-33" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano7k hold end0000" x="1767" y="1029" width="50" height="64" frameX="0" frameY="0" frameWidth="50" frameHeight="64"/>
+	<SubTexture name="piano7k hold piece0000" x="1818" y="1029" width="50" height="44" frameX="0" frameY="0" frameWidth="50" frameHeight="44"/>
+	<SubTexture name="piano7k press0000" x="1869" y="1029" width="100" height="184" frameX="-63" frameY="-23" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano7k press0001" x="0" y="1434" width="110" height="204" frameX="-58" frameY="-13" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano7k press0002" x="111" y="1434" width="114" height="210" frameX="-56" frameY="-10" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano7k0000" x="226" y="1420" width="114" height="210" frameX="-56" frameY="-10" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano8k confirm0000" x="341" y="1420" width="224" height="326" frameX="-58" frameY="-7" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano8k confirm0001" x="566" y="1434" width="210" height="306" frameX="-65" frameY="-17" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano8k confirm0002" x="777" y="1434" width="201" height="293" frameX="-69" frameY="-23" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano8k confirm0003" x="979" y="1328" width="188" height="278" frameX="-76" frameY="-31" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="piano8k hold end0000" x="1168" y="1328" width="50" height="64" frameX="0" frameY="0" frameWidth="50" frameHeight="64"/>
+	<SubTexture name="piano8k hold piece0000" x="1219" y="1327" width="50" height="44" frameX="0" frameY="0" frameWidth="50" frameHeight="44"/>
+	<SubTexture name="piano8k press0000" x="1270" y="1327" width="105" height="183" frameX="-61" frameY="-22" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano8k press0001" x="1376" y="1430" width="115" height="203" frameX="-56" frameY="-12" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano8k press0002" x="1492" y="1430" width="119" height="210" frameX="-54" frameY="-9" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="piano8k0000" x="1612" y="1414" width="119" height="210" frameX="-54" frameY="-9" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="pianoblack confirm0000" x="1732" y="1414" width="164" height="232" frameX="-88" frameY="-54" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="pianoblack confirm0001" x="0" y="1645" width="154" height="217" frameX="-93" frameY="-61" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="pianoblack confirm0002" x="155" y="1645" width="148" height="209" frameX="-96" frameY="-65" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="pianoblack confirm0003" x="304" y="1747" width="136" height="195" frameX="-102" frameY="-72" frameWidth="339" frameHeight="339"/>
+	<SubTexture name="pianoblack hold end0000" x="441" y="1747" width="50" height="64" frameX="0" frameY="0" frameWidth="50" frameHeight="64"/>
+	<SubTexture name="pianoblack hold piece0000" x="492" y="1747" width="50" height="44" frameX="0" frameY="0" frameWidth="50" frameHeight="44"/>
+	<SubTexture name="pianoblack press0000" x="543" y="1747" width="60" height="112" frameX="-83" frameY="-57" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="pianoblack press0001" x="604" y="1741" width="66" height="122" frameX="-80" frameY="-52" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="pianoblack press0002" x="671" y="1741" width="68" height="128" frameX="-79" frameY="-49" frameWidth="226" frameHeight="226"/>
+	<SubTexture name="pianoblack0000" x="740" y="1741" width="68" height="128" frameX="-79" frameY="-49" frameWidth="226" frameHeight="226"/>
+</TextureAtlas>
