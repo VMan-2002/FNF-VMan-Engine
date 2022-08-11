@@ -22,6 +22,7 @@ class ModLoad
 			enabledMods.push(i.replace("\r", ""));
 		}
 		primaryMod = enabledMods[0];
+		PlayState.modName = primaryMod;
 		/*var modRoot = '../../../mods/';
 		#if mac
 		// account for <APPLICATION>.app/Contents/Resources
