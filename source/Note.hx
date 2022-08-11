@@ -52,6 +52,7 @@ class SwagNoteSkin {
 		noteSkin.noteSplashScale = noteSkin.noteSplashScale != null ? noteSkin.noteSplashScale : 1.0;
 		noteSkin.noteSplashFramerate = noteSkin.noteSplashFramerate != null ? noteSkin.noteSplashFramerate : 24;
 		noteSkin.noteSplashImage = noteSkin.noteSplashImage != null ? noteSkin.noteSplashImage : "normal/notesplash";
+		Note.loadedNoteSkins.set('${modName}:${name}', noteSkin);
 		trace('loaded noteskin ${modName}:${name}');
 		return noteSkin;
 	}
@@ -118,6 +119,7 @@ class SwagUIStyle {
 		uiStyle.comboSpacing = uiStyle.comboSpacing != null ? uiStyle.comboSpacing : 43;
 		uiStyle.antialias = uiStyle.antialias != null ? uiStyle.antialias : true;
 		uiStyle.healthBarSides = uiStyle.healthBarSides != null ? uiStyle.healthBarSides : [4, 4, 4, 4];
+		Note.loadedUIStyles.set('${modName}:${name}', uiStyle);
 		trace('loaded uistyle ${modName}:${name}');
 		return uiStyle;
 	}
