@@ -354,3 +354,27 @@ charteditor_event_countdown tick_2::2
 charteditor_event_countdown tick_1::1
 charteditor_event_countdown tick_go::Go
 charteditor_event_countdown tick_with sound::With Sound
+charteditor_notetype_guitar note::Guitar Note
+charteditor_notetype_guitar open note::Guitar Open Note
+charteditor_notetype_guitar hopo note::Guitar HOPO Note
+charteditor_notetype_guitar open hopo note::Guitar Open HOPO Note
+
+optionsMenu_uikey_left::Left
+optionsMenu_uikey_down::Down
+optionsMenu_uikey_up::Up
+optionsMenu_uikey_right::Right
+optionsMenu_uikey_accept::Accept
+optionsMenu_uikey_back::Back
+optionsMenu_uikey_reset::Reset
+optionsMenu_uikey_pause::Pause
+optionsMenu_uikey_gtstrum::Guitar Strum
+
+optionsMenu_bad controls::These UI controls look bad. I'll still let you use them but if you get stuck, just hold Shift in the main menu for 3 seconds.
+mainmenu_reset controls desc::Oops, that's kinda embarrassing.\nPress ENTER to reset your controls,\nor press ESCAPE to dismiss.
+mainmenu_reset controls title::Forgot your controls (or they don't work)? Hold SHIFT for 3 seconds.
+
+difficulty_guitar::Guitar
+difficulty_inst::Inst
+difficulty_piano::Piano
+
+playstate_hud_combo::Combo:#0

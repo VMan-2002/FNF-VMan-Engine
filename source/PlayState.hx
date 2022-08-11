@@ -198,6 +198,7 @@ class PlayState extends MusicBeatState
 	{
 		instance = this;
 		allowGameplayChanges = Std.isOfType(this, PlayState);
+		NoteSplash.noteSplashColors = NoteSplash.noteSplashColorsDefault;
 		
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
@@ -305,7 +306,7 @@ class PlayState extends MusicBeatState
 		detailsPausedText = "Paused - " + detailsText;
 		
 		// Updating Discord Rich Presence.
-		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+		DiscordClient.changePresenceSimple("not_playing");
 		#end
 		
 		Character.nextId = 0;
@@ -596,6 +597,10 @@ class PlayState extends MusicBeatState
 
 		isHalloween = SONG.actions.indexOf("isHalloween") > -1;
 
+		if (SONG.actions.indexOf("mustBeMiddlescroll") > -1) {
+			isMiddlescroll = true;
+		}
+
 		if (currentStage == null) {
 			currentStage = new Stage();
 		}
@@ -837,6 +842,9 @@ class PlayState extends MusicBeatState
 
 		if (currentStageFront != null) {
 			add(currentStageFront);
+		}
+		if ((currentStage.hide_girlfriend || SONG.hide_girlfriend) && SONG.hide_girlfriend != false) {
+			gf.visible = false;
 		}
 
 		if ((sn == "monster" || sn == "winter-horrorland") && modName == "friday_night_funkin") {
@@ -1232,7 +1240,7 @@ class PlayState extends MusicBeatState
 				else
 					oldNote = null;
 
-				var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote);
+				var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote, false, null, songNotes[3]);
 				swagNote.sustainLength = songNotes[2];
 				swagNote.scrollFactor.set(0, 0);
 
@@ -1247,7 +1255,7 @@ class PlayState extends MusicBeatState
 				{
 					oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
 
-					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, oldNote, true);
+					var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, oldNote, true, null, swagNote.noteType);
 					sustainNote.scrollFactor.set();
 					unspawnNotes.push(sustainNote);
 
@@ -1258,10 +1266,15 @@ class PlayState extends MusicBeatState
 		}
 
 		for (thing in 0...songData.vmanEventOrder.length) {
-			events[thing] = {
-				time: songData.vmanEventTime[thing],
-				values: songData.vmanEventData[songData.vmanEventOrder[thing]]
-			};
+			if (songData.vmanEventTime[thing] == -999) {
+				//-999 means event is run at the start
+				runEvent(songData.vmanEventData[songData.vmanEventOrder[thing]]);
+			} else {
+				events[thing] = {
+					time: songData.vmanEventTime[thing],
+					values: songData.vmanEventData[songData.vmanEventOrder[thing]]
+				};
+			}
 		}
 		ArraySort.sort(events, function(a:SwagEvent, b:SwagEvent):Int {
 			var d = Math.floor(a.time) - Math.floor(b.time);
@@ -1350,11 +1363,11 @@ class PlayState extends MusicBeatState
 			#if desktop
 			if (startTimer.finished)
 			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC, true, songLength - Conductor.songPosition);
+				DiscordClient.changePresenceSimple("playing");
 			}
 			else
 			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+				DiscordClient.changePresenceSimple("not_playing");
 			}
 			#end
 		}
@@ -1367,11 +1380,11 @@ class PlayState extends MusicBeatState
 		if (health > 0 && !paused) {
 			if (Conductor.songPosition > 0.0)
 			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC, true, songLength - Conductor.songPosition);
+				DiscordClient.changePresenceSimple("playing");
 			}
 			else
 			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+				DiscordClient.changePresenceSimple("not_playing");
 			}
 		}
 		#end
@@ -1384,7 +1397,7 @@ class PlayState extends MusicBeatState
 		#if desktop
 		if (health > 0 && !paused)
 		{
-			DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+			DiscordClient.changePresenceSimple("paused");
 		}
 		#end
 
@@ -1456,7 +1469,7 @@ class PlayState extends MusicBeatState
 				openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 		
 			#if desktop
-			DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+			DiscordClient.changePresenceSimple("paused");
 			#end
 		}
 
@@ -1605,7 +1618,9 @@ class PlayState extends MusicBeatState
 			vocals.stop();
 			FlxG.sound.music.stop();
 
-			openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
+			var daChar = Options.playstate_opponentmode ? dad : boyfriend;
+
+			openSubState(new GameOverSubstate(daChar.getScreenPosition().x, daChar.getScreenPosition().y));
 			
 			#if desktop
 			// Game Over doesn't get his own variable because it's only used here
@@ -1697,7 +1712,7 @@ class PlayState extends MusicBeatState
 				//{
 					if (daNote.tooLate) {
 						if (daNote.mustPress && !daNote.wasGoodHit) {
-							noteMiss(daNote.noteData);
+							noteMiss(daNote.noteData, daNote);
 							if (Options.noteMissAction_Vocals[Options.noteMissAction])
 								vocals.volume = 0;
 						}
@@ -2047,6 +2062,7 @@ class PlayState extends MusicBeatState
 			controlArray.push(FlxG.keys.anyJustPressed(i));
 			keyHolding.push(FlxG.keys.anyPressed(i));
 		}
+		var keyHoldingAny = FlxG.keys.anyPressed(curManiaInfo.control_any);
 		
 		var hitNotes = 0;
 		var possibleGuitarNotes:Array<Note> = [];
@@ -2054,7 +2070,7 @@ class PlayState extends MusicBeatState
 		// FlxG.watch.addQuick('asdfa', upP);
 		if (!boyfriend.stunned && generatedMusic) {
 			//Standard hit notes
-			if (FlxG.keys.anyJustPressed(curManiaInfo.control_any) && !Options.playstate_guitar) {
+			if ((FlxG.keys.anyJustPressed(curManiaInfo.control_any) && !Options.playstate_guitar)) {
 				boyfriend.holdTimer = 0;
 
 				var possibleNotes:Array<Note> = [];
@@ -2063,7 +2079,8 @@ class PlayState extends MusicBeatState
 
 				notes.forEachAlive(function(daNote:Note)
 				{
-					if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && !daNote.getNoteTypeData().guitar) {
+					var noteTypeData = daNote.getNoteTypeData();
+					if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && (!noteTypeData.guitar || (noteTypeData.guitarHopo && combo > 0))) {
 						possibleNotes.push(daNote);
 
 						//ignoreList.push(daNote.noteData);
@@ -2086,7 +2103,7 @@ class PlayState extends MusicBeatState
 			}
 
 			//Guitar notes
-			if (FlxG.keys.anyPressed(curManiaInfo.control_any) && controls.GTSTRUM) {
+			if (keyHoldingAny && controls.GTSTRUM) {
 				var possibleNotes:Array<Note> = [];
 				var possibleNoteDatas:Array<Bool> = [];
 
@@ -2147,7 +2164,7 @@ class PlayState extends MusicBeatState
 		};
 	}
 
-	function noteMiss(direction:Int = 1):Void
+	function noteMiss(direction:Int = 1, ?note:Note):Void
 	{
 		if (!boyfriend.stunned)
 		{
@@ -2174,7 +2191,7 @@ class PlayState extends MusicBeatState
 				boyfriend.stunned = false;
 			});*/
 			
-			boyfriend.playAnim('sing${ManiaInfo.Dir[curManiaInfo.arrows[direction]]}miss', true);
+			animateForNote(note, true, direction, true);
 		}
 	}
 
@@ -2252,8 +2269,10 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	function animateForNote(?note:Note):Void {
-		var isBoyfriend = note.mustPress;
+	function animateForNote(?note:Note, ?isBoyfriend:Bool = true, ?noteData:Int = 0, ?isMiss:Bool = false):Void {
+		if (note != null) {
+			isBoyfriend = note.mustPress;
+		}
 		if (allowGameplayChanges) {
 			if (Options.playstate_bothside) {
 				isBoyfriend = (note.noteData >= curManiaInfo.keys / 2) == Options.playstate_opponentmode;
@@ -2262,11 +2281,14 @@ class PlayState extends MusicBeatState
 			}
 		}
 		var char:Character = isBoyfriend ? boyfriend : dad;
+		if (isMiss) {
+			return char.playAnim('sing${ManiaInfo.Dir[curManiaInfo.arrows[note == null ? noteData : note.noteData]]}miss', true);
+		}
 		char.holdTimer = 0;
 		if (note.isSustainNote && char.animNoSustain) {
 			return;
 		}
-		var anim = 'sing${ManiaInfo.Dir[curManiaInfo.arrows[note.noteData]]}';
+		var anim = 'sing${ManiaInfo.Dir[curManiaInfo.arrows[note == null ? noteData : note.noteData]]}';
 		if ((!isBoyfriend && SONG.notes[currentSection] != null && SONG.notes[currentSection].altAnim) || note.getNoteType() == "Alt Animation") {
 			anim += '-alt';
 		}
@@ -2485,5 +2507,31 @@ class PlayState extends MusicBeatState
 		//todo: this isnt finished yet
 		curStage = stage;
 		FlxG.log.add('SET STAGE TO ' + stage);
+	}
+
+	public function runEvent(event:Array<Dynamic>) {
+		switch(event[0]) {
+			case "Hey":
+				if (event[1] == true) {
+					boyfriend.playAnim('hey', true);
+				}
+				if (event[2] == true) {
+					gf.playAnim('cheer', true);
+				}
+			case "Scared":
+				if (event[1] == true) {
+					boyfriend.playAnim('scared', true);
+				}
+				if (event[2] == true) {
+					gf.playAnim('scared', true);
+				}
+			case "Play Animation":
+				Character.activeArray[Std.parseInt(event[1])].playAnim(event[2], true);
+			case "Zoom Hit":
+				FlxG.camera.zoom += event[1];
+				camHUD.zoom += event[2];
+			case "Set GF Speed":
+				gf.moduloDances = event[1];
+		}
 	}
 }

@@ -21,6 +21,7 @@ typedef SwagMania = {
 	var control_set:Null<Array<Array<Int>>>;
 	var control_any:Null<Array<Int>>;
 	var splashName:Map<String, String>;
+	var image:String;
 	// for unhardcoded
 	var scale:Null<Float>;
 	var spacing:Null<Float>;
@@ -53,7 +54,13 @@ class ManiaInfo {
 		'piano6k' => "PIANOMID",
 		'piano7k' => "PIANORIGHT",
 		'piano8k' => "PIANOZERO",
-		'pianoblack' => "PIANOBLACK"
+		'pianoblack' => "PIANOBLACK",
+		//for the UI controls menu, this is hillarious!
+		'accept' => "ACCEPT",
+		'back' => "BACK",
+		'pause' => "PAUSE",
+		'reset' => "RESET",
+		'gtstrum' => "GTSTRUM"
 	];
 	
 	public static var PixelArrowNum:Map<String, Int> = [ //used for something?
@@ -281,6 +288,7 @@ class ManiaInfo {
 		var keys:Int = -4;
 		var arrows:Array<String> = ['purple'];
 		var splashName:Null<Map<String, String>> = null;
+		var image:String = null;
 		var special:Bool = false;
 		var specialTag:String = "";
 		/*var mi:SwagMania = {
@@ -411,6 +419,7 @@ class ManiaInfo {
 						"piano8k" => "dark",
 						"pianoblack" => "white"
 					];
+					image = "PianoNotes";
 				case "105k": //105
 					arrows = [
 						'yellow', 'purple', 'blue', 'green', 'red', 'white', 'yellow', 'violet', 'darkred', 'dark',
@@ -488,7 +497,8 @@ class ManiaInfo {
 			control_any: new Array<Int>(),
 			splashName: splashName,
 			scale: 0.0,
-			spacing: 0.0
+			spacing: 0.0,
+			image: image == null || image == "" ? "NOTE_assets" : image
 		}
 		mi.scale = GetNoteScale(mi);
 		mi.spacing = GetNoteSpacing(mi);
@@ -523,6 +533,11 @@ class ManiaInfo {
 		if (mi.keys == -4) {
 			//lime.window.alert("Undefined mania with ID "+mania, "Undefined Mania");
 			mi.keys = 1;
+		}
+		if (mi.splashName != null) {
+			for (thing in mi.splashName.keys()) {
+				NoteSplash.noteSplashColors[thing] = NoteSplash.noteSplashColorsDefault[mi.splashName[thing]];
+			}
 		}
 		return mi;
 	}
@@ -560,24 +575,6 @@ class ManiaInfo {
 			}
 		}
 	}
-	
-	/*public static function GetControlPress(controls:Array<String>):Array<String>
-	{
-		return [
-			for (v in controls) {
-				v += "-press";
-			}
-		];
-	}
-	
-	public static function GetControlRelease(controls:Array<String>):Array<String>
-	{
-		return [
-			for (v in controls) {
-				v += "-release";
-			}
-		];
-	}*/
 	
 	//i also put my funny helper funcs here
 

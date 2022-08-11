@@ -159,7 +159,8 @@ class ChartingState extends MusicBeatState
 				uiStyle: "",
 				vmanEventTime: new Array<Float>(),
 				vmanEventOrder: new Array<Int>(),
-				vmanEventData: new Array<Dynamic>()
+				vmanEventData: new Array<Dynamic>(),
+				hide_girlfriend: false
 			};
 			curNoteTypeArr = _song.usedNoteTypes;
 		}
@@ -468,6 +469,7 @@ class ChartingState extends MusicBeatState
 	}
 
 	var stepperSusLength:FlxUINumericStepper;
+	var stepperEventNumber:FlxUINumericStepper;
 
 	function addNoteUI():Void
 	{
@@ -493,7 +495,10 @@ class ChartingState extends MusicBeatState
 			//"Glitch Note",
 			"Hey",
 			//"Death Warning Note",
-			//"Guitar Note"
+			"Guitar Note",
+			"Guitar Open Note",
+			"Guitar HOPO Note",
+			"Guitar Open HOPO Note"
 		];
 		var noteTypeSelect = new FlxUIDropDownMenu(10, 40, FlxUIDropDownMenu.makeStrIdLabelArray(noteTypes, true), function(character:String) {
 			curNoteType = character;
@@ -515,8 +520,38 @@ class ChartingState extends MusicBeatState
 		var tab_group_event = new FlxUI(null, UI_box);
 		tab_group_event.name = 'Event';
 
-		/*var applyLength:FlxUIButton = new FlxUIButton(100, 10, Translation.getTranslation("Add event here", "charteditor"));
-		Translation.setUIObjectFont(applyLength);*/
+		stepperEventNumber = new FlxUINumericStepper(10, 110);
+		stepperEventNumber.value = 0;
+		stepperEventNumber.name = 'eventNumber';
+
+		var applyLength:FlxUIButton = new FlxUIButton(100, 10, Translation.getTranslation("Add event here", "charteditor"), function() {
+			_song.vmanEventTime.push(FlxG.sound.music.time);
+			_song.vmanEventOrder.push(0);
+			_song.vmanEventData.push(["Event"]);
+		});
+		Translation.setUIObjectFont(applyLength);
+
+		var applyLength2:FlxUIButton = new FlxUIButton(100, 40, Translation.getTranslation("Remove event here", "charteditor"), function() {
+			var closest:Int = 0;
+			var closestTime:Float = 0;
+			for (i in 0..._song.vmanEventTime.length) {
+				var time = _song.vmanEventTime[i];
+				if (Math.abs(time - FlxG.sound.music.time) < Math.abs(closestTime - FlxG.sound.music.time)) {
+					continue;
+				}
+				closest = i;
+				closestTime = time;
+			}
+			_song.vmanEventTime.splice(closest, 1);
+			_song.vmanEventOrder.splice(closest, 1);
+			_song.vmanEventData.splice(closest, 1);
+		});
+		Translation.setUIObjectFont(applyLength2);
+
+		var applyLength3:FlxUIButton = new FlxUIButton(100, 70, Translation.getTranslation("Jump to event", "charteditor"), function() {
+			FlxG.sound.music.time = _song.vmanEventTime[Math.floor(stepperEventNumber.value)];
+		});
+		Translation.setUIObjectFont(applyLength3);
 
 		//todo: have real
 		var noteTypes = [
@@ -534,6 +569,9 @@ class ChartingState extends MusicBeatState
 		noteTypeSelect.selectedLabel = noteTypes[0];
 		
 		Translation.setUIDropDownFont(noteTypeSelect);
+
+		tab_group_event.add(applyLength);
+		tab_group_event.add(applyLength2);
 
 		tab_group_event.add(noteTypeSelect);
 		//tab_group_event.add(stepperSusLength);
@@ -1136,7 +1174,7 @@ class ChartingState extends MusicBeatState
 					note.y + GRID_SIZE).makeGraphic(8, Math.floor(FlxMath.remapToRange(daSus, 0, Conductor.stepCrochet * 16, 0, gridBG.height)));
 				curRenderedSustains.add(sustainVis);
 				if (i.length >= 4 && i[3] > 0) {
-					curRenderedNoteTypes.add(new FlxText(note.x, note.y, 8, i[3]));
+					curRenderedNoteTypes.add(new FlxText(note.x, note.y, 8, i[3]).setFormat("vcr.ttf", 10, 0xffffffff, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE_FAST, 0xFF000000));
 				}
 			}
 		}

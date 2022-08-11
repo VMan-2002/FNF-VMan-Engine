@@ -159,26 +159,6 @@ class FreeplayState extends MusicBeatState
 		}
 		
 		if (Options.freeplayFolders) {
-			/*var categoryList = [new SongMetadata("Friday Night Funkin", 0, "bf", 1)];
-			
-			categories = [
-				0 => [
-					new SongMetadata("Tutorial", 0, "gf"),
-					new SongMetadata("Week 1", 1, "dad", 1),
-					new SongMetadata("Week 2", 2, "spooky", 1),
-					new SongMetadata("Week 3", 3, "pico", 1),
-					new SongMetadata("Week 4", 4, "mom", 1),
-					new SongMetadata("Week 5", 5, "parents-christmas", 1),
-					new SongMetadata("Week 6", 6, "senpai", 1)
-				],
-				1 => returnWeek(['Bopeebo', 'Fresh', 'Dad Battle'], 1, ['dad']),
-				2 => returnWeek(['Spookeez', 'South', 'Monster'], 2, ['spooky', 'spooky', 'monster']),
-				3 => returnWeek(['Pico', 'Philly Nice', 'Blammed'], 3, ['pico']),
-				4 => returnWeek(['Satin Panties', 'High', 'Milf'], 4, ['mom']),
-				5 => returnWeek(['Cocoa', 'Eggnog', 'Winter Horrorland'], 5, ['parents-christmas', 'parents-christmas', 'monster-christmas']),
-				6 => returnWeek(['Senpai', 'Roses', 'Thorns'], 6, ['senpai', 'senpai-angry', 'spirit'])
-			];*/
-			
 			if (uncategorized.length > 0) {
 				categories.set(nextCategoryInt, uncategorized);
 				categoryList.push(new SongMetadata(Translation.getTranslation("Uncategorized", "freeplay"), nextCategoryInt, "face", 1));
@@ -230,7 +210,7 @@ class FreeplayState extends MusicBeatState
 
 		#if desktop
 		// Updating Discord Rich Presence
-		DiscordClient.changePresence("In the Menus", null);
+		DiscordClient.changePresenceSimple("freeplay");
 		#end
 
 		var isDebug:Bool = false;

@@ -28,6 +28,8 @@ class HealthIcon extends FlxSprite
 	public var sprTracker:FlxSprite;
 	public var sprTrackerX:Float;
 	public var sprTrackerY:Float;
+
+	public var attachToIcon:Bool;
 	
 	public var myMod:String;
 	public var curCharacter:String;
@@ -188,7 +190,13 @@ class HealthIcon extends FlxSprite
 		super.update(elapsed);
 
 		if (sprTracker != null) {
-			setPosition(sprTracker.x + sprTracker.width + 10 + sprTrackerX, (sprTracker.y - 30) + sprTrackerY);
+			if (attachToIcon) {
+				scale.x = sprTracker.scale.x;
+				scale.y = sprTracker.scale.y;
+				setPosition((sprTracker.x + sprTrackerX) * scale.x, (sprTracker.y + sprTrackerY) * scale.y);
+			} else {
+				setPosition(sprTracker.x + sprTracker.width + 10 + sprTrackerX, (sprTracker.y - 30) + sprTrackerY);
+			}
 		}
 	}
 

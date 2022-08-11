@@ -142,6 +142,8 @@ class SwagNoteType {
 	public var bob:Null<Bool>;
 	public var glitch:Null<Bool>;
 	public var guitar:Null<Bool>;
+	public var guitarOpen:Null<Bool>;
+	public var guitarHopo:Null<Bool>;
 
 	public static function loadNoteType(name:String, modName:String) {
 		if (Note.loadedNoteTypes.exists('${modName}:${name}')) {
@@ -151,8 +153,11 @@ class SwagNoteType {
 		var noteType:SwagNoteType;
 		noteType = parser.fromJson(CoolUtil.tryPathBoth('objects/notetypes/${name}.json', modName));
 		if (noteType == null) {
-			trace('failed to load notetype ${modName}:${name}');
-			return null;
+			if (name == "Normal Note") {
+				throw 'Tried to load a nonexistant note type and normal note couldn\'t be loaded instead';
+			}
+			trace('failed to load notetype ${modName}:${name}, loading normal note instead');
+			return loadNoteType("Normal Note", modName); //a valid note type must be loaded!
 		}
 		noteType.healthHit = noteType.healthHit != null ? noteType.healthHit : 0.0475;
 		noteType.healthHitSick = noteType.healthHitSick != null ? noteType.healthHitSick : noteType.healthHit;
@@ -168,6 +173,8 @@ class SwagNoteType {
 		noteType.bob = noteType.bob != null ? noteType.bob : false;
 		noteType.glitch = noteType.glitch != null ? noteType.glitch : false;
 		noteType.guitar = Options.playstate_guitar || (noteType.guitar != null ? noteType.guitar : false);
+		noteType.guitarOpen = noteType.guitarOpen != null ? noteType.guitarOpen && !noteType.guitar : false;
+		noteType.guitarHopo = noteType.guitarHopo != null ? noteType.guitarHopo : false;
 		trace('loaded notetype ${modName}:${name}');
 		Note.loadedNoteTypes.set('${modName}:${name}', noteType);
 		return noteType;
@@ -222,7 +229,7 @@ class Note extends FlxSprite
 
 	public static var swagWidth:Float = 160 * 0.7;
 
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?mania:SwagMania)
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?mania:SwagMania, ?noteType:Int = 0)
 	{
 		super();
 
@@ -233,6 +240,7 @@ class Note extends FlxSprite
 			mania = PlayState.curManiaInfo;
 
 		maniaFract = noteData / mania.keys;
+		this.noteType = noteType;
 
 		this.prevNote = prevNote;
 		isSustainNote = sustainNote;
@@ -354,6 +362,19 @@ class Note extends FlxSprite
 		if (isSustainNote) {
 			//offset.y = flipY ? 0 : height;
 			offset.y = height;
+		}
+		if (animation.curAnim == null) {
+			trace("Note's animation is null. Fuck! Strum time is: " + strumTime);
+		}
+		switch(getNoteType()) {
+			case "Guitar Note":
+				color = 0xFF0000; //todo: this is temporary
+			case "Guitar Open Note":
+				color = 0x0000FF; //todo: this is temporary
+			case "Guitar HOPO Note":
+				color = 0xFFFF00; //todo: this is temporary
+			case "Guitar Open HOPO Note":
+				color = 0x00FFFF; //todo: this is temporary
 		}
 	}
 	

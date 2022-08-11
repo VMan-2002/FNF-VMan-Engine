@@ -2,6 +2,7 @@ package;
 
 import Conductor.BPMChangeEvent;
 import flixel.FlxG;
+import flixel.FlxSubState;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.ui.FlxUIState;
 import flixel.math.FlxRect;
@@ -75,6 +76,18 @@ class MusicBeatState extends FlxUIState
 	public function beatHit():Void
 	{
 		//do literally nothing dumbass
+	}
+
+	public var isSubStateActive:Bool = false;
+
+	public override function openSubState(a:FlxSubState) {
+		isSubStateActive = true;
+		super.openSubState(a);
+	}
+
+	public override function closeSubState() {
+		isSubStateActive = false;
+		super.closeSubState();
 	}
 	
 	//Script Stuff

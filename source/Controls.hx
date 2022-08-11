@@ -308,7 +308,7 @@ class Controls extends FlxActionSet
 		return getDialogueName(getActionFromControl(Control.createByName(token.toUpperCase())));
 	}
 
-	function getActionFromControl(control:Control):FlxActionDigital
+	public function getActionFromControl(control:Control):FlxActionDigital
 	{
 		return switch (control)
 		{
@@ -337,7 +337,7 @@ class Controls extends FlxActionSet
 	 * @param func
 	 * @return ->Void)
 	 */
-	function forEachBound(control:Control, func:FlxActionDigital->FlxInputState->Void)
+	public function forEachBound(control:Control, func:FlxActionDigital->FlxInputState->Void)
 	{
 		switch (control)
 		{
@@ -543,6 +543,20 @@ class Controls extends FlxActionSet
 				inline bindKeys(Control.GTSTRUM, [LBRACKET, RBRACKET]);
 			case None: // nothing
 			case Custom: // nothing
+				var bindableStuff:Map<String, Control> = [
+					"up" => Control.UP,
+					"down" => Control.DOWN,
+					"left" => Control.LEFT,
+					"right" => Control.RIGHT,
+					"accept" => Control.ACCEPT,
+					"back" => Control.BACK,
+					"pause" => Control.PAUSE,
+					"reset" => Control.RESET,
+					"gtstrum" => Control.GTSTRUM
+				];
+				for (name in bindableStuff.keys()) {
+					inline bindKeys(bindableStuff.get(name), Options.uiControls.get(name).slice(0, 2));
+				}
 		}
 		#else
 		switch (scheme)
@@ -579,6 +593,20 @@ class Controls extends FlxActionSet
 				bindKeys(Control.GTSTRUM, [LBRACKET, RBRACKET]);
 			case None: // nothing
 			case Custom: // nothing
+				var bindableStuff:Map<String, Control> = [
+					"up" => Control.UP,
+					"down" => Control.DOWN,
+					"left" => Control.LEFT,
+					"right" => Control.RIGHT,
+					"accept" => Control.ACCEPT,
+					"back" => Control.BACK,
+					"pause" => Control.PAUSE,
+					"reset" => Control.RESET,
+					"gtstrum" => Control.GTSTRUM
+				];
+				for (name in bindableStuff.keys()) {
+					bindKeys(bindableStuff.get(name), Options.uiControls.get(name).slice(0, 2));
+				}
 		}
 		#end
 	}
@@ -761,4 +789,16 @@ class Controls extends FlxActionSet
 	{
 		return input.device == GAMEPAD && (deviceID == FlxInputDeviceID.ALL || input.deviceID == deviceID);
 	}
+
+	public static var controlNames:Array<String> = [
+		"left",
+		"down",
+		"up",
+		"right",
+		"accept",
+		"back",
+		"pause",
+		"reset",
+		"gtstrum"
+	];
 }

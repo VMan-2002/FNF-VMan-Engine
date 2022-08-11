@@ -73,7 +73,6 @@ class Options
 			[FlxKey.SEMICOLON, FlxKey.RIGHT]
 		]
 	];
-	public static var uiControls = new Map<String, Array<Int>>();
 	public static var language = "en_us";
 	public static var modchartEnabled:Bool = false;
 	public static var antialiasing:Bool = true;
@@ -93,6 +92,24 @@ class Options
 	public static var playstate_bothside:Bool = false;
 	public static var playstate_endless:Bool = false;
 	public static var playstate_guitar:Bool = false;
+
+	//Controls stuff
+	public static var uiControls = new Map<String, Array<Int>>();
+	public static var uiControlsDefault:Map<String, Array<Int>> = [
+		"up" => [FlxKey.UP, FlxKey.W],
+		"down" => [FlxKey.DOWN, FlxKey.S],
+		"left" => [FlxKey.LEFT, FlxKey.A],
+		"right" => [FlxKey.RIGHT, FlxKey.D],
+		"accept" => [FlxKey.ENTER, FlxKey.SPACE],
+		"back" => [FlxKey.BACKSPACE, FlxKey.ESCAPE],
+		"pause" => [FlxKey.ESCAPE],
+		"reset" => [FlxKey.R],
+		"gtstrum" => [FlxKey.LBRACKET, FlxKey.RBRACKET]
+	];
+
+	public static inline function applyControls() {
+		PlayerSettings.player1.controls.setKeyboardScheme(Custom);
+	}
 	
 	public static function SaveOptions() {
 		var svd = GetSaveObj();
@@ -167,6 +184,13 @@ class Options
 				controls.set(insertControls[i]);
 			}
 		}*/
+
+		for (thing in uiControlsDefault.keys()) {
+			if (!uiControls.exists(thing)) {
+				uiControls.set(thing, uiControlsDefault[thing]);
+			}
+		}
+
 		svd.destroy();
 	}
 	

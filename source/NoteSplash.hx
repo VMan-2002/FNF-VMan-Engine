@@ -33,6 +33,8 @@ class NoteSplash extends FlxSprite
 		"17c" => 0xff5000E3,
 		"17d" => 0xff4EA1FF
 	];
+	
+	public static var noteSplashColors:Map<String, Int>;
 
 	public function playNoteSplash(thing:StrumNote) {
 		x = thing.x;

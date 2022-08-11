@@ -40,6 +40,8 @@ class Main extends Sprite
 		#if debug
 		debug = new debugger.Local(false);
 		#end
+
+		NoteSplash.noteSplashColors = NoteSplash.noteSplashColorsDefault;
 		
 		Lib.current.addChild(new Main());
 	}

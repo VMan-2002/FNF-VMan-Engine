@@ -38,6 +38,8 @@ typedef SwagSong = {
 	var vmanEventTime:Array<Float>;
 	var vmanEventOrder:Array<Int>;
 	var vmanEventData:Array<Dynamic>;
+
+	var hide_girlfriend:Null<Bool>;
 }
 
 class Song {
@@ -98,6 +100,10 @@ class Song {
 
 	public static function parseJSONshit(rawJson:String):SwagSong {
 		var swagShit:SwagSong = cast Json.parse(rawJson).song;
+		return sanitizeSong(swagShit);
+	}
+
+	public static function sanitizeSong(swagShit:SwagSong) {
 		swagShit.validScore = true;
 		
 		//mania sideways compat
@@ -112,11 +118,16 @@ class Song {
 				//no mania specified
 				swagShit.maniaStr = "4k";
 			}
+		} else {
+			swagShit.keyCount = ManiaInfo.GetManiaInfo(swagShit.maniaStr).keys;
 		}
 
 		if (swagShit.usedNoteTypes == null || swagShit.usedNoteTypes.length == 0) {
 			swagShit.usedNoteTypes = ["Normal Note"];
 		}
+		/*if (Options.playstate_guitar && swagShit.usedNoteTypes.indexOf("Guitar Note") == -1) {
+			swagShit.usedNoteTypes[swagShit.usedNoteTypes.indexOf("Normal Note")] = "Guitar Note";
+		}*/
 
 		if (swagShit.actions == null) {
 			swagShit.actions = new Array<String>();

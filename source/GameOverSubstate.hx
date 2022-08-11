@@ -28,12 +28,13 @@ class GameOverSubstate extends MusicBeatSubstate
 			default:
 				daBf = 'bf-dead';
 		}
-		if (PlayState.instance.boyfriend.deathChar != null) {
-			daBf = PlayState.instance.boyfriend.deathChar;
+		var daChar:Character = (Options.playstate_opponentmode && PlayState.instance.dad.deathChar != null ? PlayState.instance.dad : PlayState.instance.boyfriend);
+		if (daChar.deathChar != null) {
+			daBf = daChar.deathChar;
 		}
 		var deathSound:String = "fnf_loss_sfx";
-		if (PlayState.instance.boyfriend.deathSound != null) {
-			deathSound = PlayState.instance.boyfriend.deathSound;
+		if (daChar.deathSound != null) {
+			deathSound = daChar.deathSound;
 		} else {
 			deathSound += stageSuffix;
 		}
@@ -45,7 +46,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		bf = new Boyfriend(x, y, daBf);
 		add(bf);
 
-		camFollow = new FlxObject(bf.getGraphicMidpoint().x, bf.getGraphicMidpoint().y, 1, 1);
+		camFollow = new FlxObject(daChar.getGraphicMidpoint().x, daChar.getGraphicMidpoint().y, 1, 1);
 		add(camFollow);
 
 		FlxG.sound.play(Paths.sound(deathSound));

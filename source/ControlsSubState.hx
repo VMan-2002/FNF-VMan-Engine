@@ -2,6 +2,7 @@ package;
 
 //some things in here are copied from my own code in a psych engine mod (this should be fine, right?)
 
+import Discord.DiscordClient;
 import ManiaInfo;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -11,6 +12,8 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 
 using StringTools;
@@ -26,13 +29,21 @@ class ControlsSubState extends OptionsSubStateBasic
 			"Set Bind",
 			"Set Alt Bind",
 			"Set UI Controls",
+			"Set UI Alt Controls",
+			"Reset UI Controls",
 			//"Change Color", //todo: this
 			//"Change Strumline Color",
 			//"Change Color Advanced"
 		];
 	}
+
+	var uiControlStuffNames:Array<String> = [
+		"set ui controls",
+		"set ui alt controls",
+		"reset ui controls"
+	];
 	
-	var cachedFrames = new Map<String, FlxFramesCollection>();
+	var cachedFrames = new Map<String, FlxSprite>();
 	
 	var bindingControl:Bool = false;
 	
@@ -44,17 +55,43 @@ class ControlsSubState extends OptionsSubStateBasic
 	private var ncManiaTitle:Alphabet;
 	private var ncSelectedNote:Int;
 	private var ncTexts = new FlxTypedGroup<Alphabet>();
+
+	private var moveSidewaysHold:Float = 0;
 	var ManiaName:String;
 	
 	var ncControls:Map<String, Array<Array<Int>>> = Options.controls;
+
+	var presenceKeys = new Array<String>();
+
+	var keyNameText = new FlxText(0, 0, 800, "Key name").setFormat("vcr.ttf", 16, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+	var controlKeyNames:Array<String> = [
+		"left",
+		"down",
+		"up",
+		"right",
+		"accept",
+		"back",
+		"pause",
+		"reset",
+		"gtstrum"
+	];
+	var isChangingUIControls = false;
+
+	var tweens = new Array<FlxTween>();
+	var basePositions = new Array<Float>();
+	var arrowBump:Float = 0;
+
+	var releasedEnter = false;
 	
 	function doAtla(name:String):FlxFramesCollection {
-		//if (!cachedFrames.exists(name)) {
-			//cachedFrames.set(name, Paths.getSparrowAtlas(name));
-		//}
-		//return cachedFrames.get(name);
+		if (!cachedFrames.exists(name)) {
+			var a = new FlxSprite().loadGraphic(name);
+			a.alpha = 0.001;
+			add(a);
+			cachedFrames.set(name, a);
+		}
 		
-		return Paths.getSparrowAtlas(name); //idk. tried to fix some lag but it makes crashes lmamo
+		return Paths.getSparrowAtlas(name);
 	}
 	
 	function createRow(m) {
@@ -63,9 +100,35 @@ class ControlsSubState extends OptionsSubStateBasic
 		} else if (m < 0) {
 			m = ManiaInfo.AvailableMania.length - 1;
 		}
+		for (a in tweens) {
+			if (a == null) {
+				continue;
+			}
+			a.cancel();
+		}
 		ncSelMania = m;
 		ncManiaID = ManiaInfo.AvailableMania[m];
 		var maniastuff:SwagMania = ManiaInfo.GetManiaInfo(ncManiaID);
+		if (isChangingUIControls) {
+			maniastuff = {
+				keys: controlKeyNames.length,
+				arrows: [
+					"purple", "blue", "green", "red", "accept", "back", "pause", "reset", "gtstrum"
+				],
+				special: false,
+				specialTag: "",
+				control_set: null,
+				control_any: null,
+				splashName: new Map<String, String>(),
+				image: "",
+				scale: null,
+				spacing: null
+			};
+			ManiaName = "UI controls";
+			//i do it in the most badass way possible
+		} else {
+			ManiaName = ManiaInfo.GetManiaName(maniastuff);
+		}
 		//ncManiaTitle.changeText(ManiaInfo.GetManiaName(maniastuff));
 		//ncManiaTitle.screenCenter(X);
 		grpNoteStuff.forEach(function(a:FlxSprite) {
@@ -78,14 +141,14 @@ class ControlsSubState extends OptionsSubStateBasic
 		grpNoteText.members = [];
 		var posX:Float = (-40 * maniastuff.keys) + 40;
 		var shift:Float = 80;
-		var lerpmode = maniastuff.keys > 16;
+		var lerpmode = shift * maniastuff.keys > FlxG.width;
 		/*if (maniastuff.keys > 16) {
 			var w:Float = FlxG.width - 80;
 			posX = w * -0.5;
 			shift = w / maniastuff.keys;
 		}*/
 		var posY = 240;
-		var NoteAssetsFrames = doAtla('normal/NOTE_assets');
+		var NoteAssetsFrames = doAtla(isChangingUIControls ? "menu/UI_CONTROLS_assets" : 'normal/'+maniastuff.image);
 		for (str in maniastuff.arrows) {
 			if (lerpmode) {
 				posX = Math.fround(FlxMath.lerp(40, FlxG.width - 40, grpNoteStuff.members.length / (maniastuff.keys - 1)) - (FlxG.width / 2));
@@ -95,58 +158,102 @@ class ControlsSubState extends OptionsSubStateBasic
 			note.animation.addByPrefix('idle', "arrow"+ManiaInfo.StrumlineArrow[str]);
 			note.animation.addByPrefix('active', str+" confirm", false);
 			note.animation.play('idle');
+			note.scale.x = 0.5;
+			note.scale.y = 0.5;
 			note.updateHitbox();
-			note.setGraphicSize(Std.int(note.width * 0.5));
-			note.centerOffsets(false);
+			note.centerOffsets(true);
 			note.centerOrigin();
 			note.antialiasing = true;
 			note.screenCenter(X);
 			note.x += posX;
+			basePositions[grpNoteStuff.members.length] = note.x;
 			grpNoteStuff.add(note);
 			
-			var txt:FlxText = new FlxText((FlxG.width / 2) + (posX - 40), posY, 80, "---\n---", 16);
+			var txt:FlxText = new FlxText((FlxG.width / 2) + (posX - 40), posY, 80, "---\n---", 16).setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 2, 1);
 			txt.alignment = CENTER;
 			txt.updateHitbox();
 			txt.antialiasing = false;
+			if (Translation.usesFont) {
+				Translation.setObjectFont(txt, "vcr font");
+			}
 			grpNoteText.add(txt);
 			
 			posX += shift;
 		}
-		ManiaName = ManiaInfo.GetManiaName(maniastuff);
 		ncSelectedNote = 0;
-		SelectNote(0);
+		arrowBump = (basePositions[1] - basePositions[0]) / 10;
+		SelectNote();
+		while (presenceKeys.length > maniastuff.keys) {
+			presenceKeys.pop();
+		}
 		updateRowKeyNames();
+		updateKeyNamePos();
 	}
 	
 	function updateRowKeyNames() {
 		var keys = ncControls.get(ncManiaID);
-		if (keys != null) {
-			for (i in keys) {
-				if (i != null) {
-					var num = keys.indexOf(i);
-					//grpNoteText.members[num].text = '${InputFormatter.getKeyName(i[0])}\n${InputFormatter.getKeyName(i[1])}';
-					grpNoteText.members[num].text = '${ConvertKey(i[0])}\n${ConvertKey(i[1])}';
-				}
+		if (isChangingUIControls) {
+			keys = new Array<Array<Int>>();
+			for (thing in Controls.controlNames) {
+				keys.push(Options.uiControls.get(thing));
 			}
 		}
-	}
-	
-	function SelectNote(?n:Int = 0) {
-		grpNoteStuff.members[ncSelectedNote].animation.play('idle');
-		grpNoteStuff.members[ncSelectedNote].centerOffsets();
-		grpNoteStuff.members[ncSelectedNote].centerOrigin();
-		if (n >= grpNoteStuff.members.length) {
-			n = 0;
-		} else if (n < 0) {
-			n = grpNoteStuff.members.length - 1;
+		if (keys != null) {
+			for (num in 0...keys.length) {
+				if (keys[num] != null) {
+					var i = keys[num];
+					//grpNoteText.members[num].text = '${InputFormatter.getKeyName(i[0])}\n${InputFormatter.getKeyName(i[1])}';
+					grpNoteText.members[num].text = '${ConvertKey(i[0])}\n${ConvertKey(i[1])}';
+					presenceKeys[num] = i[0] > 0 ? ConvertKey(i[0], false) : ConvertKey(i[1], false);
+				} else {
+					presenceKeys[num] = "none";
+				}
+			}
+		} else {
+			presenceKeys = [];
+			while (presenceKeys.length < grpNoteText.members.length) {
+				presenceKeys.push("none");
+			}
 		}
-		ncSelectedNote = n;
-		grpNoteStuff.members[ncSelectedNote].animation.play('active');
-		grpNoteStuff.members[ncSelectedNote].centerOffsets();
-		grpNoteStuff.members[ncSelectedNote].centerOrigin();
+		DiscordClient.changePresenceSimple("controls", ManiaName+": "+presenceKeys.join(", "));
+	}
+
+	function updateKeyNamePos() {
+		if (isChangingUIControls) {
+			keyNameText.text = controlKeyNames[ncSelectedNote];
+		} else {
+			keyNameText.text = '#${ncSelectedNote}';
+		}
+		keyNameText.x = basePositions[ncSelectedNote] + 40;
+		keyNameText.y = grpNoteStuff.members[ncSelectedNote].y + 84;
 	}
 	
-	function addNcText(tx:String):Alphabet {
+	function SelectNote(?n:Int = 0, ?direction:Float = 0) {
+		if (ncSelectedNote != n) {
+			grpNoteStuff.members[ncSelectedNote].animation.play('idle');
+			grpNoteStuff.members[ncSelectedNote].centerOffsets();
+			grpNoteStuff.members[ncSelectedNote].centerOrigin();
+			if (n >= grpNoteStuff.members.length) {
+				n = 0;
+			} else if (n < 0) {
+				n = grpNoteStuff.members.length - 1;
+			}
+			ncSelectedNote = n;
+		}
+		grpNoteStuff.members[ncSelectedNote].animation.play('active', true);
+		grpNoteStuff.members[ncSelectedNote].centerOffsets();
+		grpNoteStuff.members[ncSelectedNote].centerOrigin();
+		if (direction != 0) {
+			if (tweens[ncSelectedNote] != null) {
+				tweens[ncSelectedNote].cancel();
+			}
+			grpNoteStuff.members[ncSelectedNote].x += direction;
+			tweens[ncSelectedNote] = FlxTween.tween(grpNoteStuff.members[ncSelectedNote], {x:basePositions[ncSelectedNote]}, 1.5, {ease:FlxEase.expoOut});
+		}
+		updateKeyNamePos();
+	}
+	
+	/*function addNcText(tx:String):Alphabet {
 		var a = new Alphabet(0, ncTexts.length * 42, tx);
 		a.screenCenter(X);
 		//a.forceX = a.x;
@@ -155,11 +262,34 @@ class ControlsSubState extends OptionsSubStateBasic
 		a.isMenuItem = true;
 		ncTexts.add(a);
 		return a;
+	}*/
+
+	public override function moveSelection(by:Int) {
+		if (by == 0) {
+			return super.moveSelection(0); //dunno how you'd do that but sure
+		}
+		var was = curSelected;
+		super.moveSelection(by);
+		isChangingUIControls = uiControlStuffNames.indexOf(curSelectedName) != -1;
+		if (isChangingUIControls != (uiControlStuffNames.indexOf(textMenuItems[was].toLowerCase()) != -1)) {
+			createRow(ncSelMania); //amazing way of making the ui controls
+			keyNameText.visible = isChangingUIControls;
+		}
+		trace("now selected "+textMenuItems[curSelected]);
 	}
 
 	public override function new()
 	{
 		super();
+		DiscordClient.changePresenceSimple("controls");
+		keyNameText.offset.x = 400;
+		Translation.setObjectFont(keyNameText, "vcr font");
+		keyNameText.visible = false;
+		add(keyNameText);
+
+		controlKeyNames = controlKeyNames.map(function(a) {
+			return Translation.getTranslation("uiKey_"+a, "optionsMenu");
+		});
 		
 		//optionsImage.visible = false;
 		
@@ -180,7 +310,7 @@ class ControlsSubState extends OptionsSubStateBasic
 				return ["Change the first keybind of a note. Left/Right to change the key selected."];
 			case "set alt bind":
 				return ["Change the second keybind of a note. Left/Right to change the key selected."];
-			case "set ui controls":
+			case "set ui controls" | "set ui alt controls":
 				return ["Change the other controls, such as those for the UI."];
 			case "change color":
 				return ["Change the colors of notes. Left/Right to change the key selected."];
@@ -201,20 +331,27 @@ class ControlsSubState extends OptionsSubStateBasic
 					//clear bind.
 					newKey = -1;
 				}
-				if (newKey == 13 && textMenuItems[curSelected].toLowerCase() != "set ui controls") { //Enter key
-					return;
-				}
-				if (!ncControls.exists(ncManiaID)) {
-					var thing = new Array<Array<Int>>();
-					while (thing.length < grpNoteStuff.members.length) {
-						thing.push(new Array<Int>());
+				if (Options.uiControls.get("accept").indexOf(newKey) != -1) { //Enter key
+					if (!releasedEnter) {
+						releasedEnter = true;
+						return;
 					}
-					ncControls.set(ncManiaID, thing);
 				}
-				if (textMenuItems[curSelected].toLowerCase() == "set alt bind") {
-					ncControls[ncManiaID][ncSelectedNote][1] = newKey;
+				if (newKey == FlxKey.ESCAPE && !isChangingUIControls) {
+					bindingControl = false;
+					return updateRowKeyNames();
+				}
+				if (isChangingUIControls) {
+					Options.uiControls[Controls.controlNames[ncSelectedNote]][curSelectedName == "set ui alt controls" ? 1 : 0] = newKey;
 				} else {
-					ncControls[ncManiaID][ncSelectedNote][0] = newKey;
+					if (!ncControls.exists(ncManiaID)) {
+						var thing = new Array<Array<Int>>();
+						while (thing.length < grpNoteStuff.members.length) {
+							thing.push(new Array<Int>());
+						}
+						ncControls.set(ncManiaID, thing);
+					}
+					ncControls[ncManiaID][ncSelectedNote][curSelectedName == "set alt bind" ? 1 : 0] = newKey;
 				}
 				updateRowKeyNames();
 				bindingControl = false;
@@ -224,11 +361,22 @@ class ControlsSubState extends OptionsSubStateBasic
 		}
 		
 		var isMoveLR = controls.LEFT_P != controls.RIGHT_P;
+		var isLeft = controls.LEFT_P;
+		if (!isMoveLR && controls.LEFT != controls.RIGHT) {
+			moveSidewaysHold += FlxG.elapsed;
+			if (moveSidewaysHold > 0.5) {
+				moveSidewaysHold -= 0.06;
+				isMoveLR = true;
+				isLeft = controls.LEFT;
+			}
+		} else {
+			moveSidewaysHold = 0;
+		}
 		switch(name) {
 			case "change mania":
 				if (isMoveLR) {
 					FlxG.sound.play(Paths.sound('scrollMenu'));
-					if (controls.LEFT_P) {
+					if (isLeft) {
 						createRow(ncSelMania - 1);
 					} else {
 						createRow(ncSelMania + 1);
@@ -236,8 +384,9 @@ class ControlsSubState extends OptionsSubStateBasic
 					updateDescription();
 				}
 			case "set bind" | "set alt bind" | "change color" | "change color advanced" | "change strumline color":
-				moveableNote(isMoveLR);
-			case "set ui controls":
+				moveableNote(isMoveLR, isLeft);
+			case "set ui controls" | "set ui alt controls" | "reset ui controls":
+				moveableNote(isMoveLR, isLeft);
 				//FlxG.sound.play(Paths.sound('scrollMenu'));
 				//Options.ghostTapping = !Options.ghostTapping;
 		}
@@ -248,14 +397,16 @@ class ControlsSubState extends OptionsSubStateBasic
 			return false;
 		}
 		switch(name) {
-			case "set bind" | "set alt bind":
+			case "set bind" | "set alt bind" | 'set ui controls' | 'set ui alt controls':
 				bindingControl = true;
 				canMoveSelected = false;
+				releasedEnter = false;
 			case "change color" | "change color advanced" | "change strumline color":
 				//colors
-			case "set ui controls":
-				//FlxG.sound.play(Paths.sound('scrollMenu'));
-				//Options.ghostTapping = !Options.ghostTapping;
+			case "reset ui controls":
+				//reset
+				Options.uiControls = Options.uiControlsDefault;
+				updateRowKeyNames();
 		}
 		return false;
 	}
@@ -265,29 +416,30 @@ class ControlsSubState extends OptionsSubStateBasic
 			for (i in ncControls.keys()) {
 				Options.controls.set(i, ncControls.get(i));
 			}
+			Options.applyControls();
 			return true;
 		}
 		return false;
 	}
 	
-	inline function moveableNote(does:Bool) {
+	inline function moveableNote(does:Bool, left:Bool) {
 		if (does) {
 			FlxG.sound.play(Paths.sound('scrollMenu'));
-			if (controls.LEFT_P) {
-				SelectNote(ncSelectedNote - 1);
+			if (left) {
+				SelectNote(ncSelectedNote - 1, -arrowBump);
 			} else {
-				SelectNote(ncSelectedNote + 1);
+				SelectNote(ncSelectedNote + 1, arrowBump);
 			}
 		}
 	}
 	
-	public static function ConvertKey(n:Int) {
+	public static function ConvertKey(n:Int, ?useTranslat:Bool = true) {
 		if (n <= 0) {
-			return Translation.getTranslation("empty", "optionsKeys");
+			return useTranslat ? Translation.getTranslation("empty", "optionsKeys", null, "---") : "none";
 			//return "---";
 		}
 		var str:String = FlxKey.toStringMap.get(n);
-		if (Translation.translation["optionsKeys"].exists(str)) {
+		if (useTranslat && Translation.translation["optionsKeys"].exists(str)) {
 			return Translation.getTranslation(str, "optionsKeys");
 		}
 		switch(str) {
@@ -306,7 +458,7 @@ class ControlsSubState extends OptionsSubStateBasic
 			case "COMMA":
 			return ",";
 			case "PERIOD":
-			return ",";
+			return ".";
 			case "GRAVEACCENT":
 			return "~";
 			case "MINUS":

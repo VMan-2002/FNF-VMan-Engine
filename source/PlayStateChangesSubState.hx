@@ -30,7 +30,7 @@ class PlayStateChangesSubState extends OptionsSubStateBasic
 			case "guitar mode":
 				return ["Guitar Hero, basically. Hold the arrow key down and use square bracket keys to hit notes.", Options.playstate_guitar ? "Enabled" : "Disabled"];
 			case "clear":
-				var any = [Options.playstate_bothside, Options.playstate_opponentmode, Options.playstate_endless].indexOf(true) != -1;
+				var any = [Options.playstate_bothside, Options.playstate_opponentmode, Options.playstate_endless, Options.playstate_guitar].indexOf(true) != -1;
 				return ["Disable all currently enabled changes.", any ? "Not cleared" : "Cleared"];
 		}
 		return ["Unknown option.", name, 'unknownOption'];

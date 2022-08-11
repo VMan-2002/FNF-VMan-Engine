@@ -95,6 +95,8 @@ class HudThing extends FlxGroup
 					text += Translation.getTranslation("hud_hits", "playstate", [Std.string(PlayState.instance.songHits)]);
 				case "totalnotes":
 					text += Translation.getTranslation("hud_totalnotes", "playstate", [Std.string(noteThing)]);
+				case "combo":
+					text += Translation.getTranslation("hud_combo", "playstate", [Std.string(PlayState.instance.combo)]);
 				case "engine":
 					//this one should always show on the hud thing in the corner
 					text += Translation.getTranslation(Options.botplay ? "hud_engine botplay" : "hud_engine", "playstate");

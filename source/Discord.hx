@@ -1,6 +1,7 @@
 package;
 
 import Sys.sleep;
+import cpp.abi.Abi;
 import discord_rpc.DiscordRpc;
 
 using StringTools;
@@ -71,16 +72,27 @@ class DiscordClient
 		trace("Discord Client initialized");
 	}
 
-	public static function changePresenceSimple(type:String) {
+	public static function changePresenceSimple(type:String, ?extra:String = "") {
 		if (!isActivated) {
 			return;
 		}
 		var songName:String = "No song lmao";
-		if (PlayState.SONG != null) {
+		var difficultyText = "Ur Difficult :sunglasses:";
+		var modifierString = "been modified LMAO";
+		var doStuff:Bool = false;
+		switch(type) {
+			case "paused" | "not_playing" | "playing" | "not_playing_multi" | "playing_multi":
+				doStuff = true;
+			case "options":
+				doStuff = OptionsMenu.wasInPlayState;
+		}
+		if (doStuff && PlayState.SONG != null) {
 			songName = PlayState.SONG.song;
+			modifierString = Highscore.getModeString();
+			difficultyText = modifierString == "" ? ' (${PlayState.instance.storyDifficultyText})' : ' (${PlayState.instance.storyDifficultyText}^${modifierString})';
 		}
 		var detailsText:String = PlayState.isStoryMode ? "Story Mode: Week " + PlayState.storyWeek : "Freeplay";
-		var songText:String = songName + " (" + PlayState.instance.storyDifficultyText + ")";
+		var songText:String = songName + difficultyText;
 		switch(type) {
 			case "paused":
 				changePresence("Paused - "+detailsText, songText, PlayState.instance.iconRPC);
@@ -90,16 +102,23 @@ class DiscordClient
 				changePresence(detailsText, songText, PlayState.instance.iconRPC, true, PlayState.instance.songLength);
 			case "menu":
 				changePresence("Main Menu");
+			case "freeplay":
+				changePresence("Freeplay Menu");
 			case "options":
 				if (OptionsMenu.wasInPlayState) {
 					changePresence("Options Menu", songText, PlayState.instance.iconRPC);
 				} else {
 					changePresence("Options Menu");
 				}
+			case "controls":
+				if (extra.length > 128) {
+					extra = extra.substring(0, extra.indexOf(":")) + " too long";
+				}
+				changePresence("Controls Menu", extra);
 			case "credits":
 				changePresence("Credits");
 			case "story":
-				changePresence("Story Mode");
+				changePresence("Story Mode Menu");
 			case "editor":
 				changePresence("Song Editor", songText);
 			case "character_editor":
@@ -111,6 +130,7 @@ class DiscordClient
 			case "playing_multi":
 				changePresence("Multiplayer - "+detailsText, songText, PlayState.instance.iconRPC, true, PlayState.instance.songLength);
 			default:
+				trace("unknown presence type "+type+", this shouldn't happen but whatever i'll just make it look nice");
 				changePresence((type.charAt(0).toUpperCase() + type.substring(1)).replace("_", " "));
 		}
 	}

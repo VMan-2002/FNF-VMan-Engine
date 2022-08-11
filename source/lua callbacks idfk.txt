@@ -25,6 +25,10 @@ onPostUpdate(elapsed)
 onDestroy()
 - runs before exiting the state.
 
+onFullscreen(value)
+- runs when fullscreen is toggled.
+= value: true if you're now in fullscreen, false otherwise 
+
 == PlayState specific
 
 onNoteHit(id, notedata, noteType, mustPress, character)

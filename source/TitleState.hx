@@ -90,6 +90,8 @@ class TitleState extends MusicBeatState {
 		//});
 
 		PlayerSettings.init();
+		
+		PlayerSettings.player1.controls.setKeyboardScheme(Custom);
 
 		curWacky = FlxG.random.getObject(getIntroTextShit());
 

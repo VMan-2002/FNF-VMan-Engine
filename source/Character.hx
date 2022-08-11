@@ -74,6 +74,9 @@ class Character extends SpriteVMan
 
 	public var cameraOffset:Array<Float> = [0, 0];
 	public var animNoSustain:Bool = false;
+	public var hasMissAnims:Bool = false;
+
+	public var misscolored:Bool = false;
 
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false, ?myMod:String = "") {
 		super(x, y);
@@ -726,6 +729,8 @@ class Character extends SpriteVMan
 					playAnim('idle');
 				}
 		}
+
+		hasMissAnims = hasAnim('singRIGHTmiss');
 		
 		if (flipX != isPlayer && hasAnim("singRIGHT") && hasAnim("singLEFT")) {
 			// var animArray
@@ -734,10 +739,18 @@ class Character extends SpriteVMan
 			animation.getByName('singLEFT').frames = oldRight;
 
 			// IF THEY HAVE MISS ANIMATIONS??
-			if (hasAnim('singRIGHTmiss')) {
+			if (hasMissAnims) {
 				var oldMiss = animation.getByName('singRIGHTmiss').frames;
 				animation.getByName('singRIGHTmiss').frames = animation.getByName('singLEFTmiss').frames;
 				animation.getByName('singLEFTmiss').frames = oldMiss;
+			}
+		}
+
+		if (!hasMissAnims) {
+			var things = ["singUP", "singDOWN", "singLEFT", "singRIGHT"];
+			for (a in things) {
+				var old = animation.getByName(a);
+				animation.add(a+'miss', old.frames, old.frameRate, old.looped);
 			}
 		}
 
@@ -815,6 +828,11 @@ class Character extends SpriteVMan
 			dance(true);
 		}
 
+		if (!hasMissAnims && misscolored && !animation.curAnim.name.endsWith('miss')) {
+			misscolored = false;
+			color = 0xffffff;
+		}
+
 		super.update(elapsed);
 	}
 
@@ -859,6 +877,11 @@ class Character extends SpriteVMan
 				danced = false;
 			else if (AnimName == 'singUP' || AnimName == 'singDOWN')
 				danced = !danced;
+		}
+
+		if (!hasMissAnims && AnimName.endsWith("miss")) {
+			misscolored = true;
+			color = 0x2233aa;
 		}
 	}
 }

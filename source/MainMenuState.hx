@@ -4,6 +4,7 @@ import CoolUtil;
 import Note.SwagNoteSkin;
 import Note.SwagUIStyle;
 import OptionsMenu;
+import ThingThatSucks.ResetControlsSubState;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -45,11 +46,16 @@ class MainMenuState extends MusicBeatState
 	
 	var hillarious:MultiWindow;
 
+	static var possiblyForgotControls:Bool = true;
+	var possiblyForgotControlsTimer:Float = 8;
+	var possiblyForgotControlsText:FlxText;
+	var resetControlsTimer:Float = 0;
+
 	override function create()
 	{
 		#if desktop
 		// Updating Discord Rich Presence
-		DiscordClient.changePresence("In the Menus", null);
+		DiscordClient.changePresenceSimple("menu");
 		#end
 
 		transIn = FlxTransitionableState.defaultTransIn;
@@ -137,6 +143,38 @@ class MainMenuState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+		if (isSubStateActive && Std.isOfType(_requestedSubState, ResetControlsSubState)) {
+			return super.update(elapsed);
+		}
+
+		if (possiblyForgotControls) {
+			possiblyForgotControlsTimer -= elapsed;
+			if (possiblyForgotControlsTimer <= 0) {
+				possiblyForgotControlsText = new FlxText(0, 0, FlxG.width, Translation.getTranslation("reset controls title", "mainmenu", null, "Forgot your controls (or they don't work)? Hold SHIFT for 3 seconds."), 12).setFormat("VCR OSD Mono", 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+				Translation.setObjectFont(possiblyForgotControlsText, "vcr font");
+				add(possiblyForgotControlsText);
+			}
+			if (controls.UP_P || controls.DOWN_P) {
+				possiblyForgotControlsTimer = 8;
+			}
+			if (controls.ACCEPT) {
+				possiblyForgotControls = false;
+				if (possiblyForgotControlsText != null) {
+					remove(possiblyForgotControlsText);
+					possiblyForgotControlsText = null;
+				}
+			}
+		}
+
+		if (FlxG.keys.pressed.SHIFT) {
+			resetControlsTimer += elapsed;
+			if (resetControlsTimer > 3) {
+				openSubState(new ThingThatSucks.ResetControlsSubState());
+			}
+		} else {
+			resetControlsTimer = 0;
+		}
+		
 		if (FlxG.sound.music.volume < 0.8)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
@@ -227,11 +265,6 @@ class MainMenuState extends MusicBeatState
 		}
 
 		super.update(elapsed);
-
-		menuItems.forEach(function(spr:FlxSprite)
-		{
-			spr.screenCenter(X);
-		});
 	}
 
 	function changeItem(huh:Int = 0)
@@ -254,6 +287,7 @@ class MainMenuState extends MusicBeatState
 			}
 
 			spr.updateHitbox();
+			spr.screenCenter(X);
 		});
 	}
 }
