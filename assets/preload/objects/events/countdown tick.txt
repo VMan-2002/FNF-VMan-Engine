@@ -1,0 +1,4 @@
+Countdown Tick
+Show a tick of the countdown.
+number:choice:3:2:1:go
+with sound:checkbox

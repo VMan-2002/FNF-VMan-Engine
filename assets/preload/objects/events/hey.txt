@@ -1,0 +1,4 @@
+Hey
+Play the Hey animation of the player character.
+player:checkbox
+girlfriend:checkbox

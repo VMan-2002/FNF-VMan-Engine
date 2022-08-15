@@ -188,11 +188,11 @@ charteditor_event_play animation_desc::Play an animation of a character.
 charteditor_event_play animation_animation::Animation
 charteditor_event_play animation_character::Character
 charteditor_event_zoom hit::Zoom Hit
-charteditor_event_zoom hit_desc::Increase the zoom a bit. Won't change the default zoom.
+charteditor_event_zoom hit_desc::Do a little zoom bump.
 charteditor_event_zoom hit_camera zoom::Camera Zoom
 charteditor_event_zoom hit_hud zoom::HUD Zoom
 charteditor_event_set gf speed::Set GF Speed
-charteditor_event_set gf speed_desc::Set the speed at which Girlfriend's idle animation plays.
+charteditor_event_set gf speed_desc::Set the rate at which Girlfriend's idle animation plays.
 charteditor_event_set gf speed_speed::Speed
 //}
 //PlayState Hud

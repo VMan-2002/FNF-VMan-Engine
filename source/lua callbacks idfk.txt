@@ -51,6 +51,10 @@ onNoteMiss(id, notedata, noteType, mustPress, character)
 = character: the ID of the visual character that will animate when this note is missed.
 > return false to not count as a miss.
 
+goodNoteHit(id, notedata, noteType, rating, character)
+- same as onNoteHit, but only for the player's notes.
+= rating: "sick", "good", "bad" or "shit" corrosponding with the accuracy
+
 onCountdownStart()
 - runs when the countdown starts.
 > return true to skip the countdown.

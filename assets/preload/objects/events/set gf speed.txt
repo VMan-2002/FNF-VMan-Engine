@@ -1,0 +1,3 @@
+Set GF Speed
+Set the rate at which Girlfriend's idle animation plays.
+speed:number

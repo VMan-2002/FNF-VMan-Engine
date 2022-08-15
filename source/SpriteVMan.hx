@@ -29,10 +29,10 @@ class SpriteVMan extends FlxSprite {
 		return animation.exists(animname);
 	}
 
-	public function playAvailableAnim(animname:Array<String>) {
+	public function playAvailableAnim(animname:Array<String>, ?force = false) {
 		for (anim in animname) {
 			if (hasAnim(anim)) {
-				return playAnim(anim);
+				return playAnim(anim, force);
 			}
 		}
 	}

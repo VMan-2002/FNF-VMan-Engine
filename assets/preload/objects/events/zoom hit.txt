@@ -1,0 +1,4 @@
+Zoom Hit
+Do a little zoom bump.
+camera zoom:number
+hud zoom:number

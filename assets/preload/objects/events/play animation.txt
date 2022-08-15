@@ -1,0 +1,4 @@
+Play Animation
+Play an animation of a character.
+animation:string
+character:character

@@ -73,6 +73,7 @@ class SwagUIStyle {
 	public var good:String;
 	public var bad:String;
 	public var shit:String;
+	public var sickcool:String;
 	public var healthBar:String;
 	public var threeSound:String;
 	public var twoSound:String;
@@ -113,7 +114,7 @@ class SwagUIStyle {
 		uiStyle.oneSound = uiStyle.oneSound != null ? uiStyle.oneSound : "intro1";
 		uiStyle.goSound = uiStyle.goSound != null ? uiStyle.goSound : "introGo";
 		uiStyle.countdownScale = uiStyle.countdownScale != null ? uiStyle.countdownScale : 1.0;
-		uiStyle.ratings = ["sick" => uiStyle.sick, "good" => uiStyle.good, "bad" => uiStyle.bad, "shit" => uiStyle.shit];
+		uiStyle.ratings = ["sick" => uiStyle.sick, "good" => uiStyle.good, "bad" => uiStyle.bad, "shit" => uiStyle.shit, "sick-cool" => (uiStyle.sickcool == null ? uiStyle.sick : uiStyle.sickcool)];
 		uiStyle.ratingScale = uiStyle.ratingScale != null ? uiStyle.ratingScale : 0.7;
 		uiStyle.comboScale = uiStyle.comboScale != null ? uiStyle.comboScale : 0.5;
 		uiStyle.comboSpacing = uiStyle.comboSpacing != null ? uiStyle.comboSpacing : 43;

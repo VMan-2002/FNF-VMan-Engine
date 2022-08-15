@@ -32,6 +32,7 @@ typedef SwagStage =
 	var elementsFront:Array<StageElement>;
 	var elementsBack:Array<StageElement>;
 	var hide_girlfriend:Bool;
+	var animFollowup:Array<Array<String>>;
 }
 
 class Stage
@@ -43,7 +44,7 @@ class Stage
 	public var elementsAll:Array<SpriteVMan>;
 	//public var namedElements:Map<String, FlxSprite>;
 	public var hide_girlfriend:Bool;
-	public static var animFollowup:Map<String, String> = [
+	public var animFollowup:Map<String, String> = [
 		"danceLeft" => "danceRight",
 		"danceRight" => "danceLeft",
 		"idle" => "idle"
@@ -90,7 +91,8 @@ class Stage
 			defaultCamZoom: 1.05,
 			elementsFront: new Array<StageElement>(),
 			elementsBack: new Array<StageElement>(),
-			hide_girlfriend: false
+			hide_girlfriend: false,
+			animFollowup: null
 		};
 	}
 
@@ -153,6 +155,11 @@ class Stage
 		target.elementsBack = makeElements(data.elementsBack);
 		target.elementsAll = target.elementsBack.members.concat(target.elementsFront.members);
 		target.hide_girlfriend = data.hide_girlfriend == true;
+		if (data.animFollowup != null && data.animFollowup.length != 0) {
+			for (thing in data.animFollowup) {
+				target.animFollowup.set(thing[0], thing[1]);
+			}
+		}
 		return target;
 	}
 	
