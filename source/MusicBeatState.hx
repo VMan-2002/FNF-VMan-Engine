@@ -91,6 +91,7 @@ class MusicBeatState extends FlxUIState
 	}
 	
 	//Script Stuff
+	#if !html5
 	public var luaScripts = new Array<LuaScript>();
 	
 	public function initLua():Void {
@@ -116,4 +117,5 @@ class MusicBeatState extends FlxUIState
 			luaThing.runFunction(name, args);
 		}
 	}
+	#end
 }

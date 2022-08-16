@@ -14,10 +14,13 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import lime.app.Application;
-import sys.FileSystem;
-import sys.io.File;
 
 using StringTools;
+#if !html5
+import sys.FileSystem;
+import sys.io.File;
+#end
+
 //import io.newgrounds.NG;
 #if desktop
 import Discord.DiscordClient;

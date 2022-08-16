@@ -10,7 +10,7 @@ using StringTools;
 class ModLoad
 {
 	public static var enabledMods = new Array<String>();
-	public static var primaryMod:String;
+	public static var primaryMod:String = "friday_night_funkin";
 	
 	//copied from polymod flixel sample
 

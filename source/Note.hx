@@ -10,10 +10,13 @@ import flixel.util.FlxColor;
 import json2object.JsonParser;
 import lime.utils.Assets;
 import openfl.utils.Assets;
-import sys.FileSystem;
-import sys.io.File;
 
 using StringTools;
+#if !html5
+import sys.FileSystem;
+import sys.io.File;
+#end
+
 /*#if polymod
 import polymod.format.ParseRules.TargetSignatureElement;
 #end*/

@@ -1,5 +1,6 @@
 package;
 
+#if !html5
 import Section.SwagSection;
 import Section;
 import flixel.FlxG;
@@ -10,6 +11,7 @@ import flixel.util.FlxColor;
 import sys.io.File;
 
 using StringTools;
+
 
 class ToolsMenuSubState extends OptionsSubStateBasic
 {
@@ -339,3 +341,5 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 		FlxG.switchState(new ChartingState());
 	}
 }
+
+#end

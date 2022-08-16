@@ -44,7 +44,9 @@ class MainMenuState extends MusicBeatState
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
 	
+	#if !html5
 	var hillarious:MultiWindow;
+	#end
 
 	static var possiblyForgotControls:Bool = true;
 	var possiblyForgotControlsTimer:Float = 8;
@@ -199,15 +201,15 @@ class MainMenuState extends MusicBeatState
 				FlxG.switchState(new TitleState());
 			}
 
-			if (FlxG.keys.justPressed.U)
-			{
+			#if !html5
+			if (FlxG.keys.justPressed.U) {
 				hillarious = new MultiWindow(1, true);
 			}
 
-			if (FlxG.keys.justPressed.SEVEN)
-			{
+			if (FlxG.keys.justPressed.SEVEN) {
 				FlxG.switchState(new OptionsMenu(new ToolsMenuSubState()));
 			}
+			#end
 
 			if (controls.ACCEPT)
 			{

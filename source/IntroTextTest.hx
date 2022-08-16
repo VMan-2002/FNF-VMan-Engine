@@ -2,7 +2,6 @@ package;
 
 #if desktop
 import Discord.DiscordClient;
-import sys.thread.Thread;
 #end
 import CoolUtil;
 import NoteColor;
@@ -35,7 +34,9 @@ using StringTools;
 #if polymod
 import polymod.Polymod.Framework;
 import polymod.Polymod;
+#if !html5
 import sys.io.File;
+#end
 #end
 
 

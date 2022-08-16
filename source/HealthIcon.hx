@@ -3,11 +3,14 @@ package;
 import Character;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
+import openfl.Assets;
 import openfl.display.BitmapData;
 #if polymod
 import json2object.JsonParser;
+#if !html5
 import sys.FileSystem;
 import sys.io.File;
+#end
 #end
 
 typedef SwagHealthIcon = {
@@ -88,14 +91,28 @@ class HealthIcon extends FlxSprite
 			//if it doesn't exist
 			path = 'mods/${myMod}/images/icons/${char}';
 		}*/
-		if (FileSystem.exists('${path}.png')) { //todo: this
+		if (
+			#if !html5
+			FileSystem.exists('${path}.png')
+			#else
+			Assets.exists('${path}.png')
+			#end
+		) { //todo: this
 			trace('found health icon ${char}');
+			#if !html5
 			var isJson = FileSystem.exists('${path}.json');
+			#else
+			var isJson = Assets.exists('${path}.json');
+			#end
 			var jsonData:Null<SwagHealthIcon> = null;
 			//is there accompanying json
 			if (isJson) {
 				trace('json found for health icon ${char}');
+				#if !html5
 				jsonData = cast CoolUtil.loadJsonFromString(File.getContent('${path}.json'));
+				#else
+				jsonData = cast CoolUtil.loadJsonFromString(Assets.getText('${path}.json'));
+				#end
 				if (jsonData.image != null && jsonData.image.length > 0) {
 					path = '${pathPrefix}${jsonData.image}';
 				}
@@ -104,10 +121,18 @@ class HealthIcon extends FlxSprite
 				}
 			}
 			//is there accompanying xml
+			#if !html5
 			var isSheet = FileSystem.exists('${path}.xml');
+			#else
+			var isSheet = Assets.exists('${path}.xml');
+			#end
 			var bitmap = BitmapData.fromFile('${path}.png');
 			if (isSheet) {
+				#if !html5
 				frames = FlxAtlasFrames.fromSparrow(bitmap, File.getContent('${path}.xml'));
+				#else
+				frames = FlxAtlasFrames.fromSparrow(bitmap, Assets.getText('${path}.xml'));
+				#end
 				hasWinning = false;
 				hasLosing = false;
 			} else {

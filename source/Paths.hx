@@ -4,7 +4,9 @@ import flixel.FlxG;
 import flixel.graphics.frames.FlxAtlasFrames;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
+#if !html5
 import sys.FileSystem;
+#end
 #if polymod
 import polymod.backends.PolymodAssets;
 #end
@@ -45,8 +47,13 @@ class Paths
 
 	public static function getModOrGamePath(path:String, modName:String, type:AssetType):String {
 		var modThing = getModPath(path, modName, type);
+		#if !html5
 		if (FileSystem.exists(modThing))
 			return modThing;
+		#else
+		if (OpenFlAssets.exists(modThing, type))
+			return modThing;
+		#end
 		return getPath(path, type, null);
 	}
 

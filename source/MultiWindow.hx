@@ -1,5 +1,7 @@
 package;
 
+//this possibly will never exist in html5
+#if !html5
 import Sys;
 import flixel.FlxBasic;
 import flixel.FlxSprite;
@@ -49,3 +51,5 @@ class MultiWindow extends FlxBasic
 		
 	}
 }
+
+#end

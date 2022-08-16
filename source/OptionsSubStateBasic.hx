@@ -4,6 +4,7 @@ import Translation;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
+import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import flixel.math.FlxMath;
@@ -177,6 +178,10 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 		switch(backSubState) {
 			case 1:
 			return FlxG.state.openSubState(new OptionsSubState());
+			case 2:
+			return FlxG.switchState(new TitleState());
+			case 3:
+			return FlxG.switchState(new PlayState());
 		}
 		if (OptionsMenu.wasInPlayState)
 			return FlxG.switchState(new PlayState());

@@ -1,9 +1,5 @@
 package;
 
-#if desktop
-import Discord.DiscordClient;
-import sys.thread.Thread;
-#end
 import CoolUtil;
 import NoteColor;
 import Options;
@@ -32,11 +28,20 @@ import lime.app.Application;
 import openfl.Assets;
 
 using StringTools;
+#if html5
+import ThingThatSucks.HtmlModSelectMenu;
+#end
+#if desktop
+import Discord.DiscordClient;
+//import sys.thread.Thread;
+#end
 //import io.newgrounds.NG;
 #if polymod
 import polymod.Polymod.Framework;
 import polymod.Polymod;
+#if !html5
 import sys.io.File;
+#end
 #end
 
 
@@ -57,7 +62,7 @@ class TitleState extends MusicBeatState {
 
 	var wackyImage:FlxSprite;
 	
-	var doCoolText = true;
+	public static var doCoolText = true;
 	
 	public static var enabledMods = new Array<String>();
 
@@ -77,7 +82,11 @@ class TitleState extends MusicBeatState {
 		
 		
 		#if polymod
+		#if !html5
 		var modListThing:Array<String> = File.getContent("mods/modList.txt").split("\n");
+		#else
+		var modListThing:Array<String> = [ModLoad.primaryMod];
+		#end
 		for (i in modListThing) {
 			i = i.trim().replace("\r", "");
 		}
@@ -130,7 +139,13 @@ class TitleState extends MusicBeatState {
 			Main.launchArguments = Sys.args();
 			#elseif html5
 			//todo: see MultiWindow.hx for details
+			initialized = true;
 			#end
+			Translation.setTranslation(Options.language);
+			#if VMAN_DEMO
+			return FlxG.switchState(new OptionsMenu(new HtmlModSelectMenu()));
+			#end
+			#if !html5
 			if (Main.launchArguments.length > 0) {
 				var colonpos:Int;
 				for (i in Main.launchArguments) {
@@ -153,9 +168,8 @@ class TitleState extends MusicBeatState {
 			} else {
 				trace('no launch args');
 			}
+			#end
 		}
-		
-		Translation.setTranslation(Options.language);
 		
 		if (Main.launchArgumentsParsed.get("multiWindowType") > 0) {
 			initialized = true;
@@ -172,10 +186,6 @@ class TitleState extends MusicBeatState {
 
 		titleGroup.add(stageObject.elementsBack);
 		titleGroup.add(stageObject.elementsFront);
-		
-		if (initialized) {
-			doCoolText = false;
-		}
 
 		#if FREEPLAY
 		FlxG.switchState(new FreeplayState());
@@ -496,6 +506,7 @@ class TitleState extends MusicBeatState {
 			vmanThing.setFormat("VCR OSD Mono", 24, FlxColor.WHITE, LEFT);
 			Translation.setObjectFont(vmanThing, "vcr font");
 			skippedIntro = true;
+			doCoolText = false;
 		}
 	}
 	

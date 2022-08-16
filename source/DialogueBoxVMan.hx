@@ -1,7 +1,6 @@
 package;
 
 import Character;
-import cpp.abi.Abi;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.text.FlxTypeText;
@@ -15,9 +14,13 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import json2object.JsonParser;
-import sys.io.File;
+import lime.utils.Assets;
 
 using StringTools;
+#if !html5
+import cpp.abi.Abi;
+import sys.io.File;
+#end
 
 //todo: The the and the talk
 
@@ -101,7 +104,11 @@ class DialogueBoxVMan extends FlxSpriteGroup
 
 		var parser = new JsonParser<DialogueFile>();
 		if (file != null) {
+			#if !html5
 			this.dialogueFile = dialogueFile = parser.fromJson(File.getContent(file));
+			#else
+			this.dialogueFile = dialogueFile = parser.fromJson(Assets.getText(file));
+			#end
 		} else {
 			this.dialogueFile = dialogueFile;
 		}

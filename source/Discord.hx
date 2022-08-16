@@ -1,16 +1,19 @@
 package;
 
 import Sys.sleep;
-import cpp.abi.Abi;
-import discord_rpc.DiscordRpc;
 
 using StringTools;
+#if !html5
+import cpp.abi.Abi;
+import discord_rpc.DiscordRpc;
+#end
 
 class DiscordClient
 {
 	static var isActivated:Bool = false;
 	public function new()
 	{
+		#if !html5
 		trace("Discord Client starting...");
 		DiscordRpc.start({
 			clientID: "983954658231975946",
@@ -29,19 +32,23 @@ class DiscordClient
 		}
 
 		DiscordRpc.shutdown();
+		#end
 	}
 
 	public static function shutdown()
 	{
+		#if !html5
 		if (!isActivated) {
 			return;
 		}
 		DiscordRpc.shutdown();
 		isActivated = false;
+		#end
 	}
 	
 	static function onReady()
 	{
+		#if !html5
 		if (!isActivated) {
 			return;
 		}
@@ -51,6 +58,7 @@ class DiscordClient
 			largeImageKey: 'icon',
 			largeImageText: "Friday Night Funkin'"
 		});
+		#end
 	}
 
 	static function onError(_code:Int, _message:String)
@@ -65,14 +73,17 @@ class DiscordClient
 
 	public static function initialize()
 	{
+		#if !html5
 		var DiscordDaemon = sys.thread.Thread.create(() ->
 		{
 			new DiscordClient();
 		});
 		trace("Discord Client initialized");
+		#end
 	}
 
 	public static function changePresenceSimple(type:String, ?extra:String = "") {
+		#if !html5
 		if (!isActivated) {
 			return;
 		}
@@ -133,10 +144,12 @@ class DiscordClient
 				trace("unknown presence type "+type+", this shouldn't happen but whatever i'll just make it look nice");
 				changePresence((type.charAt(0).toUpperCase() + type.substring(1)).replace("_", " "));
 		}
+		#end
 	}
 
 	public static function changePresence(details:String, ?state:Null<String>, ?smallImageKey : String, ?hasStartTimestamp : Bool, ?endTimestamp: Float)
 	{
+		#if !html5
 		if (!isActivated) {
 			return;
 		}
@@ -159,5 +172,6 @@ class DiscordClient
 		});
 
 		//trace('Discord RPC Updated. Arguments: $details, $state, $smallImageKey, $hasStartTimestamp, $endTimestamp');
+		#end
 	}
 }

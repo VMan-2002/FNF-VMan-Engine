@@ -5,8 +5,11 @@ import Character;
 import Paths;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import lime.utils.Assets;
+#if !html5
 import sys.FileSystem;
 import sys.io.File;
+#end
 //import io.newgrounds.NGLite;
 
 typedef StageElement =
@@ -55,15 +58,29 @@ class Stage
 			mod = PlayState.modName == "" ? ModLoad.enabledMods[0] : PlayState.modName;
 		}
 		//#if !VMAN_DEMO
+		#if !html5
 		var path:String = 'mods/${mod}/objects/stages/${name}.json';
 		var isJson = FileSystem.exists(path);
-		if (!isJson) {
+		if (!isJson)
+		#else
+		var path:String;
+		var isJson:Bool;
+		#end
+		{
 			path = 'assets/objects/stages/${name}.json';
+			#if !html5
 			isJson = FileSystem.exists(path);
+			#else
+			isJson = Assets.exists(path);
+			#end
 		}
 		if (isJson) {
 			trace("Found json for custom stage "+name);
+			#if !html5
 			var json:SwagStage = cast CoolUtil.loadJsonFromString(File.getContent(path));
+			#else
+			var json:SwagStage = cast CoolUtil.loadJsonFromString(Assets.getText(path));
+			#end
 			return json;
 		}
 		//#end

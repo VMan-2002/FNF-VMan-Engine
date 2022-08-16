@@ -15,7 +15,9 @@ import openfl.display.BitmapData;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
 import openfl.utils.ByteArray;
+#if !html5
 import sys.io.File;
+#end
 
 class NoteColor
 {
@@ -44,10 +46,12 @@ class NoteColor
 	//Credit https://gist.github.com/miltoncandelero/0c452f832fa924bfdd60fe9d507bc581
 	public static function saveImage(bitmapData:BitmapData, name:String)
 	{
+		#if !html5
 		var b:ByteArray = new ByteArray();
 		b = bitmapData.encode(bitmapData.rect, new PNGEncoderOptions(true), b);
 		File.saveBytes('f/${name}.png', b);
 		//new FileDialog().save(b, "png", null, "file");
+		#end
 	}
 	
 	public static function makeSprite(style:String, arrow:String, col:Array<FlxColor>) {

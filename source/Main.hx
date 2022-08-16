@@ -27,7 +27,7 @@ class Main extends Sprite
 	var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets
 	public static var fps:FPS;
 	
-	#if debug
+	#if (debug && !html5)
 	public static var debug:debugger.Local;
 	#end
 	public static var launchArguments:Array<String> = new Array<String>();
@@ -37,7 +37,7 @@ class Main extends Sprite
 
 	public static function main():Void
 	{
-		#if debug
+		#if (debug && !html5)
 		debug = new debugger.Local(false);
 		#end
 

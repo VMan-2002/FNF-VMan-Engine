@@ -10,10 +10,13 @@ import json2object.JsonParser;
 import lime.utils.Assets;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
-import sys.FileSystem;
-import sys.io.File;
 
 using StringTools;
+#if !html5
+import sys.FileSystem;
+import sys.io.File;
+#end
+
 #if polymod
 import polymod.backends.PolymodAssets;
 #end
@@ -127,9 +130,12 @@ class CoolUtil
 	}
 
 	public static function tryPathBoth(path:String, modName:String) {
+		#if !html5
 		if (FileSystem.exists(modName + "/" + path)) {
 			return File.getContent(modName + "/" + path);
-		} else if (Assets.exists("assets/" + path)) {
+		} else
+		#end
+		if (Assets.exists("assets/" + path)) {
 			return Assets.getText("assets/" + path);
 		}
 		return null;

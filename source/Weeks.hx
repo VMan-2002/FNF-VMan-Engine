@@ -1,6 +1,8 @@
 package;
+#if !html5
 import sys.FileSystem;
 import sys.io.File;
+#end
 
 using StringTools;
 

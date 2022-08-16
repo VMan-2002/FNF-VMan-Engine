@@ -21,8 +21,10 @@ using StringTools;
 import json2object.JsonParser;
 import polymod.Polymod.Framework;
 import polymod.Polymod;
+#if !html5
 import sys.FileSystem;
 import sys.io.File;
+#end
 #end
 
 
@@ -90,6 +92,7 @@ class FreeplayState extends MusicBeatState
 		
 		nextCategoryInt = 1;
 		
+		#if !html5
 		for (iathing in ModLoad.enabledMods) {
 			var parser = new JsonParser<SwagFreeplayFolders>();
 			//load it manually so it wont conflict with other mods!
@@ -157,6 +160,7 @@ class FreeplayState extends MusicBeatState
 				trace('not adding folder structure for $filelol');
 			}
 		}
+		#end
 		
 		if (Options.freeplayFolders) {
 			if (uncategorized.length > 0) {
@@ -180,7 +184,7 @@ class FreeplayState extends MusicBeatState
 			/*//if (StoryMenuState.weekUnlocked[6] || isDebug)
 			if (inFolder.length > 1) {
 				//todo: put an achievement here? when i implement achievemnets anyway
-				//name "Fired From The Office"
+				//name "when ur bad at office"
 				//description "How can you fail at folders!?"
 				categories.set(-4, [new SongMetadata('oof', 0, 'face', 1)]);
 				inFolder = [-1, -4]; //Yes, there's otherwise a crash when you have folders enabled, enter a song in a folder in freeplay, enter options, disable folders, exit options, then exit the song.

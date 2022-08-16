@@ -14,8 +14,10 @@ using StringTools;
 #if polymod
 import json2object.JsonParser;
 import openfl.utils.Assets as OpenFlAssets;
+#if !html5
 import sys.FileSystem;
 import sys.io.File;
+#end
 #end
 
 
@@ -773,6 +775,7 @@ class Character extends SpriteVMan
 	public static var charHealthIcons:Map<String, String> = new Map<String, String>();
 
 	public static function loadCharacterJson(name:String, mod:String) {
+		#if !html5
 		var thing:String = 'assets/objects/characters/${name}.json';
 		var thingMy:String = 'mods/${mod}/objects/characters/${name}.json';
 		var isMyMod = mod != "" && FileSystem.exists(thingMy);
@@ -784,6 +787,12 @@ class Character extends SpriteVMan
 			charHealthIcons.set('${mod}:${name}', loadedStuff.healthIcon);
 			return loadedStuff;
 		}
+		#else
+		var loadStr = Assets.getText('assets/objects/characters/${name}.json');
+		var loadedStuff:SwagCharacter = cast CoolUtil.loadJsonFromString(loadStr);
+		charHealthIcons.set('${mod}:${name}', loadedStuff.healthIcon);
+		return loadedStuff;
+		#end
 		return null;
 	}
 

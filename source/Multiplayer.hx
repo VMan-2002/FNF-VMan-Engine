@@ -1,6 +1,8 @@
 package;
 
+#if !html5
 import networking.Network;
+#end
 
 using StringTools;
 
