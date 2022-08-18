@@ -10,6 +10,7 @@ import flixel.util.FlxColor;
 class PlayStateChangesSubState extends OptionsSubStateBasic
 {
 	override function optionList() {
+		backSubState = 1;
 		return [
 			'Opponent Mode',
 			'Both Side Play',
