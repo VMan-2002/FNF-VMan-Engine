@@ -1,11 +1,13 @@
 Lua callbacks that are not implemented yet
 todo: implement these
 
-onInit()
+onInit(stateName)
 - runs when the lua script is loaded. not all variables have been set yet.
+= stateName: the name of the state being loaded
 
-onPostInit()
+onPostInit(stateName)
 - runs after the entire state has loaded.
+= stateName: the name of the state being loaded
 
 onLuaBroadcast(value, modName, path)
 - runs when another lua script calls luaBroadcast.
@@ -22,12 +24,16 @@ onPostUpdate(elapsed)
 - runs at the end of every frame.
 = elapsed: amount of time since the last frame
 
-onDestroy()
-- runs before exiting the state.
+onDestroy(stateName)
+- runs before exiting the state, after stuff gets unloaded.
+= stateName: the name of the state being unloaded
+
+onGameClosed()
+- runs when the game is closed.
 
 onFullscreen(value)
 - runs when fullscreen is toggled.
-= value: true if you're now in fullscreen, false otherwise 
+= value: true if you're now in fullscreen, false otherwise
 
 == PlayState specific
 
@@ -61,6 +67,11 @@ onCountdownStart()
 > return a number to wait for an amount of time, so you can play a custom countdown animation.
 > return false to prevent starting the countdown.
 
+onCountdownTick(num)
+- runs for each tick of the countdown.
+= num: the current tick of the countdown, 0-3 in order of 3, 2, 1, go.
+> return false to not display this tick.
+
 onSongStart()
 - runs when the countdown finishes and the song starts.
 
@@ -72,9 +83,17 @@ onUpdateModchart(elapsed)
 - same as onPostUpdate.
 - not called if modchart is disabled in options.
 
-onGameOver()
+onGameOverCheck()
 - called when the player takes fatal damage in some way.
 > return false to prevent death
+
+onGameOver()
+- called when the player dies.
+> return false to skip hide the game over screen.
+
+onPressSeven()
+- called when the player presses 7 to open the charting state.
+> return false to prevent the charting state from opening.
 
 onPause()
 - called when the player pauses the game.
@@ -127,5 +146,23 @@ onModFolderExited(modName)
 - runs when a main mod folder is exited in Freeplay menu.
 = modName: the name of the mod that was exited.
 
-onGenerateSongList()
+onFolderEntered(folderName, path, modName)
+- runs when a subfolder is entered in Freeplay menu.
+= folderName: the name of the subfolder that was entered.
+= path: the full path
+= modName: the name of the mod this folder belongs to.
+> return false to prevent entering the folder.
+
+onFolderExited(folderName, path, modName)
+- runs when a subfolder is exited in Freeplay menu.
+= folderName: the name of the subfolder that was exited.
+= path: the full path
+= modName: the name of the mod this folder belongs to.
+> return false to prevent exiting the folder.
+
+onGenerateSongList(list, folderPath, modName)
 - runs when the song list is generated in Freeplay, including when navigating folders.
+= list: the list of songs that will be generated.
+= folderPath: the full path of the folder that is being generated.
+= modName: the name of the mod this folder belongs to.
+> return a list of songs to override the song list.

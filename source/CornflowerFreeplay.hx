@@ -185,7 +185,9 @@ class CornflowerFreeplay {
 			default:
 				songComment.text = "";
 		}
+		icon.destroyChildren();
 		icon.changeCharacter(song.songCharacter, false, song.mod);
+		icon.addChildrenToScene();
 
 		songTitle.x = FlxG.width;
 		if (songNameTween != null) {

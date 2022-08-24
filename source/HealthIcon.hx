@@ -1,6 +1,7 @@
 package;
 
 import Character;
+import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import openfl.Assets;
@@ -23,6 +24,17 @@ typedef SwagHealthIcon = {
 	public var folderType:String;
 }
 
+typedef SwagHealthIconItem = {
+	public var name:String;
+	public var x:Float;
+	public var y:Float;
+	public var scale:Float;
+}
+
+typedef SwagMultiHealthIcon = {
+	public var items:Array<SwagHealthIconItem>;
+}
+
 class HealthIcon extends FlxSprite
 {
 	/**
@@ -33,10 +45,14 @@ class HealthIcon extends FlxSprite
 	public var sprTrackerY:Float;
 
 	public var attachToIcon:Bool;
+	public var children:Array<HealthIcon>;
+	public var isMultiIcon:Bool = false;
+	public var realScale:Float;
 	
 	public var myMod:String;
 	public var curCharacter:String;
 	public var folderType:String;
+	public var isPlayer:Bool;
 	
 	private final defaultStuff:Map<String, Array<Int>> = [
 		'bf' => [0, 1, 0],
@@ -69,6 +85,7 @@ class HealthIcon extends FlxSprite
 	{
 		super();
 		scrollFactor.set();
+		this.isPlayer = isPlayer;
 
 		changeCharacter(char, isPlayer, myMod);
 	}
@@ -86,11 +103,25 @@ class HealthIcon extends FlxSprite
 		
 		//first, find icon that belongs to the char's mod
 		var pathPrefix = 'mods/${myMod}/images/icons/';
+		var multiThingPathPrefix = 'mods/${myMod}/objects/multiHealthIcon/';
 		var path = '${pathPrefix}${char}';
-		/*if (!FileSystem.exists(path)) {
-			//if it doesn't exist
-			path = 'mods/${myMod}/images/icons/${char}';
-		}*/
+		var multiThingPath = '${multiThingPathPrefix}${char}.json';
+		if (FileSystem.exists(multiThingPath)) {
+			trace("multi icon found lets goooo");
+			var jsonData:Null<SwagMultiHealthIcon> = cast CoolUtil.loadJsonFromString(File.getContent(multiThingPath));
+			if (jsonData != null) {
+				//todo: this doesn't work yet
+				isMultiIcon = true;
+				visible = false;
+				for (thing in jsonData.items) {
+					addChild(thing.name, thing.x, thing.y, thing.scale);
+				}
+				folderType = children[0].folderType;
+				return;
+			}
+			trace("wait what");
+		}
+		isMultiIcon = false;
 		if (
 			#if !html5
 			FileSystem.exists('${path}.png')
@@ -197,6 +228,12 @@ class HealthIcon extends FlxSprite
 	public var hasLosing = true;
 	
 	public function setState(a:Int) {
+		if (isMultiIcon) {
+			for (thing in children) {
+				thing.setState(a);
+			}
+			return;
+		}
 		switch(a) {
 			case 1:
 			if (!hasLosing) {
@@ -210,18 +247,55 @@ class HealthIcon extends FlxSprite
 		animation.play(states[a]);
 	}
 
+	public function addChild(name:String, x:Float, y:Float, scale:Float) {
+		if (children == null) {
+			children = new Array<HealthIcon>();
+		}
+		var child = new HealthIcon(name, isPlayer, myMod);
+		child.sprTrackerX = x;
+		child.sprTrackerY = y;
+		child.realScale = scale;
+		child.sprTracker = this;
+		child.attachToIcon = true;
+		children.push(child);
+	}
+
+	override function destroy() {
+		destroyChildren();
+		super.destroy();
+	}
+
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
 		if (sprTracker != null) {
 			if (attachToIcon) {
-				scale.x = sprTracker.scale.x;
-				scale.y = sprTracker.scale.y;
+				scale.x = sprTracker.scale.x * realScale;
+				scale.y = sprTracker.scale.y * realScale;
 				setPosition((sprTracker.x + sprTrackerX) * scale.x, (sprTracker.y + sprTrackerY) * scale.y);
 			} else {
 				setPosition(sprTracker.x + sprTracker.width + 10 + sprTrackerX, (sprTracker.y - 30) + sprTrackerY);
 			}
+		}
+	}
+
+	public function addChildrenToScene() {
+		if (!isMultiIcon) {
+			return;
+		}
+		for (thing in children) {
+			FlxG.state.add(thing);
+		}
+	}
+
+	public function destroyChildren() {
+		if (!isMultiIcon) {
+			return;
+		}
+		for (thing in children) {
+			thing.destroy();
+			FlxG.state.remove(thing);
 		}
 	}
 

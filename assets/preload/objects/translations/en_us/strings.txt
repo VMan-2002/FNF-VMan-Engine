@@ -168,6 +168,7 @@ charteditor_mute instrumental::Mute Instrumental\n(in editor)
 charteditor_section number::Section: #0
 charteditor_step number::Step: #0
 charteditor_snap mult::Snap mult ##1: #0
+charteditor_layer number::Layer: #0
 charteditor_note type::Note Type
 charteditor_notetype_normal note::Normal Note
 charteditor_notetype_hurt note::Hurt Note
