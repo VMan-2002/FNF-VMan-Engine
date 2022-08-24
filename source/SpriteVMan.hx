@@ -40,4 +40,12 @@ class SpriteVMan extends FlxSprite {
 	public inline function animStartsWith(start:String) {
 		return animation.name.startsWith(start);
 	}
+
+	public inline function copyAnimation(from:String, to:String) {
+		if (hasAnim(to) || !hasAnim(from)) {
+			return;
+		}
+		var old = animation.getByName(from);
+		animation.add(to, old.frames, old.frameRate, old.looped);
+	}
 }
