@@ -117,7 +117,7 @@ class Paths
 		return getSongPathThing(song, 'Inst');
 	}
 
-	inline static function getSongPathThing(song:String, type:String) {
+	inline static public function getSongPathThing(song:String, type:String) {
 		return 'songs:assets/songs/${Highscore.formatSong(song)}/${type}.$SOUND_EXT';
 	}
 
@@ -131,13 +131,19 @@ class Paths
 		return getPath('fonts/$key', FONT, null);
 	}
 
-	inline static public function getSparrowAtlas(key:String, ?library:String)
-	{
-		return FlxAtlasFrames.fromSparrow(image(key, library), file('images/$key.xml', library));
+	inline static public function getSparrowAtlas(key:String, ?library:String) {
+		getSparrowAtlasManual(key, key, library);
 	}
 
-	inline static public function getPackerAtlas(key:String, ?library:String)
-	{
-		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library), file('images/$key.txt', library));
+	inline static public function getSparrowAtlasManual(key:String, xml:String, ?library:String) {
+		return FlxAtlasFrames.fromSparrow(image(key, library), file('images/$xml.xml', library));
+	}
+
+	inline static public function getPackerAtlas(key:String, ?library:String) {
+		getPackerAtlasManual(key, key, library);
+	}
+
+	inline static public function getPackerAtlasManual(key:String, txt:String, ?library:String) {
+		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library), file('images/$txt.txt', library));
 	}
 }
