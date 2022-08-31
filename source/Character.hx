@@ -2,6 +2,7 @@ package;
 
 import Boyfriend;
 import CoolUtil;
+import ThingThatSucks.ErrorReportSubstate;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.animation.FlxBaseAnimation;
@@ -51,6 +52,21 @@ class Character extends SpriteVMan
 {
 	public static var nextId:Int = 0;
 	public static var activeArray:Array<Character>;
+	public static function findSuitableCharacter(name:String) {
+		var result:Character = activeArray[0];
+		for (guy in activeArray) {
+			if (guy.curCharacter == name) {
+				return guy;
+			} else if (guy.curCharacter.startsWith(name)) {
+				result = guy;
+			}
+		}
+		return result;
+	}
+	public static inline function findSuitableCharacterNum(name:String) {
+		return activeArray.indexOf(findSuitableCharacter(name));
+	}
+
 	public var thisId:Int = 0;
 
 	public var debugMode:Bool = false;
@@ -646,7 +662,7 @@ class Character extends SpriteVMan
 				try {
 					loadedStuff = loadCharacterJson(curCharacter, myMod);
 				} catch(e) {
-					trace("Error loading character "+curCharacter+": " + e.message);
+					ErrorReportSubstate.addError("Error loading character "+curCharacter+": " + e.message);
 				}
 				if (loadedStuff != null) {
 					trace('loaded custom char for ' + curCharacter);
@@ -751,8 +767,7 @@ class Character extends SpriteVMan
 		if (!hasMissAnims) {
 			var things = ["singUP", "singDOWN", "singLEFT", "singRIGHT"];
 			for (a in things) {
-				var old = animation.getByName(a);
-				animation.add(a+'miss', old.frames, old.frameRate, old.looped);
+				copyAnimation(a, a + "miss");
 			}
 		}
 
@@ -761,11 +776,11 @@ class Character extends SpriteVMan
 		}
 		
 		if (frames == null) {
-			trace('INVALID SPRITE SHEET for $curCharacter');
+			ErrorReportSubstate.addError('INVALID SPRITE SHEET for $curCharacter');
 		}
 		
 		if (animation.curAnim == null) {
-			trace("Animation for char "+curCharacter+" is null somehow! This will cause a crash!");
+			ErrorReportSubstate.addError("Animation for char "+curCharacter+" is null somehow! This will cause a crash!");
 		}
 		
 		danceType = hasAnim("danceLeft");

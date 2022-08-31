@@ -149,7 +149,8 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			vmanEventTime: null,
 			vmanEventOrder: new Array<Int>(),
 			vmanEventData: null,
-			hide_girlfriend: false
+			hide_girlfriend: false,
+			moreStrumLines: 0
 		};
 		var noteDataArr:Array<Float> = isGHL ? [3, 4, 5, 0, 1, 0, 0, 0, 2] : [0, 1, 2, 3, 4, 5, 0, 0];
 		var noteTypeArr:Array<Int> = [0, 0, 0];
@@ -165,7 +166,8 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			gfSection: false,
 			focusCharacter: null,
 			changeMania: false,
-			maniaStr: null
+			maniaStr: null,
+			notesMoreLayers: null
 		};
 		song.notes.push(newSection);
 		var curSection:String = "";

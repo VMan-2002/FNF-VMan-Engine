@@ -17,13 +17,15 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 	
 	public static var nextId:Int;
 	public static var activeArray:Array<StrumLine>;
-	public static var x:Float;
-	public static var y:Float;
+	public var x:Float;
+	public var y:Float;
+	public var scale:Float;
 	
-	public function new(?mania:SwagMania, ?xPos:Float, ?yPos:Float) {
+	public function new(?mania:SwagMania, ?xPos:Float, ?yPos:Float, ?scale:Float = 1) {
 		super();
 		x = xPos;
 		y = yPos;
+		this.scale = scale;
 		if (mania == null) {
 			return;
 		}
@@ -35,19 +37,18 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 		while (members.length > 1) {
 			members.pop().destroy();
 		}
-		var left:Float = ((thisManiaInfo.spacing) * (thisManiaInfo.keys - 1)) / 2;
+		var left:Float = ((thisManiaInfo.spacing) * (thisManiaInfo.keys - 1) * scale) / 2;
 		for (i in 0...thisManiaInfo.keys) {
 			// FlxG.log.add(i);
 			var style = PlayState.SONG.noteSkin;
-			var babyArrow:StrumNote = new StrumNote(x, y, i, style);
+			var babyArrow:StrumNote = new StrumNote(x, y, i, style, this);
 			
-			babyArrow.x += ((thisManiaInfo.spacing) * i);
+			babyArrow.x += ((thisManiaInfo.spacing) * i) * scale;
 			babyArrow.x -= left;
 
 			babyArrow.updateHitbox();
 			babyArrow.scrollFactor.set();
 			babyArrow.visible = babyArrow.visible && !Options.invisibleNotes;
-			babyArrow.parent = this;
 
 			if (!PlayState.isStoryMode && PlayState.instance.startingSong) {
 				babyArrow.y -= 10;

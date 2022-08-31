@@ -3,6 +3,7 @@ package;
 import Character.SwagCharacterAnim;
 import CoolUtil;
 import ManiaInfo.SwagMania;
+import ThingThatSucks.ErrorReportSubstate;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxMath;
@@ -46,7 +47,7 @@ class SwagNoteSkin {
 		}*/
 		noteSkin = parser.fromJson(CoolUtil.tryPathBoth('objects/noteskins/${name}.json', modName));
 		if (noteSkin == null) {
-			trace("Could not load note skin " + name);
+			ErrorReportSubstate.addError("Could not load note skin " + name);
 			return null;
 		}
 		noteSkin.scale = noteSkin.scale != null ? noteSkin.scale : 1.0;
@@ -98,7 +99,7 @@ class SwagUIStyle {
 		var uiStyle:SwagUIStyle;
 		uiStyle = parser.fromJson(CoolUtil.tryPathBoth('objects/uiStyles/${name}.json', modName));
 		if (uiStyle == null) {
-			trace('failed to load ui style ${modName}:${name}');
+			ErrorReportSubstate.addError('failed to load ui style ${modName}:${name}');
 			return null;
 		}
 		uiStyle.three = uiStyle.three != null ? uiStyle.three : "";
@@ -150,6 +151,8 @@ class SwagNoteType {
 	public var guitar:Null<Bool>;
 	public var guitarOpen:Null<Bool>;
 	public var guitarHopo:Null<Bool>;
+	public var characterName:Null<String>;
+	public var characterNum:Null<Int>;
 
 	public static function loadNoteType(name:String, modName:String) {
 		if (Note.loadedNoteTypes.exists('${modName}:${name}')) {
@@ -162,7 +165,7 @@ class SwagNoteType {
 			if (name == "Normal Note") {
 				throw 'Tried to load a nonexistant note type and normal note couldn\'t be loaded instead';
 			}
-			trace('failed to load notetype ${modName}:${name}, loading normal note instead');
+			ErrorReportSubstate.addError('failed to load notetype ${modName}:${name}, loading normal note instead');
 			return loadNoteType("Normal Note", modName); //a valid note type must be loaded!
 		}
 		noteType.healthHit = noteType.healthHit != null ? noteType.healthHit : 0.0475;
@@ -174,13 +177,16 @@ class SwagNoteType {
 		noteType.healthMaxMult = noteType.healthMaxMult != null ? noteType.healthMaxMult : 1;
 		noteType.ignoreMiss = noteType.ignoreMiss != null ? noteType.ignoreMiss : false;
 		noteType.imagePrefix = noteType.imagePrefix != null ? noteType.imagePrefix : "";
-		noteType.animPostfix = noteType.animPostfix != null ? noteType.animPostfix : "";
-		noteType.animReplace = noteType.animReplace != null ? noteType.animReplace : "";
+		noteType.animPostfix = noteType.animPostfix != "" ? noteType.animPostfix : null;
+		noteType.animReplace = noteType.animReplace != "" ? noteType.animReplace : null;
 		noteType.bob = noteType.bob != null ? noteType.bob : false;
 		noteType.glitch = noteType.glitch != null ? noteType.glitch : false;
 		noteType.guitar = Options.playstate_guitar || (noteType.guitar != null ? noteType.guitar : false);
 		noteType.guitarOpen = noteType.guitarOpen != null ? noteType.guitarOpen && !noteType.guitar : false;
 		noteType.guitarHopo = noteType.guitarHopo != null ? noteType.guitarHopo : false;
+		if (noteType.characterName != null && noteType.characterName != "") {
+			noteType.characterNum = Character.findSuitableCharacterNum(noteType.characterName);
+		}
 		trace('loaded notetype ${modName}:${name}');
 		Note.loadedNoteTypes.set('${modName}:${name}', noteType);
 		return noteType;
@@ -212,6 +218,7 @@ class Note extends FlxSprite
 
 	public var maniaPart:Int = 0;
 	public var maniaFract:Float = 0;
+	public var strumLineNum:Int = 0;
 
 	public static var loadedNoteSkins:Map<String, SwagNoteSkin> = new Map<String, SwagNoteSkin>();
 	public static var loadedUIStyles:Map<String, SwagUIStyle> = new Map<String, SwagUIStyle>();
@@ -235,7 +242,7 @@ class Note extends FlxSprite
 
 	public static var swagWidth:Float = 160 * 0.7;
 
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?mania:SwagMania, ?noteType:Int = 0)
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?mania:SwagMania, ?noteType:Int = 0, ?strumLineNum:Int = 0)
 	{
 		super();
 
@@ -332,6 +339,8 @@ class Note extends FlxSprite
 				antialiasing = noteSkin.antialias;
 				scale.x = noteSkin.scale;
 		}
+
+		this.strumLineNum = strumLineNum;
 		
 		scale.x *= mania.scale;
 		scale.y = scale.x;

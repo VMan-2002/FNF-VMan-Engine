@@ -70,7 +70,7 @@ class HudThing extends FlxGroup
 				case "accSimple":
 					text += Translation.getTranslation("hud_accsimple", "playstate", [trimNoPercent(PlayState.instance.songHits / noteThing)]);
 				case "accRating":
-					text += Translation.getTranslation("hud_accrating", "playstate", [trimNoPercent(PlayState.instance.songScore / (noteThing * 350))]);
+					text += Translation.getTranslation("hud_accrating", "playstate", [trimNoPercent(PlayState.instance.songScore / ((noteThing * 350) + PlayState.instance.possibleMoreScore))]);
 				case "fc":
 					if (PlayState.instance.songMisses >= 10) {
 						text += Translation.getTranslation("fc_clear", "playstate");

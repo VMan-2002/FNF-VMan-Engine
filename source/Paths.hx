@@ -132,7 +132,7 @@ class Paths
 	}
 
 	inline static public function getSparrowAtlas(key:String, ?library:String) {
-		getSparrowAtlasManual(key, key, library);
+		return getSparrowAtlasManual(key, key, library);
 	}
 
 	inline static public function getSparrowAtlasManual(key:String, xml:String, ?library:String) {
@@ -140,7 +140,7 @@ class Paths
 	}
 
 	inline static public function getPackerAtlas(key:String, ?library:String) {
-		getPackerAtlasManual(key, key, library);
+		return getPackerAtlasManual(key, key, library);
 	}
 
 	inline static public function getPackerAtlasManual(key:String, txt:String, ?library:String) {

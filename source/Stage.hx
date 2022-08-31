@@ -3,6 +3,7 @@ package;
 import Character.SwagCharacterAnim;
 import Character;
 import Paths;
+import ThingThatSucks.ErrorReportSubstate;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import lime.utils.Assets;
@@ -102,7 +103,7 @@ class Stage
 		#end
 		}
 		//the void
-		trace("No stage found, you'll be put in the void >:)");
+		ErrorReportSubstate.addError("No stage found for "+name+", you'll be put in the void");
 		return {
 			charPosition: [[770, 100], [100, 100], [400, 130]],
 			defaultCamZoom: 1.05,

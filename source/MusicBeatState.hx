@@ -7,6 +7,7 @@ import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.ui.FlxUIState;
 import flixel.math.FlxRect;
 import flixel.util.FlxTimer;
+import openfl.events.KeyboardEvent;
 
 class MusicBeatState extends FlxUIState
 {
@@ -110,12 +111,32 @@ class MusicBeatState extends FlxUIState
 			//Stage
 			luaScripts.push(new LuaScript('mods/${ModLoad.primaryMod}/objects/stages/${PlayState.curStage}'));
 		}*/
+		//addKeyboardCallbacks();
+	}
+
+	inline function addKeyboardCallbacks() {
+		FlxG.stage.addEventListener("onKeyDown", luaPressKey);
+		FlxG.stage.addEventListener("onKeyUp", luaReleaseKey);
 	}
 
 	public function runLuaCallback(name:String, ?args:Null<Array<Dynamic>>) {
 		for (luaThing in luaScripts) {
 			luaThing.runFunction(name, args);
 		}
+	}
+
+	public function luaPressKey(ev:KeyboardEvent) {
+		runLuaCallback("onKeyPressed", [ev.keyCode, ev.charCode]);
+	}
+
+	public function luaReleaseKey(ev:KeyboardEvent) {
+		runLuaCallback("onKeyReleased", [ev.keyCode, ev.charCode]);
+	}
+
+	public override function destroy() {
+		FlxG.stage.removeEventListener("onKeyDown", luaPressKey);
+		FlxG.stage.removeEventListener("onKeyUp", luaReleaseKey);
+		super.destroy();
 	}
 	#end
 }

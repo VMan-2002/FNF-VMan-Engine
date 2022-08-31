@@ -6,8 +6,7 @@ import sys.io.File;
 
 using StringTools;
 
-typedef SwagWeek =
-{
+typedef SwagWeek = {
 	var songs:Array<String>;
 	var title:String;
 	var name:String;
@@ -19,8 +18,7 @@ typedef SwagWeek =
 	var modName:String;
 }
 
-class Weeks //we REALYL gettin in the deep stuff!
-{
+class Weeks { //we REALYL gettin in the deep stuff!
 	inline function EmptyThing(a:Null<String>):Null<String> {
 		return a == "" ? null : a;
 	}
@@ -68,6 +66,7 @@ class Weeks //we REALYL gettin in the deep stuff!
 			}
 		}
 		haxe.ds.ArraySort.sort(weeks, function(a, b) {return SortWeeks(a, b);});
+		trace(weeks);
 		return weeks;
 	}
 	

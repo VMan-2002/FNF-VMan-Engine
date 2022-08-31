@@ -35,6 +35,16 @@ onFullscreen(value)
 - runs when fullscreen is toggled.
 = value: true if you're now in fullscreen, false otherwise
 
+onKeyPressed(key, char)
+- runs when a key is pressed.
+= key: id of the key
+= char: char code of the key
+
+onKeyReleased(key, char)
+- runs when a key is released.
+= key: id of the key
+= char: char code of the key
+
 == PlayState specific
 
 onNoteHit(id, notedata, noteType, mustPress, character)
@@ -135,7 +145,7 @@ onAccept(n, name)
 > return false to prevent selection.
 
 onCancel()
-- runs when the player presses Cancel.
+- runs when the player presses Cancel (aka Back).
 > return false to prevent cancellation.
 
 onModFolderEntered(modName)

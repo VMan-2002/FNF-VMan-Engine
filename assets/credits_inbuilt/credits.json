@@ -1,22 +1,36 @@
 {
 	"credits": [
 		{"order": 1, "name": "VMan_2002", "description": "Main developer of VMan Engine", "link": "twitter.com/vman_2002", "funny": [
-			"\"vman texting but with words\""
-		], "icon":"vman_credit"},
+			"\"vman texting but with words\"",
+			"hi",
+			"the the"
+		], "icon":"credits/vman"},
 		{"order": 2, "name": "Hyuponia", "link": "twitter.com/ruins_of", "description": "Japanese translation", "funny": [
 			"God I love watr",
-			"this is my friend Vman, he can coding"
-		], "icon":"hyuponia_credit"},
+			"this is my friend Vman, he can coding",
+			"oh its me !"
+		], "icon":"credits/hyuponia"},
 		{"order": 3, "name": "AetherArchivist", "link": "", "description": "Mexican Spanish translation", "funny": [
 			"amongus burger",
-			"it's why vman exists, tf2 created australia"
-		], "icon":"aetherarchivist_credit"},
+			"it's why vman exists, tf2 created australia",
+			"i just realized holy shit this is long"
+		], "icon":"credits/aetherarchivist"},
 		{"order": 4, "name": "ThatAzazelFire", "link": "twitter.com/ThatAzazelFire", "description": "Week 6 losing icons", "funny": [
-			"Oka"
-		], "icon":"thatazazelfire_credit"},
-		{"order": 5, "name": "ninjamuffin99", "link": "https://twitter.com/ninja_muffin99", "description": "Programmer of Friday Night Funkin", "icon":"ninjamuffin_credit"},
-		{"order": 6, "name": "PhantomArcade", "link": "https://twitter.com/PhantomArcade3K", "description": "Animator of Friday Night Funkin", "icon":"phantomarcade_credit"},
-		{"order": 7, "name": "evilsk8r", "link": "https://twitter.com/evilsk8r", "description": "Artist of Friday Night Funkin", "icon":"evilsk8r_credit"},
-		{"order": 8, "name": "Kawai Sprite", "link": "https://twitter.com/kawaisprite", "description": "Composer of Friday Night Funkin", "icon":"kawaisprite_credit"}
+			"Oka",
+			"don't be shy",
+			"you put god eater on"
+		], "icon":"credits/thatazazelfire"},
+		{"order": 5, "name": "ninjamuffin99", "link": "twitter.com/ninja_muffin99", "description": "Programmer of Friday Night Funkin", "icon":"credits/ninjamuffin", "funny": [
+			"I think I only stuck with Haxeflixel because I really liked the logo"
+		]},
+		{"order": 6, "name": "PhantomArcade", "link": "twitter.com/PhantomArcade3K", "description": "Animator of Friday Night Funkin", "icon":"credits/phantomarcade", "funny": [
+			"Balls. Live"
+		]},
+		{"order": 7, "name": "evilsk8r", "link": "twitter.com/evilsk8r", "description": "Artist of Friday Night Funkin", "icon":"credits/evilsk8r", "funny": [
+			"awesomeness sauce"
+		]},
+		{"order": 8, "name": "Kawai Sprite", "link": "twitter.com/kawaisprite", "description": "Composer of Friday Night Funkin", "icon":"credits/kawaisprite", "funny": [
+			"new song next friday for no reason"
+		]}
 	]
 }

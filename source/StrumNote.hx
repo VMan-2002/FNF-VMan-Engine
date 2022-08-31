@@ -32,9 +32,10 @@ class StrumNote extends FlxSprite
 	
 	public var returnTime:Float = -60;
 
-	public function new(x:Float, y:Float, noteData:Int, style:String) {
+	public function new(x:Float, y:Float, noteData:Int, style:String, parent:StrumLine) {
 		super(x, y);
 		this.noteData = noteData;
+		this.parent = parent;
 		setStyle(style);
 		scrollFactor.set();
 	}
@@ -57,8 +58,8 @@ class StrumNote extends FlxSprite
 	}
 	
 	public function setStyle(style:String) {
-		myArrow = PlayState.curManiaInfo.arrows[noteData];
-		var myStrumArrow = ManiaInfo.StrumlineArrow[PlayState.curManiaInfo.arrows[noteData]];
+		myArrow = parent.thisManiaInfo.arrows[noteData];
+		var myStrumArrow = ManiaInfo.StrumlineArrow[myArrow];
 		curStyle = style;
 		switch(style) {
 			/*case "pixel":
@@ -115,7 +116,7 @@ class StrumNote extends FlxSprite
 				scale.x = noteSkin.scale;
 		}
 		
-		scale.x *= PlayState.curManiaInfo.scale;
+		scale.x *= parent.thisManiaInfo.scale * parent.scale;
 		scale.y = scale.x;
 		scrollFactor.set();
 		animation.play("static");

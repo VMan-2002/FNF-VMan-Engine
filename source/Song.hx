@@ -40,6 +40,8 @@ typedef SwagSong = {
 	var vmanEventData:Array<Dynamic>;
 
 	var hide_girlfriend:Null<Bool>;
+
+	var moreStrumLines:Int;
 }
 
 class Song {
