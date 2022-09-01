@@ -502,7 +502,7 @@ class PlayState extends MusicBeatState
 				bgGirls = new BackgroundDancer(-100, 190, "bgFreaks");
 				bgGirls.scrollFactor.set(0.9, 0.9);
 
-				if (SONG.actions.indexOf("bgFreaksAngry") > -1) {
+				if (SONG.actions.contains("bgFreaksAngry")) {
 					bgGirls.getScared();
 				}
 
@@ -1321,6 +1321,12 @@ class PlayState extends MusicBeatState
 			var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote, false, null, songNotes[3], layer == 0 ? (gottaHitNote ? 1 : 0) : layer + 1);
 			swagNote.sustainLength = songNotes[2];
 			swagNote.scrollFactor.set(0, 0);
+			if (((swagNote.getNoteTypeData().confused) || (allowGameplayChanges && Options.playstate_confusion && Math.random() <= 0.3)) && curManiaInfo.keys > 1) {
+				//swagNote.strumNoteNum = Math.floor(Math.random() * strumLines.members[swagNote.strumLineNum].thisManiaInfo.keys);
+				while (swagNote.strumNoteNum == swagNote.noteData) {
+					swagNote.strumNoteNum = Math.floor(Math.random() * curManiaInfo.keys);
+				}
+			}
 
 			var susLength:Float = swagNote.sustainLength;
 
@@ -1335,6 +1341,7 @@ class PlayState extends MusicBeatState
 
 				var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, oldNote, true, null, swagNote.noteType, swagNote.strumLineNum);
 				sustainNote.scrollFactor.set();
+				sustainNote.strumNoteNum = swagNote.strumNoteNum;
 				unspawnNotes.push(sustainNote);
 
 				sustainNote.mustPress = gottaHitNote;
@@ -1728,7 +1735,7 @@ class PlayState extends MusicBeatState
 				var strumNumber = daNote.strumLineNum;
 				//todo: i guess
 				var isInManiaChange:Bool = false; //currentManiaPartName[strumNumber] == maniaPartArr[daNote.maniaPart][strumNumber];
-				var daStrum:StrumNote = strumLines.members[strumNumber].members[isInManiaChange ? 0 : daNote.noteData];
+				var daStrum:StrumNote = strumLines.members[strumNumber].members[isInManiaChange ? 0 : daNote.strumNoteNum];
 				daNote.y = (daStrum.y - (Conductor.songPosition - daNote.strumTime) * speed);
 				daNote.x = daStrum.x;
 				if (isInManiaChange) {
@@ -1958,7 +1965,7 @@ class PlayState extends MusicBeatState
 
 	var endingSong:Bool = false;
 
-	private function popUpScore(daNote:Note):Void
+	private function popUpScore(daNote:Note):String
 	{
 		var strumtime:Float = daNote.strumTime;
 
@@ -1994,7 +2001,7 @@ class PlayState extends MusicBeatState
 			sicks += 1;
 			//todo: sometimes notesplashes are the wrong color
 			//todo: sometimes notesplashes crash.
-			//grpNoteSplashes.recycle(NoteSplash, NoteSplash.new).playNoteSplash(playerStrums.members[daNote.noteData]);
+			//grpNoteSplashes.recycle(NoteSplash, NoteSplash.new).playNoteSplash(playerStrums.members[daNote.strumNoteNum], daNote);
 		}
 		if (Options.botplay) {
 			usedBotplay = true;
@@ -2131,6 +2138,8 @@ class PlayState extends MusicBeatState
 		});
 
 		curSection += 1;
+
+		return daRating;
 	}
 
 	private function keyShit():Void
@@ -2279,8 +2288,9 @@ class PlayState extends MusicBeatState
 
 	function goodNoteHit(note:Note):Void {
 		if (!note.wasGoodHit) {
+			var rating = "sick";
 			if (!note.isSustainNote) {
-				popUpScore(note);
+				rating = popUpScore(note);
 				combo += 1;
 				songHits += 1;
 				lastHitNoteTime = note.strumTime;

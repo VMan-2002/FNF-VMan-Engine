@@ -115,7 +115,7 @@ class Highscore
 		return true;
 	}
 
-	public static function getModeString() {
+	public static function getModeString(?translated:Bool = false) {
 		var result = "";
 		if (Options.playstate_bothside) {
 			result += "Both";
@@ -127,6 +127,9 @@ class Highscore
 		}
 		if (Options.playstate_guitar) {
 			result += "Guitar";
+		}
+		if (Options.playstate_confusion) {
+			result += "Confusion";
 		}
 		return result;
 	}

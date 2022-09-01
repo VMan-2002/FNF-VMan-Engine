@@ -16,6 +16,7 @@ class PlayStateChangesSubState extends OptionsSubStateBasic
 			'Both Side Play',
 			'Endless Mode',
 			'Guitar Mode',
+			'Confusion',
 			'Clear'
 		];
 	}
@@ -30,8 +31,10 @@ class PlayStateChangesSubState extends OptionsSubStateBasic
 				return ["The song repeats forever!", Options.playstate_endless ? "Enabled" : "Disabled"];
 			case "guitar mode":
 				return ["Guitar Hero, basically. Hold the arrow key down and use square bracket keys to hit notes.", Options.playstate_guitar ? "Enabled" : "Disabled"];
+			case "confusion":
+				return ["Notes may sometimes appear visually in wrong lanes.", Options.playstate_confusion ? "Enabled" : "Disabled"];
 			case "clear":
-				var any = [Options.playstate_bothside, Options.playstate_opponentmode, Options.playstate_endless, Options.playstate_guitar].indexOf(true) != -1;
+				var any = [Options.playstate_bothside, Options.playstate_opponentmode, Options.playstate_endless, Options.playstate_guitar, Options.playstate_confusion].indexOf(true) != -1;
 				return ["Disable all currently enabled changes.", any ? "Not cleared" : "Cleared"];
 		}
 		return ["Unknown option.", name, 'unknownOption'];
@@ -48,14 +51,18 @@ class PlayStateChangesSubState extends OptionsSubStateBasic
 				Options.playstate_endless = !Options.playstate_endless;
 			case "guitar mode":
 				Options.playstate_guitar = !Options.playstate_guitar;
+			case "confusion":
+				Options.playstate_confusion = !Options.playstate_confusion;
 			case "clear":
 				Options.playstate_bothside = false;
 				Options.playstate_opponentmode = false;
 				Options.playstate_endless = false;
 				Options.playstate_guitar = false;
+				Options.playstate_confusion = false;
 			default:
 				trace("Tried to accept unknown option: " + name);
 		}
+		Options.updatePlayStateAny();
 		return true;
 	}
 }

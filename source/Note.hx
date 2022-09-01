@@ -153,6 +153,7 @@ class SwagNoteType {
 	public var guitarHopo:Null<Bool>;
 	public var characterName:Null<String>;
 	public var characterNum:Null<Int>;
+	public var confused:Null<Bool>;
 
 	public static function loadNoteType(name:String, modName:String) {
 		if (Note.loadedNoteTypes.exists('${modName}:${name}')) {
@@ -187,6 +188,7 @@ class SwagNoteType {
 		if (noteType.characterName != null && noteType.characterName != "") {
 			noteType.characterNum = Character.findSuitableCharacterNum(noteType.characterName);
 		}
+		noteType.confused = noteType.confused != null ? noteType.confused : false;
 		trace('loaded notetype ${modName}:${name}');
 		Note.loadedNoteTypes.set('${modName}:${name}', noteType);
 		return noteType;
@@ -219,6 +221,7 @@ class Note extends FlxSprite
 	public var maniaPart:Int = 0;
 	public var maniaFract:Float = 0;
 	public var strumLineNum:Int = 0;
+	public var strumNoteNum:Int = 0;
 
 	public static var loadedNoteSkins:Map<String, SwagNoteSkin> = new Map<String, SwagNoteSkin>();
 	public static var loadedUIStyles:Map<String, SwagUIStyle> = new Map<String, SwagUIStyle>();
@@ -263,6 +266,7 @@ class Note extends FlxSprite
 		this.strumTime = strumTime;
 
 		this.noteData = noteData;
+		strumNoteNum = noteData;
 
 		var daStage:String = PlayState.curStage;
 

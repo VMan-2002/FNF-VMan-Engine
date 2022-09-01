@@ -92,6 +92,12 @@ class Options
 	public static var playstate_bothside:Bool = false;
 	public static var playstate_endless:Bool = false;
 	public static var playstate_guitar:Bool = false;
+	public static var playstate_confusion:Bool = false;
+
+	public static var playstate_anychanges:Bool = false;
+	public static function updatePlayStateAny() {
+		playstate_anychanges = [playstate_opponentmode, playstate_bothside, playstate_endless, playstate_guitar, playstate_confusion, playstate_anychanges].contains(true);
+	}
 
 	//Controls stuff
 	public static var uiControls = new Map<String, Array<Int>>();
@@ -143,6 +149,7 @@ class Options
 		svd.data.playstate_bothside = playstate_bothside;
 		svd.data.playstate_endless = playstate_endless;
 		svd.data.playstate_guitar = playstate_guitar;
+		svd.data.playstate_confusion = playstate_confusion;
 		svd.close();
 	}
 	
@@ -173,10 +180,14 @@ class Options
 		showFPS = ifNotNull(svd.data.showFPS, showFPS);
 		resetButton = ifNotNull(svd.data.resetButton, resetButton);
 		
-		playstate_opponentmode = ifNotNull(playstate_opponentmode, playstate_opponentmode);
-		playstate_bothside = ifNotNull(playstate_bothside, playstate_bothside);
-		playstate_endless = ifNotNull(playstate_endless, playstate_endless);
-		playstate_guitar = ifNotNull(playstate_guitar, playstate_guitar);
+		playstate_opponentmode = ifNotNull(svd.data.playstate_opponentmode, playstate_opponentmode);
+		playstate_bothside = ifNotNull(svd.data.playstate_bothside, playstate_bothside);
+		playstate_endless = ifNotNull(svd.data.playstate_endless, playstate_endless);
+		playstate_guitar = ifNotNull(svd.data.playstate_guitar, playstate_guitar);
+		playstate_confusion = ifNotNull(svd.data.playstate_confusion, playstate_confusion);
+
+		updatePlayStateAny();
+		
 		/*var insertControls = new Map<String, Array<Array<Int>>>();
 		insertControls = ifNotNull(svd.data.controls, controls);
 		for (i in insertControls.keys()) {
