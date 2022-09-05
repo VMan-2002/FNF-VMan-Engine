@@ -496,25 +496,15 @@ class ChartingState extends MusicBeatState
 
 		var applyLength:FlxUIButton = new FlxUIButton(100, 10, Translation.getTranslation("Apply", "charteditor"));
 		Translation.setUIObjectFont(applyLength);
-
-		//todo: have real
-		var noteTypes = [
-			"Normal Note",
-			//"Hurt Note",
-			//"Death Note",
-			//"Warning Note",
-			//"Angel Note",
-			"Alt Animation",
-			//"Bob Note",
-			//"Glitch Note",
-			"Hey",
-			//"Death Warning Note",
-			"Guitar Note",
-			"Guitar Open Note",
-			"Guitar HOPO Note",
-			"Guitar Open HOPO Note"
-		];
-		var noteTypeSelect = new FlxUIDropDownMenu(10, 40, FlxUIDropDownMenu.makeStrIdLabelArray(noteTypes, true), function(character:String) {
+		
+		var noteTypes = CoolUtil.readDirectoryOptional("assets/objects/notetypes/");
+		for (i in ModLoad.enabledMods) {
+			noteTypes = noteTypes.concat(CoolUtil.readDirectoryOptional("mods/"+i+"/objects/notetypes/"));
+		}
+		noteTypes = noteTypes.map(function(a) {
+			return CoolUtil.trimFromEnd(a, ".json");
+		});
+		var noteTypeSelect = new FlxUIDropDownMenu(10, 40, FlxUIDropDownMenu.makeStrIdLabelArray(noteTypes), function(character:String) {
 			curNoteType = character;
 		});
 		//noteTypeSelect.resize(200, 20);
@@ -790,28 +780,19 @@ class ChartingState extends MusicBeatState
 		FlxG.watch.addQuick('daBeat', curBeat);
 		FlxG.watch.addQuick('daStep', curStep);
 
-		if (FlxG.mouse.justPressed)
-		{
-			if (FlxG.mouse.overlaps(curRenderedNotes))
-			{
-				curRenderedNotes.forEach(function(note:Note)
-				{
-					if (FlxG.mouse.overlaps(note))
-					{
-						if (FlxG.keys.pressed.CONTROL)
-						{
+		if (FlxG.mouse.justPressed) {
+			if (FlxG.mouse.overlaps(curRenderedNotes)) {
+				curRenderedNotes.forEach(function(note:Note) {
+					if (FlxG.mouse.overlaps(note)) {
+						if (FlxG.keys.pressed.CONTROL) {
 							selectNote(note);
-						}
-						else
-						{
+						} else {
 							trace('tryin to delete note...');
 							deleteNote(note);
 						}
 					}
 				});
-			}
-			else
-			{
+			} else {
 				if (FlxG.mouse.x > gridBG.x
 					&& FlxG.mouse.x < gridBG.x + gridBG.width
 					&& FlxG.mouse.y > gridBG.y
@@ -1206,7 +1187,7 @@ class ChartingState extends MusicBeatState
 			var daStrumTime = i[0];
 			var daSus = i[2];
 
-			var note:Note = new Note(daStrumTime, daNoteInfo % currentChartMania.keys);
+			var note:Note = new Note(daStrumTime, daNoteInfo % currentChartMania.keys, null, false, null, i.length > 3 ? i[3] : 0);
 			note.sustainLength = daSus;
 			note.setGraphicSize(GRID_SIZE, GRID_SIZE);
 			note.updateHitbox();
@@ -1215,14 +1196,13 @@ class ChartingState extends MusicBeatState
 
 			curRenderedNotes.add(note);
 
-			if (daSus > 0)
-			{
+			if (daSus > 0) {
 				var sustainVis:FlxSprite = new FlxSprite(note.x + (GRID_SIZE / 2),
 					note.y + GRID_SIZE).makeGraphic(8, Math.floor(FlxMath.remapToRange(daSus, 0, Conductor.stepCrochet * 16, 0, gridBG.height)));
 				curRenderedSustains.add(sustainVis);
-				if (i.length >= 4 && i[3] > 0) {
-					curRenderedNoteTypes.add(new FlxText(note.x, note.y, 8, i[3]).setFormat("vcr.ttf", 10, 0xffffffff, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE_FAST, 0xFF000000));
-				}
+			}
+			if (i.length >= 4 && i[3] > 0) {
+				curRenderedNoteTypes.add(new FlxText(note.x, note.y, 9, i[3]).setFormat("vcr.ttf", 10, 0xffffffff, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE_FAST, 0xFF000000));
 			}
 		}
 

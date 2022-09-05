@@ -140,4 +140,25 @@ class CoolUtil
 		}
 		return null;
 	}
+
+	public static function readDirectoryOptional(folder:String) {
+		if (FileSystem.exists(folder) && FileSystem.isDirectory(folder)) {
+			return FileSystem.readDirectory(folder);
+		}
+		return new Array<String>();
+	}
+
+	public static function trimFromStart(str:String, sub:String) {
+		if (str.startsWith(sub)) {
+			return str.substr(sub.length);
+		}
+		return str;
+	}
+
+	public static function trimFromEnd(str:String, sub:String) {
+		if (str.endsWith(sub)) {
+			return str.substr(0, str.length - sub.length);
+		}
+		return str;
+	}
 }

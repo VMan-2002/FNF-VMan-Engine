@@ -12,17 +12,29 @@ class SpriteVMan extends FlxSprite {
 
 		if (animOffsets.exists(AnimName)) {
 			var daOffset = animOffsets.get(AnimName);
-			offset.set(daOffset[0], daOffset[1]);
-			if (flipX) {
+			offset.set(daOffset[flipX ? 2 : 0], daOffset[1]);
+			/*if (flipX) {
 				//todo: this needs work
 				var framewidth = frames.frames[animation.curAnim.curFrame].sourceSize.x;
 				offset.x = (framewidth * scale.x) - offset.x;
-			}
+			}*/
 		}
 	}
 
 	public function addOffset(name:String, x:Float = 0, y:Float = 0) {
-		animOffsets[name] = [x, y];
+		animOffsets[name] = [x, y, -x];
+	}
+
+	public function generateFlipOffsets() {
+		var referenceAnimName = ["idle", "danceLeft", "danceRight"].filter(hasAnim)[0];
+		if (referenceAnimName == null) {
+			referenceAnimName = animation.getNameList()[0];
+		}
+		var referenceFrameWidth = frames.frames[animation.getByName(referenceAnimName).frames[0]].frame.width;
+		for (thing in animOffsets.keys()) {
+			var thisFrameWidth = frames.frames[animation.getByName(thing).frames[0]].frame.width;
+			animOffsets[thing][2] = animOffsets[thing][0] + thisFrameWidth - referenceFrameWidth;
+		}
 	}
 
 	public function hasAnim(animname:String) {
@@ -47,5 +59,6 @@ class SpriteVMan extends FlxSprite {
 		}
 		var old = animation.getByName(from);
 		animation.add(to, old.frames, old.frameRate, old.looped);
+		animOffsets[to] = animOffsets[from];
 	}
 }

@@ -41,6 +41,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import flixel.util.FlxStringUtil;
 import flixel.util.FlxTimer;
+import flixel.util.typeLimit.OneOfTwo;
 import haxe.Json;
 import haxe.ds.ArraySort;
 import lime.utils.Assets;
@@ -198,6 +199,8 @@ class PlayState extends MusicBeatState
 
 	public var voicesName:String = "Voices";
 	public var instName:String = "Inst";
+
+	public var notesCanBeHit = true;
 
 	//Scripting funny lol
 	//The only hscript your getting is me porting the basegame update's hscript support
@@ -646,17 +649,6 @@ class PlayState extends MusicBeatState
 
 		gf.scrollFactor.set(0.95, 0.95);
 		
-		if (customStageCharPos != null) {
-			for (i in 0...Character.activeArray.length) {
-				if (customStageCharPos.length <= i) {
-					break;
-				}
-				var char:Character = Character.activeArray[i];
-				char.x = customStageCharPos[i][0];
-				char.y = customStageCharPos[i][1];
-			}
-		}
-		
 		boyfriend.applyPositionOffset();
 		
 		dad.applyPositionOffset();
@@ -730,8 +722,22 @@ class PlayState extends MusicBeatState
 		if (SONG.moreCharacters != null && SONG.moreCharacters.length > 0) {
 			trace('Adding ${SONG.moreCharacters.length} extra characters');
 			for (i in SONG.moreCharacters) {
-				var position = 
 				add(new Character(0, 0, i, false, modName)); //these are also automatically put into Character.activeArray, so it's ok that they're not assigned to variables here
+			}
+		}
+		
+		if (customStageCharPos != null) {
+			for (i in 0...Character.activeArray.length) {
+				if (customStageCharPos.length <= i) {
+					break;
+				}
+				var char:Character = Character.activeArray[i];
+				char.x = customStageCharPos[i][0];
+				char.y = customStageCharPos[i][1];
+				if (i > 2) {
+					char.dance();
+				}
+				char.applyPositionOffset();
 			}
 		}
 
@@ -798,7 +804,7 @@ class PlayState extends MusicBeatState
 		healthBarSides[3] += healthBarSides[1];
 		healthBarSides[2] += healthBarSides[0];
 
-		healthBar = new FlxBar(healthBarBG.x + healthBarSides[0], healthBarBG.y + healthBarSides[1], RIGHT_TO_LEFT, Std.int(healthBarBG.width - healthBarSides[2]), Std.int(healthBarBG.height - healthBarSides[3]), this,
+		healthBar = new FlxBar(healthBarBG.x + healthBarSides[0], healthBarBG.y + healthBarSides[1], RIGHT_TO_LEFT, Std.int(healthBarBG.width - (healthBarSides[0] + healthBarSides[2])), Std.int(healthBarBG.height - (healthBarSides[1] + healthBarSides[3])), this,
 			'health', 0, 2);
 		healthBar.scrollFactor.set();
 		//healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
@@ -1698,6 +1704,7 @@ class PlayState extends MusicBeatState
 				dunceNote.scale.x *= scaleThing;
 				dunceNote.scale.y *= scaleThing;
 				notes.add(dunceNote);
+				onSpawnNote(dunceNote);
 				if (unspawnNotes.length <= 0) {
 					break;
 				}
@@ -1809,6 +1816,10 @@ class PlayState extends MusicBeatState
 			endSong();
 		#end
 	}
+	public function onSpawnNote(dunceNote:Note) {
+		
+	}
+
 
 	public function camFollowSetOnCharacter(char:Character) {
 		if (char == dad) {
@@ -2372,7 +2383,8 @@ class PlayState extends MusicBeatState
 				isBoyfriend = !isBoyfriend;
 			}
 		}
-		var char:Character = isBoyfriend ? boyfriend : dad;
+		var noteTypeData = note.getNoteTypeData();
+		var char:Character = noteTypeData.characterNum >= 0 ? Character.activeArray[noteTypeData.characterNum] : (isBoyfriend ? boyfriend : dad);
 		if (isMiss) {
 			return char.playAnim('sing${ManiaInfo.Dir[curManiaInfo.arrows[note == null ? noteData : note.noteData]]}miss', true);
 		}
@@ -2382,7 +2394,6 @@ class PlayState extends MusicBeatState
 		}
 		var anim = 'sing${ManiaInfo.Dir[curManiaInfo.arrows[note == null ? noteData : note.noteData]]}';
 		var defaultAnim = anim;
-		var noteTypeData = note.getNoteTypeData();
 		if (noteTypeData.animReplace != null) {
 			anim = noteTypeData.animReplace;
 		}
