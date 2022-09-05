@@ -79,7 +79,7 @@ class HealthIcon extends FlxSprite
 		'monster-christmas' => [19, 20, 19]
 	];
 
-	var iconOffsets:Array<Float> = [0, 0];
+	public var iconOffsets:Array<Float> = [0, 0];
 
 	public function new(char:String = 'bf', isPlayer:Bool = false, ?myMod:String = "")
 	{
@@ -189,12 +189,13 @@ class HealthIcon extends FlxSprite
 					hasWinning = false;
 					hasLosing = false;
 				}
-				iconOffsets[0] = (width - 150) / 2;
-				iconOffsets[1] = iconOffsets[0];
+				iconOffsets[0] = (width - 150) * 0.5;
+				iconOffsets[1] = 0;
+				//origin.x += 75;
+				//origin.y += 75;
 				//if (isPlayer) {
 				//	iconOffsets[0] = width - iconOffsets[0];
 				//}
-				updateHitbox();
 			}
 			if (isJson && jsonData != null) { //i have to do that or else compiler says no. brugh
 				antialiasing = jsonData.antialias != false;
@@ -204,7 +205,9 @@ class HealthIcon extends FlxSprite
 				antialiasing = true;
 				folderType = "";
 			}
-			return animation.play("neutral");
+			animation.play("neutral");
+			updateHitbox();
+			return;
 		} else {
 			trace('using inbuilt health icon for ${char}');
 		}

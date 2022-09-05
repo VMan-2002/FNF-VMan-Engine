@@ -124,6 +124,10 @@ class SwagUIStyle {
 		uiStyle.comboSpacing = uiStyle.comboSpacing != null ? uiStyle.comboSpacing : 43;
 		uiStyle.antialias = uiStyle.antialias != null ? uiStyle.antialias : true;
 		uiStyle.healthBarSides = uiStyle.healthBarSides != null ? uiStyle.healthBarSides : [4, 4, 4, 4];
+		if (uiStyle.healthBarSides.length <= 2) {
+			uiStyle.healthBarSides[2] = uiStyle.healthBarSides[0];
+			uiStyle.healthBarSides[3] = uiStyle.healthBarSides[1];
+		}
 		Note.loadedUIStyles.set('${modName}:${name}', uiStyle);
 		trace('loaded uistyle ${modName}:${name}');
 		return uiStyle;

@@ -95,6 +95,14 @@ class Character extends SpriteVMan
 	public var hasMissAnims:Bool = false;
 
 	public var misscolored:Bool = false;
+	public var realcolor(default, set):FlxColor;
+
+	public function set_realcolor(a:FlxColor) {
+		if (!misscolored) {
+			color = a;
+		}
+		return a;
+	}
 
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false, ?myMod:String = "") {
 		super(x, y);
@@ -782,6 +790,8 @@ class Character extends SpriteVMan
 		if (animation.curAnim == null) {
 			ErrorReportSubstate.addError("Animation for char "+curCharacter+" is null somehow! This will cause a crash!");
 		}
+
+		generateFlipOffsets();
 		
 		danceType = hasAnim("danceLeft");
 		dance();
@@ -854,7 +864,7 @@ class Character extends SpriteVMan
 
 		if (!hasMissAnims && misscolored && !animation.curAnim.name.endsWith('miss')) {
 			misscolored = false;
-			color = 0xffffff;
+			color = realcolor;
 		}
 
 		super.update(elapsed);
@@ -905,7 +915,7 @@ class Character extends SpriteVMan
 
 		if (!hasMissAnims && AnimName.endsWith("miss")) {
 			misscolored = true;
-			color = 0x2233aa;
+			color = 0x999aff;
 		}
 	}
 }

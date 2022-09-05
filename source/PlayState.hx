@@ -800,11 +800,11 @@ class PlayState extends MusicBeatState
 		}
 		add(healthBarBG);
 
-		var healthBarSides:Array<Float> = validUIStyle ? currentUIStyle.healthBarSides : [4, 4, 4, 4];
+		var healthBarSides:Array<Float> = validUIStyle ? currentUIStyle.healthBarSides.copy() : [4, 4, 4, 4];
 		healthBarSides[3] += healthBarSides[1];
 		healthBarSides[2] += healthBarSides[0];
 
-		healthBar = new FlxBar(healthBarBG.x + healthBarSides[0], healthBarBG.y + healthBarSides[1], RIGHT_TO_LEFT, Std.int(healthBarBG.width - (healthBarSides[0] + healthBarSides[2])), Std.int(healthBarBG.height - (healthBarSides[1] + healthBarSides[3])), this,
+		healthBar = new FlxBar(healthBarBG.x + healthBarSides[0], healthBarBG.y + healthBarSides[1], RIGHT_TO_LEFT, Std.int(healthBarBG.width - healthBarSides[2]), Std.int(healthBarBG.height - healthBarSides[3]), this,
 			'health', 0, 2);
 		healthBar.scrollFactor.set();
 		//healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
@@ -844,6 +844,9 @@ class PlayState extends MusicBeatState
 		iconP2 = new HealthIcon(dad.healthIcon, false, modName);
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
+
+		iconP1.addChildrenToScene();
+		iconP2.addChildrenToScene();
 		
 		add(hudThings);
 
@@ -1552,16 +1555,13 @@ class PlayState extends MusicBeatState
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
 
-		iconP1.setGraphicSize(Std.int(FlxMath.lerp(150, iconP1.width, 0.50)));
-		iconP2.setGraphicSize(Std.int(FlxMath.lerp(150, iconP2.width, 0.50)));
-
-		iconP1.updateHitbox();
-		iconP2.updateHitbox();
+		var iconScaleMove2 = 25 * elapsed;
+		iconP1.scale.set(FlxMath.lerp(iconP1.scale.x, 1, iconScaleMove2), FlxMath.lerp(iconP1.scale.y, 1, iconScaleMove2));
+		iconP2.scale.set(FlxMath.lerp(iconP2.scale.x, 1, iconScaleMove2), FlxMath.lerp(iconP2.scale.y, 1, iconScaleMove2));
 
 		var iconOffset:Int = 26;
-
 		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
-		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (150 - iconOffset);
 
 		if (healthBar.percent < 20) { //enemy winning
 			iconP1.setState(1);
@@ -1579,17 +1579,13 @@ class PlayState extends MusicBeatState
 			FlxG.switchState(new AnimationDebug(SONG.player2));
 		#end
 
-		if (startingSong)
-		{
-			if (startedCountdown)
-			{
+		if (startingSong) {
+			if (startedCountdown) {
 				Conductor.songPosition += FlxG.elapsed * 1000;
 				if (Conductor.songPosition >= 0)
 					startSong();
 			}
-		}
-		else
-		{
+		} else {
 			// Conductor.songPosition = FlxG.sound.music.time;
 			Conductor.songPosition += FlxG.elapsed * 1000;
 
@@ -1610,7 +1606,7 @@ class PlayState extends MusicBeatState
 			// Conductor.lastSongPos = FlxG.sound.music.time;
 		}
 
-		if (generatedMusic && SONG.notes[currentSection] != null) 	{
+		if (generatedMusic && SONG.notes[currentSection] != null) {
 			/*if (curBeat % 4 == 0)
 			{
 				// trace(PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection);
@@ -1624,8 +1620,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		if (camZooming)
-		{
+		if (camZooming) {
 			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, 0.95);
 			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, 0.95);
 		}
@@ -1634,8 +1629,7 @@ class PlayState extends MusicBeatState
 		FlxG.watch.addQuick("stepShit", curStep);
 
 		if (curSong == 'Fresh') {
-			switch (curBeat)
-			{
+			switch (curBeat) {
 				case 16:
 					camZooming = true;
 					gfSpeed = 2;
@@ -1652,8 +1646,7 @@ class PlayState extends MusicBeatState
 		}
 
 		if (curSong == 'Bopeebo') {
-			switch (curBeat)
-			{
+			switch (curBeat) {
 				case 128, 129, 130:
 					vocals.volume = 0;
 					// FlxG.sound.music.stop();
@@ -2040,14 +2033,6 @@ class PlayState extends MusicBeatState
 
 		var daRatingImg = (songMisses == 0 && shits == 0 && bads == 0 && goods == 0) ? 'sick-cool' : daRating;
 
-		rating.loadGraphic(Paths.image(validUIStyle ? currentUIStyle.ratings.get(daRatingImg) : pixelShitPart1 + daRatingImg + pixelShitPart2));
-		rating.screenCenter();
-		rating.x = coolText.x - 40;
-		rating.y -= 60;
-		rating.acceleration.y = 550;
-		rating.velocity.y -= FlxG.random.int(140, 175);
-		rating.velocity.x -= FlxG.random.int(0, 10);
-
 		var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(validUIStyle ? currentUIStyle.combo : pixelShitPart1 + 'combo' + pixelShitPart2));
 		comboSpr.screenCenter();
 		comboSpr.x = coolText.x;
@@ -2056,7 +2041,21 @@ class PlayState extends MusicBeatState
 
 		comboSpr.velocity.x += FlxG.random.int(1, 10);
 		add(comboSpr);
-		add(rating);
+
+		if (!Options.botplay) {
+			rating.loadGraphic(Paths.image(validUIStyle ? currentUIStyle.ratings.get(daRatingImg) : pixelShitPart1 + daRatingImg + pixelShitPart2));
+			rating.screenCenter();
+			rating.x = coolText.x - 40;
+			rating.y -= 60;
+			rating.acceleration.y = 550;
+			rating.velocity.y -= FlxG.random.int(140, 175);
+			rating.velocity.x -= FlxG.random.int(0, 10);
+			add(rating);
+
+			FlxTween.tween(rating, {alpha: 0}, 0.2, {
+				startDelay: Conductor.crochet * 0.001
+			});
+		}
 
 		if (validUIStyle) {
 			rating.scale.x = currentUIStyle.ratingScale;
@@ -2133,10 +2132,6 @@ class PlayState extends MusicBeatState
 
 		//coolText.text = Std.string(seperatedScore);
 		// add(coolText);
-
-		FlxTween.tween(rating, {alpha: 0}, 0.2, {
-			startDelay: Conductor.crochet * 0.001
-		});
 
 		FlxTween.tween(comboSpr, {alpha: 0}, 0.2, {
 			onComplete: function(tween:FlxTween) {
@@ -2546,14 +2541,8 @@ class PlayState extends MusicBeatState
 			camHUD.zoom += 0.03;
 		}
 
-		iconP1.setGraphicSize(Std.int(iconP1.width + 30));
-		iconP2.setGraphicSize(Std.int(iconP2.width + 30));
-
-		iconP1.updateHitbox();
-		iconP2.updateHitbox();
-
-		iconP1.addChildrenToScene();
-		iconP2.addChildrenToScene();
+		iconP1.scale.set(iconP1.scale.x * 1.2, iconP1.scale.y * 1.2);
+		iconP2.scale.set(iconP2.scale.x * 1.2, iconP2.scale.y * 1.2);
 
 		if (curBeat % gfSpeed == 0) {
 			gf.dance();
@@ -2643,6 +2632,8 @@ class PlayState extends MusicBeatState
 				camHUD.zoom += event[2];
 			case "Set GF Speed":
 				gf.moduloDances = event[1];
+			case "Voices Volume 0":
+				vocals.volume = 0;
 		}
 	}
 

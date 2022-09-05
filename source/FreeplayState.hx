@@ -379,6 +379,8 @@ class FreeplayState extends MusicBeatState
 			iconArray.push(icon);
 			add(icon);
 			icon.addChildrenToScene();
+			icon.iconOffsets[1] += icon.iconOffsets[0];
+			//todo: Changing vertical size of health icons doesnt display right in freeplay menu
 
 			// songText.x += 40;
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!

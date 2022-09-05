@@ -769,8 +769,7 @@ class ChartingState extends MusicBeatState
 			trace((_song.notes[curSection].lengthInSteps) * (curSection + 1));
 			trace('DUMBSHIT');
 
-			if (_song.notes[curSection + 1] == null)
-			{
+			if (_song.notes[curSection + 1] == null) {
 				addSection();
 			}
 
@@ -786,6 +785,9 @@ class ChartingState extends MusicBeatState
 					if (FlxG.mouse.overlaps(note)) {
 						if (FlxG.keys.pressed.CONTROL) {
 							selectNote(note);
+						} else if (FlxG.keys.pressed.ALT) {
+							selectNote(note);
+							curSelectedNote[3] = curNoteTypeArr.indexOf(curNoteType);
 						} else {
 							trace('tryin to delete note...');
 							deleteNote(note);
@@ -1129,15 +1131,15 @@ class ChartingState extends MusicBeatState
 	function updateGrid():Void
 	{
 		while (curRenderedNotes.members.length > 0) {
-			curRenderedNotes.members.shift().destroy();
+			curRenderedNotes.members.pop().destroy();
 		}
 
 		while (curRenderedSustains.members.length > 0) {
-			curRenderedSustains.members.shift().destroy();
+			curRenderedSustains.members.pop().destroy();
 		}
 
 		while (curRenderedNoteTypes.members.length > 0) {
-			curRenderedNoteTypes.members.shift().destroy();
+			curRenderedNoteTypes.members.pop().destroy();
 		}
 
 		if (_song.notes[curSection].sectionNotes == null) {
@@ -1161,19 +1163,16 @@ class ChartingState extends MusicBeatState
 		} else {
 			// get last bpm
 			var i:Int = curSection;
-			while (i > 0 && _song.notes[i].changeBPM != true)
+			while (i >= 0 && _song.notes[i].changeBPM != true)
 				i--;
 			Conductor.changeBPM(i < 0 ? _song.bpm : _song.notes[i].bpm);
 			trace("Using chart bpm of "+i+": "+Conductor.bpm);
 		}
 
 		/* // PORT BULLSHIT, INCASE THERE'S NO SUSTAIN DATA FOR A NOTE
-			for (sec in 0..._song.notes.length)
-			{
-				for (notesse in 0..._song.notes[sec].sectionNotes.length)
-				{
-					if (_song.notes[sec].sectionNotes[notesse][2] == null)
-					{
+			for (sec in 0..._song.notes.length) {
+				for (notesse in 0..._song.notes[sec].sectionNotes.length) {
+					if (_song.notes[sec].sectionNotes[notesse][2] == null) {
 						trace('SUS NULL');
 						_song.notes[sec].sectionNotes[notesse][2] = 0;
 					}
@@ -1181,13 +1180,13 @@ class ChartingState extends MusicBeatState
 			}
 		 */
 
-		for (i in sectionInfo)
-		{
+		for (pos in 0...sectionInfo.length) {
+			var i = sectionInfo[pos];
 			var daNoteInfo = i[1];
 			var daStrumTime = i[0];
 			var daSus = i[2];
 
-			var note:Note = new Note(daStrumTime, daNoteInfo % currentChartMania.keys, null, false, null, i.length > 3 ? i[3] : 0);
+			var note:Note = new Note(daStrumTime, Math.floor(daNoteInfo % currentChartMania.keys), null, false, null, i.length > 3 ? Math.floor(i[3]) : 0);
 			note.sustainLength = daSus;
 			note.setGraphicSize(GRID_SIZE, GRID_SIZE);
 			note.updateHitbox();
@@ -1202,7 +1201,7 @@ class ChartingState extends MusicBeatState
 				curRenderedSustains.add(sustainVis);
 			}
 			if (i.length >= 4 && i[3] > 0) {
-				curRenderedNoteTypes.add(new FlxText(note.x, note.y, 9, i[3]).setFormat("vcr.ttf", 10, 0xffffffff, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE_FAST, 0xFF000000));
+				curRenderedNoteTypes.add(new FlxText(note.x, note.y, 9, Math.floor(i[3])).setFormat("vcr.ttf", 10, 0xffffffff, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE_FAST, 0xFF000000));
 			}
 		}
 
@@ -1233,11 +1232,13 @@ class ChartingState extends MusicBeatState
 	}
 
 	function selectNote(note:Note):Void {
-		for (i in getSectionNotes()) {
+		/*for (i in getSectionNotes()) {
 			if (i.strumTime == note.strumTime && i.noteData % currentChartMania.keys == note.noteData) {
 				curSelectedNote = i;
 			}
-		}
+		}*/
+		//if you know the order of the notes, you don't need to search!
+		curSelectedNote = getSectionNotes()[curRenderedNotes.members.indexOf(note)];
 
 		updateGrid();
 		updateNoteUI();
