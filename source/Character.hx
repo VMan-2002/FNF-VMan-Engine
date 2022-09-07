@@ -95,7 +95,7 @@ class Character extends SpriteVMan
 	public var hasMissAnims:Bool = false;
 
 	public var misscolored:Bool = false;
-	public var realcolor(default, set):FlxColor;
+	public var realcolor(default, set):FlxColor = FlxColor.WHITE;
 
 	public function set_realcolor(a:FlxColor) {
 		if (!misscolored) {

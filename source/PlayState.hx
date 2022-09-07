@@ -659,20 +659,28 @@ class PlayState extends MusicBeatState
 
 		switch (SONG.player2)
 		{
-			case 'gf':
+			/*case 'gf':
 				dad.setPosition(gf.x, gf.y);
 				gf.visible = false;
 				if (isStoryMode)
 				{
 					camPos.x += 600;
 					tweenCamIn();
-				}
+				}*/
 			case 'dad':
 				camPos.x += 400;
 			case 'pico':
 				camPos.x += 600;
 			case 'senpai' | 'senpai-angry' | 'spirit':
 				camPos.set(dad.getGraphicMidpoint().x + 300, dad.getGraphicMidpoint().y);
+		}
+
+		if (dad.curCharacter.startsWith("gf") && gf != null && gf.alive) {
+			Character.activeArray[Character.activeArray.indexOf(dad)] = gf;
+			remove(dad);
+			dad.destroy();
+			dad = gf; //REPLACE THE BINCH
+			gf.moduloDances *= 2; //fix dances
 		}
 
 		// REPOSITIONING PER STAGE
