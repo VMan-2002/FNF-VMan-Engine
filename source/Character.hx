@@ -37,6 +37,7 @@ typedef SwagCharacter = {
 	public var cameraOffset:Null<Array<Float>>;
 	public var healthBarColor:Null<Array<Int>>;
 	public var animNoSustain:Null<Bool>;
+	public var isGirlfriend:Null<Bool>;
 }
 
 typedef SwagCharacterAnim = {
@@ -96,6 +97,8 @@ class Character extends SpriteVMan
 
 	public var misscolored:Bool = false;
 	public var realcolor(default, set):FlxColor = FlxColor.WHITE;
+
+	public var isGirlfriend = false;
 
 	public function set_realcolor(a:FlxColor) {
 		if (!misscolored) {
@@ -159,6 +162,7 @@ class Character extends SpriteVMan
 				playAnim('danceRight');
 
 				healthBarColor.setRGB(165, 0, 77);
+				isGirlfriend = true;
 			case 'gf-christmas':
 				tex = Paths.getSparrowAtlas('characters/gfChristmas');
 				frames = tex;
@@ -191,6 +195,7 @@ class Character extends SpriteVMan
 				playAnim('danceRight');
 
 				healthBarColor.setRGB(165, 0, 77);
+				isGirlfriend = true;
 			case 'gf-car':
 				tex = Paths.getSparrowAtlas('characters/gfCar');
 				frames = tex;
@@ -205,6 +210,7 @@ class Character extends SpriteVMan
 				playAnim('danceRight');
 
 				healthBarColor.setRGB(165, 0, 77);
+				isGirlfriend = true;
 			case 'gf-pixel':
 				tex = Paths.getSparrowAtlas('characters/gfPixel');
 				frames = tex;
@@ -224,6 +230,7 @@ class Character extends SpriteVMan
 				deathSound = 'fnf_loss_sfx-pixel';
 
 				healthBarColor.setRGB(165, 0, 77);
+				isGirlfriend = true;
 			case 'dad':
 				// DAD ANIMATION LOADING CODE
 				tex = Paths.getSparrowAtlas('characters/DADDY_DEAREST');
@@ -719,6 +726,7 @@ class Character extends SpriteVMan
 					if (loadedStuff.animNoSustain != null) {
 						this.animNoSustain = loadedStuff.animNoSustain;
 					}
+					this.isGirlfriend = loadedStuff.isGirlfriend == true;
 					playAnim(loadedStuff.initAnim);
 					antialiasing = loadedStuff.antialias != false;
 					successLoad = true;

@@ -675,7 +675,7 @@ class PlayState extends MusicBeatState
 				camPos.set(dad.getGraphicMidpoint().x + 300, dad.getGraphicMidpoint().y);
 		}
 
-		if (dad.curCharacter.startsWith("gf") && gf != null && gf.alive) {
+		if (dad.isGirlfriend && gf != null && gf.alive) {
 			Character.activeArray[Character.activeArray.indexOf(dad)] = gf;
 			remove(dad);
 			dad.destroy();
