@@ -1,6 +1,7 @@
 package;
 
 import Conductor.BPMChangeEvent;
+import flixel.FlxBasic;
 import flixel.FlxG;
 import flixel.FlxSubState;
 import flixel.addons.transition.FlxTransitionableState;
@@ -89,6 +90,13 @@ class MusicBeatState extends FlxUIState
 	public override function closeSubState() {
 		isSubStateActive = false;
 		super.closeSubState();
+	}
+
+	public function addOrReplace(old:FlxBasic, put:FlxBasic) {
+		if (members.contains(old)) {
+			return replace(old, put);
+		}
+		return add(put);
 	}
 	
 	//Script Stuff

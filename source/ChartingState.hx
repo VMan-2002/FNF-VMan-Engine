@@ -1201,7 +1201,7 @@ class ChartingState extends MusicBeatState
 				curRenderedSustains.add(sustainVis);
 			}
 			if (i.length >= 4 && i[3] > 0) {
-				curRenderedNoteTypes.add(new FlxText(note.x, note.y, 9, Math.floor(i[3])).setFormat("vcr.ttf", 10, 0xffffffff, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE_FAST, 0xFF000000));
+				curRenderedNoteTypes.add(new FlxText(note.x, note.y, 10, Math.floor(i[3])).setFormat("VCR OSD Mono", 10, 0xffffffff, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE_FAST, 0xFF000000));
 			}
 		}
 

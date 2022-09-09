@@ -36,6 +36,7 @@ class OptionsSubState extends OptionsSubStateBasic
 			"Show FPS",
 			"Audio On Miss",
 			"Reset Button",
+			"Note Camera Movement",
 			"Input Offset Calibrate",
 			"Exit Without Saving",
 			"Gameplay Changes"
@@ -106,6 +107,8 @@ class OptionsSubState extends OptionsSubStateBasic
 				return ["Toggle gameplay changes.", Highscore.getModeString()];
 			case "reset button":
 				return ["Press R to die during a song.", Options.resetButton ? "Enabled" : "Disabled"];
+			case "note camera movement":
+				return ["That thing that's in every FNF mod nowadays. The camera will move around depending on the notes.", Options.noteCamMovement ? "Enabled" : "Disabled"];
 		}
 		return ["Unknown option.", name, 'unknownOption'];
 	}
@@ -179,6 +182,8 @@ class OptionsSubState extends OptionsSubStateBasic
 				FlxG.state.closeSubState();
 				FlxG.state.openSubState(new PlayStateChangesSubState());
 				return false;
+			case "note camera movement":
+				Options.noteCamMovement = !Options.noteCamMovement;
 			case "reset button":
 				Options.resetButton = !Options.resetButton;
 			default:

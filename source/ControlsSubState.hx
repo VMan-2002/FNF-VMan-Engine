@@ -63,7 +63,7 @@ class ControlsSubState extends OptionsSubStateBasic
 
 	var presenceKeys = new Array<String>();
 
-	var keyNameText = new FlxText(0, 0, 800, "Key name").setFormat("vcr.ttf", 16, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+	var keyNameText = new FlxText(0, 0, 800, "Key name").setFormat("VCR OSD Mono", 16, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 	var controlKeyNames:Array<String> = [
 		"left",
 		"down",
@@ -77,7 +77,7 @@ class ControlsSubState extends OptionsSubStateBasic
 	];
 	var isChangingUIControls = false;
 
-	var tweens = new Array<FlxTween>();
+	//var tweens = new Array<FlxTween>();
 	var basePositions = new Array<Float>();
 	var arrowBump:Float = 0;
 
@@ -100,12 +100,12 @@ class ControlsSubState extends OptionsSubStateBasic
 		} else if (m < 0) {
 			m = ManiaInfo.AvailableMania.length - 1;
 		}
-		for (a in tweens) {
+		/*for (a in tweens) {
 			if (a == null) {
 				continue;
 			}
 			a.cancel();
-		}
+		}*/
 		ncSelMania = m;
 		ncManiaID = ManiaInfo.AvailableMania[m];
 		var maniastuff:SwagMania = ManiaInfo.GetManiaInfo(ncManiaID);
@@ -132,6 +132,7 @@ class ControlsSubState extends OptionsSubStateBasic
 		//ncManiaTitle.changeText(ManiaInfo.GetManiaName(maniastuff));
 		//ncManiaTitle.screenCenter(X);
 		grpNoteStuff.forEach(function(a:FlxSprite) {
+			FlxTween.cancelTweensOf(a);
 			a.destroy();
 		});
 		grpNoteStuff.members = [];
@@ -244,11 +245,12 @@ class ControlsSubState extends OptionsSubStateBasic
 		grpNoteStuff.members[ncSelectedNote].centerOffsets();
 		grpNoteStuff.members[ncSelectedNote].centerOrigin();
 		if (direction != 0) {
-			if (tweens[ncSelectedNote] != null) {
+			/*if (tweens[ncSelectedNote] != null) {
 				tweens[ncSelectedNote].cancel();
-			}
+			}*/
+			FlxTween.cancelTweensOf(grpNoteStuff.members[ncSelectedNote]);
 			grpNoteStuff.members[ncSelectedNote].x += direction;
-			tweens[ncSelectedNote] = FlxTween.tween(grpNoteStuff.members[ncSelectedNote], {x:basePositions[ncSelectedNote]}, 1.5, {ease:FlxEase.expoOut});
+			/*tweens[ncSelectedNote] =*/ FlxTween.tween(grpNoteStuff.members[ncSelectedNote], {x:basePositions[ncSelectedNote]}, 1.5, {ease:FlxEase.expoOut});
 		}
 		updateKeyNamePos();
 	}

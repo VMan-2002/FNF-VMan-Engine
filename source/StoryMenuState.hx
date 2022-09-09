@@ -76,6 +76,7 @@ class StoryMenuState extends MusicBeatState
 	var sprDifficulty:FlxSprite;
 	var leftArrow:FlxSprite;
 	var rightArrow:FlxSprite;
+	var modifierText:FlxText;
 
 	override function create()
 	{
@@ -99,12 +100,11 @@ class StoryMenuState extends MusicBeatState
 		txtWeekTitle.alpha = 0.7;
 
 		var rankText:FlxText = new FlxText(0, 10);
-		rankText.text = 'RANK: GREAT';
 		rankText.setFormat(scoreText.font, 32);
 		rankText.size = scoreText.size;
 		rankText.screenCenter(X);
 
-		var ui_tex = Paths.getSparrowAtlas('campaign_menu_UI_assets');
+		var ui_tex = Paths.getSparrowAtlas('menu/campaign_menu_UI_assets');
 		var yellowBG:FlxSprite = new FlxSprite(0, 56).makeGraphic(FlxG.width, 400, 0xFFF9CF51);
 
 		grpWeekText = new FlxTypedGroup<MenuItem>();
@@ -209,7 +209,13 @@ class StoryMenuState extends MusicBeatState
 		rightArrow.animation.play('idle');
 		difficultySelectors.add(rightArrow);
 
-		trace("Line 150");
+		modifierText = new FlxText(leftArrow.x + 20, rightArrow.y + rightArrow.height, 360, Highscore.getModeString(true), 24);
+		modifierText.font = scoreText.font;
+		modifierText.alignment = FlxTextAlign.RIGHT;
+
+		add(modifierText);
+
+		trace("Line 150 (not really)");
 
 		add(yellowBG);
 		add(grpWeekCharacters);
@@ -348,8 +354,9 @@ class StoryMenuState extends MusicBeatState
 		var newDifficultyName:String = CoolUtil.difficultyString(curDifficulty).toLowerCase();
 
 		if (!difficultyTextSprites.exists(newDifficultyName)) {
-			var a = new FlxSprite(leftArrow.x, leftArrow.y, Paths.image("menudifficulties/"+newDifficultyName));
-			a.offset.x = a.width / 2;
+			var a = new FlxSprite(0, leftArrow.y, Paths.image("menudifficulties/"+newDifficultyName));
+			a.screenCenter(X);
+			a.x += 430;
 			difficultyTextSprites.set(newDifficultyName, a);
 			trace("added sprite for " + newDifficultyName);
 		}

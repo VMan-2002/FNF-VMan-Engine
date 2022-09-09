@@ -121,6 +121,10 @@ class HealthIcon extends FlxSprite
 			}
 			trace("wait what");
 		}
+		if (!FileSystem.exists('${path}.png')) {
+			pathPrefix = "assets/images/icons/";
+			path = '${pathPrefix}${char}';
+		}
 		isMultiIcon = false;
 		if (
 			#if !html5

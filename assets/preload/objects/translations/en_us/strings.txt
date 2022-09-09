@@ -378,4 +378,11 @@ difficulty_guitar::Guitar
 difficulty_inst::Inst
 difficulty_piano::Piano
 
+modifier_guitar::Guitar
+modifier_both::Both
+modifier_opponent::Opponent
+modifier_confusion::Confusion
+modifier_endless::Endless
+modifier_seperator::
+
 playstate_hud_combo::Combo:#0

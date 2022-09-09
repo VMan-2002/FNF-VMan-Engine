@@ -26,10 +26,7 @@ class SpriteVMan extends FlxSprite {
 	}
 
 	public function generateFlipOffsets() {
-		var referenceAnimName = ["idle", "danceLeft", "danceRight"].filter(hasAnim)[0];
-		if (referenceAnimName == null) {
-			referenceAnimName = animation.getNameList()[0];
-		}
+		var referenceAnimName = ["idle", "danceLeft", "danceRight", animation.getNameList()[0]].filter(hasAnim)[0];
 		var referenceFrameWidth = frames.frames[animation.getByName(referenceAnimName).frames[0]].frame.width;
 		for (thing in animOffsets.keys()) {
 			var thisFrameWidth = frames.frames[animation.getByName(thing).frames[0]].frame.width;
@@ -53,12 +50,24 @@ class SpriteVMan extends FlxSprite {
 		return animation.name.startsWith(start);
 	}
 
-	public inline function copyAnimation(from:String, to:String) {
+	public function copyAnimation(from:String, to:String) {
 		if (hasAnim(to) || !hasAnim(from)) {
 			return;
 		}
 		var old = animation.getByName(from);
 		animation.add(to, old.frames, old.frameRate, old.looped);
 		animOffsets[to] = animOffsets[from];
+	}
+
+	public function swapAnimations(from:String, to:String) {
+		var oldRight = animation.getByName('singRIGHT').clone(animation);
+		
+		@:privateAccess(FlxAnimationController._animations) //private variables suck sometimes
+		animation._animations.set(from, animation.getByName(to));
+		@:privateAccess(FlxAnimationController._animations) //WHY do i have to do this twice
+		animation._animations.set(to, oldRight);
+		var oldOffset = animOffsets[from].copy();
+		animOffsets[from] = animOffsets[to];
+		animOffsets[to] = oldOffset;
 	}
 }

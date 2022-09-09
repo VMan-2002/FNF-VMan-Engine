@@ -1,0 +1,4 @@
+Scared
+Play the Scared animation of the player character.
+player:checkbox
+girlfriend:checkbox

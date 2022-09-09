@@ -1,4 +1,4 @@
 Play Animation
 Play an animation of a character.
+character:string
 animation:string
-character:character

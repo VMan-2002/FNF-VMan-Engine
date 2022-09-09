@@ -115,23 +115,26 @@ class Highscore
 		return true;
 	}
 
-	public static function getModeString(?translated:Bool = false) {
-		var result = "";
+	public static function getModeString(?translated:Bool = false):String {
+		var result:Array<String> = new Array<String>();
 		if (Options.playstate_bothside) {
-			result += "Both";
+			result.push("Both");
 		} else if (Options.playstate_opponentmode) {
-			result += "Opponent";
+			result.push("Opponent");
 		}
 		if (Options.playstate_endless && !PlayState.isStoryMode) {
-			result += "Endless";
+			result.push("Endless");
 		}
 		if (Options.playstate_guitar) {
-			result += "Guitar";
+			result.push("Guitar");
 		}
 		if (Options.playstate_confusion) {
-			result += "Confusion";
+			result.push("Confusion");
 		}
-		return result;
+		if (translated) {
+			return result.map(function(a:String) { return Translation.getTranslation(a, "modifier"); }).join(Translation.getTranslation("separator", "modifer"));
+		}
+		return result.join("");
 	}
 
 	/**

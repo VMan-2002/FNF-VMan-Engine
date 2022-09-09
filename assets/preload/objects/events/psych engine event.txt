@@ -1,0 +1,5 @@
+Psych Engine Event
+An event from a ported Psych Engine chart. Not everything is guaranteed to work in the same way, or at all!
+name:string
+value 1:string
+value 2:string

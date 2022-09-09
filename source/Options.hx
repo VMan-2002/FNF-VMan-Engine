@@ -86,6 +86,7 @@ class Options
 	public static var instrumentalVolume:Float = 1;
 	public static var vocalsVolume:Float = 1;
 	public static var resetButton:Bool = false;
+	public static var noteCamMovement:Bool = false;
 	
 	//PlayState changeables
 	public static var playstate_opponentmode:Bool = false;
@@ -144,6 +145,7 @@ class Options
 		svd.data.noteMissAction = noteMissAction;
 		svd.data.showFPS = showFPS;
 		svd.data.resetButton = resetButton;
+		svd.data.noteCamMovement = noteCamMovement;
 
 		svd.data.playstate_opponentmode = playstate_opponentmode;
 		svd.data.playstate_bothside = playstate_bothside;
@@ -179,6 +181,7 @@ class Options
 		noteMissAction = ifNotNull(svd.data.noteMissAction, noteMissAction);
 		showFPS = ifNotNull(svd.data.showFPS, showFPS);
 		resetButton = ifNotNull(svd.data.resetButton, resetButton);
+		noteCamMovement = ifNotNull(svd.data.noteCamMovement, noteCamMovement);
 		
 		playstate_opponentmode = ifNotNull(svd.data.playstate_opponentmode, playstate_opponentmode);
 		playstate_bothside = ifNotNull(svd.data.playstate_bothside, playstate_bothside);
