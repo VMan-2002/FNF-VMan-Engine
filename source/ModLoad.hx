@@ -29,9 +29,11 @@ class ModLoad
 		var modRoot = '../../../../../../mods';
 		#end*/
 		var modRoot = './mods/';
+		var polymodDirs = enabledMods.copy();
+		polymodDirs.reverse();
 		var results = Polymod.init({
 			modRoot: modRoot,
-			dirs: enabledMods.copy(),
+			dirs: polymodDirs,
 			errorCallback: onError,
 			ignoredFiles: Polymod.getDefaultIgnoreList(),
 			framework: Framework.FLIXEL,
@@ -53,8 +55,7 @@ class ModLoad
 		if (results == null) {
 			return;
 		}
-		var loadedMods = results.map(function(item:ModMetadata)
-		{
+		var loadedMods = results.map(function(item:ModMetadata) {
 			return item.id;
 		});
 		trace('Loaded mods: ${loadedMods}');

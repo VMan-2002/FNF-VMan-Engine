@@ -2420,7 +2420,7 @@ class PlayState extends MusicBeatState
 
 		if (Character.activeArray.length > 3) {
 			var i = 3;
-			while (i <= Character.activeArray.length) {
+			while (i < Character.activeArray.length) {
 				Character.activeArray[i++].dance();
 			}
 		}
