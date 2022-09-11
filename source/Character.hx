@@ -7,6 +7,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.animation.FlxBaseAnimation;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import haxe.Json;
 import lime.utils.Assets;
@@ -47,14 +48,15 @@ typedef SwagCharacterAnim = {
 	public var offset:Null<Array<Float>>;
 	public var indicies:Null<Array<Int>>;
 	public var loop:Bool;
+	public var noteCameraOffset:Array<Float>;
 }
 
 class Character extends SpriteVMan
 {
 	public static var nextId:Int = 0;
 	public static var activeArray:Array<Character>;
-	public static function findSuitableCharacter(name:String) {
-		var result:Character = activeArray[0];
+	public static function findSuitableCharacter(name:String, ?def:Int = 0) {
+		var result:Character = activeArray[def <= activeArray.length ? 0 : def];
 		for (guy in activeArray) {
 			if (guy.curCharacter == name) {
 				return guy;
@@ -64,8 +66,8 @@ class Character extends SpriteVMan
 		}
 		return result;
 	}
-	public static inline function findSuitableCharacterNum(name:String) {
-		return activeArray.indexOf(findSuitableCharacter(name));
+	public static inline function findSuitableCharacterNum(name:String, ?def:Int = 0) {
+		return activeArray.indexOf(findSuitableCharacter(name, def));
 	}
 
 	public var thisId:Int = 0;
@@ -74,6 +76,7 @@ class Character extends SpriteVMan
 
 	public var isPlayer:Bool = false;
 	public var curCharacter:String = 'bf';
+	public var stunned:Bool = false;
 
 	public var holdTimer:Float = 0;
 	
@@ -99,6 +102,7 @@ class Character extends SpriteVMan
 	public var realcolor(default, set):FlxColor = FlxColor.WHITE;
 
 	public var isGirlfriend = false;
+	public var noteCameraOffset:Map<String, FlxPoint> = new Map<String, FlxPoint>();
 
 	public function set_realcolor(a:FlxColor) {
 		if (!misscolored) {
@@ -126,6 +130,11 @@ class Character extends SpriteVMan
 		antialiasing = true;
 
 		healthBarColor = new FlxColor(0xFF888888);
+
+		noteCameraOffset.set("singLEFT", new FlxPoint(-45, 0));
+		noteCameraOffset.set("singRIGHT", new FlxPoint(45, 0));
+		noteCameraOffset.set("singUP", new FlxPoint(0, -45));
+		noteCameraOffset.set("singDOWN", new FlxPoint(0, 45));
 
 		switch (curCharacter)
 		{
@@ -160,6 +169,11 @@ class Character extends SpriteVMan
 				addOffset('scared', -2, -17);
 
 				playAnim('danceRight');
+
+				noteCameraOffset.set("singLEFT", new FlxPoint(-25, 0));
+				noteCameraOffset.set("singRIGHT", new FlxPoint(25, 0));
+				noteCameraOffset.set("singUP", new FlxPoint(0, -25));
+				noteCameraOffset.set("singDOWN", new FlxPoint(0, 25));
 
 				healthBarColor.setRGB(165, 0, 77);
 				isGirlfriend = true;
@@ -691,6 +705,22 @@ class Character extends SpriteVMan
 						} else {
 							addOffset(anim.name);
 						}
+						if (anim.noteCameraOffset == null || anim.noteCameraOffset.length < 1) {
+							if (anim.name.startsWith("sing")) {
+								/*switch(anim.name.toLowerCase()) {
+									case "singleft":
+										noteCameraOffset.set(anim.name, new FlxPoint(-45, 0));
+									case "singright":
+										noteCameraOffset.set(anim.name, new FlxPoint(45, 0));
+									case "singup":
+										noteCameraOffset.set(anim.name, new FlxPoint(0, -45));
+									case "singdown":
+										noteCameraOffset.set(anim.name, new FlxPoint(0, 45));
+								}*/
+							}
+						} else {
+							noteCameraOffset.set(anim.name, new FlxPoint(anim.noteCameraOffset[0], anim.noteCameraOffset[1]));
+						}
 					}
 					if (loadedStuff.position != null && loadedStuff.position.length > 0) {
 						positionOffset = loadedStuff.position;
@@ -768,17 +798,21 @@ class Character extends SpriteVMan
 		
 		if (flipX != isPlayer && hasAnim("singRIGHT") && hasAnim("singLEFT")) {
 			// var animArray
-			var oldRight = animation.getByName('singRIGHT').frames;
+			/*var oldRight = animation.getByName('singRIGHT').frames;
 			animation.getByName('singRIGHT').frames = animation.getByName('singLEFT').frames;
-			animation.getByName('singLEFT').frames = oldRight;
+			animation.getByName('singLEFT').frames = oldRight;*/
+			swapAnimations('singLEFT', 'singRIGHT');
 
 			// IF THEY HAVE MISS ANIMATIONS??
 			if (hasMissAnims) {
-				var oldMiss = animation.getByName('singRIGHTmiss').frames;
+				/*var oldMiss = animation.getByName('singRIGHTmiss').frames;
 				animation.getByName('singRIGHTmiss').frames = animation.getByName('singLEFTmiss').frames;
-				animation.getByName('singLEFTmiss').frames = oldMiss;
+				animation.getByName('singLEFTmiss').frames = oldMiss;*/
+				swapAnimations('singLEFTmiss', 'singRIGHTmiss');
 			}
 		}
+
+		generateFlipOffsets();
 
 		if (!hasMissAnims) {
 			var things = ["singUP", "singDOWN", "singLEFT", "singRIGHT"];
@@ -798,8 +832,6 @@ class Character extends SpriteVMan
 		if (animation.curAnim == null) {
 			ErrorReportSubstate.addError("Animation for char "+curCharacter+" is null somehow! This will cause a crash!");
 		}
-
-		generateFlipOffsets();
 		
 		danceType = hasAnim("danceLeft");
 		dance();
