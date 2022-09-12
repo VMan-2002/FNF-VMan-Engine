@@ -583,6 +583,9 @@ class PlayState extends MusicBeatState
 				customStageCharPos = currentStage.charPosition;
 			}
 		}
+		if (currentStage == null) {
+			currentStage = new Stage();
+		}
 
 		isHalloween = SONG.actions.contains("isHalloween");
 
@@ -1683,8 +1686,9 @@ class PlayState extends MusicBeatState
 	}
 
 	public function camFollowSetOnCharacter(char:Character) {
+		focusCharacter = char;
+		
 		if (char == dad) {
-			focusCharacter = dad;
 			camFollow.setPosition(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
 
 			if (SONG.song.toLowerCase() == 'tutorial') {
@@ -1693,7 +1697,6 @@ class PlayState extends MusicBeatState
 		}
 
 		if (char == boyfriend) {
-			focusCharacter = boyfriend;
 			camFollow.setPosition(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
 
 			switch (curStage)
@@ -1716,10 +1719,14 @@ class PlayState extends MusicBeatState
 			case 'mom':
 				camFollow.y = char.getMidpoint().y;
 				vocals.volume = 1;
-			case 'senpai' | 'senpai-angry':
-				camFollow.y = char.getMidpoint().y - 430;
-				camFollow.x = char.getMidpoint().x - 100;
 		}
+
+		camFollow.x += char.cameraOffset[0];
+		camFollow.y += char.cameraOffset[1];
+
+		var guyId = Math.floor(Math.min(Character.activeArray.indexOf(char), currentStage.cameraOffset.length - 1));
+		camFollow.x += currentStage.cameraOffset[guyId][0];
+		camFollow.y += currentStage.cameraOffset[guyId][1];
 	}
 
 	function preEndSong() {
@@ -2227,12 +2234,12 @@ class PlayState extends MusicBeatState
 	function animateForNote(?note:Note, ?isBoyfriend:Bool = true, ?noteData:Int = 0, ?isMiss:Bool = false):Void {
 		if (note != null) {
 			isBoyfriend = note.mustPress;
-		}
-		if (allowGameplayChanges) {
-			if (Options.playstate_bothside) {
-				isBoyfriend = (note.noteData >= curManiaInfo.keys / 2) == Options.playstate_opponentmode;
-			} else if (Options.playstate_opponentmode) {
-				isBoyfriend = !isBoyfriend;
+			if (allowGameplayChanges) {
+				if (Options.playstate_bothside) {
+					isBoyfriend = (note.noteData >= curManiaInfo.keys / 2) == Options.playstate_opponentmode;
+				} else if (Options.playstate_opponentmode) {
+					isBoyfriend = !isBoyfriend;
+				}
 			}
 		}
 		var noteTypeData = note != null ? note.getNoteTypeData() : Note.SwagNoteType.loadNoteType("Normal Note", modName);

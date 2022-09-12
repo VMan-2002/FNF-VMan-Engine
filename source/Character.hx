@@ -94,7 +94,7 @@ class Character extends SpriteVMan
 	public var curDances:Int = 0;
 	public var moduloDances:Int = 1;
 
-	public var cameraOffset:Array<Float> = [0, 0];
+	public var cameraOffset:Array<Float> = [0, 0, 0];
 	public var animNoSustain:Bool = false;
 	public var hasMissAnims:Bool = false;
 
@@ -605,6 +605,9 @@ class Character extends SpriteVMan
 				deathSound = 'fnf-loss-sfx-pixel';
 
 				healthBarColor.setRGB(255, 170, 111);
+
+				cameraOffset[0] = -100;
+				cameraOffset[1] = -430;
 			case 'senpai-angry':
 				frames = Paths.getSparrowAtlas('characters/senpai');
 				animation.addByPrefix('idle', 'Angry Senpai Idle', 24, false);
@@ -629,6 +632,9 @@ class Character extends SpriteVMan
 				deathSound = 'fnf-loss-sfx-pixel';
 
 				healthBarColor.setRGB(255, 170, 111);
+
+				cameraOffset[0] = -100;
+				cameraOffset[1] = -430;
 			case 'spirit':
 				frames = Paths.getSparrowAtlas('characters/spirit');
 				animation.addByPrefix('idle', "idle spirit_", 24, false);
@@ -749,6 +755,11 @@ class Character extends SpriteVMan
 					}
 					if (loadedStuff.cameraOffset != null) {
 						this.cameraOffset = loadedStuff.cameraOffset;
+						if (this.cameraOffset.length <= 2) {
+							this.cameraOffset[2] = -this.cameraOffset[0];
+						}
+					} else {
+						this.cameraOffset = [0, 0, 0];
 					}
 					if (loadedStuff.healthBarColor != null) {
 						this.healthBarColor.setRGB(loadedStuff.healthBarColor[0], loadedStuff.healthBarColor[1], loadedStuff.healthBarColor[2]);

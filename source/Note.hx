@@ -56,6 +56,9 @@ class SwagNoteSkin {
 		noteSkin.noteSplashScale = noteSkin.noteSplashScale != null ? noteSkin.noteSplashScale : 1.0;
 		noteSkin.noteSplashFramerate = noteSkin.noteSplashFramerate != null ? noteSkin.noteSplashFramerate : 24;
 		noteSkin.noteSplashImage = noteSkin.noteSplashImage != null ? noteSkin.noteSplashImage : "normal/notesplash";
+		if (noteSkin.arrows != null && !noteSkin.arrows.keys().hasNext()) {
+			noteSkin.arrows = null;
+		}
 		Note.loadedNoteSkins.set('${modName}:${name}', noteSkin);
 		trace('loaded noteskin ${modName}:${name}');
 		return noteSkin;
@@ -332,19 +335,25 @@ class Note extends FlxSprite
 				//load custom
 				var noteSkin:SwagNoteSkin = SwagNoteSkin.loadNoteSkin(PlayState.SONG.noteSkin, PlayState.modName);
 				frames = Paths.getSparrowAtlas(noteSkin.image);
-
-				for (anim in noteSkin.arrows[myArrow]) {
-					if (noteAnimExclude.indexOf(anim.name) > -1) {
-						continue;
+				
+				if (noteSkin.arrows == null) {
+					animation.addByPrefix('${myArrow}Scroll', '${myArrow}0', 24);
+					animation.addByPrefix('${myArrow}holdend', '${myArrow} hold end', 24);
+					animation.addByPrefix('${myArrow}hold', '${myArrow} hold piece', 24);
+				} else {
+					for (anim in noteSkin.arrows[myArrow]) {
+						if (noteAnimExclude.indexOf(anim.name) > -1) {
+							continue;
+						}
+						animation.addByPrefix(
+							'${myArrow}${anim.name}',
+							'${anim.anim}',
+							anim.framerate,
+							anim.loop
+						);
 					}
-					animation.addByPrefix(
-						'${myArrow}${anim.name}',
-						'${anim.anim}',
-						anim.framerate,
-						anim.loop
-					);
 				}
-				antialiasing = noteSkin.antialias;
+				antialiasing = noteSkin.antialias != false;
 				scale.x = noteSkin.scale;
 		}
 

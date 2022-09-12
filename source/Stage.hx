@@ -27,6 +27,9 @@ typedef StageElement =
 	var antialias:Bool;
 	var animations:Null<Array<SwagCharacterAnim>>;
 	var initAnim:String;
+	var startVisible:Bool;
+	var blendMode:Null<String>;
+	var alpha:Null<Float>;
 }
 
 typedef SwagStage =
@@ -37,6 +40,7 @@ typedef SwagStage =
 	var elementsBack:Array<StageElement>;
 	var hide_girlfriend:Bool;
 	var animFollowup:Array<Array<String>>;
+	var cameraOffset:Null<Array<Array<Float>>>;
 }
 
 class Stage
@@ -53,6 +57,7 @@ class Stage
 		"danceRight" => "danceLeft",
 		"idle" => "idle"
 	];
+	public var cameraOffset:Array<Array<Float>> = [[0, 0, 0]];
 
 	public static function getStage(name:String, ?mod:Null<String>):Null<SwagStage> {
 		if (mod == null) {
@@ -110,7 +115,8 @@ class Stage
 			elementsFront: new Array<StageElement>(),
 			elementsBack: new Array<StageElement>(),
 			hide_girlfriend: false,
-			animFollowup: null
+			animFollowup: null,
+			cameraOffset: null
 		};
 	}
 
@@ -140,6 +146,14 @@ class Stage
 			if (element.animated) {
 				sprite.playAvailableAnim([element.initAnim != null ? element.initAnim : "idle"]);
 			}
+			sprite.visible = element.startVisible != false;
+			if (element.blendMode != null) {
+				switch(element.blendMode.toLowerCase()) {
+					case "add" | "alpha" | "darken" | "difference" | "erase" | "hardlight" | "invert" | "layer" | "lighten" | "multiply" | "normal" | "overlay" | "screen" | "shader" | "subtract":
+						sprite.blend = element.blendMode.toLowerCase();
+				}
+			}
+			sprite.alpha = element.alpha == null ? 1 : element.alpha;
 			sprite.updateHitbox();
 			result.add(sprite);
 		}
@@ -173,6 +187,8 @@ class Stage
 		target.elementsBack = makeElements(data.elementsBack);
 		target.elementsAll = target.elementsBack.members.concat(target.elementsFront.members);
 		target.hide_girlfriend = data.hide_girlfriend == true;
+		target.cameraOffset = data.cameraOffset == null ? [] : data.cameraOffset;
+		target.cameraOffset.push([0, 0, 0]);
 		if (data.animFollowup != null && data.animFollowup.length != 0) {
 			for (thing in data.animFollowup) {
 				target.animFollowup.set(thing[0], thing[1]);

@@ -103,16 +103,22 @@ class StrumNote extends FlxSprite
 				var noteSkin:SwagNoteSkin = SwagNoteSkin.loadNoteSkin(PlayState.SONG.noteSkin, PlayState.modName);
 				frames = Paths.getSparrowAtlas(noteSkin.image);
 
-				for (anim in noteSkin.arrows[myArrow]) {
-					animation.addByPrefix(
-						'${anim.name}',
-						'${anim.anim}',
-						anim.framerate,
-						anim.loop
-					);
-					trace('strum arrow ${myArrow} add animation ${anim.name}');
+				if (noteSkin.arrows == null) {
+					animation.addByPrefix('static', "arrow"+myStrumArrow, 24, true);
+					animation.addByPrefix('pressed', myArrow+' press', 24, false);
+					animation.addByPrefix('confirm', myArrow+' confirm', 24, false);
+				} else {
+					for (anim in noteSkin.arrows[myArrow]) {
+						animation.addByPrefix(
+							'${anim.name}',
+							'${anim.anim}',
+							anim.framerate,
+							anim.loop
+						);
+						trace('strum arrow ${myArrow} add animation ${anim.name}');
+					}
 				}
-				antialiasing = noteSkin.antialias;
+				antialiasing = noteSkin.antialias != false;
 				scale.x = noteSkin.scale;
 		}
 		
