@@ -70,7 +70,7 @@ class AnnounceChecker extends MusicBeatState
 			request.onComplete = function(response:String) {
 				var AnnounceList = JSON.parse(response);
 				for (ann in AnnounceList) {
-					if (ann.active && (ann.gameTypes.length <= 0 || ann.gameTypes.indexOf("vman_engine") >= 0)) {
+					if (ann.active && (ann.gameTypes.length <= 0 || ann.gameTypes.contains("vman_engine"))) {
 						for (i in ann.ifPlayedSong) {
 							if (Highscore.songScores.exists(i)) {
 								ann.ifPlayedSong.remove(i);
@@ -99,7 +99,7 @@ class AnnounceChecker extends MusicBeatState
 						}
 						//check that the version is between the minimum and maximum version
 						if (ann.minimumVersion != null && ann.minimumVersion != "") {
-							if (ann.minimumVersion.indexOf(".") < 0) {
+							if (!ann.minimumVersion.contains(".")) {
 								ann.minimumVersion += ".0";
 							}
 							var minVersion:Array<String> = ann.minimumVersion.split(".");

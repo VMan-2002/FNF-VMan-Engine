@@ -3,6 +3,7 @@ package;
 import Conductor.BPMChangeEvent;
 import flixel.FlxBasic;
 import flixel.FlxG;
+import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.ui.FlxUIState;
@@ -102,6 +103,7 @@ class MusicBeatState extends FlxUIState
 	//Script Stuff
 	#if !html5
 	public var luaScripts = new Array<LuaScript>();
+	public var luaSprites = new Array<FlxSprite>();
 	
 	public function initLua():Void {
 		//todo: get lua shit working first and THEN do this

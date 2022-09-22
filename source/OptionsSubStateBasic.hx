@@ -21,7 +21,7 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 	];
 	
 	function optionList():Array<String> {
-		return ["angry fire element lesbian"];
+		return ["My favourite part"];
 	}
 
 	//var selector:FlxSprite;
@@ -67,6 +67,7 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 		}
 		optionsImage.animation.addByPrefix("unknownOption", "unknownOption", 12, true);
 		optionsImage.color = FlxColor.BLACK;
+		optionsImage.antialiasing = true;
 		add(optionsImage);
 		
 		if (OptionsMenu.wasInPlayState) {
@@ -125,7 +126,7 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 	
 	public function optionDescription(name:String):Array<String> {
 		//thing
-		return ["ya know", "the one who make blue plantoid", "unknownOption"];
+		return ["It's when Ao says \"It's Aorbin Time\" and Starts to Aorb", "", "unknownOption"];
 	}
 	
 	public function optionDescriptionTranslation(name:String):String {

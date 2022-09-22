@@ -426,7 +426,7 @@ class Controls extends FlxActionSet
 						gamepadsAdded.push(gamepad);
 				#else
 				for (gamepad in controls.gamepadsAdded)
-					if (gamepadsAdded.indexOf(gamepad) == -1)
+					if (!gamepadsAdded.contains(gamepad))
 					  gamepadsAdded.push(gamepad);
 				#end
 
@@ -496,7 +496,7 @@ class Controls extends FlxActionSet
 		while (i-- > 0)
 		{
 			var input = action.inputs[i];
-			if (input.device == KEYBOARD && keys.indexOf(cast input.inputID) != -1)
+			if (input.device == KEYBOARD && keys.contains(cast input.inputID))
 				action.remove(input);
 		}
 	}
@@ -737,7 +737,7 @@ class Controls extends FlxActionSet
 		while (i-- > 0)
 		{
 			var input = action.inputs[i];
-			if (isGamepad(input, gamepadID) && buttons.indexOf(cast input.inputID) != -1)
+			if (isGamepad(input, gamepadID) && buttons.contains(cast input.inputID))
 				action.remove(input);
 		}
 	}

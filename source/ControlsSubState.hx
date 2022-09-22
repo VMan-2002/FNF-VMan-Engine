@@ -272,8 +272,8 @@ class ControlsSubState extends OptionsSubStateBasic
 		}
 		var was = curSelected;
 		super.moveSelection(by);
-		isChangingUIControls = uiControlStuffNames.indexOf(curSelectedName) != -1;
-		if (isChangingUIControls != (uiControlStuffNames.indexOf(textMenuItems[was].toLowerCase()) != -1)) {
+		isChangingUIControls = uiControlStuffNames.contains(curSelectedName);
+		if (isChangingUIControls != (uiControlStuffNames.contains(textMenuItems[was].toLowerCase()))) {
 			createRow(ncSelMania); //amazing way of making the ui controls
 			keyNameText.visible = isChangingUIControls;
 		}
@@ -333,7 +333,7 @@ class ControlsSubState extends OptionsSubStateBasic
 					//clear bind.
 					newKey = -1;
 				}
-				if (Options.uiControls.get("accept").indexOf(newKey) != -1) { //Enter key
+				if (Options.uiControls.get("accept").contains(newKey)) { //Enter key
 					if (!releasedEnter) {
 						releasedEnter = true;
 						return;

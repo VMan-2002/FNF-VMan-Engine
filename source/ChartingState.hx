@@ -122,7 +122,7 @@ class ChartingState extends MusicBeatState
 				//format: "16/12" = 16 divided by 12
 				var snapMultArr:Array<String> = snapMultStr.split("/");
 				snapMults.push(Std.parseFloat(snapMultArr[0].trim()) / Std.parseFloat(snapMultArr[1].trim()));
-				snapMultNames.push(snapMultStr);
+				snapMultNames.push(snapMultStr.rtrim());
 			}
 			if (snapMults.length == 0) {
 				snapMults.push(1);

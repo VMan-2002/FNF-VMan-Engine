@@ -151,9 +151,10 @@ class MainMenuState extends MusicBeatState
 
 		if (possiblyForgotControls) {
 			possiblyForgotControlsTimer -= elapsed;
-			if (possiblyForgotControlsTimer <= 0) {
+			if (possiblyForgotControlsTimer <= 0 && possiblyForgotControlsText != null) {
 				possiblyForgotControlsText = new FlxText(0, 0, FlxG.width, Translation.getTranslation("reset controls title", "mainmenu", null, "Forgot your controls (or they don't work)? Hold SHIFT for 3 seconds."), 12).setFormat("VCR OSD Mono", 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 				Translation.setObjectFont(possiblyForgotControlsText, "vcr font");
+				possiblyForgotControlsText.scrollFactor.set();
 				add(possiblyForgotControlsText);
 			}
 			if (controls.UP_P || controls.DOWN_P) {

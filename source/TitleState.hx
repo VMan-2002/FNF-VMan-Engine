@@ -135,6 +135,7 @@ class TitleState extends MusicBeatState {
 		}
 		trace('starting lmao');
 		if (!initialized) {
+			
 			#if desktop
 			Main.launchArguments = Sys.args();
 			#elseif html5
@@ -414,7 +415,7 @@ class TitleState extends MusicBeatState {
 	}
 
 	function deleteCoolText() {
-		while (credGroup.members.length > 0) {
+		while (credGroup.length > 0) {
 			credGroup.remove(credGroup.members[0], true);
 			//textGroup.remove(textGroup.members[0], true);
 		}
