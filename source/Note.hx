@@ -161,10 +161,15 @@ class SwagNoteType {
 	public var characterName:Null<String>;
 	public var characterNum:Null<Int>;
 	public var confused:Null<Bool>;
+	public var hasPressNote:Null<Bool>;
+	public var hasReleaseNote:Null<Bool>;
 
-	public static function loadNoteType(name:String, modName:String) {
-		if (Note.loadedNoteTypes.exists('${modName}:${name}')) {
-			return Note.loadedNoteTypes.get('${modName}:${name}');
+	public static function loadNoteType(name:String, modName:String, ?putInto:Null<String>) {
+		if (putInto == null) {
+			putInto = name;
+		}
+		if (Note.loadedNoteTypes.exists('${modName}:${putInto}')) {
+			return Note.loadedNoteTypes.get('${modName}:${putInto}');
 		}
 		var parser = new JsonParser<SwagNoteType>();
 		var noteType:SwagNoteType;
@@ -174,9 +179,9 @@ class SwagNoteType {
 				throw 'Tried to load a nonexistant note type and normal note couldn\'t be loaded instead';
 			}
 			ErrorReportSubstate.addError('failed to load notetype ${modName}:${name}, loading normal note instead');
-			return loadNoteType("Normal Note", modName); //a valid note type must be loaded!
+			return loadNoteType("Normal Note", modName, name); //a valid note type must be loaded!
 		}
-		noteType.healthHit = noteType.healthHit != null ? noteType.healthHit : 0.0475;
+		noteType.healthHit = noteType.healthHit != null ? noteType.healthHit : 0.023;
 		noteType.healthHitSick = noteType.healthHitSick != null ? noteType.healthHitSick : noteType.healthHit;
 		noteType.healthHitGood = noteType.healthHitGood != null ? noteType.healthHitGood : noteType.healthHit;
 		noteType.healthHitBad = noteType.healthHitBad != null ? noteType.healthHitBad : noteType.healthHit;
@@ -189,15 +194,17 @@ class SwagNoteType {
 		noteType.animReplace = noteType.animReplace != "" ? noteType.animReplace : null;
 		noteType.bob = noteType.bob != null ? noteType.bob : false;
 		noteType.glitch = noteType.glitch != null ? noteType.glitch : false;
-		noteType.guitar = Options.playstate_guitar || (noteType.guitar != null ? noteType.guitar : false);
+		noteType.guitar = Options.playstate_guitar || (noteType.guitar == true);
 		noteType.guitarOpen = noteType.guitarOpen != null ? noteType.guitarOpen && !noteType.guitar : false;
 		noteType.guitarHopo = noteType.guitarHopo != null ? noteType.guitarHopo : false;
 		if (noteType.characterName != null && noteType.characterName != "") {
 			noteType.characterNum = Character.findSuitableCharacterNum(noteType.characterName);
 		}
-		noteType.confused = noteType.confused != null ? noteType.confused : false;
+		noteType.confused = noteType.confused == true;
+		noteType.hasPressNote = noteType.hasPressNote != false;
+		noteType.hasReleaseNote = noteType.hasReleaseNote == true;
 		trace('loaded notetype ${modName}:${name}');
-		Note.loadedNoteTypes.set('${modName}:${name}', noteType);
+		Note.loadedNoteTypes.set('${modName}:${putInto}', noteType);
 		return noteType;
 	}
 
@@ -220,6 +227,7 @@ class Note extends FlxSprite
 
 	public var sustainLength:Float = 0;
 	public var isSustainNote:Bool = false;
+	public var isReleaseNote:Bool = false;
 
 	public var noteScore:Float = 1;
 	
@@ -316,6 +324,8 @@ class Note extends FlxSprite
 				animation.addByPrefix('${myArrow}Scroll', '${myArrow}0', 24);
 				animation.addByPrefix('${myArrow}holdend', '${myArrow} hold end', 24);
 				animation.addByPrefix('${myArrow}hold', '${myArrow} hold piece', 24);
+				animation.addByPrefix('${myArrow}Release', '${myArrow} release', 24);
+				animation.addByPrefix('${myArrow}holdstart', '${myArrow} hold start', 24);
 				//animation.appendByPrefix('purpleholdend', 'pruple end hold'); //develop your spritesheets properly challenge (impossible)
 
 				scale.x = PlayState.daPixelZoom * 1.5;
@@ -327,6 +337,8 @@ class Note extends FlxSprite
 				animation.addByPrefix('${myArrow}Scroll', '${myArrow}0', 24);
 				animation.addByPrefix('${myArrow}holdend', '${myArrow} hold end', 24);
 				animation.addByPrefix('${myArrow}hold', '${myArrow} hold piece', 24);
+				animation.addByPrefix('${myArrow}Release', '${myArrow} release', 24);
+				animation.addByPrefix('${myArrow}holdstart', '${myArrow} hold start', 24);
 				//animation.appendByPrefix('purpleholdend', 'pruple end hold'); //develop your spritesheets properly challenge (impossible)
 
 				antialiasing = true;
@@ -340,6 +352,8 @@ class Note extends FlxSprite
 					animation.addByPrefix('${myArrow}Scroll', '${myArrow}0', 24);
 					animation.addByPrefix('${myArrow}holdend', '${myArrow} hold end', 24);
 					animation.addByPrefix('${myArrow}hold', '${myArrow} hold piece', 24);
+					animation.addByPrefix('${myArrow}Release', '${myArrow} release', 24);
+					animation.addByPrefix('${myArrow}holdstart', '${myArrow} hold start', 24);
 				} else {
 					for (anim in noteSkin.arrows[myArrow]) {
 						if (noteAnimExclude.indexOf(anim.name) > -1) {
@@ -375,18 +389,24 @@ class Note extends FlxSprite
 			alpha = 0.6;
 
 			animation.play(myArrow+"holdend");
+			
 
 			updateHitbox();
 
 			if (prevNote.isSustainNote) {
 				prevNote.animation.play(myArrow+"hold");
 
-				prevNote.scale.y = ((Conductor.stepCrochet / 1) * PlayState.SONG.speed * 0.45) / prevNote.frames.frames[prevNote.animation.curAnim.frames[0]].sourceSize.y;
+				prevNote.scale.y = ((Conductor.stepCrochet / 1) * PlayState.SONG.speed * 0.45) / prevNote.frameHeight;
 				CoolUtil.CenterOffsets(prevNote);
-				prevNote.offset.y = 0;
+				prevNote.offset.y = flipY ? frameHeight * scale.y : 0;
 				//prevNote.updateHitbox();
 				// prevNote.setGraphicSize();
 			}
+		} else if (!getNoteTypeData().hasPressNote) {
+			//todo: make this look better
+			animation.play('${myArrow}holdstart');
+			isSustainNote = true;
+			alpha = 0.6;
 		}
 		centerOffsets();
 		updateHitbox();
@@ -396,7 +416,7 @@ class Note extends FlxSprite
 			offset.y = height;
 		}
 		if (animation.curAnim == null) {
-			trace("Note's animation is null. Fuck! Strum time is: " + strumTime);
+			trace("Note's animation is null. Fuck! Strum time is: " + strumTime + " And Note type is: "+getNoteType());
 		}
 		switch(getNoteType()) {
 			case "Guitar Note":
@@ -420,6 +440,24 @@ class Note extends FlxSprite
 
 	public inline function getNoteTypeData():SwagNoteType {
 		return SwagNoteType.loadNoteType(getNoteType(), PlayState.modName);
+	}
+
+	public function makeReleaseNote() {
+		if (!isSustainNote) {
+			return;
+		}
+		//todo: make this look better
+		animation.play(PlayState.curManiaInfo.arrows[noteData]+"Release");
+		isSustainNote = false;
+		isReleaseNote = true;
+
+		prevNote.scale.y = ((Conductor.stepCrochet / 1) * PlayState.SONG.speed * 0.45) / prevNote.frameHeight;
+		CoolUtil.CenterOffsets(prevNote);
+		prevNote.offset.y = flipY ? frameHeight * scale.y : 0;
+	}
+
+	public override function updateHitbox() {
+		super.updateHitbox();
 	}
 
 	override function update(elapsed:Float)

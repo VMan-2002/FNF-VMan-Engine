@@ -787,6 +787,10 @@ class ChartingState extends MusicBeatState
 							selectNote(note);
 						} else if (FlxG.keys.pressed.ALT) {
 							selectNote(note);
+							if (!curNoteTypeArr.contains(curNoteType)) {
+								curNoteTypeArr.push(curNoteType);
+								PlayState.SONG.usedNoteTypes = curNoteTypeArr;
+							}
 							curSelectedNote[3] = curNoteTypeArr.indexOf(curNoteType);
 						} else {
 							trace('tryin to delete note...');
@@ -1390,8 +1394,8 @@ class ChartingState extends MusicBeatState
 		FlxG.resetState();
 	}
 
-	function autosaveSong():Void
-	{
+	function autosaveSong():Void {
+		_song.usedNoteTypes = curNoteTypeArr;
 		FlxG.save.data.autosave = Json.stringify({
 			"song": _song
 		});
@@ -1399,6 +1403,8 @@ class ChartingState extends MusicBeatState
 	}
 
 	private function saveLevel() {
+		_song.usedNoteTypes = curNoteTypeArr;
+
 		//delete unneeded empty layers
 		for (thing in _song.notes) {
 			if (thing.notesMoreLayers != null) {
