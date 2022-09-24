@@ -1,5 +1,9 @@
 package;
 
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import openfl.events.KeyboardEvent;
+#if !html5
 import Conductor.BPMChangeEvent;
 import Reflect;
 import Type;
@@ -20,7 +24,7 @@ import llua.State;
 using StringTools;
 
 class LuaScript {
-	//todo: this is very broken please fix
+	//todo: linc_luajit is so unintuitive why is it crashing what am i doing wrong why is there no error message why is there no documentation
 	var state:MusicBeatState;
 	var lua:State;
 	var myPath:String;
@@ -30,6 +34,9 @@ class LuaScript {
 	public static var persistVars:Map<String, Any> = new Map<String, Any>();
 	public var isSaving:Bool = false;
 	public var saveInst:FlxSave;
+	public var tweenCurrent:Dynamic = {};
+	public var tweenEase:Float->Float = FlxEase.linear;
+	public var tweenDelay:Float = 0;
 
 	public function new(path:String, state:MusicBeatState) {
 		this.state = state;
@@ -59,7 +66,7 @@ class LuaScript {
 		trace("do hprint func a");
 		doCode("function funnyFunc() hprint('This is called from lua!') end");
 		trace("do func");
-		doCode("funnyFunc()");
+		runFunction("funnyFunc");
 		trace("add sethealth");
 		addFunction("setHealth", function(newHealth:Float) {
 			PlayState.instance.health = newHealth;
@@ -80,7 +87,9 @@ class LuaScript {
 	}
 
 	public function runFunction(func:String, ?args:Null<Array<Dynamic>>):Null<Dynamic> {
-		return doCode(func + (args == null || args.length == 0 ? "()" : "(" + args.join(", ") + ")")); //todo: this doesnt look like it would work
+		Lua.getglobal(lua, func);
+		return Lua.pcall(lua, 0, 0, 0);
+		//return doCode(func + (args == null || args.length == 0 ? "()" : "(" + args.join(", ") + ")")); //todo: this doesnt look like it would work
 	}
 
 	public inline function doCode(code:String):Null<Dynamic> {
@@ -122,6 +131,10 @@ class LuaScript {
 
 	public function getSongFormatted(name:String) {
 		return Highscore.formatSong(name); 
+	}
+
+	public function getCurrentModifier() {
+		return Highscore.getModeString();
 	}
 
 	//Persist vars
@@ -181,6 +194,112 @@ class LuaScript {
 		return null;
 	}
 
+	//Math stuff
+
+	public function zag(num:Float) {
+		return num % 2 > 1 ? -1 : 1;
+	}
+
+	public function lerp(a:Float, b:Float, t:Float) {
+		return a + (b - a) * t;
+	}
+
+	public function centerof2(a:Float, b:Float) {
+		return (a + b) / 2;
+	}
+
+	public function sign(num:Float, ?def:Float = 0) {
+		if (num == 0) {
+			return def;
+		}
+		return num > 0 ? 1 : -1;
+	}
+
+	//String stuff
+
+	public function stringSplit(str:String, delim:String) {
+		return str.split(delim);
+	}
+
+	public function stringJoin(arr:Array<String>, delim:String) {
+		return arr.join(delim);
+	}
+
+	public function stringTrim(str:String) {
+		return str.trim();
+	}
+
+	public function stringReplace(str:String, old:String, with:String) {
+		return str.replace(old, with);
+	}
+
+	public function stringStartsWith(str:String, start:String) {
+		return str.startsWith(start);
+	}
+
+	public function stringEndsWith(str:String, end:String) {
+		return str.endsWith(end);
+	}
+
+	public function trimSameStart(str:String, start:String) {
+		if (str.startsWith(start)) {
+			return str.substring(start.length);
+		}
+		return str;
+	}
+
+	public function trimSameEnd(str:String, end:String) {
+		if (str.endsWith(end)) {
+			return str.substring(0, str.length - end.length);
+		}
+		return str;
+	}
+
+	//tween stuff
+
+	public function clearTweenDeploy() {
+		tweenDelay = 0;
+		tweenEase = FlxEase.linear;
+		tweenCurrent = {};
+	}
+
+	public function setTweenDeployArg(name:String, value:Dynamic) {
+		if (name == "ease" && Std.isOfType(value, String)) {
+			tweenEase = getEaseFromString(value);
+		} else if (!Std.isOfType(value, Float)) {
+			return trace("Lua: Can't set tween arg using non-float value");
+		}
+		if (name == "startDelay") {
+			tweenDelay = value;
+			return;
+		}
+		Reflect.setProperty(tweenCurrent, name, value);
+	}
+
+	public function runTween(object:String, time:Float) {
+		FlxTween.tween(getObject(object), tweenCurrent, time, {startDelay: tweenDelay});
+	}
+
+	public function runTweenX(object:String, value:Float, time:Float) {
+		FlxTween.tween(getObject(object), {x: value}, time, {startDelay: tweenDelay});
+	}
+
+	public function runTweenY(object:String, value:Float, time:Float) {
+		FlxTween.tween(getObject(object), {y: value}, time, {startDelay: tweenDelay});
+	}
+
+	public function runTweenAngle(object:String, value:Float, time:Float) {
+		FlxTween.tween(getObject(object), {angle: value}, time, {startDelay: tweenDelay});
+	}
+
+	public function runTweenAlpha(object:String, value:Float, time:Float) {
+		FlxTween.tween(getObject(object), {alpha: value}, time, {startDelay: tweenDelay});
+	}
+
+	public function cancelTweensOf(object:String, args:Null<Array<String>>) {
+		FlxTween.cancelTweensOf(getObject(object), args);
+	}
+
 	//Other
 
 	public function luaBroadcast(value:Dynamic, ?includeSelf:Null<Bool>):Null<Dynamic> {
@@ -196,7 +315,125 @@ class LuaScript {
 		return result;
 	}
 
-	public function switchToCustomState(name:String) {
-		return null; //todo: This
+	public function switchToCustomState(name:String, ?skipTransIn:Null<Bool>, ?skipTransOut:Null<Bool>) {
+		if (skipTransIn == true) {
+			FlxTransitionableState.skipNextTransIn = true;
+		}
+		if (skipTransOut == true || (skipTransIn == true && skipTransOut == null)) {
+			FlxTransitionableState.skipNextTransOut = true;
+		}
+		return FlxG.switchState(new LuaCustomState(name, myMod));
+	}
+
+	//internal whatevers (not for addFunction)
+
+	public static inline function getEaseFromString(name:String) {
+		return ScriptHelper.getEaseFromString(name);
+	}
+
+	public inline function getObject(name:String) {
+		return ScriptHelper.getObject(name, state);
+	}
+}
+#end
+
+class ScriptHelper {
+	
+	//CUSTOM EASINGSGS
+	static var jumpThing:Float = 1.291;
+
+	public static inline function jumpOut(t:Float) {
+		return Math.sin(t * Math.PI) + t;
+	}
+	public static inline function jumpIn(t:Float) {
+		return 1 - jumpOut(t);
+	}
+	public static inline function jumpInOut(t:Float) {
+		return (Math.sin(t*Math.PI*2)*jumpThing)+t;
+	}
+
+	public static function getEaseFromString(name:String) {
+		switch(name.toLowerCase().trim().replace(" ", "")) {
+			case "sinein":
+				return FlxEase.sineIn;
+			case "sineout":
+				return FlxEase.sineOut;
+			case "sineinout" | "sine":
+				return FlxEase.sineInOut;
+			case "cubein":
+				return FlxEase.cubeIn;
+			case "cubeout":
+				return FlxEase.cubeOut;
+			case "cubeinout" | "cube":
+				return FlxEase.cubeInOut;
+			case "quadin":
+				return FlxEase.quadIn;
+			case "quadout":
+				return FlxEase.quadOut;
+			case "quadinout" | "quad":
+				return FlxEase.quadInOut;
+			case "quartin":
+				return FlxEase.quartIn;
+			case "quartout":
+				return FlxEase.quartOut;
+			case "quartinout" | "quart":
+				return FlxEase.quartInOut;
+			case "quintin":
+				return FlxEase.quintIn;
+			case "quintout":
+				return FlxEase.quintOut;
+			case "quintinout" | "quint":
+				return FlxEase.quintInOut;
+			case "smoothstepin":
+				return FlxEase.smoothStepIn;
+			case "smoothstepout":
+				return FlxEase.smoothStepOut;
+			case "smoothstepinout" | "smoothstep":
+				return FlxEase.smoothStepInOut;
+			case "smootherstepin":
+				return FlxEase.smootherStepIn;
+			case "smootherstepout":
+				return FlxEase.smootherStepOut;
+			case "smootherstepinout" | "smootherstep":
+				return FlxEase.smootherStepInOut;
+			case "bouncein":
+				return FlxEase.bounceIn;
+			case "bounceout" | "bounce":
+				return FlxEase.bounceOut;
+			case "bounceinout":
+				return FlxEase.bounceInOut;
+			case "circin":
+				return FlxEase.circIn;
+			case "circout":
+				return FlxEase.circOut;
+			case "circinout" | "circ":
+				return FlxEase.circInOut;
+			case "backin":
+				return FlxEase.backIn;
+			case "backout":
+				return FlxEase.backOut;
+			case "backinout" | "back":
+				return FlxEase.backInOut;
+			case "elasticin":
+				return FlxEase.elasticIn;
+			case "elasticout":
+				return FlxEase.elasticOut;
+			case "elasticinout" | "elastic":
+				return FlxEase.elasticInOut;
+			case "jumpin":
+				return jumpIn;
+			case "jumpout" | "jump":
+				return jumpOut;
+			case "jumpinout":
+				return jumpInOut;
+			case "linear":
+				return FlxEase.linear;
+		}
+		trace("Lua: Cant find ease for \""+name+"\", using linear");
+		return FlxEase.linear;
+	}
+
+	public static function getObject(name:String, state:MusicBeatState) {
+		return Reflect.getProperty(state, name);
 	}
 }
