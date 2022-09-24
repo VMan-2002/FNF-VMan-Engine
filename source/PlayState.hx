@@ -66,6 +66,13 @@ typedef SwagEvent = {
 	values:Array<Dynamic>
 }
 
+typedef CamShake = {
+	timemult:Float,
+	prog:Float,
+	gameMoveX:Float,
+	gameMoveY:Float
+}
+
 class PlayState extends MusicBeatState
 {
 	public static var curStage:String = '';
@@ -102,7 +109,8 @@ class PlayState extends MusicBeatState
 	public var playerStrums = new StrumLine();
 	public var opponentStrums = new StrumLine();
 
-	private var camZooming:Bool = false;
+	public var camZooming:Bool = false;
+	public var zoomBeats:Int = 4;
 	public var curSong:String = "";
 
 	public var gfSpeed:Int = 1;
@@ -204,6 +212,11 @@ class PlayState extends MusicBeatState
 	public var instName:String = "Inst";
 
 	public var notesCanBeHit = true;
+
+	public var camShakes:Array<CamShake> = new Array<CamShake>();
+
+	public var timerThing:HudThing;
+	public var timerThingText:FlxText;
 
 	//Scripting funny lol
 	//The only hscript your getting is me porting the basegame update's hscript support
@@ -790,6 +803,7 @@ class PlayState extends MusicBeatState
 		//healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
 		healthBar.createFilledBar(dad.healthBarColor, boyfriend.healthBarColor);
 		// healthBar
+		healthBar.flipX = allowGameplayChanges && Options.playstate_opponentmode;
 		add(healthBar);
 		
 		var hudThingLists:Array<Array<String>>;
@@ -810,9 +824,9 @@ class PlayState extends MusicBeatState
 		hudThings.add(new HudThing(2, FlxG.height - 24, hudThingLists[1]));
 		hudThings.add(new HudThing(2, (FlxG.height / 2) - 100, hudThingLists[2], true));
 		
-		var timerThing:HudThing = cast add(new HudThing(0, !Options.downScroll ? 10 : FlxG.height - 34, ["timer_down_notitle"]));
+		timerThing = cast add(new HudThing(0, !Options.downScroll ? 10 : FlxG.height - 34, ["timer_down_notitle"]));
 		timerThing.autoUpdate = true;
-		var timerThingText:FlxText = cast timerThing.members[0];
+		timerThingText = cast timerThing.members[0];
 		timerThingText.alignment = CENTER;
 		timerThingText.fieldWidth = FlxG.width;
 		timerThing.cameras = [camHUD];
@@ -1063,10 +1077,12 @@ class PlayState extends MusicBeatState
 			creditText.y -= ((creditText.textField.height * 2) + 4);
 			creditText.cameras = [camHUD];
 			add(creditText);
+			timerThingText.alpha = 0.25;
 			FlxTween.tween(creditText, {y: FlxG.height + 4}, 1, {startDelay: 2.5, ease: FlxEase.quartIn, onComplete: function(tw:FlxTween) {
 				remove(creditText);
 				creditText.destroy();
 			}});
+			FlxTween.tween(timerThingText, {alpha: 1}, 0.5, {startDelay: 3, ease: FlxEase.cubeInOut});
 		}
 	}
 
@@ -1251,6 +1267,10 @@ class PlayState extends MusicBeatState
 
 				sustainNote.mustPress = gottaHitNote;
 			}
+
+			if (swagNote.getNoteTypeData().hasReleaseNote) {
+				unspawnNotes[Std.int(unspawnNotes.length - 1)].makeReleaseNote();
+			}
 		}
 	}
 
@@ -1264,7 +1284,7 @@ class PlayState extends MusicBeatState
 		if (player == 1) {
 			xPos = isMiddlescroll ? FlxG.width / 2 : FlxG.width * 0.75;
 		} else {
-			xPos = isMiddlescroll ? FlxG.width * 8 : FlxG.width * 0.25;
+			xPos = isMiddlescroll || SONG.actions.contains("hideOpponentNotes") ? FlxG.width * 8 : FlxG.width * 0.25;
 			if (SONG.moreStrumLines > 0 && !isMiddlescroll) {
 				scale /= SONG.moreStrumLines + 1;
 				var myNum = player == 0 ? 0.5 : player - 0.5;
@@ -1431,13 +1451,14 @@ class PlayState extends MusicBeatState
 		iconP2.scale.set(FlxMath.lerp(iconP2.scale.x, 1, iconScaleMove2), FlxMath.lerp(iconP2.scale.y, 1, iconScaleMove2));
 
 		var iconOffset:Int = 26;
-		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
-		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (150 - iconOffset);
+		var healthSub = (allowGameplayChanges && Options.playstate_opponentmode) ? healthBar.percent : 100 - healthBar.percent;
+		iconP1.x = healthBar.x + (healthBar.width * (healthSub * 0.01) - iconOffset);
+		iconP2.x = healthBar.x + (healthBar.width * (healthSub * 0.01)) - (150 - iconOffset);
 
-		if (healthBar.percent < 20) { //enemy winning
+		if (healthSub > 80) { //enemy winning
 			iconP1.setState(1);
 			iconP2.setState(2);
-		} else if (healthBar.percent > 80) { //player winning
+		} else if (healthSub < 20) { //player winning
 			iconP1.setState(2);
 			iconP2.setState(1);
 		} else {
@@ -1668,6 +1689,21 @@ class PlayState extends MusicBeatState
 			}
 			camFollowPos.x = FlxMath.lerp(camFollowPos.x, targetX, speed);
 			camFollowPos.y = FlxMath.lerp(camFollowPos.y, targetY, speed);
+			if (camShakes.length != 0) {
+				FlxG.camera.targetOffset.set(0, 0);
+				var i = camShakes.length - 1;
+				while (i >= 0) {
+					var thing = camShakes[i];
+					thing.prog += elapsed * thing.timemult;
+					if (thing.prog >= 1) {
+						camShakes.pop();
+					} else {
+						FlxG.camera.targetOffset.x += FlxMath.remapToRange(Math.random(), 0, 1, -thing.gameMoveX, thing.gameMoveX);
+						FlxG.camera.targetOffset.y += FlxMath.remapToRange(Math.random(), 0, 1, -thing.gameMoveY, thing.gameMoveY);
+					}
+					i--;
+				}
+			}
 		}
 
 		//handle events
@@ -1985,7 +2021,7 @@ class PlayState extends MusicBeatState
 
 				FlxTween.tween(numScore, {alpha: 0}, 0.2, {
 					onComplete: function(tween:FlxTween) {
-						ratingsGroup.remove(numScore);
+						ratingsGroup.remove(numScore, true);
 						numScore.destroy();
 					},
 					startDelay: Conductor.crochet * 0.002
@@ -2005,8 +2041,8 @@ class PlayState extends MusicBeatState
 				//coolText.destroy();
 				comboSpr.destroy();
 				rating.destroy();
-				ratingsGroup.remove(rating);
-				ratingsGroup.remove(comboSpr);
+				ratingsGroup.remove(rating, true);
+				ratingsGroup.remove(comboSpr, true);
 			},
 			startDelay: Conductor.crochet * 0.001
 		});
@@ -2023,9 +2059,11 @@ class PlayState extends MusicBeatState
 
 		var controlArray = new Array<Bool>();
 		var keyHolding = new Array<Bool>();
+		var keyReleasing = new Array<Bool>();
 		for (i in curManiaInfo.control_set) {
 			controlArray.push(FlxG.keys.anyJustPressed(i));
 			keyHolding.push(FlxG.keys.anyPressed(i));
+			keyReleasing.push(FlxG.keys.anyJustReleased(i));
 		}
 		var keyHoldingAny = FlxG.keys.anyPressed(curManiaInfo.control_any);
 		
@@ -2044,7 +2082,7 @@ class PlayState extends MusicBeatState
 
 				notes.forEachAlive(function(daNote:Note) {
 					var noteTypeData = daNote.getNoteTypeData();
-					if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && (!noteTypeData.guitar || (noteTypeData.guitarHopo && combo > 0))) {
+					if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && (!noteTypeData.guitar || (noteTypeData.guitarHopo && combo > 0)) && !daNote.isReleaseNote) {
 						possibleNotes.push(daNote);
 
 						//ignoreList.push(daNote.noteData);
@@ -2072,7 +2110,7 @@ class PlayState extends MusicBeatState
 				var possibleNoteDatas:Array<Bool> = [];
 
 				notes.forEachAlive(function(daNote:Note) {
-					if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && (Options.playstate_guitar || daNote.getNoteTypeData().guitar)) {
+					if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && (Options.playstate_guitar || daNote.getNoteTypeData().guitar) && !daNote.isReleaseNote) {
 						possibleNotes.push(daNote);
 						possibleNoteDatas[daNote.noteData] = true;
 					}
@@ -2081,6 +2119,33 @@ class PlayState extends MusicBeatState
 				//even i can make a input system
 				for (daNote in possibleNotes) {
 					if (keyHolding[daNote.noteData] && possibleNoteDatas[daNote.noteData] == true) {
+						hitNotes += 1;
+						possibleNoteDatas[daNote.noteData] = false;
+						goodNoteHit(daNote);
+					}
+				}
+				for (k in 0...controlArray.length) {
+					if (possibleNoteDatas[k] && (!(Options.ghostTapping) || (((hitNotes + possibleNotes.length > 0) || (songHits > 0 && Math.abs(Conductor.songPosition - lastHitNoteTime) <= Conductor.horizontalThing)) && Options.tappingHorizontal))) {
+						noteMiss(k);
+					}
+				}
+			}
+
+			//Release notes
+			if (FlxG.keys.anyJustReleased(curManiaInfo.control_any)) {
+				var possibleNotes:Array<Note> = [];
+				var possibleNoteDatas:Array<Bool> = [];
+
+				notes.forEachAlive(function(daNote:Note) {
+					if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && daNote.isReleaseNote) {
+						possibleNotes.push(daNote);
+						possibleNoteDatas[daNote.noteData] = true;
+					}
+				});
+				possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
+				//even i can make a input system
+				for (daNote in possibleNotes) {
+					if (keyReleasing[daNote.noteData] && possibleNoteDatas[daNote.noteData] == true) {
 						hitNotes += 1;
 						possibleNoteDatas[daNote.noteData] = false;
 						goodNoteHit(daNote);
@@ -2400,7 +2465,7 @@ class PlayState extends MusicBeatState
 			camHUD.zoom += 0.03;
 		}
 
-		if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0) {
+		if (zoomBeats != 0 && camZooming && FlxG.camera.zoom < 1.35 && curBeat % zoomBeats == 0) {
 			FlxG.camera.zoom += 0.015;
 			camHUD.zoom += 0.03;
 		}
@@ -2509,6 +2574,8 @@ class PlayState extends MusicBeatState
 				gfSpeed = event[1];
 			case "Voices Volume 0":
 				vocals.volume = 0;
+			case "Set Zoom Beats":
+				zoomBeats = event[1];
 			case "Psych Engine Event": //event from an imported chart from Psych Engine
 				switch(event[1]) {
 					case "Dadbattle Spotlight" | "Philly Glow" | "Kill Henchmen" | "Trigger BG Ghouls":
