@@ -1,5 +1,6 @@
 package;
 
+import ThingThatSucks.ErrorReportSubstate;
 import flixel.FlxSprite;
 
 using StringTools;
@@ -27,6 +28,9 @@ class SpriteVMan extends FlxSprite {
 
 	public function generateFlipOffsets() {
 		var referenceAnimName = ["idle", "danceLeft", "danceRight", animation.getNameList()[0]].filter(hasAnim)[0];
+		if (referenceAnimName == null) {
+			return ErrorReportSubstate.addError("Couldn't generate flip offsets for a sprite somehow.");
+		}
 		var referenceFrameWidth = frames.frames[animation.getByName(referenceAnimName).frames[0]].frame.width;
 		for (thing in animOffsets.keys()) {
 			var thisFrameWidth = frames.frames[animation.getByName(thing).frames[0]].frame.width;
