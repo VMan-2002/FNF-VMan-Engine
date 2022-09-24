@@ -14,7 +14,7 @@ import flixel.util.FlxColor;
 
 class LuaCustomState extends MusicBeatSubstate
 {
-	public function new(path:String) {
+	public function new(path:String, modName:String) {
 		super();
 		thing("onPostInit");
 	}
