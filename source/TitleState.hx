@@ -58,11 +58,12 @@ class TitleState extends MusicBeatState {
 	var titleGroup:FlxGroup;
 	var vmanThing:FlxText;
 
-	var curWacky:Array<String> = [];
+	var curWacky:Array<String>;
 
 	var wackyImage:FlxSprite;
 	
 	public static var doCoolText = true;
+	public var introTexts:Array<String>;
 	
 	public static var enabledMods = new Array<String>();
 
@@ -103,6 +104,7 @@ class TitleState extends MusicBeatState {
 		PlayerSettings.player1.controls.setKeyboardScheme(Custom);
 
 		curWacky = FlxG.random.getObject(getIntroTextShit());
+		introTexts = Assets.getText(Paths.txt("mainIntroText")).split("\n");
 
 		// DEBUG BULLSHIT
 
@@ -398,18 +400,18 @@ class TitleState extends MusicBeatState {
 
 	function createCoolText(textArray:Array<String>) {
 		for (i in 0...textArray.length) {
-			var money:Alphabet = new Alphabet(0, 0, textArray[i], true, false);
+			/*var money:Alphabet = new Alphabet(0, 0, textArray[i], true, false);
 			money.screenCenter(X);
 			money.y += (i * 60) + 200;
-			credGroup.add(money);
+			credGroup.add(money);*/
+			addMoreText(textArray[i]);
 			//textGroup.add(money);
 		}
 	}
 
 	function addMoreText(text:String) {
-		var coolText:Alphabet = new Alphabet(0, 0, text, true, false);
+		var coolText:Alphabet = new Alphabet(0, (credGroup.length * 60) + 200, text, true, false);
 		coolText.screenCenter(X);
-		coolText.y += (credGroup.length * 60) + 200;
 		credGroup.add(coolText);
 		//textGroup.add(coolText);
 	}
@@ -431,7 +433,33 @@ class TitleState extends MusicBeatState {
 		if (skippedIntro || !doCoolText)
 			return;
 
-		switch (curBeat) {
+		if (curBeat >= introTexts.length) {
+			return skipIntro();
+		}
+		var rawLine:String = introTexts[curBeat].trim();
+		var splittedColons:Array<String> = rawLine.split("::");
+		switch(splittedColons[1]) {
+			case "del":
+				deleteCoolText();
+				ngSpr.visible = false;
+			case "ng":
+				ngSpr.visible = true;
+			case "wacky0":
+				addMoreText(curWacky[0]);
+			case "wacky1":
+				if (curWacky.length >= 3)
+					addMoreText(curWacky[1]);
+			case "wacky2":
+				if (curWacky.length >= 2)
+					addMoreText(curWacky[curWacky.length >= 3 ? 2 : 1]);
+			case "newWacky":
+				curWacky = FlxG.random.getObject(getIntroTextShit());
+			case "skipIntro":
+				skipIntro();
+		}
+		createCoolText(splittedColons[0].split("--").filter(function(a) {return a.length > 0;}));
+
+		/*switch (curBeat) {
 			case 1:
 				createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
 			// credTextShit.visible = true;
@@ -484,7 +512,7 @@ class TitleState extends MusicBeatState {
 
 			case 16:
 				skipIntro();
-		}
+		}*/
 	}
 
 	var skippedIntro:Bool = false;
