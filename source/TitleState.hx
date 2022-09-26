@@ -457,7 +457,9 @@ class TitleState extends MusicBeatState {
 			case "skipIntro":
 				skipIntro();
 		}
-		createCoolText(splittedColons[0].contains("--") ? splittedColons[0].split("--") : [splittedColons[0]].filter(function(a) {return a.length > 0;}));
+		if (splittedColons != "") {
+			createCoolText(splittedColons[0].split("--"));
+		}
 
 		/*switch (curBeat) {
 			case 1:
