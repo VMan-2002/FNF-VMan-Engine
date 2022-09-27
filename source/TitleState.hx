@@ -438,24 +438,26 @@ class TitleState extends MusicBeatState {
 		}
 		var rawLine:String = introTexts[curBeat].trim();
 		var splittedColons:Array<String> = rawLine.split("::");
-		switch(splittedColons[1]) {
-			case "del":
-				deleteCoolText();
-				ngSpr.visible = false;
-			case "ng":
-				ngSpr.visible = true;
-			case "wacky0":
-				addMoreText(curWacky[0]);
-			case "wacky1":
-				if (curWacky.length >= 3)
-					addMoreText(curWacky[1]);
-			case "wacky2":
-				if (curWacky.length >= 2)
-					addMoreText(curWacky[curWacky.length >= 3 ? 2 : 1]);
-			case "newWacky":
-				curWacky = FlxG.random.getObject(getIntroTextShit());
-			case "skipIntro":
-				skipIntro();
+		for (thing in splittedColons.slice(1)) {
+		switch(thing) {
+				case "del":
+					deleteCoolText();
+					ngSpr.visible = false;
+				case "ng":
+					ngSpr.visible = true;
+				case "wacky0":
+					addMoreText(curWacky[0]);
+				case "wacky1":
+					if (curWacky.length >= 3)
+						addMoreText(curWacky[1]);
+				case "wacky2":
+					if (curWacky.length >= 2)
+						addMoreText(curWacky[curWacky.length >= 3 ? 2 : 1]);
+				case "newWacky":
+					curWacky = FlxG.random.getObject(getIntroTextShit());
+				case "skipIntro":
+					skipIntro();
+			}
 		}
 		if (splittedColons[0] != "") {
 			createCoolText(splittedColons[0].split("--"));
