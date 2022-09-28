@@ -410,6 +410,9 @@ class TitleState extends MusicBeatState {
 	}
 
 	function addMoreText(text:String) {
+		if (credGroup == null) {
+			return;
+		}
 		var coolText:Alphabet = new Alphabet(0, (credGroup.length * 60) + 200, text, true, false);
 		coolText.screenCenter(X);
 		credGroup.add(coolText);
