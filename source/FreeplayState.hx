@@ -73,7 +73,7 @@ class FreeplayState extends MusicBeatState
 		var uncategorized:Array<SongMetadata> = [];
 		var initSonglist = CoolUtil.coolTextFile("data/freeplaySonglist");
 
-		for (i in 0...initSonglist.length)
+		/*for (i in 0...initSonglist.length)
 		{
 			if (initSonglist[i].length > 0) {
 				trace('added song ${initSonglist[i]} to uncat');
@@ -81,7 +81,7 @@ class FreeplayState extends MusicBeatState
 			} else {
 				trace('there are no 0-char song names allowed!');
 			}
-		}
+		}*/
 		
 		
 		var categoryList = new Array<SongMetadata>();
@@ -95,6 +95,17 @@ class FreeplayState extends MusicBeatState
 		#if !html5
 		for (iathing in ModLoad.enabledMods) {
 			var parser = new JsonParser<SwagFreeplayFolders>();
+			//load it manually so it wont conflict with other mods!
+			var filelol2 = 'mods/${iathing}/data/freeplaySonglist.txt';
+			if (FileSystem.exists(filelol2)) {
+				for (thing in File.getContent(filelol2).split("\n")) {
+					if (thing.trim().length > 0) {
+						uncategorized.push(new SongMetadata(thing.trim(), 1, 'face', 0, iathing));
+					} else {
+						trace('there are no 0-char song names allowed!');
+					}
+				}
+			}
 			//load it manually so it wont conflict with other mods!
 			var filelol = 'mods/${iathing}/folders_freeplay.json';
 			if (FileSystem.exists(filelol)) {
