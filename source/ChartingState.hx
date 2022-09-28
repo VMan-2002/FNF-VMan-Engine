@@ -1143,7 +1143,7 @@ class ChartingState extends MusicBeatState
 		var newGridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * widthThing, GRID_SIZE * currentTimeSignature * 4);
 		addOrReplace(gridBG, newGridBG);
 		gridBG = newGridBG;
-		gridBlackLine.makeGraphic(2, Std.int(gridBG.height), FlxColor.BLACK).x = newGridBG.x + newGridBG.width / 2;
+		gridBlackLine.makeGraphic(2, Std.int(gridBG.height), FlxColor.BLACK).x = widthThing * GRID_SIZE * 0.5;
 		PlayState.curManiaInfo = currentChartMania;
 		rightIcon.x = gridBG.width / 2;
 
