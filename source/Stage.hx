@@ -41,11 +41,13 @@ typedef SwagStage =
 	var hide_girlfriend:Bool;
 	var animFollowup:Array<Array<String>>;
 	var cameraOffset:Null<Array<Array<Float>>>;
+	var charFacing:Null<Array<Int>>;
 }
 
 class Stage
 {
 	public var charPosition:Array<Array<Float>>;
+	public var charFacing:Array<Int>;
 	public var defaultCamZoom:Float;
 	public var elementsFront:FlxTypedGroup<SpriteVMan>;
 	public var elementsBack:FlxTypedGroup<SpriteVMan>;
@@ -116,7 +118,8 @@ class Stage
 			elementsBack: new Array<StageElement>(),
 			hide_girlfriend: false,
 			animFollowup: null,
-			cameraOffset: null
+			cameraOffset: null,
+			charFacing: [0]
 		};
 	}
 
@@ -182,6 +185,7 @@ class Stage
 			target = new Stage();
 		}
 		target.charPosition = data.charPosition == null ? [[770,100],[100,100],[400,130]] : data.charPosition;
+		target.charFacing = data.charFacing == null ? [0] : data.charFacing;
 		target.defaultCamZoom = data.defaultCamZoom == null ? 1.05 : data.defaultCamZoom;
 		target.elementsFront = makeElements(data.elementsFront);
 		target.elementsBack = makeElements(data.elementsBack);

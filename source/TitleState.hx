@@ -417,6 +417,9 @@ class TitleState extends MusicBeatState {
 	}
 
 	function deleteCoolText() {
+		if (credGroup == null) {
+			return;
+		}
 		while (credGroup.length > 0) {
 			credGroup.remove(credGroup.members[0], true);
 			//textGroup.remove(textGroup.members[0], true);

@@ -1,0 +1,6 @@
+Camera Shake
+Make the camera shake.
+length:number
+gamemovex:number
+gamemovey:number
+classic:checkbox

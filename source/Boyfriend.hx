@@ -8,8 +8,8 @@ import flixel.util.FlxTimer;
 using StringTools;
 
 class Boyfriend extends Character {
-	public function new(x:Float, y:Float, ?char:String = 'bf', ?modName:String) {
-		super(x, y, char, true, modName);
+	public function new(x:Float, y:Float, ?char:String = 'bf', ?modName:String, ?isPlayer:Bool = true) {
+		super(x, y, char, isPlayer, modName);
 	}
 
 	override function update(elapsed:Float) {

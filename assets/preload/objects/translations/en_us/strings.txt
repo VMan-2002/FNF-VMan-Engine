@@ -359,6 +359,14 @@ charteditor_notetype_guitar note::Guitar Note
 charteditor_notetype_guitar open note::Guitar Open Note
 charteditor_notetype_guitar hopo note::Guitar HOPO Note
 charteditor_notetype_guitar open hopo note::Guitar Open HOPO Note
+charteditor_event_camera shake::Camera Shake
+charteditor_event_camera shake_desc::Make the camera shake.
+charteditor_event_camera shake_length::Length
+charteditor_event_camera shake_gamemovex::Camera X Shake
+charteditor_event_camera shake_gamemovey::Camera Y Shake
+charteditor_event_camera shake_classic::Classic (constant)
+charteditor_event_camera shake_hudmovex::HUD X Shake
+charteditor_event_camera shake_hudmovey::HUD Y Shake
 
 optionsMenu_uikey_left::Left
 optionsMenu_uikey_down::Down

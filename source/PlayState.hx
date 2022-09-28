@@ -70,7 +70,8 @@ typedef CamShake = {
 	timemult:Float,
 	prog:Float,
 	gameMoveX:Float,
-	gameMoveY:Float
+	gameMoveY:Float,
+	classic:Bool
 }
 
 class PlayState extends MusicBeatState
@@ -628,9 +629,9 @@ class PlayState extends MusicBeatState
 			}
 		}
 		
-		boyfriend = new Boyfriend(770, 100, SONG.player1, modName);
-		dad = new Character(100, 100, SONG.player2, false, modName);
-		gf = new Character(400, 130, gfVersion, false, modName);
+		boyfriend = new Boyfriend(770, 100, SONG.player1, modName, currentStage.charFacing.contains(0));
+		dad = new Character(100, 100, SONG.player2, currentStage.charFacing.contains(1), modName);
+		gf = new Character(400, 130, gfVersion, currentStage.charFacing.contains(2), modName);
 
 		gf.scrollFactor.set(0.95, 0.95);
 		
@@ -710,10 +711,12 @@ class PlayState extends MusicBeatState
 		add(dad);
 		add(boyfriend);
 		
-		if (SONG.moreCharacters != null && SONG.moreCharacters.length > 0) {
+		if (SONG.moreCharacters != null && SONG.moreCharacters.length != 0) {
 			trace('Adding ${SONG.moreCharacters.length} extra characters');
+			var bullShit:Int = 3;
 			for (i in SONG.moreCharacters) {
-				add(new Character(0, 0, i, false, modName)); //these are automatically put into Character.activeArray, so it's ok that they're not assigned to variables here
+				add(new Character(0, 0, i, currentStage.charFacing.contains(bullShit), modName)); //these are automatically put into Character.activeArray, so it's ok that they're not assigned to variables here
+				bullShit++;
 			}
 		}
 		
@@ -1701,8 +1704,9 @@ class PlayState extends MusicBeatState
 					if (thing.prog >= 1) {
 						camShakes.pop();
 					} else {
-						FlxG.camera.targetOffset.x += FlxMath.remapToRange(Math.random() * thing.prog, 0, 1, -thing.gameMoveX, thing.gameMoveX);
-						FlxG.camera.targetOffset.y += FlxMath.remapToRange(Math.random() * thing.prog, 0, 1, -thing.gameMoveY, thing.gameMoveY);
+						var shkInt = thing.classic ? 1 : 1 - thing.prog;
+						FlxG.camera.targetOffset.x += FlxMath.remapToRange(Math.random() * shkInt, 0, 1, -thing.gameMoveX, thing.gameMoveX);
+						FlxG.camera.targetOffset.y += FlxMath.remapToRange(Math.random() * shkInt, 0, 1, -thing.gameMoveY, thing.gameMoveY);
 					}
 					i--;
 				}
@@ -2579,6 +2583,14 @@ class PlayState extends MusicBeatState
 				vocals.volume = 0;
 			case "Set Zoom Beats":
 				zoomBeats = event[1];
+			case "Camera Shake":
+				camShakes.push({
+					timemult: 1 / event[1],
+					prog: 0,
+					gameMoveX: event[2],
+					gameMoveY: event[3],
+					classic: event[4] == true
+				});
 			case "Psych Engine Event": //event from an imported chart from Psych Engine
 				switch(event[1]) {
 					case "Dadbattle Spotlight" | "Philly Glow" | "Kill Henchmen" | "Trigger BG Ghouls":
