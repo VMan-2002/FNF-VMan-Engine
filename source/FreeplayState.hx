@@ -105,6 +105,10 @@ class FreeplayState extends MusicBeatState
 				}
 				
 				var folderStructure:SwagFreeplayFolders = parser.fromJson(rawJson);
+				if (folderStructure == null) {
+					trace("JSON error when loading freeplay list of "+iathing);
+					continue;
+				}
 				var iAmCornflower = folderStructure.iAmCornflower;
 				
 				var folderIds = new Map<String, Int>();
