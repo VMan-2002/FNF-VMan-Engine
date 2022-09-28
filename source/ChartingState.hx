@@ -1155,7 +1155,7 @@ class ChartingState extends MusicBeatState
 
 	function updateGrid():Void
 	{
-		var toTimeSig = _song.timeSignature;
+		var toTimeSig = _song.timeSignature == null ? 4 : _song.timeSignature;
 		if (_song.notes[curSection].changeTimeSignature && _song.notes[curSection].timeSignature > 0) {
 			toTimeSig = _song.notes[curSection].timeSignature;
 		} else {
