@@ -93,7 +93,7 @@ class ChartingState extends MusicBeatState
 	var curNoteType:String = "Normal Note";
 	var curNoteTypeArr:Array<String> = ["Normal Note"];
 
-	var chartNoteHitSfx:FlxSound = new FlxSound().loadEmbedded(Paths.sound("chartHit", "shared"));
+	var chartNoteHitSfx:FlxSound = new FlxSound().loadEmbedded(Paths.sound("chartHitNew", "shared"));
 	var notesPast:Map<Int, Bool> = new Map<Int, Bool>();
 
 	var snapMults:Array<Float> = [];
@@ -109,8 +109,11 @@ class ChartingState extends MusicBeatState
 	var songAudioOffset:Float = 0;
 	var songAudioLengthTotal:Float = 0;
 
+	var currentTimeSignature:Int = 4;
+
 	var curNotesLayer:Int = 0;
 	var sectionInfo:Array<Dynamic>;
+	var nextSectionTime:Float;
 
 	override function create()
 	{
@@ -172,13 +175,14 @@ class ChartingState extends MusicBeatState
 				vmanEventOrder: new Array<Int>(),
 				vmanEventData: new Array<Dynamic>(),
 				hide_girlfriend: false,
-				moreStrumLines: 0
+				moreStrumLines: 0,
+				timeSignature:4
 			};
 			curNoteTypeArr = _song.usedNoteTypes;
 		}
 
-		leftIcon = new HealthIcon(_song.player1, false, PlayState.modName);
-		rightIcon = new HealthIcon(_song.player2, false, PlayState.modName);
+		leftIcon = new HealthIcon("bf", false, PlayState.modName);
+		rightIcon = new HealthIcon("dad", false, PlayState.modName);
 		leftIcon.scrollFactor.set(1, 1);
 		rightIcon.scrollFactor.set(1, 1);
 
@@ -326,6 +330,10 @@ class ChartingState extends MusicBeatState
 		stepperBPM.value = Conductor.bpm;
 		stepperBPM.name = 'song_bpm';
 
+		var stepperTimeSig:FlxUINumericStepper = new FlxUINumericStepper(100, 62, 1, 1, 1, 339, 0);
+		stepperTimeSig.value = _song.timeSignature;
+		stepperTimeSig.name = 'song_timesig';
+
 		var characters:Array<String> = CoolUtil.coolTextFile('data/characterList');
 		var stages:Array<String> = CoolUtil.coolTextFile('data/stageList');
 
@@ -380,6 +388,7 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(loadAutosaveBtn);
 		tab_group_song.add(stepperBPM);
 		tab_group_song.add(stepperSpeed);
+		tab_group_song.add(stepperTimeSig);
 		tab_group_song.add(player1DropDown);
 		tab_group_song.add(player2DropDown);
 		tab_group_song.add(stageDropDown);
@@ -709,9 +718,14 @@ class ChartingState extends MusicBeatState
 			}
 			else if (wname == 'song_bpm')
 			{
-				tempBpm = Std.int(nums.value);
 				Conductor.mapBPMChanges(_song);
 				Conductor.changeBPM(Std.int(nums.value));
+			}
+			else if (wname == 'song_timesig')
+			{
+				_song.timeSignature = Std.int(nums.value);
+				nextSectionTime = sectionStartTime(curSection + 1);
+				updateGrid();
 			}
 			else if (wname == 'note_susLength')
 			{
@@ -738,6 +752,7 @@ class ChartingState extends MusicBeatState
 	}*/
 	function sectionStartTime(?sectionFind:Null<Int>):Float
 	{
+		var timeSig = _song.timeSignature == null ? 4 : _song.timeSignature;
 		if (sectionFind == null) {
 			sectionFind = curSection;
 		}
@@ -749,7 +764,11 @@ class ChartingState extends MusicBeatState
 			{
 				daBPM = _song.notes[i].bpm;
 			}
-			daPos += 4 * (1000 * 60 / daBPM);
+			if (_song.notes[i].changeTimeSignature)
+			{
+				timeSig = _song.notes[i].timeSignature;
+			}
+			daPos += timeSig * (1000 * 60 / daBPM);
 		}
 		return daPos;
 	}
@@ -763,7 +782,7 @@ class ChartingState extends MusicBeatState
 
 		strumLine.y = getYfromStrum((Conductor.songPosition - sectionStartTime()) % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps));
 
-		if (curBeat % 4 == 0 && curStep >= 16 * (curSection + 1))
+		if (curBeat % currentTimeSignature == 0 && Conductor.songPosition >= nextSectionTime)
 		{
 			trace(curStep);
 			trace((_song.notes[curSection].lengthInSteps) * (curSection + 1));
@@ -1052,6 +1071,7 @@ class ChartingState extends MusicBeatState
 			updateGrid();
 			updateSectionUI();
 		}
+		nextSectionTime = sectionStartTime(sec + 1);
 	}
 
 	function copySection(?sectionNum:Int = 1)
@@ -1116,24 +1136,41 @@ class ChartingState extends MusicBeatState
 		else
 			currentChartMania = ManiaInfo.GetManiaInfo(_song.maniaStr);*/
 		var widthThing = currentChartMania.keys;
-		if (curNotesLayer == 0) {
+		gridBlackLine.visible = curNotesLayer == 0;
+		if (gridBlackLine.visible) {
 			widthThing *= 2;
-			gridBlackLine.visible = true;
-		} else {
-			gridBlackLine.visible = false;
 		}
-		var newGridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * widthThing, GRID_SIZE * 16);
-		insert(members.indexOf(gridBG), newGridBG);
-		remove(gridBG);
+		var newGridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * widthThing, GRID_SIZE * currentTimeSignature * 4);
+		addOrReplace(gridBG, newGridBG);
 		gridBG = newGridBG;
-		gridBlackLine.x = gridBG.x + gridBG.width / 2;
+		gridBlackLine.makeGraphic(2, Std.int(gridBG.height), FlxColor.BLACK).x = newGridBG.x + newGridBG.width / 2;
 		PlayState.curManiaInfo = currentChartMania;
 		rightIcon.x = gridBG.width / 2;
+
+		headPositions[0] = gridBG.x + 100;
+		headPositions[1] = gridBlackLine.x + 100;
+
 		updateGrid();
 	}
 
 	function updateGrid():Void
 	{
+		var toTimeSig = _song.timeSignature;
+		if (_song.notes[curSection].changeTimeSignature && _song.notes[curSection].timeSignature > 0) {
+			toTimeSig = _song.notes[curSection].timeSignature;
+		} else {
+			// get last time sig
+			var i:Int = curSection;
+			while (i >= 0 && _song.notes[i].changeTimeSignature != true)
+				i--;
+			toTimeSig = i < 0 ? _song.timeSignature : _song.notes[i].timeSignature;
+		}
+		if (toTimeSig != currentTimeSignature) {
+			trace("change time signature from "+currentTimeSignature+" to "+toTimeSig);
+			currentTimeSignature = toTimeSig;
+			return updateGridChangeMania();
+		}
+
 		while (curRenderedNotes.members.length > 0) {
 			curRenderedNotes.members.pop().destroy();
 		}
@@ -1184,6 +1221,7 @@ class ChartingState extends MusicBeatState
 			}
 		 */
 
+		var startThing = sectionStartTime();
 		for (pos in 0...sectionInfo.length) {
 			var i = sectionInfo[pos];
 			var daNoteInfo = i[1];
@@ -1195,13 +1233,13 @@ class ChartingState extends MusicBeatState
 			note.setGraphicSize(GRID_SIZE, GRID_SIZE);
 			note.updateHitbox();
 			note.x = Math.floor(daNoteInfo * GRID_SIZE);
-			note.y = Math.floor(getYfromStrum((daStrumTime - sectionStartTime()) % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps)));
+			note.y = Math.floor(getYfromStrum((daStrumTime - startThing) % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps)));
 
 			curRenderedNotes.add(note);
 
 			if (daSus > 0) {
 				var sustainVis:FlxSprite = new FlxSprite(note.x + (GRID_SIZE / 2),
-					note.y + GRID_SIZE).makeGraphic(8, Math.floor(FlxMath.remapToRange(daSus, 0, Conductor.stepCrochet * 16, 0, gridBG.height)));
+					note.y + GRID_SIZE).makeGraphic(8, Math.floor(FlxMath.remapToRange(daSus, 0, Conductor.stepCrochet * 4 * currentTimeSignature, 0, gridBG.height)));
 				curRenderedSustains.add(sustainVis);
 			}
 			if (i.length >= 4 && i[3] > 0) {
@@ -1215,8 +1253,11 @@ class ChartingState extends MusicBeatState
 		}
 	}
 
-	private function addSection(lengthInSteps:Int = 16):Void
+	private function addSection(lengthInSteps:Int = -1):Void
 	{
+		if (lengthInSteps == -1) {
+			lengthInSteps = 4 * currentTimeSignature;
+		}
 		var sec:SwagSection = {
 			lengthInSteps: lengthInSteps,
 			bpm: _song.bpm,
@@ -1230,6 +1271,8 @@ class ChartingState extends MusicBeatState
 			maniaStr: "",
 			changeMania: false,
 			notesMoreLayers: null,
+			timeSignature: 4,
+			changeTimeSignature: false
 		};
 
 		_song.notes.push(sec);
@@ -1316,12 +1359,12 @@ class ChartingState extends MusicBeatState
 
 	function getStrumTime(yPos:Float):Float
 	{
-		return FlxMath.remapToRange(yPos, gridBG.y, gridBG.y + gridBG.height, 0, 16 * Conductor.stepCrochet);
+		return FlxMath.remapToRange(yPos, gridBG.y, gridBG.y + gridBG.height, 0, 4 * currentTimeSignature * Conductor.stepCrochet);
 	}
 
 	function getYfromStrum(strumTime:Float):Float
 	{
-		return FlxMath.remapToRange(strumTime, 0, 16 * Conductor.stepCrochet, gridBG.y, gridBG.y + gridBG.height);
+		return FlxMath.remapToRange(strumTime, 0, 4 * currentTimeSignature * Conductor.stepCrochet, gridBG.y, gridBG.y + gridBG.height);
 	}
 
 	function setSectionNotes(thing:Array<Dynamic>) {
@@ -1405,21 +1448,62 @@ class ChartingState extends MusicBeatState
 	private function saveLevel() {
 		_song.usedNoteTypes = curNoteTypeArr;
 
-		//delete unneeded empty layers
-		for (thing in _song.notes) {
+		var json = {
+			"song": _song
+		};
+
+		for (thing in json.song.notes) {
+			//delete unneeded empty layers
 			if (thing.notesMoreLayers != null) {
 				while (thing.notesMoreLayers.length > 0 && thing.notesMoreLayers[thing.notesMoreLayers.length - 1].length == 0) {
 					thing.notesMoreLayers.pop();
 				}
-				if (thing.notesMoreLayers.length == 0) {
-					thing.notesMoreLayers = null;
-				}
+			}
+			if (thing.notesMoreLayers == null || thing.notesMoreLayers.length == 0) {
+				Reflect.deleteField(thing, "notesMoreLayers");
+			}
+			//strip out a bunch more shit to lower the filesize
+			if (thing.changeBPM != true) {
+				Reflect.deleteField(thing, "bpm");
+				Reflect.deleteField(thing, "changeBPM");
+			}
+			if (thing.changeTimeSignature != true) {
+				Reflect.deleteField(thing, "timeSignature");
+				Reflect.deleteField(thing, "changeTimeSignature");
+			}
+			if (thing.typeOfSection == 0) {
+				Reflect.deleteField(thing, "typeOfSection"); //this isnt even used why do we have this
+			}
+			if (thing.altAnim != true) {
+				Reflect.deleteField(thing, "altAnim");
+			}
+			if (thing.gfSection != true) {
+				Reflect.deleteField(thing, "gfSection");
+			}
+			if (thing.changeMania != true) {
+				Reflect.deleteField(thing, "changeMania");
+				Reflect.deleteField(thing, "maniaStr");
+			}
+			if (thing.focusCharacter == null) {
+				Reflect.deleteField(thing, "focusCharacter");
 			}
 		}
-
-		var json = {
-			"song": _song
-		};
+		if (json.song.maniaStr == "4k") {
+			Reflect.deleteField(json.song, "maniaStr");
+			Reflect.deleteField(json.song, "keyCount");
+		} else {
+			json.song.keyCount = ManiaInfo.GetManiaInfo(json.song.maniaStr).keys;
+			if (ManiaInfo.ManiaConvertBack.exists(json.song.maniaStr)) {
+				json.song.mania = ManiaInfo.ManiaConvertBack.get(json.song.maniaStr);
+			}
+		}
+		if (json.song.timeSignature == 4) {
+			Reflect.deleteField(json.song, "timeSignature");
+		}
+		if (json.song.healthDrain == 0) {
+			Reflect.deleteField(json.song, "healthDrain");
+			Reflect.deleteField(json.song, "healthDrainMin");
+		}
 
 		var data:String = Json.stringify(json);
 

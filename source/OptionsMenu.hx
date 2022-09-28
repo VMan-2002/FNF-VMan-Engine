@@ -5,14 +5,13 @@ import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
+import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
-
-import flixel.addons.transition.FlxTransitionableState;
 
 class OptionsMenu extends MusicBeatState
 {
@@ -26,9 +25,11 @@ class OptionsMenu extends MusicBeatState
 	private var grpControls:FlxTypedGroup<Alphabet>;
 	
 	private var launchSubstate:Null<MusicBeatSubstate>;
+	private var highlightOption:Null<String>;
 	
-	public function new(?substate:Null<MusicBeatSubstate>) {
+	public function new(?substate:Null<MusicBeatSubstate>, ?highlight:String) {
 		launchSubstate = substate;
+		highlightOption = highlight;
 		super();
 	}
 
@@ -65,7 +66,14 @@ class OptionsMenu extends MusicBeatState
 
 		super.create();
 
-		openSubState(launchSubstate == null ? new OptionsSubState() : launchSubstate);
+		var newSubState:MusicBeatSubstate = launchSubstate == null ? new OptionsSubState() : launchSubstate;
+		openSubState(newSubState);
+		if (Std.isOfType(newSubState, OptionsSubStateBasic) && highlightOption != null) {
+			var thing:OptionsSubStateBasic = cast newSubState;
+			if (thing.textMenuItems.contains(highlightOption)) {
+				thing.moveSelection(thing.textMenuItems.indexOf(highlightOption));
+			}
+		}
 		launchSubstate = null;
 	}
 

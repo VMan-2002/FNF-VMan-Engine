@@ -93,6 +93,9 @@ class MusicBeatState extends FlxUIState
 		super.closeSubState();
 	}
 
+	/**
+		If `old` exists, replace it with `put`, otherwise just add `put`
+	**/
 	public function addOrReplace(old:FlxBasic, put:FlxBasic) {
 		if (members.contains(old)) {
 			return replace(old, put);

@@ -47,6 +47,8 @@ class PlayStateOffsetCalibrate extends PlayState
 
 	override function endSong() {
 		trace("Average offset: " + hitOffsetAvg);
+		Options.offset = Math.floor(hitOffsetAvg + 0.5);
 		super.endSong();
+		CoolUtil.playMenuMusic();
 	}
 }

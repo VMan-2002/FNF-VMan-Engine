@@ -42,6 +42,8 @@ typedef SwagSong = {
 	var hide_girlfriend:Null<Bool>;
 
 	var moreStrumLines:Int;
+
+	var timeSignature:Null<Int>;
 }
 
 class Song {
@@ -65,6 +67,8 @@ class Song {
 	public var moreCharacters:Array<String> = new Array<String>();
 
 	public var actions:Array<String> = new Array<String>();
+
+	public var timeSignature:Null<Int> = 4;
 
 	public function new(song, notes, bpm) {
 		this.song = song;
@@ -137,6 +141,10 @@ class Song {
 
 		if (swagShit.vmanEventOrder == null) {
 			swagShit.vmanEventOrder = new Array<Int>();
+		}
+
+		if (swagShit.timeSignature == null) {
+			swagShit.timeSignature = 4;
 		}
 		
 		return swagShit;

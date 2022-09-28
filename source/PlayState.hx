@@ -227,7 +227,7 @@ class PlayState extends MusicBeatState
 		ErrorReportSubstate.initReport();
 
 		instance = this;
-		allowGameplayChanges = Std.isOfType(this, PlayState);
+		allowGameplayChanges = !Std.isOfType(this, PlayStateOffsetCalibrate);
 		NoteSplash.noteSplashColors = NoteSplash.noteSplashColorsDefault;
 		
 		if (FlxG.sound.music != null)
@@ -774,8 +774,10 @@ class PlayState extends MusicBeatState
 
 		add(camFollow);
 
-		add(ratingsGroup);
-		ratingsGroup.cameras = [camHUD];
+		if (!Std.isOfType(this, PlayStateOffsetCalibrate)) {
+			add(ratingsGroup);
+			ratingsGroup.cameras = [camHUD];
+		}
 
 		FlxG.camera.follow(camFollowPos, LOCKON, 1);
 		// FlxG.camera.setScrollBounds(0, FlxG.width, 0, FlxG.height);
@@ -810,16 +812,17 @@ class PlayState extends MusicBeatState
 		if (Std.isOfType(this, PlayStateOffsetCalibrate)) {
 			hudThingLists = [
 				["hits", "offset_avg", "offset_min", "offset_max", "offset_range"],
-				["song"].concat(["engine"]),
+				["song"],
 				["hits", "misses", "totalnotes", "health"]
 			];
 		} else {
 			hudThingLists = [
 				["score", "misses", "fc", "accRating", "accSimple", "health"],
-				["song", "difficulty"].concat(["engine"]),
+				["song", "difficulty"],
 				["hits", "sicks", "goods", "bads", "shits", "misses", "totalnotes"]
 			];
 		}
+		hudThingLists[1].push("engine");
 		hudThings.add(new HudThing(healthBarBG.x, healthBarBG.y + 30, hudThingLists[0]));
 		hudThings.add(new HudThing(2, FlxG.height - 24, hudThingLists[1]));
 		hudThings.add(new HudThing(2, (FlxG.height / 2) - 100, hudThingLists[2], true));
@@ -1416,7 +1419,7 @@ class PlayState extends MusicBeatState
 			i.updateInfo();
 		}
 
-		if (FlxG.keys.justPressed.ENTER && startedCountdown && canPause) {
+		if (FlxG.keys.justPressed.ENTER && startedCountdown && canPause && !isSubStateActive) {
 			persistentUpdate = false;
 			persistentDraw = true;
 			paused = true;
@@ -1435,7 +1438,7 @@ class PlayState extends MusicBeatState
 			#end
 		}
 
-		if (FlxG.keys.justPressed.SEVEN) {
+		if (FlxG.keys.justPressed.SEVEN && !isSubStateActive) {
 			FlxG.switchState(new ChartingState());
 
 			#if desktop
@@ -1698,8 +1701,8 @@ class PlayState extends MusicBeatState
 					if (thing.prog >= 1) {
 						camShakes.pop();
 					} else {
-						FlxG.camera.targetOffset.x += FlxMath.remapToRange(Math.random(), 0, 1, -thing.gameMoveX, thing.gameMoveX);
-						FlxG.camera.targetOffset.y += FlxMath.remapToRange(Math.random(), 0, 1, -thing.gameMoveY, thing.gameMoveY);
+						FlxG.camera.targetOffset.x += FlxMath.remapToRange(Math.random() * thing.prog, 0, 1, -thing.gameMoveX, thing.gameMoveX);
+						FlxG.camera.targetOffset.y += FlxMath.remapToRange(Math.random() * thing.prog, 0, 1, -thing.gameMoveY, thing.gameMoveY);
 					}
 					i--;
 				}

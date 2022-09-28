@@ -14,6 +14,8 @@ typedef SwagSection =
 	var focusCharacter:Null<Int>;
 	var changeMania:Bool;
 	var maniaStr:String;
+	var changeTimeSignature:Bool;
+	var timeSignature:Int;
 }
 
 class Section

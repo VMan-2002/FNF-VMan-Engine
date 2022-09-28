@@ -120,6 +120,9 @@ class PauseSubState extends MusicBeatSubstate
 					else
 						FlxG.switchState(new FreeplayState());
 				case "options":
+					if (Std.isOfType(FlxG.state, PlayStateOffsetCalibrate)) {
+						CoolUtil.playMenuMusic();
+					}
 					FlxG.state.closeSubState();
 					OptionsMenu.wasInPlayState = !Std.isOfType(FlxG.state, PlayStateOffsetCalibrate);
 					FlxG.switchState(new OptionsMenu());

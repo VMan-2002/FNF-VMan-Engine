@@ -100,11 +100,11 @@ class OptionsSubState extends OptionsSubStateBasic
 				var values = ["Miss sound + Mute vocals", "Miss sound only", "Mute vocals only", "Do nothing"];
 				return ["Change what you hear when you miss a note.", values[Options.noteMissAction]];
 			case "input offset calibrate":
-				return ["Do a short song to see what input offset is good.", "idk lol"];
+				return ["Do a short song to see what input offset is good.", "NYI, but "+Translation.getTranslation("offset ms", "optionsMenu", [Std.string(Options.offset)], Options.offset+"ms")];
 			case "exit without saving":
 				return ["Exit the options menu, and discard your changes.", '', 'unknownOption'];
 			case "gameplay changes":
-				return ["Toggle gameplay changes.", Highscore.getModeString()];
+				return ["Toggle gameplay changes.", Highscore.getModeString(true)];
 			case "reset button":
 				return ["Press R to die during a song.", Options.resetButton ? "Enabled" : "Disabled"];
 			case "note camera movement":
@@ -220,6 +220,11 @@ class OptionsSubState extends OptionsSubStateBasic
 			case "sound volume":
 				if (pressLeftRight) {
 					Options.soundVolume = moveVolume(Options.soundVolume, controls.LEFT_P);
+					updateDescription();
+				}
+			case "input offset calibrate":
+				if (pressLeftRight) {
+					Options.offset += controls.LEFT_P ? -1 : 1;
 					updateDescription();
 				}
 		}
