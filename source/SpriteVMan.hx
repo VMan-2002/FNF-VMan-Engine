@@ -27,7 +27,7 @@ class SpriteVMan extends FlxSprite {
 	}
 
 	public function generateFlipOffsets() {
-		var referenceAnimName = ["idle", "danceLeft", "danceRight", animation.getNameList()[0]].filter(hasAnim)[0];
+		var referenceAnimName = ["idle", "danceLeft", "danceRight", "firstDeath", animation.getNameList()[0]].filter(hasAnim)[0];
 		if (referenceAnimName == null) {
 			return ErrorReportSubstate.addError("Couldn't generate flip offsets for a sprite somehow.");
 		}
