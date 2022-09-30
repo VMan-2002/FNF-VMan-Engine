@@ -1014,7 +1014,7 @@ class ChartingState extends MusicBeatState
 
 	function resetSection(songBeginning:Bool = false):Void
 	{
-		updateGrid();
+		//updateGrid();
 
 		FlxG.sound.music.pause();
 		vocals.pause();
@@ -1044,14 +1044,13 @@ class ChartingState extends MusicBeatState
 		while (_song.notes[sec] == null) {
 			addSection();
 		}
-		if (_song.notes[sec] != null)
+		//if (_song.notes[sec] != null)
 		{
 			curSection = sec;
 
 			updateGrid();
 
-			if (updateMusic)
-			{
+			if (updateMusic) {
 				FlxG.sound.music.pause();
 				vocals.pause();
 
