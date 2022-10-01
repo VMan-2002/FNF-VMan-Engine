@@ -113,8 +113,8 @@ class Main extends Sprite
 			msgbox.type = TYPE_YESNO;
 			msgbox.onDialogClosed = function(evnt) {
 				if (evnt == DialogButton.YES) {*/
-					var elevateCheck = new sys.io.Process("net file").stdout.readAll().toString().contains("There are no entries in the list.");
-					if (elevateCheck) {
+					var elevateCheck = new sys.io.Process("net file").stdout.readAll().toString().toLowerCase().contains("access is denied");
+					if (!elevateCheck) {
 						trace(Sys.programPath());
 						var commands = [
 							"HKCR\\"+protocolName+" /d \"URL:"+protocolName+" Protocol\"",
