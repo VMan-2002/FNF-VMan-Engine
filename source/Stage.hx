@@ -169,6 +169,7 @@ class Stage
 			elementsFront = new FlxTypedGroup<SpriteVMan>();
 			elementsBack = new FlxTypedGroup<SpriteVMan>();
 			elementsAll = new Array<SpriteVMan>();
+			charFacing = [0];
 			return;
 		}
 		if (mod == null) {

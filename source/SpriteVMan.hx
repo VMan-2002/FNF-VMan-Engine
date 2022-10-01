@@ -34,7 +34,7 @@ class SpriteVMan extends FlxSprite {
 		var referenceFrameWidth = frames.frames[animation.getByName(referenceAnimName).frames[0]].frame.width;
 		for (thing in animOffsets.keys()) {
 			var thisFrameWidth = frames.frames[animation.getByName(thing).frames[0]].frame.width;
-			animOffsets[thing][2] = animOffsets[thing][0] + thisFrameWidth - referenceFrameWidth;
+			animOffsets[thing][2] = -animOffsets[thing][0] + thisFrameWidth - referenceFrameWidth;
 		}
 	}
 
