@@ -1146,7 +1146,7 @@ class ChartingState extends MusicBeatState
 			gridBlackLine.makeGraphic(2, Std.int(newGridBG.height), FlxColor.BLACK).x = widthThing * GRID_SIZE * 0.5;
 		}
 		PlayState.curManiaInfo = currentChartMania;
-		rightIcon.x = gridBG.width / 2;
+		rightIcon.x = widthThing.width * 0.5 * GRID_SIZE;
 
 		headPositions[0] = gridBG.x + 100;
 		headPositions[1] = gridBlackLine.x + 100;
