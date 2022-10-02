@@ -1,3 +1,4 @@
 178
 Stress
-bf-and-gf::tankman::pico-speaker-week7
+bf-and-gf::tankman::gf-pico-speaker
+Kawai Sprites

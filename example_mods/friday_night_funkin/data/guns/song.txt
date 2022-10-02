@@ -1,3 +1,4 @@
 185
 Guns
 bf::tankman::gf-tankman
+Kawai Sprite
