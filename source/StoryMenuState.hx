@@ -83,11 +83,8 @@ class StoryMenuState extends MusicBeatState
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
 
-		if (FlxG.sound.music != null)
-		{
-			if (!FlxG.sound.music.playing)
-				CoolUtil.playMenuMusic();
-		}
+		if (FlxG.sound.music != null && !FlxG.sound.music.playing)
+			CoolUtil.playMenuMusic();
 
 		persistentUpdate = persistentDraw = true;
 
