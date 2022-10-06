@@ -1608,8 +1608,8 @@ class PlayState extends MusicBeatState
 			var strumlineLengthX:Array<Float> = [];
 			var strumlineLengthY:Array<Float> = [];
 			strumLines.forEach(function(aStrumLine:StrumLine) {
-				strumlineLengthX.push(aStrumLine.members[aStrumLine.members.length - 1].x - aStrumLine.members[0].x);
-				strumlineLengthY.push(aStrumLine.members[aStrumLine.members.length - 1].y - aStrumLine.members[0].y);
+				strumlineLengthX.push(aStrumLine.members[aStrumLine.length - 1].x - aStrumLine.members[0].x);
+				strumlineLengthY.push(aStrumLine.members[aStrumLine.length - 1].y - aStrumLine.members[0].y);
 			});
 			notes.forEachAlive(function(daNote:Note) {
 				/*if (daNote.y > FlxG.height) {

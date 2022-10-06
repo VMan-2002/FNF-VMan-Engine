@@ -87,6 +87,7 @@ class Options
 	public static var vocalsVolume:Float = 1;
 	public static var resetButton:Bool = false;
 	public static var noteCamMovement:Bool = false;
+	public static var selfAware:Bool = false;
 	
 	//PlayState changeables
 	public static var playstate_opponentmode:Bool = false;
@@ -146,6 +147,7 @@ class Options
 		svd.data.showFPS = showFPS;
 		svd.data.resetButton = resetButton;
 		svd.data.noteCamMovement = noteCamMovement;
+		svd.data.selfAware = selfAware;
 
 		svd.data.playstate_opponentmode = playstate_opponentmode;
 		svd.data.playstate_bothside = playstate_bothside;
@@ -182,6 +184,7 @@ class Options
 		showFPS = ifNotNull(svd.data.showFPS, showFPS);
 		resetButton = ifNotNull(svd.data.resetButton, resetButton);
 		noteCamMovement = ifNotNull(svd.data.noteCamMovement, noteCamMovement);
+		selfAware = ifNotNull(svd.data.selfAware, selfAware);
 		
 		playstate_opponentmode = ifNotNull(svd.data.playstate_opponentmode, playstate_opponentmode);
 		playstate_bothside = ifNotNull(svd.data.playstate_bothside, playstate_bothside);
@@ -209,10 +212,7 @@ class Options
 	}
 	
 	static function ifNotNull(a:Any, b:Any):Null<Any> {
-		if (a == null) {
-			return b;
-		}
-		return a;
+		return a == null ? b : a;
 	}
 	
 	public static function GetSaveObj() {

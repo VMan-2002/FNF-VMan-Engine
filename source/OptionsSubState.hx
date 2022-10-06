@@ -39,7 +39,8 @@ class OptionsSubState extends OptionsSubStateBasic
 			"Note Camera Movement",
 			"Input Offset Calibrate",
 			"Exit Without Saving",
-			"Gameplay Changes"
+			"Gameplay Changes",
+			"Self Awareness"
 		];
 	}
 	
@@ -109,6 +110,8 @@ class OptionsSubState extends OptionsSubStateBasic
 				return ["Press R to die during a song.", Options.resetButton ? "Enabled" : "Disabled"];
 			case "note camera movement":
 				return ["That thing that's in every FNF mod nowadays. The camera will move around depending on the notes.", Options.noteCamMovement ? "Enabled" : "Disabled"];
+			case "self awareness":
+				return ["Scary... Bad for livestreamers, though. Only applies when the mod uses it.", Options.noteCamMovement ? "Enabled" : "Disabled"];
 		}
 		return ["Unknown option.", name, 'unknownOption'];
 	}
@@ -138,7 +141,7 @@ class OptionsSubState extends OptionsSubStateBasic
 				}
 			case "instant respawn":
 				Options.instantRespawn = !Options.instantRespawn;
-			case "kade health":
+			case "playstyle preset":
 				Options.playstyle = Options.playstyle != "kade" ? "kade" : "default";
 			case "botplay":
 				Options.botplay = !Options.botplay;
@@ -186,6 +189,8 @@ class OptionsSubState extends OptionsSubStateBasic
 				Options.noteCamMovement = !Options.noteCamMovement;
 			case "reset button":
 				Options.resetButton = !Options.resetButton;
+			case "self awareness":
+				Options.selfAware = !Options.selfAware;
 			default:
 				trace("Tried to accept unknown option: " + name);
 		}

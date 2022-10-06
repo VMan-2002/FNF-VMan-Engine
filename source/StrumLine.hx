@@ -20,6 +20,7 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 	public var x:Float;
 	public var y:Float;
 	public var scale:Float;
+	public var curManiaChangeNum:Int = 0;
 	
 	public function new(?mania:SwagMania, ?xPos:Float, ?yPos:Float, ?scale:Float = 1) {
 		super();
@@ -32,11 +33,9 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 		SwitchMania(mania);
 	}
 	
-	public function SwitchMania(mania:SwagMania) {
+	public function SwitchMania(mania:SwagMania, ?anim:Bool = true) {
 		thisManiaInfo = mania;
-		while (members.length > 1) {
-			members.pop().destroy();
-		}
+		CoolUtil.clearMembers(this);
 		var left:Float = ((thisManiaInfo.spacing) * (thisManiaInfo.keys - 1) * scale) / 2;
 		for (i in 0...thisManiaInfo.keys) {
 			// FlxG.log.add(i);
@@ -50,17 +49,27 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 			babyArrow.scrollFactor.set();
 			babyArrow.visible = babyArrow.visible && !Options.invisibleNotes;
 
-			if (!PlayState.isStoryMode && PlayState.instance.startingSong) {
-				babyArrow.y -= 10;
-				babyArrow.alpha = 0;
-				var delay = 0.5 + (1.6 * i / Math.max(thisManiaInfo.keys, 8));
-				FlxTween.tween(babyArrow, {y: babyArrow.y + 10}, 1, {ease: FlxEase.circOut, startDelay: delay});
-				babyArrow.playAppearAnim(delay);
+			if (!PlayState.isStoryMode && anim) {
+				playAppearAnim();
 			}
 
 			babyArrow.animation.play('static');
 
 			add(babyArrow);
+		}
+	}
+
+	public function playAppearAnim(?makeVisible:Bool = false) {
+		for (i in 0...length) {
+			var babyArrow = members[i];
+			babyArrow.y -= 10;
+			babyArrow.alpha = 0;
+			var delay = 0.5 + (1.6 * i / Math.max(thisManiaInfo.keys, 8));
+			FlxTween.tween(babyArrow, {y: babyArrow.y + 10}, 1, {ease: FlxEase.circOut, startDelay: delay});
+			babyArrow.playAppearAnim(delay);
+			if (!Options.invisibleNotes && makeVisible) {
+				babyArrow.visible = true;
+			}
 		}
 	}
 	

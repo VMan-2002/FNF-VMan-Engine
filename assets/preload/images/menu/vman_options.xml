@@ -2,39 +2,49 @@
 <TextureAtlas imagePath="vman_options.png">
 	<!-- Used VMan_2002's spritesheet converter. -->
 	<SubTexture name="intro text test0000" x="0" y="0" width="344" height="104" frameX="-56" frameY="-296" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="show fps0000" x="345" y="0" width="271" height="64" frameX="-129" frameY="-336" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="week editor0000" x="617" y="0" width="372" height="85" frameX="-28" frameY="-315" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="set mod controls0000" x="990" y="0" width="297" height="150" frameX="-103" frameY="-250" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="skip title0000" x="1288" y="0" width="374" height="129" frameX="-26" frameY="-271" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="scroll direction0000" x="1663" y="0" width="383" height="292" frameX="-17" frameY="-108" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="botplay0000" x="0" y="105" width="361" height="305" frameX="-39" frameY="-95" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="language0000" x="362" y="65" width="209" height="198" frameX="-191" frameY="-202" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="audio on miss0000" x="572" y="86" width="322" height="188" frameX="-78" frameY="-212" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="screen shake0000" x="895" y="151" width="381" height="248" frameX="-19" frameY="-152" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="stage editor0000" x="1277" y="151" width="345" height="200" frameX="-55" frameY="-200" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="change mania0000" x="1623" y="293" width="368" height="257" frameX="-32" frameY="-143" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="ghost tapping0000" x="0" y="411" width="370" height="322" frameX="-30" frameY="-78" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="chart editor0000" x="371" y="275" width="280" height="319" frameX="-115" frameY="-81" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="input offset calibrate0000" x="652" y="400" width="267" height="166" frameX="-133" frameY="-234" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="silent countdown0000" x="920" y="400" width="282" height="245" frameX="-118" frameY="-155" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="freeplay folders0000" x="1203" y="400" width="358" height="306" frameX="-42" frameY="-94" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="change color0000" x="1562" y="551" width="354" height="273" frameX="-46" frameY="-127" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="middlescroll0000" x="0" y="734" width="373" height="234" frameX="-27" frameY="-166" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="controls0000" x="374" y="595" width="352" height="329" frameX="-48" frameY="-71" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="set bind0000" x="727" y="646" width="296" height="329" frameX="-104" frameY="-71" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="enable modcharts0000" x="1024" y="707" width="297" height="320" frameX="-103" frameY="-80" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="dialogue editor0000" x="1322" y="825" width="346" height="249" frameX="-54" frameY="-151" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="activate new mods0000" x="1669" y="825" width="312" height="169" frameX="-88" frameY="-231" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="animation debug0000" x="0" y="969" width="326" height="319" frameX="-74" frameY="-81" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="change color advanced0000" x="327" y="969" width="352" height="273" frameX="-48" frameY="-127" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="exit without saving0000" x="680" y="976" width="290" height="238" frameX="-109" frameY="-161" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="flashing lights0000" x="971" y="1075" width="366" height="247" frameX="-34" frameY="-153" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="instant respawn0000" x="1338" y="1075" width="309" height="312" frameX="-91" frameY="-88" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="instrumental volume0000" x="1648" y="1075" width="331" height="208" frameX="-69" frameY="-192" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="invisi-notes0000" x="0" y="1289" width="342" height="309" frameX="-58" frameY="-91" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="master volume0000" x="343" y="1243" width="303" height="311" frameX="-97" frameY="-89" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="set alt bind0000" x="647" y="1243" width="296" height="329" frameX="-104" frameY="-71" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="sound volume0000" x="944" y="1323" width="317" height="268" frameX="-83" frameY="-132" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="unknownOption0000" x="1262" y="1388" width="276" height="225" frameX="-123" frameY="-174" frameWidth="400" frameHeight="400"/>
-	<SubTexture name="vocals volume0000" x="1539" y="1388" width="374" height="214" frameX="-26" frameY="-186" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="activate new mods0000" x="345" y="0" width="312" height="169" frameX="-88" frameY="-231" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="animation debug0000" x="658" y="0" width="326" height="319" frameX="-74" frameY="-81" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="audio on miss0000" x="985" y="0" width="322" height="188" frameX="-78" frameY="-212" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="both side play0000" x="1308" y="0" width="356" height="171" frameX="-44" frameY="-229" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="botplay0000" x="1665" y="0" width="361" height="305" frameX="-39" frameY="-95" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="change color advanced0000" x="2027" y="0" width="352" height="273" frameX="-48" frameY="-127" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="change color0000" x="2380" y="0" width="354" height="273" frameX="-46" frameY="-127" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="change mania0000" x="2735" y="0" width="368" height="257" frameX="-32" frameY="-143" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="chart editor0000" x="3104" y="0" width="280" height="319" frameX="-115" frameY="-81" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="confusion0000" x="3385" y="0" width="362" height="269" frameX="-37" frameY="-128" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="controls0000" x="0" y="170" width="352" height="329" frameX="-48" frameY="-71" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="dialogue editor0000" x="353" y="320" width="346" height="249" frameX="-54" frameY="-151" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="enable modcharts0000" x="700" y="320" width="297" height="320" frameX="-103" frameY="-80" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="endless mode0000" x="998" y="189" width="152" height="152" frameX="-248" frameY="-248" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="exit without saving0000" x="1151" y="189" width="290" height="238" frameX="-109" frameY="-161" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="flashing lights0000" x="1442" y="306" width="366" height="247" frameX="-34" frameY="-153" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="freeplay folders0000" x="1809" y="306" width="358" height="306" frameX="-42" frameY="-94" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="gameplay changes0000" x="2168" y="274" width="223" height="202" frameX="-177" frameY="-198" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="ghost tapping0000" x="2392" y="274" width="370" height="322" frameX="-30" frameY="-78" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="guitar mode0000" x="2763" y="258" width="170" height="191" frameX="-230" frameY="-209" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="input offset calibrate0000" x="2934" y="320" width="267" height="166" frameX="-133" frameY="-234" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="instant respawn0000" x="3202" y="320" width="309" height="312" frameX="-91" frameY="-88" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="instrumental volume0000" x="3512" y="270" width="331" height="208" frameX="-69" frameY="-192" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="invisi-notes0000" x="0" y="500" width="342" height="309" frameX="-58" frameY="-91" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="language0000" x="343" y="570" width="209" height="198" frameX="-191" frameY="-202" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="master volume0000" x="553" y="641" width="303" height="311" frameX="-97" frameY="-89" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="middlescroll0000" x="857" y="641" width="373" height="234" frameX="-27" frameY="-166" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="note camera movement0000" x="1231" y="554" width="368" height="247" frameX="-32" frameY="-153" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="opponent mode0000" x="1600" y="613" width="356" height="171" frameX="-44" frameY="-229" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="reset button0000" x="1957" y="613" width="235" height="236" frameX="-165" frameY="-164" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="screen shake0000" x="2193" y="597" width="381" height="248" frameX="-19" frameY="-152" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="scroll direction0000" x="2575" y="597" width="383" height="292" frameX="-17" frameY="-108" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="self awareness0000" x="2959" y="633" width="361" height="164" frameX="-39" frameY="-236" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="set alt bind0000" x="3321" y="633" width="296" height="329" frameX="-104" frameY="-71" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="set bind0000" x="3618" y="479" width="296" height="329" frameX="-104" frameY="-71" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="set mod controls0000" x="0" y="810" width="297" height="150" frameX="-103" frameY="-250" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="show fps0000" x="298" y="953" width="271" height="64" frameX="-129" frameY="-336" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="silent countdown0000" x="570" y="953" width="282" height="245" frameX="-118" frameY="-155" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="skip title0000" x="853" y="953" width="374" height="129" frameX="-26" frameY="-271" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="sound volume0000" x="1228" y="876" width="317" height="268" frameX="-83" frameY="-132" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="stage editor0000" x="1546" y="802" width="345" height="200" frameX="-55" frameY="-200" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="stage lol0000" x="1892" y="850" width="345" height="200" frameX="-55" frameY="-200" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="unknownOption0000" x="2238" y="846" width="276" height="225" frameX="-123" frameY="-174" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="vocals volume0000" x="2515" y="890" width="374" height="214" frameX="-26" frameY="-186" frameWidth="400" frameHeight="400"/>
+	<SubTexture name="week editor0000" x="2890" y="890" width="372" height="85" frameX="-28" frameY="-315" frameWidth="400" frameHeight="400"/>
 </TextureAtlas>

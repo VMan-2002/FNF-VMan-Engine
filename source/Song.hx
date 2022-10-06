@@ -146,6 +146,20 @@ class Song {
 		if (swagShit.timeSignature == null) {
 			swagShit.timeSignature = 4;
 		}
+
+		//todo: this is supposed to convert note types from Psych Engine
+		if (swagShit.notes != null) {
+			for (section in swagShit.notes) {
+				for (note in section.sectionNotes) {
+					if (Std.isOfType(note[3], String)) {
+						if (!swagShit.usedNoteTypes.contains(note[3])) {
+							swagShit.usedNoteTypes.push(note[3]);
+						}
+						note[3] = swagShit.usedNoteTypes.indexOf(note[3]);
+					}
+				}
+			}
+		}
 		
 		return swagShit;
 	}

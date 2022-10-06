@@ -131,15 +131,8 @@ class ControlsSubState extends OptionsSubStateBasic
 		}
 		//ncManiaTitle.changeText(ManiaInfo.GetManiaName(maniastuff));
 		//ncManiaTitle.screenCenter(X);
-		grpNoteStuff.forEach(function(a:FlxSprite) {
-			FlxTween.cancelTweensOf(a);
-			a.destroy();
-		});
-		grpNoteStuff.members = [];
-		grpNoteText.forEach(function(a:FlxSprite) {
-			a.destroy();
-		});
-		grpNoteText.members = [];
+		CoolUtil.clearMembers(grpNoteStuff);
+		CoolUtil.clearMembers(grpNoteText);
 		var posX:Float = (-40 * maniastuff.keys) + 40;
 		var shift:Float = 80;
 		var lerpmode = shift * maniastuff.keys > FlxG.width;
@@ -152,7 +145,7 @@ class ControlsSubState extends OptionsSubStateBasic
 		var NoteAssetsFrames = doAtla(isChangingUIControls ? "menu/UI_CONTROLS_assets" : 'normal/'+maniastuff.image);
 		for (str in maniastuff.arrows) {
 			if (lerpmode) {
-				posX = Math.fround(FlxMath.lerp(40, FlxG.width - 40, grpNoteStuff.members.length / (maniastuff.keys - 1)) - (FlxG.width / 2));
+				posX = Math.fround(FlxMath.lerp(40, FlxG.width - 40, grpNoteStuff.length / (maniastuff.keys - 1)) - (FlxG.width / 2));
 			}
 			var note:FlxSprite = new FlxSprite(0, posY);
 			note.frames = NoteAssetsFrames;
@@ -167,7 +160,7 @@ class ControlsSubState extends OptionsSubStateBasic
 			note.antialiasing = true;
 			note.screenCenter(X);
 			note.x += posX;
-			basePositions[grpNoteStuff.members.length] = note.x;
+			basePositions[grpNoteStuff.length] = note.x;
 			grpNoteStuff.add(note);
 			
 			var txt:FlxText = new FlxText((FlxG.width / 2) + (posX - 40), posY, 80, "---\n---", 16).setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 2, 1);
@@ -234,10 +227,10 @@ class ControlsSubState extends OptionsSubStateBasic
 			grpNoteStuff.members[ncSelectedNote].animation.play('idle');
 			grpNoteStuff.members[ncSelectedNote].centerOffsets();
 			grpNoteStuff.members[ncSelectedNote].centerOrigin();
-			if (n >= grpNoteStuff.members.length) {
+			if (n >= grpNoteStuff.length) {
 				n = 0;
 			} else if (n < 0) {
-				n = grpNoteStuff.members.length - 1;
+				n = grpNoteStuff.length - 1;
 			}
 			ncSelectedNote = n;
 		}
@@ -348,7 +341,7 @@ class ControlsSubState extends OptionsSubStateBasic
 				} else {
 					if (!ncControls.exists(ncManiaID)) {
 						var thing = new Array<Array<Int>>();
-						while (thing.length < grpNoteStuff.members.length) {
+						while (thing.length < grpNoteStuff.length) {
 							thing.push(new Array<Int>());
 						}
 						ncControls.set(ncManiaID, thing);

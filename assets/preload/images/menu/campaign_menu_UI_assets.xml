@@ -6,4 +6,6 @@
 	<SubTexture name="arrow push right0000" x="92" y="0" width="41" height="74" frameX="0" frameY="0" frameWidth="41" frameHeight="74"/>
 	<SubTexture name="arrow right0000" x="134" y="0" width="47" height="85" frameX="0" frameY="0" frameWidth="47" frameHeight="85"/>
 	<SubTexture name="lock0000" x="182" y="0" width="67" height="93" frameX="0" frameY="0" frameWidth="67" frameHeight="93"/>
+	<SubTexture name="white lock0000" x="250" y="0" width="67" height="93" frameX="0" frameY="0" frameWidth="67" frameHeight="93"/>
+	<SubTexture name="white outlined lock0000" x="318" y="0" width="67" height="93" frameX="0" frameY="0" frameWidth="67" frameHeight="93"/>
 </TextureAtlas>

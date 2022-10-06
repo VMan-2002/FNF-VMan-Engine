@@ -93,6 +93,8 @@ class SwagUIStyle {
 	public var comboSpacing:Null<Float>;
 	public var antialias:Null<Bool>;
 	public var healthBarSides:Array<Float>;
+	public var hudThingPos:Null<Array<Array<Float>>>;
+	public var hudThingAlign:Null<Array<String>>;
 
 	public static function loadUIStyle(name:String, ?modName:String) {
 		if (Note.loadedUIStyles.exists('${modName}:${name}')) {
@@ -179,7 +181,8 @@ class SwagNoteType {
 				throw 'Tried to load a nonexistant note type and normal note couldn\'t be loaded instead';
 			}
 			ErrorReportSubstate.addError('failed to load notetype ${modName}:${name}, loading normal note instead');
-			return loadNoteType("Normal Note", modName, name); //a valid note type must be loaded!
+			//todo: there is a bug here where the note type loaded here is stored in "Normal Note" instead of what was originally tried to be loaded. no fkin idea why
+			return loadNoteType("Normal Note", modName, putInto); //a valid note type must be loaded!
 		}
 		noteType.healthHit = noteType.healthHit != null ? noteType.healthHit : 0.023;
 		noteType.healthHitSick = noteType.healthHitSick != null ? noteType.healthHitSick : noteType.healthHit;
@@ -436,6 +439,15 @@ class Note extends FlxSprite
 
 	public inline function getNoteType():String {
 		return PlayState.SONG.usedNoteTypes[noteType];
+	}
+
+	public function setNoteType(t:String) {
+		if (!PlayState.SONG.usedNoteTypes.contains(t)) {
+			noteType = PlayState.SONG.usedNoteTypes.length;
+			PlayState.SONG.usedNoteTypes.push(t);
+			return;
+		}
+		noteType = PlayState.SONG.usedNoteTypes.indexOf(t);
 	}
 
 	public inline function getNoteTypeData():SwagNoteType {

@@ -5,8 +5,8 @@ import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
-import flixel.util.FlxTimer;
 import flixel.text.FlxText;
+import flixel.util.FlxTimer;
 
 using StringTools;
 
@@ -70,10 +70,8 @@ class Alphabet extends FlxSpriteGroup
 		addText();
 	}
 	
-	public function clearLetters() {
-		while (members.length > 0) {
-			members.pop().destroy();
-		}
+	public inline function clearLetters() {
+		CoolUtil.clearMembers(this);
 	}
 	
 	public function addFlxText() {

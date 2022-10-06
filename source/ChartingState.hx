@@ -656,10 +656,7 @@ class ChartingState extends MusicBeatState
 
 	function generateUI():Void
 	{
-		while (bullshitUI.members.length > 0)
-		{
-			bullshitUI.remove(bullshitUI.members[0], true);
-		}
+		CoolUtil.clearMembers(bullshitUI);
 
 		// general shit
 		var title:FlxText = new FlxText(UI_box.x + 20, UI_box.y + 20, 0);
@@ -1172,17 +1169,9 @@ class ChartingState extends MusicBeatState
 			return updateGridChangeMania();
 		}
 
-		while (curRenderedNotes.members.length > 0) {
-			curRenderedNotes.members.pop().destroy();
-		}
-
-		while (curRenderedSustains.members.length > 0) {
-			curRenderedSustains.members.pop().destroy();
-		}
-
-		while (curRenderedNoteTypes.members.length > 0) {
-			curRenderedNoteTypes.members.pop().destroy();
-		}
+		CoolUtil.clearMembers(curRenderedNotes);
+		CoolUtil.clearMembers(curRenderedSustains);
+		CoolUtil.clearMembers(curRenderedNoteTypes);
 
 		if (_song.notes[curSection].sectionNotes == null) {
 			_song.notes[curSection].sectionNotes = new Array<Array<Dynamic>>();
