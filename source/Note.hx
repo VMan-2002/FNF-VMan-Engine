@@ -7,6 +7,7 @@ import ThingThatSucks.ErrorReportSubstate;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxMath;
+import flixel.util.FlxArrayUtil;
 import flixel.util.FlxColor;
 import json2object.JsonParser;
 import lime.utils.Assets;
@@ -165,6 +166,8 @@ class SwagNoteType {
 	public var confused:Null<Bool>;
 	public var hasPressNote:Null<Bool>;
 	public var hasReleaseNote:Null<Bool>;
+	public var charNums:Null<Array<Int>>;
+	public var charNames:Null<Array<String>>;
 
 	public static function loadNoteType(name:String, modName:String, ?putInto:Null<String>) {
 		if (putInto == null) {
@@ -201,7 +204,14 @@ class SwagNoteType {
 		noteType.guitarOpen = noteType.guitarOpen != null ? noteType.guitarOpen && !noteType.guitar : false;
 		noteType.guitarHopo = noteType.guitarHopo != null ? noteType.guitarHopo : false;
 		if (noteType.characterName != null && noteType.characterName != "") {
+			if (noteType.charNames == null) {
+				noteType.charNames == [noteType.characterName];
+			}
 			noteType.characterNum = Character.findSuitableCharacterNum(noteType.characterName);
+		}
+		noteType.charNums = noteType.characterNum != null ? [noteType.characterNum] : noteType.charNums;
+		if (noteType.charNames != null) {
+			recalculateCharsForNote(noteType);
 		}
 		noteType.confused = noteType.confused == true;
 		noteType.hasPressNote = noteType.hasPressNote != false;
@@ -209,6 +219,27 @@ class SwagNoteType {
 		trace('loaded notetype ${modName}:${name}');
 		Note.loadedNoteTypes.set('${modName}:${putInto}', noteType);
 		return noteType;
+	}
+
+	public static function recalculateNoteChars(name:Null<String>) {
+		if (name != null) {
+			return recalculateCharsForNote(Note.loadedNoteTypes.get(name));
+		}
+		for (nt in Note.loadedNoteTypes) {
+			recalculateCharsForNote(nt);
+		}
+	}
+
+	static inline function recalculateCharsForNote(nt:SwagNoteType) {
+		if (nt.charNames != null) {
+			FlxArrayUtil.clearArray(nt.charNums);
+			for (thing in nt.charNames) {
+				var newnum = Character.findSuitableCharacterNum(thing, -1);
+				if (newnum != -1 && !nt.charNums.contains(newnum)) {
+					nt.charNums.push(newnum);
+				}
+			}
+		}
 	}
 
 	public static function clearLoadedNoteTypes() {
