@@ -219,6 +219,8 @@ class PlayState extends MusicBeatState
 	public var timerThing:HudThing;
 	public var timerThingText:FlxText;
 
+	public var cinematicBars:FlxTypedGroup<FlxSprite>;
+
 	//Scripting funny lol
 	//The only hscript your getting is me porting the basegame update's hscript support
 	//todo: add the scripting
@@ -1457,7 +1459,7 @@ class PlayState extends MusicBeatState
 		iconP2.scale.set(FlxMath.lerp(iconP2.scale.x, 1, iconScaleMove2), FlxMath.lerp(iconP2.scale.y, 1, iconScaleMove2));
 
 		var iconOffset:Int = 26;
-		var healthSub = (allowGameplayChanges && Options.playstate_opponentmode) ? healthBar.percent : 100 - healthBar.percent;
+		var healthSub = healthBar.flipX ? healthBar.percent : 100 - healthBar.percent;
 		iconP1.x = healthBar.x + (healthBar.width * (healthSub * 0.01) - iconOffset);
 		iconP2.x = healthBar.x + (healthBar.width * (healthSub * 0.01)) - (150 - iconOffset);
 
@@ -1628,7 +1630,7 @@ class PlayState extends MusicBeatState
 				//todo: i guess
 				var isInManiaChange:Bool = false; //currentManiaPartName[strumNumber] == maniaPartArr[daNote.maniaPart][strumNumber];
 				var daStrum:StrumNote = strumLines.members[strumNumber].members[isInManiaChange ? 0 : daNote.strumNoteNum];
-				daNote.y = (daStrum.y - (Conductor.songPosition - daNote.strumTime) * speed);
+				daNote.y = (daStrum.y - (Conductor.songPosition - daNote.strumTime) * speed * daStrum.speedMult);
 				daNote.x = daStrum.x;
 				if (isInManiaChange) {
 					daNote.y += strumlineLengthX[strumNumber] * daNote.maniaFract;
@@ -2591,9 +2593,26 @@ class PlayState extends MusicBeatState
 					gameMoveY: event[3],
 					classic: event[4] == true
 				});
+			case "Cinematic Bars":
+				var halfy = FlxG.height / 2;
+				var opo = [-halfy, FlxG.height];
+				var move = [-halfy * event[1], halfy * event[1]];
+				if (cinematicBars == null) {
+					cinematicBars = new FlxTypedGroup<FlxSprite>();
+					for (i in 0...2) {
+						cinematicBars.add(new FlxSprite(0, opo[i]).makeGraphic(Math.ceil(FlxG.width / 16), Math.ceil(halfy / 4), FlxColor.BLACK));
+						cinematicBars.members[i].scale.set(16, 4);
+					}
+					insert(0, cinematicBars);
+					cinematicBars.cameras = [camHUD];
+				}
+				for (i in 0...2) {
+					FlxTween.cancelTweensOf(cinematicBars.members[i], ["y"]);
+					FlxTween.tween(cinematicBars.members[i], {y: opo[i] + move[i]}, event[2], {ease:FlxEase.cubeOut});
+				}
 			case "Psych Engine Event": //event from an imported chart from Psych Engine
 				switch(event[1]) {
-					case "Dadbattle Spotlight" | "Philly Glow" | "Kill Henchmen" | "Trigger BG Ghouls":
+					//case "Dadbattle Spotlight" | "Philly Glow" | "Kill Henchmen" | "Trigger BG Ghouls":
 						//probably wont be implemented
 					case "Hey!":
 						var bf:Bool = true;
@@ -2607,7 +2626,7 @@ class PlayState extends MusicBeatState
 						runEvent(["Hey", bf, gf]);
 					case "Add Camera Zoom":
 						var cz = Std.parseFloat(event[2]);
-						var hz = Std.parseFloat(event[2]);
+						var hz = Std.parseFloat(event[3]);
 						runEvent(["Zoom Hit", Math.isNaN(cz) ? 0.015 : cz, Math.isNaN(hz) ? 0.03 : hz]);
 					case "Set Property":
 						switch(event[2]) {

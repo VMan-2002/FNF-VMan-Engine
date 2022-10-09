@@ -44,6 +44,9 @@ typedef SwagSong = {
 	var moreStrumLines:Int;
 
 	var timeSignature:Null<Int>;
+
+	var voicesName:Null<String>;
+	var instName:Null<String>;
 }
 
 class Song {

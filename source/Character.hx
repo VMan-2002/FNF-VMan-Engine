@@ -907,15 +907,19 @@ class Character extends SpriteVMan
 				holdTimer = 0;
 			}
 		}
-		
-		if (animation.curAnim.name == 'hairFall' && animation.curAnim.finished) {
-			danced = false;
-			dance(true);
-		}
 
 		if (!hasMissAnims && misscolored && !animation.curAnim.name.endsWith('miss')) {
 			misscolored = false;
 			color = realcolor;
+		}
+
+		if (animation.curAnim.finished) {
+			if (animation.curAnim.name == 'hairFall') {
+				danced = false;
+				dance(true);
+			} else if (hasAnim(animation.curAnim.name+"-loop")) {
+				playAnim(animation.curAnim.name+"-loop");
+			}
 		}
 
 		super.update(elapsed);

@@ -107,18 +107,16 @@ class Paths
 		return getPath('music/$key.$SOUND_EXT', MUSIC, library);
 	}
 
-	inline static public function voices(song:String)
-	{
-		return getSongPathThing(song, 'Voices');
+	inline static public function voices(song:String) {
+		return getSongPathThing(song, 'Voices', PlayState.SONG.voicesName);
 	}
 
-	inline static public function inst(song:String)
-	{
-		return getSongPathThing(song, 'Inst');
+	inline static public function inst(song:String) {
+		return getSongPathThing(song, 'Inst', PlayState.SONG.instName);
 	}
 
-	inline static public function getSongPathThing(song:String, type:String) {
-		return 'songs:assets/songs/${Highscore.formatSong(song)}/${type}.$SOUND_EXT';
+	inline static public function getSongPathThing(song:String, type:String, ?repl:Null<String>) {
+		return 'songs:assets/songs/${Highscore.formatSong(song)}/${repl != null && repl != "" ? repl : type}.$SOUND_EXT';
 	}
 
 	inline static public function image(key:String, ?library:String)

@@ -1,0 +1,4 @@
+Cinematic Bars
+Show cinematic bars. Amount decides how much of the screen is covered by bars on a scale from 0 to 1.
+amount:number
+time:number

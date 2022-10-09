@@ -522,7 +522,7 @@ class ControlsSubState extends OptionsSubStateBasic
 			if (str.length == 1) {
 				return str;
 			}
-			return str.charAt(0)+str.substr(1).toLowerCase();
+			return CoolUtil.capitalizeFirstLetter(str, true);
 		}
 	}
 }

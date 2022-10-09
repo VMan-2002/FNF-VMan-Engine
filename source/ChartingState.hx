@@ -19,6 +19,7 @@ import flixel.addons.ui.FlxUITabMenu;
 import flixel.addons.ui.FlxUITooltip.FlxUITooltipStyle;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
+import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.system.FlxSound;
@@ -67,6 +68,7 @@ class ChartingState extends MusicBeatState
 	var curRenderedNotes:FlxTypedGroup<Note>;
 	var curRenderedSustains:FlxTypedGroup<FlxSprite>;
 	var curRenderedNoteTypes:FlxTypedGroup<FlxText>;
+	var curRenderedEvents:FlxTypedGroup<ChartEventSprite>;
 
 	var gridBG:FlxSprite;
 
@@ -176,7 +178,9 @@ class ChartingState extends MusicBeatState
 				vmanEventData: new Array<Dynamic>(),
 				hide_girlfriend: false,
 				moreStrumLines: 0,
-				timeSignature:4
+				timeSignature:4,
+				voicesName:null,
+				instName:null
 			};
 			curNoteTypeArr = _song.usedNoteTypes;
 		}
@@ -538,9 +542,9 @@ class ChartingState extends MusicBeatState
 		stepperEventNumber.name = 'eventNumber';
 
 		var applyLength:FlxUIButton = new FlxUIButton(100, 10, Translation.getTranslation("Add event here", "charteditor"), function() {
-			_song.vmanEventTime.push(FlxG.sound.music.time + songAudioOffset);
-			_song.vmanEventOrder.push(0);
-			_song.vmanEventData.push(["Event"]);
+			_song.vmanEventTime = CoolUtil.addToArrayPossiblyNull(_song.vmanEventTime, FlxG.sound.music.time + songAudioOffset);
+			_song.vmanEventOrder = CoolUtil.addToArrayPossiblyNull(_song.vmanEventOrder, 0);
+			_song.vmanEventData = CoolUtil.addToArrayPossiblyNull(_song.vmanEventData, ["Event"]);
 		});
 		Translation.setUIObjectFont(applyLength);
 
@@ -1172,6 +1176,7 @@ class ChartingState extends MusicBeatState
 		CoolUtil.clearMembers(curRenderedNotes);
 		CoolUtil.clearMembers(curRenderedSustains);
 		CoolUtil.clearMembers(curRenderedNoteTypes);
+		CoolUtil.clearMembers(curRenderedEvents);
 
 		if (_song.notes[curSection].sectionNotes == null) {
 			_song.notes[curSection].sectionNotes = new Array<Array<Dynamic>>();
@@ -1235,6 +1240,10 @@ class ChartingState extends MusicBeatState
 			if (i.length >= 4 && i[3] > 0) {
 				curRenderedNoteTypes.add(new FlxText(note.x, note.y, 10, Math.floor(i[3])).setFormat("VCR OSD Mono", 10, 0xffffffff, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE_FAST, 0xFF000000));
 			}
+		}
+
+		for (i in 0..._song.vmanEventOrder.length) {
+			curRenderedEvents.add(new ChartEventSprite(0, getYfromStrum(_song.vmanEventTime[i]), _song.vmanEventData[_song.vmanEventOrder[i]]));
 		}
 
 		notesPast = new Map<Int, Bool>();
@@ -1494,6 +1503,12 @@ class ChartingState extends MusicBeatState
 			Reflect.deleteField(json.song, "healthDrain");
 			Reflect.deleteField(json.song, "healthDrainMin");
 		}
+		if (json.song.instName == "Inst" || json.song.instName == "") {
+			Reflect.deleteField(json.song, "instName");
+		}
+		if (json.song.voicesName == "Voices" || json.song.voicesName == "") {
+			Reflect.deleteField(json.song, "voicesName");
+		}
 
 		var data:String = Json.stringify(json);
 
@@ -1537,5 +1552,13 @@ class ChartingState extends MusicBeatState
 		_file.removeEventListener(IOErrorEvent.IO_ERROR, onSaveError);
 		_file = null;
 		FlxG.log.error("Problem saving Level data");
+	}
+}
+
+class ChartEventSprite extends FlxSpriteGroup {
+	public function new(x:Float, y:Float, eventInfo:Array<Dynamic>) {
+		super(x, y);
+		add(new FlxSprite(-100, 0).makeGraphic(100, 2, FlxColor.WHITE));
+		add(new FlxText(-100, 2, 100, eventInfo[0], 16));
 	}
 }

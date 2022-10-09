@@ -33,7 +33,7 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 		SwitchMania(mania);
 	}
 	
-	public function SwitchMania(mania:SwagMania, ?anim:Bool = true) {
+	public function SwitchMania(mania:SwagMania, ?anim:Bool = false) {
 		thisManiaInfo = mania;
 		CoolUtil.clearMembers(this);
 		var left:Float = ((thisManiaInfo.spacing) * (thisManiaInfo.keys - 1) * scale) / 2;
@@ -49,13 +49,14 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 			babyArrow.scrollFactor.set();
 			babyArrow.visible = babyArrow.visible && !Options.invisibleNotes;
 
-			if (!PlayState.isStoryMode && anim) {
-				playAppearAnim();
-			}
-
 			babyArrow.animation.play('static');
 
 			add(babyArrow);
+		}
+
+		if (anim || (((PlayState.instance.startingSong && !PlayState.isStoryMode) || PlayState.SONG.actions.contains("forceStrumAppearAnim")) && !PlayState.SONG.actions.contains("noStrumAppearAnim"))) {
+			trace("play appear anim, num ");
+			playAppearAnim();
 		}
 	}
 
@@ -70,6 +71,18 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 			if (!Options.invisibleNotes && makeVisible) {
 				babyArrow.visible = true;
 			}
+		}
+	}
+
+	public function setSpeedMult(num:Float) {
+		for (i in members) {
+			i.speedMult = num;
+		}
+	}
+
+	public function setDownscroll(num:Bool) {
+		for (i in members) {
+			i.downScroll = num;
 		}
 	}
 	

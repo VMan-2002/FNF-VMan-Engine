@@ -230,7 +230,7 @@ class CoolUtil
 	**/
 	public static function clearMembers(grp:OneOfTwo<FlxTypedGroup<Dynamic>, FlxSpriteGroup>) {
 		var memb:Array<Dynamic> = Reflect.field(grp, "members"); //Typesafe is fucking my ass so i cant use grp.members
-		if (memb.length == 0) {
+		if (memb == null || memb.length == 0) {
 			return;
 		}
 		for (i in memb) {
@@ -239,5 +239,50 @@ class CoolUtil
 		memb.resize(0);
 		@:privateAccess
 		Reflect.setField(grp, "length", 0); //why
+	}
+
+	/**
+		Push `val` to `arr` if it exists, otherwise return array containing `val`
+	**/
+	public static function addToArrayPossiblyNull<T>(arr:Array<T>, val:T) { //putting <T> there just works, interesting
+		if (arr == null) {
+			return [val];
+		}
+		arr.push(val);
+		return arr;
+	}
+
+	/**
+		Is it a letter
+	**/
+	public static inline function isLetters(s:String) {
+		return s.toUpperCase() != s.toLowerCase();
+	}
+
+	/**
+		Split camelCase
+	**/
+	public static function splitCamelCase(s:String) {
+		var p = isLetters(s) && s.charAt(0).toUpperCase() == s.charAt(0) ? 1 : 0;
+		var r = new Array<String>();
+		while (p < s.length) {
+			if ((isLetters(s) && s.charAt(p).toUpperCase() == s.charAt(p)) || (isLetters(s.charAt(p - 1)) && !isLetters(s.charAt(p)))) {
+				r.push(s.substring(0, p - 1));
+				s = s.substr(p);
+			}
+		}
+		r.push(s);
+		return r;
+	}
+
+	/**
+		Capitalize first letter of the string
+
+		`s`: The string
+		
+		`restLowercase`: Make the rest lowercase
+	**/
+	public static inline function capitalizeFirstLetter(s:String, ?restLowercase:Bool = false) {
+		return s.charAt(0).toUpperCase() + (restLowercase ? s.substr(1).toLowerCase() : s.substr(1));
 	}
 }

@@ -433,7 +433,27 @@ class ScriptHelper {
 		return FlxEase.linear;
 	}
 
-	public static function getObject(name:String, state:MusicBeatState) {
+	public static function getObjectSimple(name:String, state:MusicBeatState) {
 		return Reflect.getProperty(state, name);
+	}
+
+	public static function getObject(name:String, state:MusicBeatState) {
+		var thing:Dynamic = state;
+		for (step in name.split(".")) {
+			if (step.endsWith("]")) {
+				thing = Reflect.getProperty(thing, step.substring(0, step.indexOf("[") - 1));
+				while (true) {
+					var ind:Dynamic = step.substring(step.indexOf("[") + 1, step.indexOf("]") - 1);
+					thing = thing[ind];
+					if (step.indexOf("]") == step.length) {
+						break;
+					}
+					step = step.substr(step.indexOf("]") + 1);
+				}
+			} else {
+				thing = Reflect.getProperty(thing, step);
+			}
+		}
+		return thing;
 	}
 }

@@ -32,10 +32,14 @@ class StrumNote extends FlxSprite
 	
 	public var returnTime:Float = -60;
 
+	public var speedMult:Float = 1;
+	public var downScroll:Bool; //todo: use this
+
 	public function new(x:Float, y:Float, noteData:Int, style:String, parent:StrumLine) {
 		super(x, y);
 		this.noteData = noteData;
 		this.parent = parent;
+		downScroll = Options.downScroll;
 		setStyle(style);
 		scrollFactor.set();
 	}
