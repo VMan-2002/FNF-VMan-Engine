@@ -2317,7 +2317,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 		var noteTypeData = note != null ? note.getNoteTypeData() : Note.SwagNoteType.loadNoteType("Normal Note", modName);
-		var char:Character = noteTypeData.characterNum >= 0 ? Character.activeArray[noteTypeData.characterNum] : (isBoyfriend ? boyfriend : dad);
+		var char:Character = noteTypeData.charNums == null ? Character.activeArray[noteTypeData.charNums[0]] : (isBoyfriend ? boyfriend : dad);
 		if (isMiss) {
 			return char.playAnim('sing${ManiaInfo.Dir[curManiaInfo.arrows[note == null ? noteData : note.noteData]]}miss', true);
 		}

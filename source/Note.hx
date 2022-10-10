@@ -208,10 +208,21 @@ class SwagNoteType {
 				noteType.charNames == [noteType.characterName];
 			}
 			noteType.characterNum = Character.findSuitableCharacterNum(noteType.characterName);
+			if (noteType.charNames == null) {
+				noteType.charNames = [noteType.characterName];
+			} else if (!noteType.charNames.contains(noteType.characterName)) {
+				noteType.charNames.push(noteType.characterName);
+			}
 		}
 		noteType.charNums = noteType.characterNum != null ? [noteType.characterNum] : noteType.charNums;
 		if (noteType.charNames != null) {
-			recalculateCharsForNote(noteType);
+			if (noteType.charNames.length == 0) {
+				noteType.charNames = null;
+			} else {
+				recalculateCharsForNote(noteType);
+			}
+		} else if (noteType.charNums != null && noteType.charNums.length == 0) {
+			noteType.charNums = null;
 		}
 		noteType.confused = noteType.confused == true;
 		noteType.hasPressNote = noteType.hasPressNote != false;
@@ -232,12 +243,19 @@ class SwagNoteType {
 
 	static inline function recalculateCharsForNote(nt:SwagNoteType) {
 		if (nt.charNames != null) {
-			FlxArrayUtil.clearArray(nt.charNums);
+			if (nt.charNums == null) {
+				nt.charNums = new Array<Int>();
+			} else {
+				FlxArrayUtil.clearArray(nt.charNums);
+			}
 			for (thing in nt.charNames) {
 				var newnum = Character.findSuitableCharacterNum(thing, -1);
 				if (newnum != -1 && !nt.charNums.contains(newnum)) {
 					nt.charNums.push(newnum);
 				}
+			}
+			if (nt.charNums.length == 0) {
+				nt.charNums = null;
 			}
 		}
 	}
