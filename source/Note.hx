@@ -156,7 +156,7 @@ class SwagNoteType {
 	public var imagePrefix:String;
 	public var animPostfix:String;
 	public var animReplace:String;
-	public var bob:Null<Bool>;
+	public var bob:Null<Float>;
 	public var glitch:Null<Bool>;
 	public var guitar:Null<Bool>;
 	public var guitarOpen:Null<Bool>;
@@ -198,7 +198,7 @@ class SwagNoteType {
 		noteType.imagePrefix = noteType.imagePrefix != null ? noteType.imagePrefix : "";
 		noteType.animPostfix = noteType.animPostfix != "" ? noteType.animPostfix : null;
 		noteType.animReplace = noteType.animReplace != "" ? noteType.animReplace : null;
-		noteType.bob = noteType.bob != null ? noteType.bob : false;
+		noteType.bob = noteType.bob != null ? noteType.bob : 0;
 		noteType.glitch = noteType.glitch != null ? noteType.glitch : false;
 		noteType.guitar = Options.playstate_guitar || (noteType.guitar == true);
 		noteType.guitarOpen = noteType.guitarOpen != null ? noteType.guitarOpen && !noteType.guitar : false;
