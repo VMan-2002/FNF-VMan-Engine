@@ -9,6 +9,7 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxMath;
 import flixel.util.FlxArrayUtil;
 import flixel.util.FlxColor;
+import flixel.util.typeLimit.OneOfThree;
 import json2object.JsonParser;
 import lime.utils.Assets;
 import openfl.utils.Assets;
@@ -70,6 +71,36 @@ class SwagNoteSkin {
 	}
 }
 
+class SwagUIStyleFile { //Because Float->Float doesnt work with the JsonParser
+	public var three:String;
+	public var two:String;
+	public var one:String;
+	public var go:String;
+	public var numbers:Array<String>;
+	public var combo:String;
+	public var sick:String;
+	public var good:String;
+	public var bad:String;
+	public var shit:String;
+	public var sickcool:String;
+	public var healthBar:String;
+	public var threeSound:String;
+	public var twoSound:String;
+	public var oneSound:String;
+	public var goSound:String;
+	public var countdownScale:Null<Float>;
+	public var ratings:Map<String, String>;
+	public var ratingScale:Null<Float>;
+	public var comboScale:Null<Float>;
+	public var comboSpacing:Null<Float>;
+	public var antialias:Null<Bool>;
+	public var healthBarSides:Array<Float>;
+	public var hudThingPos:Null<Array<Array<Float>>>;
+	public var hudThingAlign:Null<Array<String>>;
+	public var iconEaseStr:Null<String>;
+	public var iconEase:Null<Float>;
+}
+
 class SwagUIStyle {
 	public var three:String;
 	public var two:String;
@@ -96,17 +127,25 @@ class SwagUIStyle {
 	public var healthBarSides:Array<Float>;
 	public var hudThingPos:Null<Array<Array<Float>>>;
 	public var hudThingAlign:Null<Array<String>>;
+	public var iconEaseStr:Null<String>;
+	public var iconEase:Null<Float>;
+	public var iconEaseFunc:Null<Float->Float>;
+	public var font:String = "vcr font";
+
+	public function new() {
+		return;
+	}
 
 	public static function loadUIStyle(name:String, ?modName:String) {
 		if (Note.loadedUIStyles.exists('${modName}:${name}')) {
 			return Note.loadedUIStyles.get('${modName}:${name}');
 		}
-		var parser = new JsonParser<SwagUIStyle>();
+		var parser = new JsonParser<SwagUIStyleFile>();
 		var uiStyle:SwagUIStyle;
-		uiStyle = parser.fromJson(CoolUtil.tryPathBoth('objects/uiStyles/${name}.json', modName));
+		uiStyle = cast parser.fromJson(CoolUtil.tryPathBoth('objects/uiStyles/${name}.json', modName));
 		if (uiStyle == null) {
-			ErrorReportSubstate.addError('failed to load ui style ${modName}:${name}');
-			return null;
+			ErrorReportSubstate.addError('loading default ui style because ${modName}:${name} wasnt found');
+			uiStyle = new SwagUIStyle();
 		}
 		uiStyle.three = uiStyle.three != null ? uiStyle.three : "";
 		uiStyle.two = uiStyle.two != null ? uiStyle.two : "normal/ready";
@@ -128,11 +167,16 @@ class SwagUIStyle {
 		uiStyle.ratingScale = uiStyle.ratingScale != null ? uiStyle.ratingScale : 0.7;
 		uiStyle.comboScale = uiStyle.comboScale != null ? uiStyle.comboScale : 0.5;
 		uiStyle.comboSpacing = uiStyle.comboSpacing != null ? uiStyle.comboSpacing : 43;
-		uiStyle.antialias = uiStyle.antialias != null ? uiStyle.antialias : true;
+		uiStyle.antialias = uiStyle.antialias != false;
 		uiStyle.healthBarSides = uiStyle.healthBarSides != null ? uiStyle.healthBarSides : [4, 4, 4, 4];
 		if (uiStyle.healthBarSides.length <= 2) {
 			uiStyle.healthBarSides[2] = uiStyle.healthBarSides[0];
 			uiStyle.healthBarSides[3] = uiStyle.healthBarSides[1];
+		}
+		if (uiStyle.iconEaseStr != null && uiStyle.iconEaseStr != "") {
+			uiStyle.iconEaseFunc = LuaScript.ScriptHelper.getEaseFromString(uiStyle.iconEaseStr);
+		} else {
+			uiStyle.iconEase = uiStyle.iconEase != null ? uiStyle.iconEase : 1.0;
 		}
 		Note.loadedUIStyles.set('${modName}:${name}', uiStyle);
 		trace('loaded uistyle ${modName}:${name}');

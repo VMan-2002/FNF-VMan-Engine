@@ -88,6 +88,7 @@ class Options
 	public static var resetButton:Bool = false;
 	public static var noteCamMovement:Bool = false;
 	public static var selfAware:Bool = false;
+	public static var dataStrip:Bool = true;
 	
 	//PlayState changeables
 	public static var playstate_opponentmode:Bool = false;
@@ -148,6 +149,7 @@ class Options
 		svd.data.resetButton = resetButton;
 		svd.data.noteCamMovement = noteCamMovement;
 		svd.data.selfAware = selfAware;
+		svd.data.dataStrip = dataStrip;
 
 		svd.data.playstate_opponentmode = playstate_opponentmode;
 		svd.data.playstate_bothside = playstate_bothside;
@@ -185,6 +187,7 @@ class Options
 		resetButton = ifNotNull(svd.data.resetButton, resetButton);
 		noteCamMovement = ifNotNull(svd.data.noteCamMovement, noteCamMovement);
 		selfAware = ifNotNull(svd.data.selfAware, selfAware);
+		dataStrip = ifNotNull(svd.data.dataStrip, dataStrip);
 		
 		playstate_opponentmode = ifNotNull(svd.data.playstate_opponentmode, playstate_opponentmode);
 		playstate_bothside = ifNotNull(svd.data.playstate_bothside, playstate_bothside);

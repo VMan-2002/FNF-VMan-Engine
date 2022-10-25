@@ -18,15 +18,17 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 	override function optionList() {
 		return [
 			'Chart Editor',
+			"Strip File Data",
 			"Animation Debug",
 			//"Week Editor",
 			//"Folder Editor",
 			//"Menu Character Editor",
 			"Intro Text Test",
 			//"Stage Editor",
+			//"Dialogue Editor",
 			//"Spritesheet Tool",
 			//"Noteskin Creator",
-			"Clone Hero Import",
+			"Clone Hero Import"
 		];
 	}
 	
@@ -42,6 +44,7 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 		optionsImage.color = FlxColor.WHITE;
 		optionsImage.animation.addByPrefix("freeplay folders", "freeplay folders0", 12, true);
 		optionsImage.animation.addByPrefix("change color advanced", "change color advanced0", 12, true);
+		optionsImage.animation.addByPrefix("confusion", "confusion0", 12, true);
 	}
 	
 	override function optionDescription(name:String) {
@@ -70,6 +73,8 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 				return ["Edit dialogue."];
 			case "clone hero import":
 				return ["Import a song from Clone Hero.\n\nThe file must be in the same folder as the game executable and must be named \"clonehero_import.chart\".\nWork in progress :)", "", "chart editor"];
+			case "strip file data":
+				return ["Strip unneeded data from saved files such as charts, drastically reducing the file size.", Options.dataStrip ? "Enabled" : "Disabled", "confusion"];
 		}
 		return ["Unknown option.", '', 'unknownOption'];
 	}
@@ -88,6 +93,8 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 				FlxG.switchState(new IntroTextTest());
 			case "clone hero import":
 				cloneHeroImport();
+			case "strip file data":
+				Options.dataStrip = !Options.dataStrip;
 		}
 		return false;
 	}
@@ -153,7 +160,8 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			moreStrumLines: 0,
 			timeSignature: 4,
 			instName: null,
-			voicesName: null
+			voicesName: null,
+			threeLanes:false
 		};
 		var noteDataArr:Array<Float> = isGHL ? [3, 4, 5, 0, 1, 0, 0, 0, 2] : [0, 1, 2, 3, 4, 5, 0, 0];
 		var noteTypeArr:Array<Int> = [0, 0, 0];

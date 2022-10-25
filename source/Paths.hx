@@ -108,11 +108,11 @@ class Paths
 	}
 
 	inline static public function voices(song:String) {
-		return getSongPathThing(song, 'Voices', PlayState.SONG.voicesName);
+		return getSongPathThing(song, 'Voices');
 	}
 
 	inline static public function inst(song:String) {
-		return getSongPathThing(song, 'Inst', PlayState.SONG.instName);
+		return getSongPathThing(song, 'Inst');
 	}
 
 	inline static public function getSongPathThing(song:String, type:String, ?repl:Null<String>) {
