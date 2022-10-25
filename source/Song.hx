@@ -41,12 +41,14 @@ typedef SwagSong = {
 
 	var hide_girlfriend:Null<Bool>;
 
-	var moreStrumLines:Int;
+	var moreStrumLines:Null<Int>;
 
 	var timeSignature:Null<Int>;
 
 	var voicesName:Null<String>;
 	var instName:Null<String>;
+	
+	var threeLanes:Null<Bool>; //Pasta night :))))))
 }
 
 class Song {
@@ -82,9 +84,8 @@ class Song {
 	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong {
 		var rawJson = Assets.getText(Paths.json('${Highscore.formatSong(folder)}/' + jsonInput.toLowerCase())).trim();
 
-		if (!rawJson.endsWith("}"))
-		{
-			rawJson = rawJson.substr(0, rawJson.lastIndexOf("}"));
+		if (!rawJson.endsWith("}")) {
+			rawJson = rawJson.substring(0, rawJson.lastIndexOf("}") + 1);
 			// LOL GOING THROUGH THE BULLSHIT TO CLEAN IDK WHATS STRANGE
 		}
 
@@ -119,7 +120,7 @@ class Song {
 		if (swagShit.maniaStr == null) {
 			if (swagShit.keyCount != null) {
 				//from leather
-				swagShit.maniaStr = '${swagShit.keyCount}k'; //ManiaInfo.ManiaConvert[ManiaInfo.LeatherConvert[swagShit.keyCount]];
+				swagShit.maniaStr = '${swagShit.keyCount}k';
 			} else if (swagShit.mania != null) {
 				//from the other thing idk
 				swagShit.maniaStr = ManiaInfo.ManiaConvert[swagShit.mania];
@@ -134,8 +135,8 @@ class Song {
 		if (swagShit.usedNoteTypes == null || swagShit.usedNoteTypes.length == 0) {
 			swagShit.usedNoteTypes = ["Normal Note"];
 		}
-		/*if (Options.playstate_guitar && swagShit.usedNoteTypes.indexOf("Guitar Note") == -1) {
-			swagShit.usedNoteTypes[swagShit.usedNoteTypes.indexOf("Normal Note")] = "Guitar Note";
+		/*if (Options.playstate_guitar && !swagShit.usedNoteTypes.contains("Guitar Note")) {
+			swagShit.usedNoteTypes[swagShit.usedNoteTypes.contains("Normal Note") ? swagShit.usedNoteTypes.indexOf("Normal Note") : swagShit.usedNoteTypes.length] = "Guitar Note";
 		}*/
 
 		if (swagShit.actions == null) {
@@ -160,6 +161,36 @@ class Song {
 						}
 						note[3] = swagShit.usedNoteTypes.indexOf(note[3]);
 					}
+				}
+			}
+		}
+
+		if (swagShit.moreStrumLines == null) {
+			swagShit.moreStrumLines = 0;
+		}
+
+		if (swagShit.threeLanes == true && swagShit.moreStrumLines < 1) { //Pasta night
+			if (swagShit.moreStrumLines < 1) {
+				swagShit.moreStrumLines = 1;
+			}
+			for (section in swagShit.notes) {
+				if (section.sectionNotes == null || section.sectionNotes.length == 0) {
+					continue;
+				}
+				var toRemove = new Array<Any>();
+				for (note in section.sectionNotes) {
+					if (note[1] >= 8) {
+						note[1] -= 8;
+						if (section.notesMoreLayers == null || section.notesMoreLayers.length == 0) {
+							section.notesMoreLayers = [[note]];
+						} else {
+							section.notesMoreLayers[0].push(note);
+						}
+						toRemove.push(note);
+					}
+				}
+				for (thing in toRemove) {
+					section.sectionNotes.remove(thing);
 				}
 			}
 		}

@@ -65,7 +65,7 @@ class ChartingState extends MusicBeatState
 
 	var dummyArrow:FlxSprite;
 
-	var curRenderedNotes:FlxTypedGroup<Note>;
+	var curRenderedNotes:FlxTypedGroup<ChartingNote>;
 	var curRenderedSustains:FlxTypedGroup<FlxSprite>;
 	var curRenderedNoteTypes:FlxTypedGroup<FlxText>;
 	var curRenderedEvents:FlxTypedGroup<ChartEventSprite>;
@@ -144,7 +144,7 @@ class ChartingState extends MusicBeatState
 		gridBlackLine = new FlxSprite().makeGraphic(2, Std.int(gridBG.height), FlxColor.BLACK);
 		add(gridBlackLine);
 
-		curRenderedNotes = new FlxTypedGroup<Note>();
+		curRenderedNotes = new FlxTypedGroup<ChartingNote>();
 		curRenderedSustains = new FlxTypedGroup<FlxSprite>();
 		curRenderedNoteTypes = new FlxTypedGroup<FlxText>();
 
@@ -180,7 +180,8 @@ class ChartingState extends MusicBeatState
 				moreStrumLines: 0,
 				timeSignature:4,
 				voicesName:null,
-				instName:null
+				instName:null,
+				threeLanes:false
 			};
 			curNoteTypeArr = _song.usedNoteTypes;
 		}
@@ -543,7 +544,7 @@ class ChartingState extends MusicBeatState
 
 		var applyLength:FlxUIButton = new FlxUIButton(100, 10, Translation.getTranslation("Add event here", "charteditor"), function() {
 			_song.vmanEventTime = CoolUtil.addToArrayPossiblyNull(_song.vmanEventTime, FlxG.sound.music.time + songAudioOffset);
-			_song.vmanEventOrder = CoolUtil.addToArrayPossiblyNull(_song.vmanEventOrder, 0);
+			_song.vmanEventOrder = CoolUtil.addToArrayPossiblyNull(_song.vmanEventOrder, _song.vmanEventData.length);
 			_song.vmanEventData = CoolUtil.addToArrayPossiblyNull(_song.vmanEventData, ["Event"]);
 		});
 		Translation.setUIObjectFont(applyLength);
@@ -801,7 +802,7 @@ class ChartingState extends MusicBeatState
 
 		if (FlxG.mouse.justPressed) {
 			if (FlxG.mouse.overlaps(curRenderedNotes)) {
-				curRenderedNotes.forEach(function(note:Note) {
+				curRenderedNotes.forEach(function(note:ChartingNote) {
 					if (FlxG.mouse.overlaps(note)) {
 						if (FlxG.keys.pressed.CONTROL) {
 							selectNote(note);
@@ -1223,7 +1224,7 @@ class ChartingState extends MusicBeatState
 			var daStrumTime = i[0];
 			var daSus = i[2];
 
-			var note:Note = new Note(daStrumTime, Math.floor(daNoteInfo % currentChartMania.keys), null, false, null, i.length > 3 ? Math.floor(i[3]) : 0);
+			var note:ChartingNote = new ChartingNote(daStrumTime, Math.floor(daNoteInfo % currentChartMania.keys), null, false, null, i.length > 3 ? Math.floor(i[3]) : 0);
 			note.sustainLength = daSus;
 			note.setGraphicSize(GRID_SIZE, GRID_SIZE);
 			note.updateHitbox();
@@ -1243,7 +1244,7 @@ class ChartingState extends MusicBeatState
 		}
 
 		for (i in 0..._song.vmanEventOrder.length) {
-			curRenderedEvents.add(new ChartEventSprite(0, getYfromStrum(_song.vmanEventTime[i]), _song.vmanEventData[_song.vmanEventOrder[i]]));
+			curRenderedEvents.add(new ChartEventSprite(0, getYfromStrum(_song.vmanEventTime[i] - startThing), _song.vmanEventData[_song.vmanEventOrder[i]]));
 		}
 
 		notesPast = new Map<Int, Bool>();
@@ -1277,7 +1278,7 @@ class ChartingState extends MusicBeatState
 		_song.notes.push(sec);
 	}
 
-	function selectNote(note:Note):Void {
+	function selectNote(note:ChartingNote):Void {
 		/*for (i in getSectionNotes()) {
 			if (i.strumTime == note.strumTime && i.noteData % currentChartMania.keys == note.noteData) {
 				curSelectedNote = i;
@@ -1290,7 +1291,7 @@ class ChartingState extends MusicBeatState
 		updateNoteUI();
 	}
 
-	function deleteNote(note:Note):Void {
+	function deleteNote(note:ChartingNote):Void {
 		var result = getSectionNotes();
 		var didDelete = false;
 		for (i in result) {
@@ -1451,63 +1452,72 @@ class ChartingState extends MusicBeatState
 			"song": _song
 		};
 
-		for (thing in json.song.notes) {
-			//delete unneeded empty layers
-			if (thing.notesMoreLayers != null) {
-				while (thing.notesMoreLayers.length > 0 && thing.notesMoreLayers[thing.notesMoreLayers.length - 1].length == 0) {
-					thing.notesMoreLayers.pop();
+		if (Options.dataStrip && !FlxG.keys.pressed.SHIFT) {
+			for (thing in json.song.notes) {
+				//delete unneeded empty layers
+				if (thing.notesMoreLayers != null) {
+					while (thing.notesMoreLayers.length > 0 && thing.notesMoreLayers[thing.notesMoreLayers.length - 1].length == 0) {
+						thing.notesMoreLayers.pop();
+					}
+				}
+				if (thing.notesMoreLayers == null || thing.notesMoreLayers.length == 0) {
+					Reflect.deleteField(thing, "notesMoreLayers");
+				}
+				//strip out a bunch more shit to lower the filesize
+				if (thing.changeBPM != true) {
+					Reflect.deleteField(thing, "bpm");
+					Reflect.deleteField(thing, "changeBPM");
+				}
+				if (thing.changeTimeSignature != true) {
+					Reflect.deleteField(thing, "timeSignature");
+					Reflect.deleteField(thing, "changeTimeSignature");
+				}
+				if (thing.typeOfSection == 0) {
+					Reflect.deleteField(thing, "typeOfSection"); //this isnt even used why do we have this
+				}
+				if (thing.altAnim != true) {
+					Reflect.deleteField(thing, "altAnim");
+				}
+				if (thing.gfSection != true) {
+					Reflect.deleteField(thing, "gfSection");
+				}
+				if (thing.changeMania != true) {
+					Reflect.deleteField(thing, "changeMania");
+					Reflect.deleteField(thing, "maniaStr");
+				}
+				if (thing.focusCharacter == null) {
+					Reflect.deleteField(thing, "focusCharacter");
+				}
+				if (thing.mustHitSection != false) {
+					Reflect.deleteField(thing, "mustHitSection");
 				}
 			}
-			if (thing.notesMoreLayers == null || thing.notesMoreLayers.length == 0) {
-				Reflect.deleteField(thing, "notesMoreLayers");
+			if (json.song.maniaStr == "4k") {
+				Reflect.deleteField(json.song, "maniaStr");
+				Reflect.deleteField(json.song, "keyCount");
+				Reflect.deleteField(json.song, "mania");
+			} else {
+				json.song.keyCount = ManiaInfo.GetManiaInfo(json.song.maniaStr).keys;
+				if (ManiaInfo.ManiaConvertBack.exists(json.song.maniaStr)) {
+					json.song.mania = ManiaInfo.ManiaConvertBack.get(json.song.maniaStr);
+				}
 			}
-			//strip out a bunch more shit to lower the filesize
-			if (thing.changeBPM != true) {
-				Reflect.deleteField(thing, "bpm");
-				Reflect.deleteField(thing, "changeBPM");
+			if (json.song.timeSignature == 4) {
+				Reflect.deleteField(json.song, "timeSignature");
 			}
-			if (thing.changeTimeSignature != true) {
-				Reflect.deleteField(thing, "timeSignature");
-				Reflect.deleteField(thing, "changeTimeSignature");
+			if (json.song.healthDrain == 0) {
+				Reflect.deleteField(json.song, "healthDrain");
+				Reflect.deleteField(json.song, "healthDrainMin");
 			}
-			if (thing.typeOfSection == 0) {
-				Reflect.deleteField(thing, "typeOfSection"); //this isnt even used why do we have this
+			if (json.song.instName == "Inst" || json.song.instName == "") {
+				Reflect.deleteField(json.song, "instName");
 			}
-			if (thing.altAnim != true) {
-				Reflect.deleteField(thing, "altAnim");
+			if (json.song.voicesName == "Voices" || json.song.voicesName == "") {
+				Reflect.deleteField(json.song, "voicesName");
 			}
-			if (thing.gfSection != true) {
-				Reflect.deleteField(thing, "gfSection");
+			if (json.song.threeLanes != true) {
+				Reflect.deleteField(json.song, "threeLanes");
 			}
-			if (thing.changeMania != true) {
-				Reflect.deleteField(thing, "changeMania");
-				Reflect.deleteField(thing, "maniaStr");
-			}
-			if (thing.focusCharacter == null) {
-				Reflect.deleteField(thing, "focusCharacter");
-			}
-		}
-		if (json.song.maniaStr == "4k") {
-			Reflect.deleteField(json.song, "maniaStr");
-			Reflect.deleteField(json.song, "keyCount");
-		} else {
-			json.song.keyCount = ManiaInfo.GetManiaInfo(json.song.maniaStr).keys;
-			if (ManiaInfo.ManiaConvertBack.exists(json.song.maniaStr)) {
-				json.song.mania = ManiaInfo.ManiaConvertBack.get(json.song.maniaStr);
-			}
-		}
-		if (json.song.timeSignature == 4) {
-			Reflect.deleteField(json.song, "timeSignature");
-		}
-		if (json.song.healthDrain == 0) {
-			Reflect.deleteField(json.song, "healthDrain");
-			Reflect.deleteField(json.song, "healthDrainMin");
-		}
-		if (json.song.instName == "Inst" || json.song.instName == "") {
-			Reflect.deleteField(json.song, "instName");
-		}
-		if (json.song.voicesName == "Voices" || json.song.voicesName == "") {
-			Reflect.deleteField(json.song, "voicesName");
 		}
 
 		var data:String = Json.stringify(json);
