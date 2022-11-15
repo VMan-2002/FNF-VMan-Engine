@@ -118,6 +118,7 @@ class PlayState extends MusicBeatState
 	public var health:Float = 1;
 	public var maxHealth:Float = 2;
 	public var combo:Int = 0;
+	public var maxCombo:Int = 0;
 
 	private var healthBarBG:FlxSprite;
 	private var healthBar:FlxBar;
@@ -154,6 +155,7 @@ class PlayState extends MusicBeatState
 	
 	public var songMisses:Int = 0;
 	public var songHits:Int = 0;
+	public var songHittableMisses:Int = 0;
 	
 	public var sicks:Int = 0;
 	public var goods:Int = 0;
@@ -220,6 +222,7 @@ class PlayState extends MusicBeatState
 	public var timerThingText:FlxText;
 
 	public var cinematicBars:FlxTypedGroup<FlxSprite>;
+	public var useStageCharZooms:Bool = true;
 
 	//Scripting funny lol
 	//The only hscript your getting is me porting the basegame update's hscript support
@@ -265,9 +268,17 @@ class PlayState extends MusicBeatState
 				isMiddlescroll = true;
 			}
 		}
+		
+		if (SONG.instName != null) {
+			instName = SONG.instName;
+		}
+		
+		if (SONG.voicesName != null) {
+			voicesName = SONG.voicesName;
+		}
 
 		currentUIStyle = SwagUIStyle.loadUIStyle(SONG.uiStyle);
-		var validUIStyle = currentUIStyle != null;
+		var validUIStyle = true;
 
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
@@ -684,8 +695,6 @@ class PlayState extends MusicBeatState
 				gf.x += 180;
 				gf.y += 300;
 			case 'schoolEvil':
-				// trailArea.scrollFactor.set();
-
 				boyfriend.x += 200;
 				boyfriend.y += 220;
 				gf.x += 180;
@@ -1454,9 +1463,17 @@ class PlayState extends MusicBeatState
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
 
-		var iconScaleMove2 = 25 * elapsed;
-		iconP1.scale.set(FlxMath.lerp(iconP1.scale.x, 1, iconScaleMove2), FlxMath.lerp(iconP1.scale.y, 1, iconScaleMove2));
-		iconP2.scale.set(FlxMath.lerp(iconP2.scale.x, 1, iconScaleMove2), FlxMath.lerp(iconP2.scale.y, 1, iconScaleMove2));
+		if (currentUIStyle.iconEaseFunc != null) {
+			var prog = (Conductor.songPosition / Conductor.crochet) % 1;
+			iconP1.scale.x = FlxMath.lerp(1.2, 1, currentUIStyle.iconEaseFunc(prog));
+			iconP1.scale.y = iconP1.scale.x;
+			iconP2.scale.x = iconP1.scale.x;
+			iconP2.scale.y = iconP2.scale.y;
+		} else {
+			var iconScaleMove2 = 25 * elapsed * currentUIStyle.iconEase;
+			iconP1.scale.set(FlxMath.lerp(iconP1.scale.x, 1, iconScaleMove2), FlxMath.lerp(iconP1.scale.y, 1, iconScaleMove2));
+			iconP2.scale.set(FlxMath.lerp(iconP2.scale.x, 1, iconScaleMove2), FlxMath.lerp(iconP2.scale.y, 1, iconScaleMove2));
+		}
 
 		var iconOffset:Int = 26;
 		var healthSub = healthBar.flipX ? healthBar.percent : 100 - healthBar.percent;
@@ -1513,6 +1530,10 @@ class PlayState extends MusicBeatState
 			}*/
 
 			var newFocus:Character = SONG.notes[currentSection].mustHitSection ? boyfriend : dad;
+			var focusNum:Null<Int> = SONG.notes[currentSection].focusCharacter;
+			if (focusNum != null && focusNum >= 0 && focusNum < Character.activeArray.length) {
+				newFocus = Character.activeArray[focusNum];
+			}
 
 			if (focusCharacter != newFocus) {
 				camFollowSetOnCharacter(newFocus);
@@ -1772,6 +1793,10 @@ class PlayState extends MusicBeatState
 		var guyId = Math.floor(Math.min(Character.activeArray.indexOf(char), currentStage.cameraOffset.length - 1));
 		camFollow.x += currentStage.cameraOffset[guyId][0];
 		camFollow.y += currentStage.cameraOffset[guyId][1];
+		
+		if (useStageCharZooms && currentStage.charZoom.length > guyId && currentStage.charZoom[guyId] != null) {
+			defaultCamZoom = currentStage.charZoom[guyId];
+		}
 	}
 
 	function preEndSong() {
@@ -1816,12 +1841,14 @@ class PlayState extends MusicBeatState
 			var newState = new PlayState();
 			newState.songScore = songScore;
 			newState.songMisses = songMisses;
+			newState.songHittableMisses = songHittableMisses;
 			newState.songHits = songHits;
 			newState.sicks = sicks;
 			newState.goods = goods;
 			newState.bads = bads;
 			newState.shits = shits;
 			newState.combo = combo;
+			newState.possibleMoreScore = possibleMoreScore;
 			return FlxG.switchState(newState);
 		}
 
@@ -1933,7 +1960,7 @@ class PlayState extends MusicBeatState
 				daRating = 'bad';
 		 */
 
-		var validUIStyle = currentUIStyle != null;
+		var validUIStyle = true;
 
 		var pixelShitPart1:String = "normal/";
 		var pixelShitPart2:String = '';
@@ -2212,6 +2239,9 @@ class PlayState extends MusicBeatState
 
 			songScore -= 10;
 			songMisses += 1;
+			if (note != null && !note.isSustainNote) {
+				songHittableMisses += 1;
+			}
 
 			if (Options.noteMissAction_MissSound[Options.noteMissAction])
 				FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
@@ -2237,6 +2267,9 @@ class PlayState extends MusicBeatState
 				rating = popUpScore(note);
 				combo += 1;
 				songHits += 1;
+				if (combo > maxCombo) {
+					maxCombo = combo;
+				}
 				lastHitNoteTime = note.strumTime;
 				
 				/*notes.forEachAlive(function(daNote:Note) {
@@ -2317,7 +2350,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 		var noteTypeData = note != null ? note.getNoteTypeData() : Note.SwagNoteType.loadNoteType("Normal Note", modName);
-		var char:Character = noteTypeData.charNums == null ? Character.activeArray[noteTypeData.charNums[0]] : (isBoyfriend ? boyfriend : dad);
+		var char:Character = noteTypeData.charNums != null ? Character.activeArray[noteTypeData.charNums[0]] : (isBoyfriend ? boyfriend : dad);
 		if (isMiss) {
 			return char.playAnim('sing${ManiaInfo.Dir[curManiaInfo.arrows[note == null ? noteData : note.noteData]]}miss', true);
 		}
@@ -2463,8 +2496,8 @@ class PlayState extends MusicBeatState
 
 			// Dad doesnt interupt his own notes
 			//if (SONG.notes[currentSection].mustHitSection)
-				dad.dance();
 		}
+		dad.dance();
 		// FlxG.log.add('change bpm' + SONG.notes[Std.int(curStep / 16)].changeBPM);
 		wiggleShit.update(Conductor.crochet);
 

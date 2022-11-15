@@ -6,7 +6,7 @@ import flixel.FlxSprite;
 using StringTools;
 
 class SpriteVMan extends FlxSprite {
-	public var animOffsets:Map<String, Array<Float>> = new Map<String, Array<Float>>();
+	public var animOffsets:Map<String, Array<Null<Float>>> = new Map<String, Array<Null<Float>>>();
 
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void {
 		animation.play(AnimName, Force, Reversed, Frame);
@@ -22,8 +22,8 @@ class SpriteVMan extends FlxSprite {
 		}
 	}
 
-	public function addOffset(name:String, x:Float = 0, y:Float = 0) {
-		animOffsets[name] = [x, y, -x];
+	public function addOffset(name:String, x:Float = 0, y:Float = 0, ?xflipped:Null<Float> = null) {
+		animOffsets[name] = [x, y, xflipped];
 	}
 
 	public function generateFlipOffsets() {
@@ -34,7 +34,11 @@ class SpriteVMan extends FlxSprite {
 		var referenceFrameWidth = frames.frames[animation.getByName(referenceAnimName).frames[0]].frame.width;
 		for (thing in animOffsets.keys()) {
 			var thisFrameWidth = frames.frames[animation.getByName(thing).frames[0]].frame.width;
-			animOffsets[thing][2] = -animOffsets[thing][0] + thisFrameWidth - referenceFrameWidth;
+			if (animOffsets[thing][2] == null) {
+				animOffsets[thing][2] = -animOffsets[thing][0] + (thisFrameWidth - referenceFrameWidth);
+			} else if (animOffsets[thing][0] == null) {
+				animOffsets[thing][0] = animOffsets[thing][2] - (thisFrameWidth - referenceFrameWidth);
+			}
 		}
 	}
 

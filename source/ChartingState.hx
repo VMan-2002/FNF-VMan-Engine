@@ -116,6 +116,7 @@ class ChartingState extends MusicBeatState
 	var curNotesLayer:Int = 0;
 	var sectionInfo:Array<Dynamic>;
 	var nextSectionTime:Float;
+	var sectionBeatsActive:Bool = false;
 
 	override function create()
 	{
@@ -152,37 +153,7 @@ class ChartingState extends MusicBeatState
 			_song = PlayState.SONG;
 		else
 		{
-			_song = {
-				song: 'Test',
-				notes: [],
-				bpm: 150,
-				needsVoices: true,
-				player1: 'bf',
-				player2: 'dad',
-				speed: 1,
-				validScore: false,
-				maniaStr: "4k",
-				mania: 0,
-				keyCount: 4,
-				gfVersion: "gf",
-				stage: "",
-				usedNoteTypes: new Array<String>(),
-				healthDrain: 0,
-				healthDrainMin: 0,
-				moreCharacters: new Array<String>(),
-				actions: new Array<String>(),
-				noteSkin: "",
-				uiStyle: "",
-				vmanEventTime: new Array<Float>(),
-				vmanEventOrder: new Array<Int>(),
-				vmanEventData: new Array<Dynamic>(),
-				hide_girlfriend: false,
-				moreStrumLines: 0,
-				timeSignature:4,
-				voicesName:null,
-				instName:null,
-				threeLanes:false
-			};
+			_song = Song.songFunc();
 			curNoteTypeArr = _song.usedNoteTypes;
 		}
 
@@ -782,12 +753,12 @@ class ChartingState extends MusicBeatState
 		Conductor.songPosition = FlxG.sound.music.time + songAudioOffset;
 		_song.song = typingShit.text;
 
-		strumLine.y = getYfromStrum((Conductor.songPosition - sectionStartTime()) % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps));
+		strumLine.y = getYfromStrum((Conductor.songPosition - sectionStartTime()) % (Conductor.stepCrochet * getLengthInSteps(curSection)));
 
 		if (curBeat % currentTimeSignature == 0 && Conductor.songPosition >= nextSectionTime)
 		{
 			trace(curStep);
-			trace((_song.notes[curSection].lengthInSteps) * (curSection + 1));
+			trace(getLengthInSteps(curSection) * (curSection + 1));
 			trace('DUMBSHIT');
 
 			if (_song.notes[curSection + 1] == null) {
@@ -823,7 +794,7 @@ class ChartingState extends MusicBeatState
 				if (FlxG.mouse.x > gridBG.x
 					&& FlxG.mouse.x < gridBG.x + gridBG.width
 					&& FlxG.mouse.y > gridBG.y
-					&& FlxG.mouse.y < gridBG.y + (GRID_SIZE * _song.notes[curSection].lengthInSteps))
+					&& FlxG.mouse.y < gridBG.y + (GRID_SIZE * getLengthInSteps(curSection)))
 				{
 					FlxG.log.add('added note');
 					addNote();
@@ -834,7 +805,7 @@ class ChartingState extends MusicBeatState
 		if (FlxG.mouse.x > gridBG.x
 			&& FlxG.mouse.x < gridBG.x + gridBG.width
 			&& FlxG.mouse.y > gridBG.y
-			&& FlxG.mouse.y < gridBG.y + (GRID_SIZE * _song.notes[curSection].lengthInSteps))
+			&& FlxG.mouse.y < gridBG.y + (GRID_SIZE * getLengthInSteps(curSection)))
 		{
 			dummyArrow.x = Math.floor(FlxG.mouse.x / GRID_SIZE) * GRID_SIZE;
 			if (FlxG.keys.pressed.SHIFT)
@@ -1081,7 +1052,7 @@ class ChartingState extends MusicBeatState
 
 		var result = getSectionNotes();
 		for (note in (curNotesLayer == 0 ? _song.notes[daSec - sectionNum].sectionNotes : _song.notes[daSec - sectionNum].notesMoreLayers[curNotesLayer - 1])) {
-			var strum = note[0] + Conductor.stepCrochet * (_song.notes[daSec].lengthInSteps * sectionNum);
+			var strum = note[0] + Conductor.stepCrochet * (getLengthInSteps(daSec) * sectionNum);
 
 			var copiedNote:Array<Dynamic> = [strum, note[1], note[2], note[3]];
 			_song.notes[daSec].sectionNotes.push(copiedNote);
@@ -1159,7 +1130,11 @@ class ChartingState extends MusicBeatState
 	function updateGrid():Void
 	{
 		var toTimeSig = _song.timeSignature == null ? 4 : _song.timeSignature;
-		if (_song.notes[curSection].changeTimeSignature && _song.notes[curSection].timeSignature > 0) {
+		sectionBeatsActive = false;
+		if (_song.notes[curSection].sectionBeats > 0) {
+			toTimeSig = _song.notes[curSection].sectionBeats;
+			sectionBeatsActive = true;
+		} else if (_song.notes[curSection].changeTimeSignature && _song.notes[curSection].timeSignature > 0) {
 			toTimeSig = _song.notes[curSection].timeSignature;
 		} else {
 			// get last time sig
@@ -1229,7 +1204,7 @@ class ChartingState extends MusicBeatState
 			note.setGraphicSize(GRID_SIZE, GRID_SIZE);
 			note.updateHitbox();
 			note.x = Math.floor(daNoteInfo * GRID_SIZE);
-			note.y = Math.floor(getYfromStrum((daStrumTime - startThing) % (Conductor.stepCrochet * _song.notes[curSection].lengthInSteps)));
+			note.y = Math.floor(getYfromStrum((daStrumTime - startThing) % (Conductor.stepCrochet * getLengthInSteps(curSection))));
 
 			curRenderedNotes.add(note);
 
@@ -1272,10 +1247,15 @@ class ChartingState extends MusicBeatState
 			changeMania: false,
 			notesMoreLayers: null,
 			timeSignature: 4,
-			changeTimeSignature: false
+			changeTimeSignature: false,
+			sectionBeats: -1
 		};
 
 		_song.notes.push(sec);
+	}
+
+	inline function getLengthInSteps(num:Int) {
+		return _song.notes[num].sectionBeats > 0 ? _song.notes[num].lengthInSteps / (4 / _song.notes[num].sectionBeats) : _song.notes[num].lengthInSteps;
 	}
 
 	function selectNote(note:ChartingNote):Void {
@@ -1383,28 +1363,27 @@ class ChartingState extends MusicBeatState
 		}
 	}
 
-	/*
-		function calculateSectionLengths(?sec:SwagSection):Int
+	/*function calculateSectionLengths(?sec:SwagSection):Int
+	{
+		var daLength:Int = 0;
+
+		for (i in _song.notes)
 		{
-			var daLength:Int = 0;
+			var swagLength = i.lengthInSteps;
 
-			for (i in _song.notes)
+			if (i.typeOfSection == Section.COPYCAT)
+				swagLength * 2;
+
+			daLength += swagLength;
+
+			if (sec != null && sec == i)
 			{
-				var swagLength = i.lengthInSteps;
-
-				if (i.typeOfSection == Section.COPYCAT)
-					swagLength * 2;
-
-				daLength += swagLength;
-
-				if (sec != null && sec == i)
-				{
-					trace('swag loop??');
-					break;
-				}
+				trace('swag loop??');
+				break;
 			}
+		}
 
-			return daLength;
+		return daLength;
 	}*/
 	private var daSpacing:Float = 0.3;
 
@@ -1453,6 +1432,7 @@ class ChartingState extends MusicBeatState
 		};
 
 		if (Options.dataStrip && !FlxG.keys.pressed.SHIFT) {
+			var curTimeSig:Int = json.song.timeSignature;
 			for (thing in json.song.notes) {
 				//delete unneeded empty layers
 				if (thing.notesMoreLayers != null) {
@@ -1471,6 +1451,11 @@ class ChartingState extends MusicBeatState
 				if (thing.changeTimeSignature != true) {
 					Reflect.deleteField(thing, "timeSignature");
 					Reflect.deleteField(thing, "changeTimeSignature");
+				} else {
+					curTimeSig = thing.timeSignature;
+				}
+				if (thing.sectionBeats == curTimeSig || thing.sectionBeats == -1) {
+					Reflect.deleteField(thing, "sectionBeats");
 				}
 				if (thing.typeOfSection == 0) {
 					Reflect.deleteField(thing, "typeOfSection"); //this isnt even used why do we have this

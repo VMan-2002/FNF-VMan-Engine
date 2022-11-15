@@ -1,11 +1,13 @@
 package;
 
+import sys.FileSystem;
+
+using StringTools;
 #if polymod
 import polymod.Polymod.Framework;
 import polymod.Polymod;
 #end
 
-using StringTools;
 
 class ModLoad
 {
@@ -19,7 +21,19 @@ class ModLoad
 		Character.charHealthIcons = new Map<String, String>();
 		enabledMods = new Array<String>();
 		for (i in dirs) {
-			enabledMods.push(i.replace("\r", ""));
+			var f = i.replace("\r", "");
+			var flashFolder = f+"/noflashing";
+			var string = "Mod: "+f;
+			if (!Options.flashingLights) {
+				if (FileSystem.exists(flashFolder) && FileSystem.isDirectory(flashFolder)) {
+					enabledMods.push(flashFolder);
+					string += " (loading with noflash)";
+				} else {
+					string += " (doesnt have noflash)";
+				}
+			}
+			trace(string);
+			enabledMods.push(f);
 		}
 		primaryMod = enabledMods[0];
 		PlayState.modName = primaryMod;
@@ -58,7 +72,7 @@ class ModLoad
 		var loadedMods = results.map(function(item:ModMetadata) {
 			return item.id;
 		});
-		trace('Loaded mods: ${loadedMods}');
+		trace('Loaded ${loadedMods.length} mods');
 	}
 
 	public static function onError(error:PolymodError) {

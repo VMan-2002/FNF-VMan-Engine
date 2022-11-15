@@ -223,9 +223,9 @@ class AnimationDebug extends MusicBeatState
 				if (downP)
 					char.animOffsets.get(animList[curAnim])[1] -= multiplier;
 				if (leftP)
-					char.animOffsets.get(animList[curAnim])[0] += multiplier;
+					char.animOffsets.get(animList[curAnim])[char.flipX ? 2 : 1] += multiplier;
 				if (rightP)
-					char.animOffsets.get(animList[curAnim])[0] -= multiplier;
+					char.animOffsets.get(animList[curAnim])[char.flipX ? 2 : 1] -= multiplier;
 
 				updateTexts();
 				genBoyOffsets(false);

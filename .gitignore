@@ -1,6 +1,7 @@
-export/
 .vscode/
 vman_mods/
 assets/ignore
 
-!export/debug/windows/bin/mods/fnf_cornflower_week*
+!export/
+export/*
+!export/debug/windows/bin/mods/*/*

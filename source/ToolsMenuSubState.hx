@@ -132,57 +132,19 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 		PlayState.storyDifficulty = 0;
 		var isGHL:Bool = instrument.indexOf("GHL") != -1;
 		var lines = content.split("\n");
-		var song = {
-			song: "Some Clone Hero Chart",
-			notes: new Array<SwagSection>(),
-			bpm: 150.0,
-			needsVoices: true,
-			player1: 'bf',
-			player2: 'dad',
-			speed: 2.5,
-			validScore: false,
-			maniaStr: null,
-			mania: isGHL ? 1 : 3,
-			keyCount: 0,
-			gfVersion: "gf",
-			stage: "stage",
-			usedNoteTypes: new Array<String>(),
-			healthDrain: 0.0,
-			healthDrainMin: 0.0,
-			moreCharacters: null,
-			actions: ["importedFromCloneHero"],
-			noteSkin: "",
-			uiStyle: "",
-			vmanEventTime: null,
-			vmanEventOrder: new Array<Int>(),
-			vmanEventData: null,
-			hide_girlfriend: false,
-			moreStrumLines: 0,
-			timeSignature: 4,
-			instName: null,
-			voicesName: null,
-			threeLanes:false
-		};
+		
+		var song = Song.songFunc();
+		song.song = "Some Clone Hero Chart";
+		song.speed = 2.5;
+		song.mania = isGHL ? 1 : 3;
+		song.actions.push("importedFromCloneHero");
+		song.keyCount = ManiaInfo.GetManiaInfo(ManiaInfo.ManiaConvert[song.mania]).keys;
+
+		var newSection = Section.sectionFunc();
+		song.notes.push(newSection);
+
 		var noteDataArr:Array<Float> = isGHL ? [3, 4, 5, 0, 1, 0, 0, 0, 2] : [0, 1, 2, 3, 4, 5, 0, 0];
 		var noteTypeArr:Array<Int> = [0, 0, 0];
-		song.keyCount = ManiaInfo.GetManiaInfo(ManiaInfo.ManiaConvert[song.mania]).keys;
-		var newSection = {
-			sectionNotes: new Array<Dynamic>(),
-			lengthInSteps: 16,
-			typeOfSection: 0,
-			mustHitSection: true,
-			bpm: 150.0,
-			changeBPM: false,
-			altAnim: false,
-			gfSection: false,
-			focusCharacter: null,
-			changeMania: false,
-			maniaStr: null,
-			notesMoreLayers: null,
-			changeTimeSignature:false,
-			timeSignature:4
-		};
-		song.notes.push(newSection);
 		var curSection:String = "";
 		var offset:Float = 0;
 		var resolution:Float = 192;
@@ -200,6 +162,7 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 		var thisRowItems:Array<Int> = new Array<Int>();
 		var rowForced:Bool = false;
 		var hasOpponentNotes:Bool = false;
+		
 		for (line in lines) {
 			var linetrim = line.trim();
 			if (linetrim.length == 0) continue;

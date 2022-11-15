@@ -49,6 +49,7 @@ typedef SwagCharacterAnim = {
 	public var indicies:Null<Array<Int>>;
 	public var loop:Bool;
 	public var noteCameraOffset:Array<Float>;
+	public var nextAnim:Null<String>;
 }
 
 class Character extends SpriteVMan
@@ -706,12 +707,18 @@ class Character extends SpriteVMan
 					frames = Paths.getSparrowAtlas(loadedStuff.image);
 					for (anim in loadedStuff.animations) {
 						loadAnimation(this, anim);
+						var flippedPlayer:Bool = (loadedStuff.isPlayer != flipX);
 						if (anim.offset != null && anim.offset.length > 0) {
-							addOffset(anim.name, anim.offset[0], anim.offset[1]);
+							//			LEN 2	LEN 3
+							//NO FLIP	0,1,n	0,1,2
+							//IS FLIP	0,1,n	2,1,0	
+							var xNormal = anim.offset.length > 2 ? (anim.offset[!flippedPlayer ? 0 : 2]) : (!flippedPlayer ? anim.offset[0] : null);
+							var xFlip = anim.offset.length > 2 ? (anim.offset[flippedPlayer ? 0 : 2]) : (flippedPlayer ? anim.offset[0] : null);
+							addOffset(anim.name, xNormal, anim.offset[1], xFlip);
 						} else {
 							addOffset(anim.name);
 						}
-						if (anim.noteCameraOffset == null || anim.noteCameraOffset.length < 1) {
+						if (anim.noteCameraOffset == null || anim.noteCameraOffset.length == 0) {
 							if (anim.name.startsWith("sing")) {
 								/*switch(anim.name.toLowerCase()) {
 									case "singleft":
@@ -728,13 +735,13 @@ class Character extends SpriteVMan
 							noteCameraOffset.set(anim.name, new FlxPoint(anim.noteCameraOffset[0], anim.noteCameraOffset[1]));
 						}
 					}
-					if (loadedStuff.position != null && loadedStuff.position.length > 0) {
+					if (loadedStuff.position != null && loadedStuff.position.length != 0) {
 						positionOffset = loadedStuff.position;
 						if (positionOffset.length < 2) {
 							positionOffset[1] = 0;
 						}
 					}
-					if (loadedStuff.healthIcon != null && loadedStuff.healthIcon.length > 0) {
+					if (loadedStuff.healthIcon != null && loadedStuff.healthIcon.length != 0) {
 						healthIcon = loadedStuff.healthIcon;
 					}
 					if (loadedStuff.isPlayer != null) {

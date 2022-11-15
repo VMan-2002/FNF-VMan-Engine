@@ -108,6 +108,7 @@
 	-->
 	<assets path="assets/fonts" embed='true'/>
 	<assets path="assets/credits_inbuilt" embed='true' library="default"/>
+	<assets path="assets/appicon" embed='true' library="default"/>
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />
@@ -172,10 +173,10 @@
 
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
 	
-	<icon path="art/icon16.png" size='16'/>
-	<icon path="art/icon32.png" size='32'/>
-	<icon path="art/icon64.png" size='64'/>
-	<icon path="art/iconOG.png" />
+	<icon path="assets/appicon/images/appicon/icon16.png" size='16'/>
+	<icon path="assets/appicon/images/appicon/icon32.png" size='32'/>
+	<icon path="assets/appicon/images/appicon/icon64.png" size='64'/>
+	<icon path="assets/appicon/images/appicon/iconOG.png" />
 
 
 	<!-- <haxedef name="SKIP_TO_PLAYSTATE" if="debug" /> -->

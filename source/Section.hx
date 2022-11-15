@@ -16,6 +16,7 @@ typedef SwagSection =
 	var maniaStr:String;
 	var changeTimeSignature:Bool;
 	var timeSignature:Int;
+	var sectionBeats:Int;
 }
 
 class Section
@@ -34,5 +35,25 @@ class Section
 	public function new(lengthInSteps:Int = 16)
 	{
 		this.lengthInSteps = lengthInSteps;
+	}
+
+	public static inline function sectionFunc():SwagSection {
+		return {
+			sectionNotes: new Array<Dynamic>(),
+			lengthInSteps: 16,
+			typeOfSection: 0,
+			mustHitSection: true,
+			bpm: 150.0,
+			changeBPM: false,
+			altAnim: false,
+			gfSection: false,
+			focusCharacter: null,
+			changeMania: false,
+			maniaStr: null,
+			notesMoreLayers: null,
+			changeTimeSignature:false,
+			timeSignature:4,
+			sectionBeats:-1
+		};
 	}
 }

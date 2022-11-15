@@ -36,6 +36,7 @@ typedef SwagStage =
 {
 	var charPosition:Array<Array<Float>>;
 	var defaultCamZoom:Null<Float>;
+	var charZoom:Null<Array<Null<Float>>>;
 	var elementsFront:Array<StageElement>;
 	var elementsBack:Array<StageElement>;
 	var hide_girlfriend:Bool;
@@ -60,6 +61,7 @@ class Stage
 		"idle" => "idle"
 	];
 	public var cameraOffset:Array<Array<Float>> = [[0, 0, 0]];
+	public var charZoom:Array<Null<Float>>;
 
 	public static function getStage(name:String, ?mod:Null<String>):Null<SwagStage> {
 		if (mod == null) {
@@ -119,7 +121,8 @@ class Stage
 			hide_girlfriend: false,
 			animFollowup: null,
 			cameraOffset: null,
-			charFacing: [0]
+			charFacing: [0],
+			charZoom: null
 		};
 	}
 
@@ -198,6 +201,9 @@ class Stage
 			for (thing in data.animFollowup) {
 				target.animFollowup.set(thing[0], thing[1]);
 			}
+		}
+		if (target.charZoom == null) {
+			target.charZoom = new Array<Null<Float>>();
 		}
 		return target;
 	}

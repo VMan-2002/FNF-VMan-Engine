@@ -11,6 +11,7 @@ import discord_rpc.DiscordRpc;
 class DiscordClient
 {
 	static var isActivated:Bool = false;
+	static var canJoin:Bool = false;
 	public function new()
 	{
 		#if !html5
@@ -19,7 +20,7 @@ class DiscordClient
 			clientID: "983954658231975946",
 			onReady: onReady,
 			onError: onError,
-			onDisconnected: onDisconnected
+			onDisconnected: onDisconnected,
 		});
 		trace("Discord Client started.");
 
@@ -69,6 +70,36 @@ class DiscordClient
 	static function onDisconnected(_code:Int, _message:String)
 	{
 		trace('Disconnected! $_code : $_message');
+	}
+
+	static var requests:Array<JoinRequest>;
+	public static var mimicable:Bool;
+
+	static function onJoin(id:String) {
+		if (Multiplayer.valid) {
+			
+		}
+	}
+
+	static function onRequest(dat:JoinRequest) {
+		#if !html5
+		if (!isActivated || !canJoin) {
+			DiscordRpc.respond(dat.userId, No);
+			return;
+		}
+		if (Multiplayer.valid) {
+			//todo: ask invite lmao
+			requests.push(dat);
+			trace(dat.discriminator+" requested to join your multiplayer game");
+		} else if (mimicable) {
+			//the goal here is to allow someone to click a button to play the same song that someone else on discord is playing (is this a valid usage)
+			DiscordRpc.respond(dat.userId, Yes);
+			trace(dat.discriminator+" requested to mimic");
+		} else {
+			DiscordRpc.respond(dat.userId, No);
+			trace(dat.discriminator+" tried to request but is disallowed right now");
+		}
+		#end
 	}
 
 	public static function initialize()
@@ -147,7 +178,11 @@ class DiscordClient
 		#end
 	}
 
-	public static function changePresence(details:String, ?state:Null<String>, ?smallImageKey : String, ?hasStartTimestamp : Bool, ?endTimestamp: Float)
+	public static function getPlayStateString() {
+		return (PlayState.instance.songMisses == 0 ? Highscore.getPlayStateFC(PlayState.instance) : 'Misses:${PlayState.instance.songMisses}');
+	}
+
+	public static function changePresence(details:String, ?state:Null<String>, ?smallImageKey : String, ?hasStartTimestamp : Bool, ?endTimestamp: Float, ?includeJoin:Bool = false)
 	{
 		#if !html5
 		if (!isActivated) {
@@ -160,6 +195,8 @@ class DiscordClient
 			endTimestamp = startTimestamp + endTimestamp;
 		}
 
+		canJoin = includeJoin;
+
 		DiscordRpc.presence({
 			details: details,
 			state: state,
@@ -168,7 +205,8 @@ class DiscordClient
 			smallImageKey : smallImageKey,
 			// Obtained times are in milliseconds so they are divided so Discord can use it
 			startTimestamp : Std.int(startTimestamp / 1000),
-            endTimestamp : Std.int(endTimestamp / 1000)
+            endTimestamp : Std.int(endTimestamp / 1000),
+			//joinSecret: includeJoin ? "test" : ""
 		});
 
 		//trace('Discord RPC Updated. Arguments: $details, $state, $smallImageKey, $hasStartTimestamp, $endTimestamp');

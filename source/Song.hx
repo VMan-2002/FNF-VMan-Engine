@@ -10,6 +10,7 @@ using StringTools;
 
 typedef SwagSong = {
 	var song:String;
+	var newtitle:Null<String>; //display name
 	var notes:Array<SwagSection>;
 	var bpm:Float;
 	var needsVoices:Bool;
@@ -79,6 +80,41 @@ class Song {
 		this.song = song;
 		this.notes = notes;
 		this.bpm = bpm;
+	}
+
+	public static inline function songFunc():SwagSong {
+		return {
+			song: 'Test',
+			notes: new Array<SwagSection>(),
+			bpm: 150,
+			needsVoices: true,
+			player1: 'bf',
+			player2: 'dad',
+			speed: 1,
+			validScore: false,
+			maniaStr: "4k",
+			mania: 0,
+			keyCount: 0,
+			gfVersion: "gf",
+			stage: "",
+			usedNoteTypes: new Array<String>(),
+			healthDrain: 0,
+			healthDrainMin: 0,
+			moreCharacters: new Array<String>(),
+			actions: new Array<String>(),
+			noteSkin: "",
+			uiStyle: "",
+			vmanEventTime: new Array<Float>(),
+			vmanEventOrder: new Array<Int>(),
+			vmanEventData: new Array<Dynamic>(),
+			hide_girlfriend: false,
+			moreStrumLines: 0,
+			timeSignature:4,
+			voicesName:null,
+			instName:null,
+			threeLanes:false,
+			newtitle:null
+		};
 	}
 
 	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong {
