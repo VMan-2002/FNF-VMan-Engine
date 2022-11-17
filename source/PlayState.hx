@@ -213,6 +213,7 @@ class PlayState extends MusicBeatState
 
 	public var voicesName:String = "Voices";
 	public var instName:String = "Inst";
+	public var songTitle:String = "pewdiepie";
 
 	public var notesCanBeHit = true;
 
@@ -385,6 +386,7 @@ class PlayState extends MusicBeatState
 		} else {
 			curStage = SONG.stage;
 		}
+		songTitle = SONG.newtitle == null ? SONG.song : SONG.newtitle;
 		
 		var customStageCharPos:Array<Array<Float>> = null;
 
@@ -1529,7 +1531,7 @@ class PlayState extends MusicBeatState
 				// trace(PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection);
 			}*/
 
-			var newFocus:Character = SONG.notes[currentSection].mustHitSection ? boyfriend : dad;
+			var newFocus:Character = SONG.notes[currentSection].mustHitSection != false ? boyfriend : dad;
 			var focusNum:Null<Int> = SONG.notes[currentSection].focusCharacter;
 			if (focusNum != null && focusNum >= 0 && focusNum < Character.activeArray.length) {
 				newFocus = Character.activeArray[focusNum];

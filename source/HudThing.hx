@@ -60,7 +60,7 @@ class HudThing extends FlxGroup
 				case "health":
 					text += Translation.getTranslation("hud_health", "playstate", [trimNoPercent(PlayState.instance.health / 2)]);
 				case "song":
-					text += PlayState.instance.curSong;
+					text += PlayState.instance.songTitle;
 				case "difficulty":
 					text += Translation.getTranslation(PlayState.instance.storyDifficultyText, "difficulty");
 					var thing = Highscore.getModeString();

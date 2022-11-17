@@ -111,7 +111,7 @@ class OptionsSubState extends OptionsSubStateBasic
 			case "note camera movement":
 				return ["That thing that's in every FNF mod nowadays. The camera will move around depending on the notes.", Options.noteCamMovement ? "Enabled" : "Disabled"];
 			case "self awareness":
-				return ["Scary... Bad for livestreamers, though. Only applies when the mod uses it.", Options.noteCamMovement ? "Enabled" : "Disabled"];
+				return ["Scary... Bad for livestreamers, though. Only applies when the mod uses it.", Options.selfAware ? "Enabled" : "Disabled"];
 		}
 		return ["Unknown option.", name, 'unknownOption'];
 	}

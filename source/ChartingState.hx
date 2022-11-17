@@ -580,7 +580,7 @@ class ChartingState extends MusicBeatState
 		FlxG.sound.playMusic(Paths.inst(daSong), 0.6);
 
 		// WONT WORK FOR TUTORIAL OR TEST SONG!!! REDO LATER
-		vocals = new FlxSound().loadEmbedded(Paths.voices(daSong));
+		vocals = new FlxSound().loadEmbedded(Paths.getSongPathThing(daSong, _song.voicesName == null ? "Voices" : _song.voicesName));
 		FlxG.sound.list.add(vocals);
 
 		FlxG.sound.music.pause();
@@ -1121,8 +1121,10 @@ class ChartingState extends MusicBeatState
 		PlayState.curManiaInfo = currentChartMania;
 		rightIcon.x = widthThing * 0.5 * GRID_SIZE;
 
-		headPositions[0] = gridBG.x + 100;
-		headPositions[1] = gridBlackLine.x + 100;
+		if (gridBG != null) {
+			headPositions[0] = gridBG.x + 100;
+			headPositions[1] = gridBlackLine.x + 100;
+		}
 
 		updateGrid();
 	}
