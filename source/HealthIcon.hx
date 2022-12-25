@@ -68,7 +68,7 @@ class HealthIcon extends FlxSprite
 		'dad' => [12, 13, 12],
 		'senpai' => [22, 22, 22],
 		'senpai-angry' => [22, 22, 22],
-		'spirit' => [23, 26, 23],
+		'spirit' => [23, 23, 23],
 		'bf-old' => [14, 15, 14],
 		'gf' => [16, 16, 16],
 		'gf-christmas' => [16, 16, 16],
