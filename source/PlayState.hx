@@ -278,7 +278,9 @@ class PlayState extends MusicBeatState
 			voicesName = SONG.voicesName;
 		}
 
-		currentUIStyle = SwagUIStyle.loadUIStyle(SONG.uiStyle);
+		trace("load UI style");
+		currentUIStyle = SwagUIStyle.loadUIStyle(SONG.uiStyle, modName);
+		trace("end load UI style");
 		var validUIStyle = true;
 
 		Conductor.mapBPMChanges(SONG);
@@ -1241,7 +1243,7 @@ class PlayState extends MusicBeatState
 
 			var gottaHitNote:Bool = false;
 			if (layer == 0) {
-				gottaHitNote = (section.mustHitSection) != (songNotes[1] >= curManiaInfo.keys);
+				gottaHitNote = (section.mustHitSection != false) != (songNotes[1] >= curManiaInfo.keys);
 				if (allowGameplayChanges) {
 					if (Options.playstate_opponentmode) {
 						gottaHitNote = !gottaHitNote;

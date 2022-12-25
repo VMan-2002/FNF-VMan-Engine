@@ -33,6 +33,13 @@ class SpriteVMan extends FlxSprite {
 		}
 		var referenceFrameWidth = frames.frames[animation.getByName(referenceAnimName).frames[0]].frame.width;
 		for (thing in animOffsets.keys()) {
+			if (animation.getByName(thing) == null) {
+				trace("NULL ANIM "+thing+" when generate flip offsets");
+				while (animOffsets[thing][2] == null) {
+					animOffsets[thing].push(0);
+				}
+				continue;
+			}
 			var thisFrameWidth = frames.frames[animation.getByName(thing).frames[0]].frame.width;
 			if (animOffsets[thing][2] == null) {
 				animOffsets[thing][2] = -animOffsets[thing][0] + (thisFrameWidth - referenceFrameWidth);
@@ -68,7 +75,7 @@ class SpriteVMan extends FlxSprite {
 	}
 
 	public function swapAnimations(from:String, to:String) {
-		var oldRight = animation.getByName('singRIGHT').clone(animation);
+		var oldRight = animation.getByName(from).clone(animation);
 		
 		@:privateAccess(FlxAnimationController._animations) //private variables suck sometimes
 		animation._animations.set(from, animation.getByName(to));

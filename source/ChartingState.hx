@@ -352,6 +352,23 @@ class ChartingState extends MusicBeatState
 		//noteTypeSelect.resize(200, 20);
 		maniaSelect.selectedLabel = arrMania[ManiaInfo.AvailableMania.indexOf(_song.maniaStr)];
 
+		
+		var clearNotesButton:FlxUIButton = new FlxUIButton(10, 280, Translation.getTranslation("Clear All Notes", "charteditor"), function()
+		{
+			var i:Int = _song.notes.length;
+			while (i > 0) {
+				i -= 1;
+				if (_song.notes[i].sectionNotes != null && _song.notes[i].sectionNotes.length > 0) {
+					_song.notes[i].sectionNotes = [];
+				}
+				if (_song.notes[i].notesMoreLayers != null && _song.notes[i].notesMoreLayers.length > 0) {
+					_song.notes[i].notesMoreLayers = null;
+				}
+			}
+			updateGrid();
+		});
+		Translation.setUIObjectFont(clearNotesButton);
+
 		var tab_group_song = new FlxUI(null, UI_box);
 		tab_group_song.name = "Song";
 		tab_group_song.add(UI_songTitle);
@@ -362,11 +379,13 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(reloadSong);
 		tab_group_song.add(reloadSongJson);
 		tab_group_song.add(loadAutosaveBtn);
+		tab_group_song.add(clearNotesButton);
 		tab_group_song.add(stepperBPM);
 		tab_group_song.add(stepperSpeed);
 		tab_group_song.add(stepperTimeSig);
 		tab_group_song.add(player1DropDown);
 		tab_group_song.add(player2DropDown);
+		tab_group_song.add(girlfriendDropDown);
 		tab_group_song.add(stageDropDown);
 		tab_group_song.add(maniaSelect);
 
@@ -385,6 +404,7 @@ class ChartingState extends MusicBeatState
 	var stepperSectionBPM:FlxUINumericStepper;
 	var sectionManiaSelect:FlxUIDropDownMenu;
 	var check_altAnim:FlxUICheckBox;
+	var stepperSectionChar:FlxUINumericStepper;
 
 	function addSectionUI(arrMania:Array<String>):Void
 	{
@@ -452,9 +472,13 @@ class ChartingState extends MusicBeatState
 			}
 		});
 
+		stepperSectionChar = new FlxUINumericStepper(10, 440, 4, -1, -1, 999, 0);
+		stepperSectionChar.name = "section_focuschar";
+
 		tab_group_section.add(stepperLength);
 		tab_group_section.add(stepperSectionBPM);
 		tab_group_section.add(stepperCopy);
+		tab_group_section.add(stepperSectionChar);
 		tab_group_section.add(check_mustHitSection);
 		tab_group_section.add(check_altAnim);
 		tab_group_section.add(check_changeBPM);
@@ -673,40 +697,29 @@ class ChartingState extends MusicBeatState
 					FlxG.log.add('changed mania shit of ${curSection} to ${check.checked}');
 					updateGridChangeMania();
 			}
-		}
-		else if (id == FlxUINumericStepper.CHANGE_EVENT && (sender is FlxUINumericStepper))
-		{
+		} else if (id == FlxUINumericStepper.CHANGE_EVENT && (sender is FlxUINumericStepper)) {
 			var nums:FlxUINumericStepper = cast sender;
 			var wname = nums.name;
 			FlxG.log.add(wname);
 			trace('numeric stepper - ${wname}');
-			if (wname == 'section_length')
-			{
+			if (wname == 'section_length') {
 				_song.notes[curSection].lengthInSteps = Std.int(nums.value);
 				updateGrid();
-			}
-			else if (wname == 'song_speed')
-			{
+			} else if (wname == 'section_focuschar') {
+				_song.notes[curSection].focusCharacter = Std.int(nums.value);
+			} else if (wname == 'song_speed') {
 				_song.speed = nums.value;
-			}
-			else if (wname == 'song_bpm')
-			{
+			} else if (wname == 'song_bpm') {
 				Conductor.mapBPMChanges(_song);
 				Conductor.changeBPM(Std.int(nums.value));
-			}
-			else if (wname == 'song_timesig')
-			{
+			} else if (wname == 'song_timesig') {
 				_song.timeSignature = Std.int(nums.value);
 				nextSectionTime = sectionStartTime(curSection + 1);
 				updateGrid();
-			}
-			else if (wname == 'note_susLength')
-			{
+			} else if (wname == 'note_susLength') {
 				curSelectedNote[2] = nums.value;
 				updateGrid();
-			}
-			else if (wname == 'section_bpm')
-			{
+			} else if (wname == 'section_bpm') {
 				_song.notes[curSection].bpm = Std.int(nums.value);
 				updateGrid();
 			}
@@ -1066,10 +1079,11 @@ class ChartingState extends MusicBeatState
 		var sec = _song.notes[curSection];
 
 		stepperLength.value = sec.lengthInSteps;
-		check_mustHitSection.checked = sec.mustHitSection;
-		check_altAnim.checked = sec.altAnim;
-		check_changeBPM.checked = sec.changeBPM;
+		check_mustHitSection.checked = sec.mustHitSection != false;
+		check_altAnim.checked = sec.altAnim == true;
+		check_changeBPM.checked = sec.changeBPM == true;
 		stepperSectionBPM.value = sec.bpm;
+		stepperSectionChar.value = sec.focusCharacter;
 
 		updateHeads();
 	}
@@ -1136,7 +1150,7 @@ class ChartingState extends MusicBeatState
 		if (_song.notes[curSection].sectionBeats > 0) {
 			toTimeSig = _song.notes[curSection].sectionBeats;
 			sectionBeatsActive = true;
-		} else if (_song.notes[curSection].changeTimeSignature && _song.notes[curSection].timeSignature > 0) {
+		} else if (_song.notes[curSection].changeTimeSignature == true && _song.notes[curSection].timeSignature > 0) {
 			toTimeSig = _song.notes[curSection].timeSignature;
 		} else {
 			// get last time sig

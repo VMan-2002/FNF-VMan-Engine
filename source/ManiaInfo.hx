@@ -285,6 +285,10 @@ class ManiaInfo {
 	public static function GetManiaInfo(mania:String):SwagMania {
 		//they're now string based
 		trace('Accessed ManiaInfo for '+mania);
+		if (mania == null) {
+			trace("Why is it null");
+			mania = "4k";
+		}
 		var keys:Int = -4;
 		var arrows:Array<String> = ['purple'];
 		var splashName:Null<Map<String, String>> = null;
@@ -502,6 +506,13 @@ class ManiaInfo {
 		}
 		mi.scale = GetNoteScale(mi);
 		mi.spacing = GetNoteSpacing(mi);
+		if (Options.middleScroll && Options.middleLarge) {
+			//Middle Large
+			//we override right now
+			//todo: have handling for custom mania
+			mi.scale = Math.min(mi.scale * 2, 0.7);
+			mi.spacing = Math.min(mi.spacing * 2, 160 * 0.7);
+		}
 		if (Options.controls[mania] != null) {
 			for (i in Options.controls[mania]) {
 				mi.control_set.push([i[0], i[1]]);

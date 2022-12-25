@@ -8,6 +8,7 @@ class Options
 	public static var masterVolume:Float = 1;
 	public static var downScroll:Bool = false;
 	public static var middleScroll:Bool = false;
+	public static var middleLarge:Bool = false;
 	public static var ghostTapping:Bool = false;
 	public static var instantRespawn:Bool = false;
 	public static var botplay:Bool = false;
@@ -125,6 +126,7 @@ class Options
 		svd.data.masterVolume = masterVolume;
 		svd.data.downScroll = downScroll;
 		svd.data.middleScroll = middleScroll;
+		svd.data.middleLarge = middleLarge;
 		svd.data.ghostTapping = ghostTapping;
 		svd.data.instantRespawn = instantRespawn;
 		svd.data.botplay = botplay;
@@ -164,6 +166,7 @@ class Options
 		masterVolume = ifNotNull(svd.data.masterVolume, masterVolume);
 		downScroll = ifNotNull(svd.data.downScroll, downScroll);
 		middleScroll = ifNotNull(svd.data.middleScroll, middleScroll);
+		middleLarge = ifNotNull(svd.data.middleLarge, middleLarge);
 		ghostTapping = ifNotNull(svd.data.ghostTapping, ghostTapping);
 		instantRespawn = ifNotNull(svd.data.instantRespawn, instantRespawn);
 		botplay = ifNotNull(svd.data.botplay, botplay);

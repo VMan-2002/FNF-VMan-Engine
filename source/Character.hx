@@ -775,7 +775,10 @@ class Character extends SpriteVMan
 						this.animNoSustain = loadedStuff.animNoSustain;
 					}
 					this.isGirlfriend = loadedStuff.isGirlfriend == true;
-					playAnim(loadedStuff.initAnim);
+					playAvailableAnim([loadedStuff.initAnim, "danceLeft", "idle"]);
+					if (loadedStuff.initAnim != animation.curAnim.name) {
+						trace("The set InitAnim wasn't found, but an idle anim was found");
+					}
 					antialiasing = loadedStuff.antialias != false;
 					successLoad = true;
 				}
@@ -849,6 +852,7 @@ class Character extends SpriteVMan
 		
 		if (animation.curAnim == null) {
 			ErrorReportSubstate.addError("Animation for char "+curCharacter+" is null somehow! This will cause a crash!");
+			
 		}
 		
 		danceType = hasAnim("danceLeft");
@@ -920,7 +924,7 @@ class Character extends SpriteVMan
 			color = realcolor;
 		}
 
-		if (animation.curAnim.finished) {
+		if (animation.curAnim.finished == true) {
 			if (animation.curAnim.name == 'hairFall') {
 				danced = false;
 				dance(true);

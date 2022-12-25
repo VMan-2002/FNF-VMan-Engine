@@ -1,3 +1,6 @@
 if anything is Mistranslated,
 
 report it as an issue on Github
+
+
+also for translators: if you need any new features feel free to yell at me about it!!

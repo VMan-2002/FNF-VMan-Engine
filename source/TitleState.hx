@@ -535,15 +535,13 @@ class TitleState extends MusicBeatState {
 			remove(credGroup);
 			//remove(blackScreen);
 			
-			vmanThing = new FlxText(8, FlxG.height - 30, "VMan Engine");
 			var theText = Translation.getTranslation("vman engine", "game");
-			if (theText != "VMan Engine") {
-				vmanThing.text = '${theText} (${vmanThing})';
-			}
+			vmanThing = new FlxText(8, FlxG.height - 30, theText != "VMan Engine" ? '${theText} (VMan Engine)' : "VMan Engine");
 			titleGroup.add(vmanThing);
 			titleGroup.visible = true;
 			vmanThing.setFormat("VCR OSD Mono", 24, FlxColor.WHITE, LEFT);
 			Translation.setObjectFont(vmanThing, "vcr font");
+
 			skippedIntro = true;
 			doCoolText = false;
 		}
