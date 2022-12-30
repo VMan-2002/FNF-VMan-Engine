@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="weebTrees.png">
+	<!-- Used VMan_2002's spritesheet converter. -->
+	<SubTexture name="trees_0" x="0" y="0" width="312" height="82" frameX="-101" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_1" x="313" y="0" width="312" height="82" frameX="-101" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_10" x="626" y="0" width="312" height="82" frameX="-100" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_11" x="0" y="83" width="311" height="82" frameX="-100" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_12" x="312" y="83" width="311" height="82" frameX="-100" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_13" x="624" y="83" width="311" height="82" frameX="-100" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_14" x="0" y="166" width="311" height="82" frameX="-100" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_15" x="312" y="166" width="311" height="82" frameX="-100" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_16" x="624" y="166" width="311" height="82" frameX="-100" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_17" x="0" y="249" width="312" height="82" frameX="-100" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_18" x="313" y="249" width="312" height="82" frameX="-100" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_19" x="626" y="249" width="312" height="82" frameX="-100" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_2" x="0" y="332" width="312" height="82" frameX="-101" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_3" x="313" y="332" width="313" height="82" frameX="-100" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_4" x="627" y="332" width="312" height="82" frameX="-100" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_5" x="0" y="415" width="312" height="82" frameX="-100" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_6" x="313" y="415" width="312" height="82" frameX="-100" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_7" x="626" y="415" width="312" height="82" frameX="-100" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_8" x="0" y="498" width="312" height="82" frameX="-100" frameY="-176" frameWidth="512" frameHeight="512"/>
+	<SubTexture name="trees_9" x="313" y="498" width="312" height="82" frameX="-100" frameY="-176" frameWidth="512" frameHeight="512"/>
+</TextureAtlas>
