@@ -465,7 +465,7 @@ class ChartingState extends MusicBeatState
 		check_changeMania.name = 'check_changeMania';
 		Translation.setUIObjectFont(check_changeMania);
 
-		sectionManiaSelect = new FlxUIDropDownMenu(10, 120, FlxUIDropDownMenu.makeStrIdLabelArray(arrMania, true), function(character:String) {
+		sectionManiaSelect = new FlxUIDropDownMenu(10, 110, FlxUIDropDownMenu.makeStrIdLabelArray(arrMania, true), function(character:String) {
 			_song.notes[curSection].maniaStr = ManiaInfo.AvailableMania[Std.parseInt(character)];
 			if (_song.notes[curSection].changeMania) {
 				updateGridChangeMania();

@@ -119,9 +119,8 @@ class Stage
 	}
 
 	public static function makeElements(elementsList:Null<Array<StageElement>>):FlxTypedGroup<SpriteVMan> {
-		if (elementsList == null) {
+		if (elementsList == null)
 			return new FlxTypedGroup<SpriteVMan>();
-		}
 		var result:FlxTypedGroup<SpriteVMan> = new FlxTypedGroup<SpriteVMan>();
 		for (element in elementsList) {
 			var sprite = new SpriteVMan(element.x == null ? 0 : element.x, element.y == null ? 0 : element.y);
@@ -163,6 +162,7 @@ class Stage
 		if (name == null) {
 			elementsFront = new FlxTypedGroup<SpriteVMan>();
 			elementsBack = new FlxTypedGroup<SpriteVMan>();
+			elementsBetween = new FlxTypedGroup<SpriteVMan>();
 			elementsAll = new Array<SpriteVMan>();
 			charFacing = [0];
 			return;
@@ -186,6 +186,7 @@ class Stage
 		target.elementsFront = makeElements(data.elementsFront);
 		target.elementsBack = makeElements(data.elementsBack);
 		target.elementsBetween = makeElements(data.elementsBetween);
+		trace("elementsFront: "+(target.elementsFront.length)+", elementsBetween: "+(target.elementsBetween.length)+", elementsBack: "+(target.elementsBack.length));
 		target.elementsAll = target.elementsBack.members.concat(target.elementsFront.members).concat(target.elementsBetween.members);
 		target.hide_girlfriend = data.hide_girlfriend == true;
 		target.cameraOffset = data.cameraOffset == null ? [] : data.cameraOffset;
