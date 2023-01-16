@@ -30,6 +30,11 @@ class HudThing extends FlxGroup
 		items = list.filter(function(item) {
 			return !Options.botplay || botplayExclude.indexOf(item) == -1;
 		});
+		if (PlayState.SONG.actions.contains("hideDifficulty")) {
+			while (items.contains("difficulty")) {
+				items.remove("difficulty");
+			}
+		}
 		this.vertical = vertical;
 		textThing = new FlxText(x, y, 0, "", 20);
 		textThing.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT);

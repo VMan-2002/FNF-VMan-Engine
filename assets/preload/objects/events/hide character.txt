@@ -1,0 +1,4 @@
+Hide Character
+Make a character invisible.
+num:number
+visible:checkbox

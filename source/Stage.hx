@@ -30,6 +30,7 @@ typedef StageElement =
 	var startVisible:Bool;
 	var blendMode:Null<String>;
 	var alpha:Null<Float>;
+	var wobble:Null<Bool>;
 }
 
 typedef SwagStage =
@@ -39,6 +40,7 @@ typedef SwagStage =
 	var charZoom:Null<Array<Null<Float>>>;
 	var elementsFront:Array<StageElement>;
 	var elementsBack:Array<StageElement>;
+	var elementsBetween:Array<StageElement>;
 	var hide_girlfriend:Bool;
 	var animFollowup:Array<Array<String>>;
 	var cameraOffset:Null<Array<Array<Float>>>;
@@ -52,6 +54,7 @@ class Stage
 	public var defaultCamZoom:Float;
 	public var elementsFront:FlxTypedGroup<SpriteVMan>;
 	public var elementsBack:FlxTypedGroup<SpriteVMan>;
+	public var elementsBetween:FlxTypedGroup<SpriteVMan>;
 	public var elementsAll:Array<SpriteVMan>;
 	//public var namedElements:Map<String, FlxSprite>;
 	public var hide_girlfriend:Bool;
@@ -98,18 +101,6 @@ class Stage
 		switch(name) {
 			case "poops":
 				//nothing lol
-		#if VMAN_DEMO
-			case "cornflower":
-				//still nothing lol
-			case "cornflower_sunset":
-				//once again still nothing lol
-			case "cornflower_erect1":
-				//haha
-			case "cornflower_erect2":
-				//i
-			case "cornflower_erect3":
-				//funny
-		#end
 		}
 		//the void
 		ErrorReportSubstate.addError("No stage found for "+name+", you'll be put in the void");
@@ -118,6 +109,7 @@ class Stage
 			defaultCamZoom: 1.05,
 			elementsFront: new Array<StageElement>(),
 			elementsBack: new Array<StageElement>(),
+			elementsBetween = new Array<StageElement>(),
 			hide_girlfriend: false,
 			animFollowup: null,
 			cameraOffset: null,
@@ -193,7 +185,8 @@ class Stage
 		target.defaultCamZoom = data.defaultCamZoom == null ? 1.05 : data.defaultCamZoom;
 		target.elementsFront = makeElements(data.elementsFront);
 		target.elementsBack = makeElements(data.elementsBack);
-		target.elementsAll = target.elementsBack.members.concat(target.elementsFront.members);
+		target.elementsBetween = makeElements(data.elementsBetween);
+		target.elementsAll = target.elementsBack.members.concat(target.elementsFront.members).concat(target.elementsBetween.members);
 		target.hide_girlfriend = data.hide_girlfriend == true;
 		target.cameraOffset = data.cameraOffset == null ? [] : data.cameraOffset;
 		target.cameraOffset.push([0, 0, 0]);

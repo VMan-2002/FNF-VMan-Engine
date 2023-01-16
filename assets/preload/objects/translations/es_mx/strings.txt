@@ -1,6 +1,6 @@
 lang_english language name::Spanish (Mexico)
 lang_native language name::Español (México)
-lang_translation description::someone lol
+lang_translation description::someone lol\n\nUnfinished (well obviously, cuz there's nothing here)
 game_vman engine::VMan Engine
 options_controls::Controls
 options_controls_desc::Change your controls.

@@ -86,6 +86,7 @@ class Character extends SpriteVMan
 	public var positionOffset:Array<Float> = [0, 0];
 	
 	public var myMod:String;
+	public var playableSwapped:Bool = false;
 	
 	public var healthIcon:String;
 	public var healthBarColor:FlxColor;

@@ -26,6 +26,7 @@ import polymod.format.ParseRules.TargetSignatureElement;
 
 class SwagNoteSkin {
 	public var image:String;
+	public var imageDownscroll:Null<String>;
 	public var scale:Null<Float>;
 	public var antialias:Null<Bool>;
 	public var arrows:Map<String, Array<SwagCharacterAnim>>;
@@ -34,7 +35,7 @@ class SwagNoteSkin {
 	public var noteSplashScale:Null<Float>;
 	public var noteSplashFramerate:Null<Int>;
 
-	public static function loadNoteSkin(name:String, ?modName:String) {
+	public static function loadNoteSkin(name:String, modName:String) {
 		if (Note.loadedNoteSkins.exists('${modName}:${name}')) {
 			return Note.loadedNoteSkins.get('${modName}:${name}');
 		}
@@ -51,6 +52,9 @@ class SwagNoteSkin {
 		if (noteSkin == null) {
 			ErrorReportSubstate.addError("Could not load note skin " + name);
 			return null;
+		}
+		if (Options.downScroll && noteSkin.imageDownscroll != null) {
+			noteSkin.image = noteSkin.imageDownscroll;
 		}
 		noteSkin.scale = noteSkin.scale != null ? noteSkin.scale : 1.0;
 		noteSkin.antialias = noteSkin.antialias != null ? noteSkin.antialias : false;
@@ -95,10 +99,14 @@ class SwagUIStyleFile { //Because Float->Float doesnt work with the JsonParser
 	public var comboSpacing:Null<Float>;
 	public var antialias:Null<Bool>;
 	public var healthBarSides:Array<Float>;
-	public var hudThingPos:Null<Array<Array<Float>>>;
-	public var hudThingAlign:Null<Array<String>>;
+	public var hudThingPos:Null<Map<String, Array<Float>>>;
 	public var iconEaseStr:Null<String>;
 	public var iconEase:Null<Float>;
+	public var font:Null<String>;
+
+	public function new() {
+		return;
+	}
 }
 
 class SwagUIStyle {
@@ -108,11 +116,6 @@ class SwagUIStyle {
 	public var go:String;
 	public var numbers:Array<String>;
 	public var combo:String;
-	public var sick:String;
-	public var good:String;
-	public var bad:String;
-	public var shit:String;
-	public var sickcool:String;
 	public var healthBar:String;
 	public var threeSound:String;
 	public var twoSound:String;
@@ -125,9 +128,7 @@ class SwagUIStyle {
 	public var comboSpacing:Null<Float>;
 	public var antialias:Null<Bool>;
 	public var healthBarSides:Array<Float>;
-	public var hudThingPos:Null<Array<Array<Float>>>;
-	public var hudThingAlign:Null<Array<String>>;
-	public var iconEaseStr:Null<String>;
+	public var hudThingPos:Null<Map<String, Array<Float>>>;
 	public var iconEase:Null<Float>;
 	public var iconEaseFunc:Null<Float->Float>;
 	public var font:String = "vcr font";
@@ -136,48 +137,52 @@ class SwagUIStyle {
 		return;
 	}
 
-	public static function loadUIStyle(name:String, ?modName:String) {
+	public static function loadUIStyle(name:String, modName:String):SwagUIStyle {
 		if (Note.loadedUIStyles.exists('${modName}:${name}')) {
 			return Note.loadedUIStyles.get('${modName}:${name}');
 		}
 		var parser = new JsonParser<SwagUIStyleFile>();
-		var uiStyle:SwagUIStyle;
-		uiStyle = cast parser.fromJson(CoolUtil.tryPathBoth('objects/uiStyles/${name}.json', modName));
-		if (uiStyle == null) {
+		var uiStyleFile:SwagUIStyleFile;
+		uiStyleFile = cast parser.fromJson(CoolUtil.tryPathBoth('objects/uiStyles/${name}.json', modName));
+		if (uiStyleFile == null) {
 			ErrorReportSubstate.addError('loading default ui style because ${modName}:${name} wasnt found');
-			uiStyle = new SwagUIStyle();
+			uiStyleFile = new SwagUIStyleFile();
 		}
-		uiStyle.three = uiStyle.three != null ? uiStyle.three : "";
-		uiStyle.two = uiStyle.two != null ? uiStyle.two : "normal/ready";
-		uiStyle.one = uiStyle.one != null ? uiStyle.one : "normal/set";
-		uiStyle.go = uiStyle.go != null ? uiStyle.go : "normal/go";
-		uiStyle.numbers = uiStyle.numbers != null ? uiStyle.numbers : ["normal/num0", "normal/num1", "normal/num2", "normal/num3", "normal/num4", "normal/num5", "normal/num6", "normal/num7", "normal/num8", "normal/num9"];
-		uiStyle.combo = uiStyle.combo != null ? uiStyle.combo : "normal/combo";
-		uiStyle.sick = uiStyle.sick != null ? uiStyle.sick : "normal/sick";
-		uiStyle.good = uiStyle.good != null ? uiStyle.good : "normal/good";
-		uiStyle.bad = uiStyle.bad != null ? uiStyle.bad : "normal/bad";
-		uiStyle.shit = uiStyle.shit != null ? uiStyle.shit : "normal/shit";
-		uiStyle.healthBar = uiStyle.healthBar != null ? uiStyle.healthBar : "normal/healthBar";
-		uiStyle.threeSound = uiStyle.threeSound != null ? uiStyle.threeSound : "intro3";
-		uiStyle.twoSound = uiStyle.twoSound != null ? uiStyle.twoSound : "intro2";
-		uiStyle.oneSound = uiStyle.oneSound != null ? uiStyle.oneSound : "intro1";
-		uiStyle.goSound = uiStyle.goSound != null ? uiStyle.goSound : "introGo";
-		uiStyle.countdownScale = uiStyle.countdownScale != null ? uiStyle.countdownScale : 1.0;
-		uiStyle.ratings = ["sick" => uiStyle.sick, "good" => uiStyle.good, "bad" => uiStyle.bad, "shit" => uiStyle.shit, "sick-cool" => (uiStyle.sickcool == null ? uiStyle.sick : uiStyle.sickcool)];
-		uiStyle.ratingScale = uiStyle.ratingScale != null ? uiStyle.ratingScale : 0.7;
-		uiStyle.comboScale = uiStyle.comboScale != null ? uiStyle.comboScale : 0.5;
-		uiStyle.comboSpacing = uiStyle.comboSpacing != null ? uiStyle.comboSpacing : 43;
-		uiStyle.antialias = uiStyle.antialias != false;
-		uiStyle.healthBarSides = uiStyle.healthBarSides != null ? uiStyle.healthBarSides : [4, 4, 4, 4];
-		if (uiStyle.healthBarSides.length <= 2) {
-			uiStyle.healthBarSides[2] = uiStyle.healthBarSides[0];
-			uiStyle.healthBarSides[3] = uiStyle.healthBarSides[1];
-		}
-		if (uiStyle.iconEaseStr != null && uiStyle.iconEaseStr != "") {
-			uiStyle.iconEaseFunc = LuaScript.ScriptHelper.getEaseFromString(uiStyle.iconEaseStr);
+		var uiStyle:SwagUIStyle = new SwagUIStyle(); //for some reason a cast fails here
+		uiStyle.three = uiStyleFile.three != null ? uiStyleFile.three : "";
+		uiStyle.two = uiStyleFile.two != null ? uiStyleFile.two : "normal/ready";
+		uiStyle.one = uiStyleFile.one != null ? uiStyleFile.one : "normal/set";
+		uiStyle.go = uiStyleFile.go != null ? uiStyleFile.go : "normal/go";
+		uiStyle.numbers = uiStyleFile.numbers != null ? uiStyleFile.numbers : ["normal/num0", "normal/num1", "normal/num2", "normal/num3", "normal/num4", "normal/num5", "normal/num6", "normal/num7", "normal/num8", "normal/num9"];
+		uiStyle.combo = uiStyleFile.combo != null ? uiStyleFile.combo : "normal/combo";
+		uiStyle.healthBar = uiStyleFile.healthBar != null ? uiStyleFile.healthBar : "normal/healthBar";
+		uiStyle.threeSound = uiStyleFile.threeSound != null ? uiStyleFile.threeSound : "intro3";
+		uiStyle.twoSound = uiStyleFile.twoSound != null ? uiStyleFile.twoSound : "intro2";
+		uiStyle.oneSound = uiStyleFile.oneSound != null ? uiStyleFile.oneSound : "intro1";
+		uiStyle.goSound = uiStyleFile.goSound != null ? uiStyleFile.goSound : "introGo";
+		uiStyle.countdownScale = uiStyleFile.countdownScale != null ? uiStyleFile.countdownScale : 1.0;
+		uiStyle.ratings = ["sick" => uiStyleFile.sick, "good" => uiStyleFile.good, "bad" => uiStyleFile.bad, "shit" => uiStyleFile.shit, "sick-cool" => (uiStyleFile.sickcool == null ? uiStyleFile.sick : uiStyleFile.sickcool)];
+		uiStyle.ratingScale = uiStyleFile.ratingScale != null ? uiStyleFile.ratingScale : 0.7;
+		uiStyle.comboScale = uiStyleFile.comboScale != null ? uiStyleFile.comboScale : 0.5;
+		uiStyle.comboSpacing = uiStyleFile.comboSpacing != null ? uiStyleFile.comboSpacing : 43;
+		uiStyle.antialias = uiStyleFile.antialias != false;
+		uiStyle.healthBarSides = uiStyleFile.healthBarSides != null ? uiStyleFile.healthBarSides : [4, 4, 4, 4];
+		if (uiStyleFile.healthBarSides == null || uiStyleFile.healthBarSides.length == 0) {
+			uiStyle.healthBarSides = [4, 4, 4, 4];
 		} else {
-			uiStyle.iconEase = uiStyle.iconEase != null ? uiStyle.iconEase : 1.0;
+			uiStyle.healthBarSides = [uiStyleFile.healthBarSides[0]];
+			uiStyle.healthBarSides[1] = uiStyleFile.healthBarSides[uiStyleFile.healthBarSides.length < 2 ? 0 : 1];
+			uiStyle.healthBarSides[2] = uiStyleFile.healthBarSides[uiStyleFile.healthBarSides.length < 3 ? 0 : 2];
+			uiStyle.healthBarSides[3] = uiStyleFile.healthBarSides[uiStyleFile.healthBarSides.length < 4 ? 1 : 3];
 		}
+		if (uiStyleFile.iconEaseStr != null && uiStyleFile.iconEaseStr != "") {
+			uiStyle.iconEaseFunc = LuaScript.ScriptHelper.getEaseFromString(uiStyleFile.iconEaseStr);
+		} else {
+			uiStyle.iconEase = uiStyleFile.iconEase != null ? uiStyleFile.iconEase : 1.0;
+		}
+		uiStyle.font = uiStyleFile.font == null ? "vcr font" : uiStyleFile.font;
+		uiStyle.hudThingPos = uiStyleFile.hudThingPos == null ? new Map<String, Array<Float>>() : uiStyleFile.hudThingPos;
+		
 		Note.loadedUIStyles.set('${modName}:${name}', uiStyle);
 		trace('loaded uistyle ${modName}:${name}');
 		return uiStyle;
@@ -337,6 +342,10 @@ class Note extends FlxSprite
 	public static var loadedNoteSkins:Map<String, SwagNoteSkin> = new Map<String, SwagNoteSkin>();
 	public static var loadedUIStyles:Map<String, SwagUIStyle> = new Map<String, SwagUIStyle>();
 	public static var loadedNoteTypes:Map<String, SwagNoteType> = new Map<String, SwagNoteType>();
+	
+	static final quantThingy = [0,3,2,3,1,3,2,3];
+	
+	public static var baseRot:Float = 0;
 
 	public static var noteAnimExclude:Array<String> = [
 		"static",

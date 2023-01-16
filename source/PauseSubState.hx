@@ -113,6 +113,11 @@ class PauseSubState extends MusicBeatSubstate
 				case "resume":
 					close();
 				case "restart song":
+					if (Options.uiReloading) {
+						Note.SwagNoteSkin.clearLoadedNoteSkins();
+						Note.SwagUIStyle.clearLoadedUIStyles();
+						Note.SwagNoteType.clearLoadedNoteTypes();
+					}
 					FlxG.resetState();
 				case "exit to menu":
 					if (PlayState.isStoryMode)

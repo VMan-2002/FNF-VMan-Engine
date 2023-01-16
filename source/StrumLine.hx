@@ -13,7 +13,8 @@ using StringTools;
 class StrumLine extends FlxTypedGroup<StrumNote>
 {
 	public var thisManiaInfo:SwagMania;
-	var notes:Array<Note>;
+	//todo: should this be used
+	//var notes:Array<Note>;
 	
 	public static var nextId:Int;
 	public static var activeArray:Array<StrumLine>;
@@ -21,6 +22,9 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 	public var y:Float;
 	public var scale:Float;
 	public var curManiaChangeNum:Int = 0;
+	public var strumNotes:Array<StrumNote>;
+	public var spanX:Float = 0;
+	public var spanY:Float = 0;
 	
 	public function new(?mania:SwagMania, ?xPos:Float, ?yPos:Float, ?scale:Float = 1) {
 		super();
@@ -36,6 +40,7 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 	public function SwitchMania(mania:SwagMania, ?anim:Bool = false) {
 		thisManiaInfo = mania;
 		CoolUtil.clearMembers(this);
+		strumNotes = new Array<StrumNote>();
 		var left:Float = ((thisManiaInfo.spacing) * (thisManiaInfo.keys - 1) * scale) / 2;
 		for (i in 0...thisManiaInfo.keys) {
 			// FlxG.log.add(i);
@@ -52,6 +57,7 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 			babyArrow.animation.play('static');
 
 			add(babyArrow);
+			strumNotes.push(babyArrow);
 		}
 
 		if (anim || (((PlayState.instance.startingSong && !PlayState.isStoryMode) || PlayState.SONG.actions.contains("forceStrumAppearAnim")) && !PlayState.SONG.actions.contains("noStrumAppearAnim"))) {
@@ -73,6 +79,23 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 			}
 		}
 	}
+	
+	public function setX(num:Int, result:Float) {
+		strumNotes[num].x = result;
+		updateSpan(num);
+	}
+	
+	public function setY(num:Int, result:Float) {
+		strumNotes[num].y = result;
+		updateSpan(num);
+	}
+	
+	public inline function updateSpan(?hitNum:Int = 0) {
+		if (hitNum == 0 || hitNum + 1 == members.length) {
+			spanX = strumNotes[members.length - 1].x - strumNotes[0].x;
+			spanY = strumNotes[members.length - 1].y - strumNotes[0].y;
+		}
+	}
 
 	public function setSpeedMult(num:Float) {
 		for (i in members) {
@@ -88,5 +111,11 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 	
 	public override function update(elapsed:Float) {
 		super.update(elapsed);
+	}
+	
+	public function showKeybindReminder() {
+		for (i in members) {
+			i.showKeybindReminder();
+		}
 	}
 }

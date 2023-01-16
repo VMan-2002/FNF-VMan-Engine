@@ -194,6 +194,7 @@ class PlayState extends MusicBeatState
 	public var focusCharacter:Character;
 	public var currentStageFront:FlxTypedGroup<SpriteVMan>;
 	public var currentStageBack:FlxTypedGroup<SpriteVMan>;
+	public var currentStageBetween:FlxTypedGroup<SpriteVMan>;
 	public var currentStage:Stage;
 
 	public var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
@@ -605,6 +606,7 @@ class PlayState extends MusicBeatState
 				currentStage = new Stage(curStage);
 				currentStageBack = currentStage.elementsBack;
 				currentStageFront = currentStage.elementsFront;
+				currentStageBetween = currentStage.elementsBetween;
 				add(currentStageBack);
 				defaultCamZoom = currentStage.defaultCamZoom;
 				if (defaultCamZoom == 0) {
@@ -649,6 +651,10 @@ class PlayState extends MusicBeatState
 		boyfriend = new Boyfriend(770, 100, SONG.player1, modName, currentStage.charFacing.contains(0));
 		dad = new Character(100, 100, SONG.player2, currentStage.charFacing.contains(1), modName);
 		gf = new Character(400, 130, gfVersion, currentStage.charFacing.contains(2), modName);
+		
+		boyfriend.visible = !SONG.actions.contains("hideBoyfriend");
+		dad.visible = !SONG.actions.contains("hideDad");
+		gf.visible = !SONG.actions.contains("hideGf");
 
 		gf.scrollFactor.set(0.95, 0.95);
 		
@@ -722,6 +728,10 @@ class PlayState extends MusicBeatState
 		// Shitty layering but whatev it works LOL
 		if (curStage == 'limo')
 			add(limo);
+
+		if (currentStageBetween != null) {
+			add(currentStageBetween);
+		}
 
 		add(dad);
 		add(boyfriend);
@@ -812,6 +822,9 @@ class PlayState extends MusicBeatState
 		if (Options.downScroll) {
 			healthBarBG.y = FlxG.height * 0.1;
 		}
+		if (validUIStyle) {
+			CoolUtil.mapPositionObjectWithin(healthBarBG, currentUIStyle.hudThingPos, Options.downScroll ? "healthBarDown" : "healthBarUp");
+		}
 		add(healthBarBG);
 
 		var healthBarSides:Array<Float> = validUIStyle ? currentUIStyle.healthBarSides.copy() : [4, 4, 4, 4];
@@ -851,6 +864,13 @@ class PlayState extends MusicBeatState
 		timerThingText.alignment = CENTER;
 		timerThingText.fieldWidth = FlxG.width;
 		timerThing.cameras = [camHUD];
+
+		if (validUIStyle) {
+			CoolUtil.mapPositionObjectWithin(cast hudThings.members[0].members[0], currentUIStyle.hudThingPos, Options.downScroll ? "textHealthDown" : "textHealthUp");
+			CoolUtil.mapPositionObjectWithin(cast hudThings.members[1].members[0], currentUIStyle.hudThingPos, Options.downScroll ? "textSideDown" : "textSideUp");
+			CoolUtil.mapPositionObjectWithin(cast hudThings.members[2].members[0], currentUIStyle.hudThingPos, Options.downScroll ? "textCornerDown" : "textCornerUp");
+			CoolUtil.mapPositionObjectWithin(cast timerThing.members[0], currentUIStyle.hudThingPos, Options.downScroll ? "textTimerDown" : "textTimerUp");
+		}
 
 		iconP1 = new HealthIcon(boyfriend.healthIcon, true, modName);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
@@ -1632,12 +1652,6 @@ class PlayState extends MusicBeatState
 			if (Options.downScroll) {
 				speed = 0 - speed;
 			}
-			var strumlineLengthX:Array<Float> = [];
-			var strumlineLengthY:Array<Float> = [];
-			strumLines.forEach(function(aStrumLine:StrumLine) {
-				strumlineLengthX.push(aStrumLine.members[aStrumLine.length - 1].x - aStrumLine.members[0].x);
-				strumlineLengthY.push(aStrumLine.members[aStrumLine.length - 1].y - aStrumLine.members[0].y);
-			});
 			notes.forEachAlive(function(daNote:Note) {
 				/*if (daNote.y > FlxG.height) {
 					daNote.active = false;
@@ -1652,14 +1666,17 @@ class PlayState extends MusicBeatState
 				}*/
 				
 				var strumNumber = daNote.strumLineNum;
-				//todo: i guess
+				if (strumLines.members[strumNumber] == null) {
+					return; //Do nothing if strumline not found
+				}
+				//todo: i guess. It's fine if you disallow both side mode when a song has mania changes
 				var isInManiaChange:Bool = false; //currentManiaPartName[strumNumber] == maniaPartArr[daNote.maniaPart][strumNumber];
 				var daStrum:StrumNote = strumLines.members[strumNumber].members[isInManiaChange ? 0 : daNote.strumNoteNum];
 				daNote.y = (daStrum.y - (Conductor.songPosition - daNote.strumTime) * speed * daStrum.speedMult);
 				daNote.x = daStrum.x;
 				if (isInManiaChange) {
-					daNote.y += strumlineLengthX[strumNumber] * daNote.maniaFract;
-					daNote.x += strumlineLengthY[strumNumber] * daNote.maniaFract;
+					daNote.y += strumLines.members[strumNumber].spanY * daNote.maniaFract;
+					daNote.x += strumLines.members[strumNumber].spanX * daNote.maniaFract;
 				}
 				var isComputer = (!daNote.mustPress) || Options.botplay;
 				var isPass = daNote.strumTime <= Conductor.songPosition;
@@ -1668,8 +1685,8 @@ class PlayState extends MusicBeatState
 				if (daNote.isSustainNote
 					//&& daNote.y + daNote.offset.y <= strumLine.y + Note.swagWidth / 2
 					&& isPass
-					&& (isComputer || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit))))
-				{
+					&& (isComputer || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit)))
+				) {
 					//todo: make this better in downscroll
 					var since = Conductor.songPosition - daNote.strumTime;
 					var clipEnd = daNote.strumTime + Conductor.crochet;

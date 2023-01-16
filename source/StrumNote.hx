@@ -2,7 +2,9 @@ package;
 
 import CoolUtil;
 import Note.SwagNoteSkin;
+import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxTimer;
@@ -34,6 +36,9 @@ class StrumNote extends FlxSprite
 
 	public var speedMult:Float = 1;
 	public var downScroll:Bool; //todo: use this
+	public var baseRot:Float = 0;
+	
+	public var keybindReminder:FlxText;
 
 	public function new(x:Float, y:Float, noteData:Int, style:String, parent:StrumLine) {
 		super(x, y);
@@ -156,5 +161,28 @@ class StrumNote extends FlxSprite
 		updateHitbox();
 		centerOffsets();
 		CoolUtil.CenterOffsets(this);
+	}
+	
+	public function showKeybindReminder() {
+		destroyKeybindReminder();
+		keybindReminder = new FlxText(x, y, 0, ControlsSubState.ConvertKey(parent.thisManiaInfo.control_set[noteData][0]), 10);
+		FlxG.state.insert(FlxG.state.members.indexOf(this), keybindReminder);
+		FlxTween.tween(keybindReminder, {alpha: 0, "scale.x": 0}, 1, {startDelay: 2, onComplete: function(tw) {
+			destroyKeybindReminder();
+		}, ease: FlxEase.circOut});
+	}
+	
+	public inline function destroyKeybindReminder() {
+		if (keybindReminder != null) {
+			FlxTween.cancelTweensOf(keybindReminder);
+			FlxG.state.remove(keybindReminder);
+			keybindReminder.destroy();
+			keybindReminder = null;
+		}
+	}
+	
+	override function destroy() {
+		destroyKeybindReminder();
+		super.destroy();
 	}
 }

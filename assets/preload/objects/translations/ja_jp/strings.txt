@@ -1,6 +1,6 @@
 lang_english language name::Japanese
 lang_native language name::日本語
-lang_translation description::by hyuponia
+lang_translation description::by hyuponia\n\nNote: Unfinished
 font_font::NotoSansJP-Medium.otf
 font_vcr font::DotGothic16-Regular.ttf
 font_pixel font::DotGothic16-Regular.ttf

@@ -1,0 +1,4 @@
+Change Character
+Replace a character with a new one.
+num:number
+replace:character

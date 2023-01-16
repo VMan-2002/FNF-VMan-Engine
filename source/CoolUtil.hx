@@ -186,13 +186,21 @@ class CoolUtil
 	**/
 	public static function tryPathBoth(path:String, modName:String) {
 		#if !html5
-		if (FileSystem.exists(modName + "/" + path)) {
-			return File.getContent(modName + "/" + path);
+		var modPath:String = "mods/" + modName + "/" + path;
+		trace("tryPathBoth mod folder "+modPath);
+		if (FileSystem.exists(modPath)) {
+			trace("tryPathBoth use modfolder path");
+			return File.getContent(modPath);
 		} else
 		#end
-		if (Assets.exists("assets/" + path)) {
-			return Assets.getText("assets/" + path);
+		{
+			var anotherPath:String = "assets/" + path;
+			if (Assets.exists(anotherPath)) {
+				trace("tryPathBoth use assets path");
+				return Assets.getText(anotherPath);
+			}
 		}
+		trace("tryPathBoth not found");
 		return null;
 	}
 	
@@ -284,5 +292,38 @@ class CoolUtil
 	**/
 	public static inline function capitalizeFirstLetter(s:String, ?restLowercase:Bool = false) {
 		return s.charAt(0).toUpperCase() + (restLowercase ? s.substr(1).toLowerCase() : s.substr(1));
+	}
+
+	/**
+		Position something or whatever
+	**/
+	public static function positionValueWithin(width:Float, containerWidth:Float, fract:Float):Float {
+		return (containerWidth - width) * fract;
+	}
+
+	/**
+		Position a sprite within a container (default is game window size) using fraction and offset
+	**/
+	public static function positionObjectWithin(object:FlxSprite, ?fractWidth:Float = 0.5, ?fractHeight:Float = 0.5, ?offsetX:Float = 0, ?offsetY:Float = 0, ?containerWidth:Null<Float>, ?containerHeight:Null<Float>) {
+		object.x = positionValueWithin(object.width, containerWidth == null ? FlxG.width : containerWidth, fractWidth) + offsetX;
+		object.y = positionValueWithin(object.height, containerHeight == null ? FlxG.height : containerHeight, fractHeight) + offsetY;
+	}
+
+	/**
+		Arr order: offsetx, offsety, fractx, fracty
+	**/
+	public static function arrPositionObjectWithin(object:FlxSprite, array:Array<Float>, ?containerWidth:Null<Float>, ?containerHeight:Null<Float>) {
+		positionObjectWithin(object, array.length < 3 ? 0 : array[2], array.length < 4 ? 0 : array[3], array.length < 1 ? 0 : array[0], array.length < 2 ? 0 : array[1], containerWidth, containerHeight);
+	}
+
+	/**
+		If the named array doesn't exist in the map, then position is not changed.
+			
+		Arr order: offsetx, offsety, fractx, fracty
+	**/
+	public static function mapPositionObjectWithin(object:FlxSprite, map:Map<String, Array<Float>>, name:String, ?containerWidth:Null<Float>, ?containerHeight:Null<Float>) {
+		if (!map.exists(name))
+			return;
+		arrPositionObjectWithin(object, map.get(name), containerWidth, containerHeight);
 	}
 }
