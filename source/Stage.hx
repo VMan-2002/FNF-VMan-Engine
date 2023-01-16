@@ -109,7 +109,7 @@ class Stage
 			defaultCamZoom: 1.05,
 			elementsFront: new Array<StageElement>(),
 			elementsBack: new Array<StageElement>(),
-			elementsBetween = new Array<StageElement>(),
+			elementsBetween: new Array<StageElement>(),
 			hide_girlfriend: false,
 			animFollowup: null,
 			cameraOffset: null,
