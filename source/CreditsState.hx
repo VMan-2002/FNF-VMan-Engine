@@ -39,6 +39,7 @@ class CreditsState extends MusicBeatState {
 	public var currentCreditsThing:FlxTypedSpriteGroup<FlxSpriteGroup>;
 	public var inTabber:Bool = false;
 	public var descText:FlxText = new FlxText(0, FlxG.height - 50, FlxG.width, "Coolest mfer fuckin ever????").setFormat("VCR OSD Mono", 32).setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 4, 0.5);
+	public var funnyText:FlxText = new FlxText(0, 0, FlxG.width - 220, "Lol").setFormat("VCR OSD Mono", 16).setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 2, 0);
 
 	public override function new() {
 		super();
@@ -65,7 +66,8 @@ class CreditsState extends MusicBeatState {
 
 		add(funnyBar);
 		funnyBar.y = -40;
-		funnyBar.add(new FlxText(0, 41, 0, "Reset/GTStrum: Switch category").setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK));
+		funnyBar.add(new FlxText(0, 41, 0, "Reset/GTStrum: Switch category", 16).setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK));
+		add(funnyText);
 
 		add(descText);
 	}
@@ -141,6 +143,9 @@ class CreditsState extends MusicBeatState {
 			a.y = FlxMath.lerp(a.y, targetY, elapsed * 8);
 		});
 
+		funnyText.x = currentCreditsThing.members[curSelected].x + 130;
+		funnyText.y = currentCreditsThing.members[curSelected].y + 85;
+
 		super.update(elapsed);
 	}
 
@@ -154,6 +159,10 @@ class CreditsState extends MusicBeatState {
 
 	public inline function updateDesc() {
 		descText.text = creditsInfo[curSelectedSection][curSelected].description;
+		var funnyArr = creditsInfo[curSelectedSection][curSelected].funny;
+		funnyText.visible = funnyArr != null && funnyArr.length > 0;
+		if (funnyText.visible)
+			funnyText.text = funnyArr[Math.floor(Math.random() * funnyArr.length)];
 	}
 
 	public function addCreditsStuff(title:String, stuff:Array<CreditsEntry>, ?mod:Null<String>) {

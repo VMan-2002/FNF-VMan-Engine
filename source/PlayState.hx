@@ -726,11 +726,12 @@ class PlayState extends MusicBeatState
 		add(gf);
 
 		// Shitty layering but whatev it works LOL
-		if (curStage == 'limo')
-			add(limo);
+		
 
 		if (currentStageBetween != null) {
 			add(currentStageBetween);
+		} else if (curStage == 'limo') {
+			add(limo);
 		}
 
 		add(dad);
