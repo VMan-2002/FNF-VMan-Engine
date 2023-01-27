@@ -161,7 +161,28 @@ class SwagUIStyle {
 		uiStyle.oneSound = uiStyleFile.oneSound != null ? uiStyleFile.oneSound : "intro1";
 		uiStyle.goSound = uiStyleFile.goSound != null ? uiStyleFile.goSound : "introGo";
 		uiStyle.countdownScale = uiStyleFile.countdownScale != null ? uiStyleFile.countdownScale : 1.0;
-		uiStyle.ratings = ["sick" => uiStyleFile.sick, "good" => uiStyleFile.good, "bad" => uiStyleFile.bad, "shit" => uiStyleFile.shit, "sick-cool" => (uiStyleFile.sickcool == null ? uiStyleFile.sick : uiStyleFile.sickcool)];
+		if (uiStyleFile.ratings == null) {
+			uiStyle.ratings = ["sick" => uiStyleFile.sick, "good" => uiStyleFile.good, "bad" => uiStyleFile.bad, "shit" => uiStyleFile.shit, "sick-cool" => (uiStyleFile.sickcool == null ? uiStyleFile.sick : uiStyleFile.sickcool)];
+		}
+		if (uiStyle.ratings.get("sick") == null) {
+			uiStyle.ratings.set("sick", "normal/sick");
+			if (uiStyle.ratings.get("sick-cool") == null) {
+				uiStyle.ratings.set("sick-cool", "normal/sick-cool");
+			}
+		} else {
+			if (uiStyle.ratings.get("sick-cool") == null) {
+				uiStyle.ratings.set("sick-cool", uiStyle.ratings.get("sick"));
+			}
+		}
+		if (uiStyle.ratings.get("good") == null) {
+			uiStyle.ratings.set("good", "normal/good");
+		}
+		if (uiStyle.ratings.get("bad") == null) {
+			uiStyle.ratings.set("bad", "normal/bad");
+		}
+		if (uiStyle.ratings.get("shit") == null) {
+			uiStyle.ratings.set("shit", "normal/shit");
+		}
 		uiStyle.ratingScale = uiStyleFile.ratingScale != null ? uiStyleFile.ratingScale : 0.7;
 		uiStyle.comboScale = uiStyleFile.comboScale != null ? uiStyleFile.comboScale : 0.5;
 		uiStyle.comboSpacing = uiStyleFile.comboSpacing != null ? uiStyleFile.comboSpacing : 43;

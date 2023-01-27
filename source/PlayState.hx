@@ -835,7 +835,11 @@ class PlayState extends MusicBeatState
 		healthBar = new FlxBar(healthBarBG.x + healthBarSides[0], healthBarBG.y + healthBarSides[1], RIGHT_TO_LEFT, Std.int(healthBarBG.width - healthBarSides[2]), Std.int(healthBarBG.height - healthBarSides[3]), this, 'health', 0, 2);
 		healthBar.scrollFactor.set();
 		//healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
-		healthBar.createFilledBar(dad.healthBarColor, boyfriend.healthBarColor);
+		if (Options.playstate_opponentmode && allowGameplayChanges) {
+			healthBar.createFilledBar(boyfriend.healthBarColor, dad.healthBarColor);
+		} else {
+			healthBar.createFilledBar(dad.healthBarColor, boyfriend.healthBarColor);
+		}
 		// healthBar
 		healthBar.flipX = allowGameplayChanges && Options.playstate_opponentmode;
 		add(healthBar);
@@ -1816,7 +1820,7 @@ class PlayState extends MusicBeatState
 		camFollow.x += currentStage.cameraOffset[guyId][0];
 		camFollow.y += currentStage.cameraOffset[guyId][1];
 		
-		if (useStageCharZooms && currentStage.charZoom.length > guyId && currentStage.charZoom[guyId] != null) {
+		if (useStageCharZooms && currentStage.charZoom != null && currentStage.charZoom.length > guyId && currentStage.charZoom[guyId] != null) {
 			defaultCamZoom = currentStage.charZoom[guyId];
 		}
 	}
@@ -1974,14 +1978,6 @@ class PlayState extends MusicBeatState
 
 		songScore += Options.botplay ? 350 : score;
 
-		/* if (combo > 60)
-				daRating = 'sick';
-			else if (combo > 12)
-				daRating = 'good'
-			else if (combo > 4)
-				daRating = 'bad';
-		 */
-
 		var validUIStyle = true;
 
 		var pixelShitPart1:String = "normal/";
@@ -2004,7 +2000,8 @@ class PlayState extends MusicBeatState
 		ratingsGroup.add(comboSpr);
 
 		if (!Options.botplay) {
-			rating.loadGraphic(Paths.image(validUIStyle ? currentUIStyle.ratings.get(daRatingImg) : pixelShitPart1 + daRatingImg + pixelShitPart2));
+			rating.loadGraphic(Paths.image(validUIStyle ? currentUIStyle.ratings.get(daRatingImg) : '${pixelShitPart1 + daRatingImg + pixelShitPart2}'));
+			//trace("path "+Paths.image(validUIStyle ? currentUIStyle.ratings.get(daRatingImg) : '${pixelShitPart1 + daRatingImg + pixelShitPart2}'));
 			rating.screenCenter();
 			rating.x = coolText.x - 40;
 			rating.y -= 60;
@@ -2014,6 +2011,10 @@ class PlayState extends MusicBeatState
 			ratingsGroup.add(rating);
 
 			FlxTween.tween(rating, {alpha: 0}, 0.2, {
+				onComplete: function(tween:FlxTween) {
+					rating.destroy();
+					ratingsGroup.remove(rating, true);
+				},
 				startDelay: Conductor.crochet * 0.001
 			});
 		}
@@ -2098,14 +2099,24 @@ class PlayState extends MusicBeatState
 			onComplete: function(tween:FlxTween) {
 				//coolText.destroy();
 				comboSpr.destroy();
-				rating.destroy();
-				ratingsGroup.remove(rating, true);
+				//rating.destroy();
+				//ratingsGroup.remove(rating, true);
 				ratingsGroup.remove(comboSpr, true);
 			},
 			startDelay: Conductor.crochet * 0.001
 		});
 
-		curSection += 1;
+		//curSection += 1;
+		
+		if (ratingsGroup.length > 60) {
+			var clears:Array<FlxSprite> = ratingsGroup.members.splice(0, 30 - ratingsGroup.length);
+			ratingsGroup.length = ratingsGroup.members.length;
+			while (clears.length > 0) {
+				var destroyNext = clears.pop();
+				FlxTween.cancelTweensOf(destroyNext);
+				destroyNext.destroy();
+			}
+		}
 
 		return daRating;
 	}

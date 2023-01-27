@@ -206,7 +206,8 @@ class ChartingState extends MusicBeatState
 			{name: "Song", label: Translation.getTranslation('tab_Song', "charteditor")},
 			{name: "Section", label: Translation.getTranslation('tab_Section', "charteditor")},
 			{name: "Note", label: Translation.getTranslation('tab_Note', "charteditor")},
-			{name: "Event", label: Translation.getTranslation('tab_Event', "charteditor")}
+			{name: "Event", label: Translation.getTranslation('tab_Event', "charteditor")},
+			{name: "NoteStacking", label: Translation.getTranslation('tab_NoteStacking', "charteditor")}
 		];
 
 		UI_box = new FlxUITabMenu(null, tabs, true);
@@ -234,6 +235,7 @@ class ChartingState extends MusicBeatState
 		addSectionUI(arrMania);
 		addNoteUI();
 		addEventUI();
+		addNoteStackingUI();
 
 		add(curRenderedNotes);
 		add(curRenderedSustains);
@@ -593,6 +595,40 @@ class ChartingState extends MusicBeatState
 		UI_box.addGroup(tab_group_event);
 	}
 
+	var check_stackActive:FlxUICheckBox;
+	var stepperStackNum:FlxUINumericStepper;
+	var stepperStackOffset:FlxUINumericStepper;
+	var stepperStackSideOffset:FlxUINumericStepper;
+
+	function addNoteStackingUI():Void
+	{
+		var tab_group_stacking = new FlxUI(null, UI_box);
+		tab_group_stacking.name = 'NoteStacking';
+
+		check_stackActive = new FlxUICheckBox(10, 10, null, null, "Enable notestacking", 100);
+		check_stackActive.name = 'check_stackActive';
+
+		stepperStackNum = new FlxUINumericStepper(10, 30, 4, 4, 0, 999999);
+		stepperStackNum.name = 'stack_count';
+
+		stepperStackOffset = new FlxUINumericStepper(10, 50, 0.25, 1, 0, 999999);
+		stepperStackOffset.name = 'stack_offset';
+
+		stepperStackSideOffset = new FlxUINumericStepper(10, 70, 1, 0, -9999, 9999);
+		stepperStackSideOffset.name = 'stack_sideways';
+
+		tab_group_stacking.add(check_stackActive);
+		tab_group_stacking.add(stepperStackNum);
+		tab_group_stacking.add(stepperStackOffset);
+		tab_group_stacking.add(stepperStackSideOffset);
+		
+		tab_group_stacking.add(new FlxText(100, 30, 0, "Count"));
+		tab_group_stacking.add(new FlxText(100, 50, 0, "Offset"));
+		tab_group_stacking.add(new FlxText(100, 70, 0, "Sideways"));
+
+		UI_box.addGroup(tab_group_stacking);
+	}
+
 	function loadSong(daSong:String):Void
 	{
 		if (FlxG.sound.music != null)
@@ -810,7 +846,15 @@ class ChartingState extends MusicBeatState
 					&& FlxG.mouse.y < gridBG.y + (GRID_SIZE * getLengthInSteps(curSection)))
 				{
 					FlxG.log.add('added note');
-					addNote();
+					var addCount:Int = 0;
+					if (check_stackActive.checked) {
+						addCount = Math.floor(stepperStackNum.value) - 1;
+					}
+					var funnySnap:Float = Conductor.stepCrochet * snapMults[curSnapMult];
+					while (addCount >= 0) {
+						addNote(funnySnap * addCount * stepperStackOffset.value, Math.floor(addCount * stepperStackSideOffset.value), addCount == 0);
+						addCount -= 1;
+					}
 				}
 			}
 		}
@@ -903,11 +947,15 @@ class ChartingState extends MusicBeatState
 			}
 
 			if (FlxG.mouse.wheel != 0) {
-				FlxG.sound.music.pause();
-				vocals.pause();
+				if (FlxG.keys.pressed.CONTROL) {
+					FlxG.camera.zoom += FlxG.mouse.wheel / 16;
+				} else {
+					FlxG.sound.music.pause();
+					vocals.pause();
 
-				FlxG.sound.music.time -= (FlxG.mouse.wheel * Conductor.stepCrochet * 0.4);
-				vocals.time = FlxG.sound.music.time;
+					FlxG.sound.music.time -= (FlxG.mouse.wheel * Conductor.stepCrochet * 0.4);
+					vocals.time = FlxG.sound.music.time;
+				}
 			}
 
 			if (FlxG.keys.pressed.W || FlxG.keys.pressed.S) {
@@ -1323,10 +1371,13 @@ class ChartingState extends MusicBeatState
 		updateGrid();
 	}
 
-	private function addNote():Void
+	private function addNote(?offset:Float = 0, ?offset2:Int, ?uGrid:Bool = true):Void
 	{
-		var noteStrum = getStrumTime(dummyArrow.y) + sectionStartTime();
-		var noteData = Math.floor(FlxG.mouse.x / GRID_SIZE);
+		var noteStrum = getStrumTime(dummyArrow.y) + sectionStartTime() + offset;
+		var noteData = (Math.floor(FlxG.mouse.x / GRID_SIZE) + offset2) % currentChartMania.keys;
+		while (noteData < 0) {
+			noteData += currentChartMania.keys;
+		}
 		var noteSus = 0;
 
 		if (curNoteTypeArr.indexOf(curNoteType) <= -1) {
@@ -1347,10 +1398,12 @@ class ChartingState extends MusicBeatState
 		trace(noteStrum);
 		trace(curSection);
 
-		updateGrid();
-		updateNoteUI();
+		if (uGrid) {
+			updateGrid();
+			updateNoteUI();
 
-		autosaveSong();
+			autosaveSong();
+		}
 	}
 
 	function getStrumTime(yPos:Float):Float
