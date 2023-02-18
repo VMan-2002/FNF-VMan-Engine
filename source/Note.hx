@@ -259,11 +259,10 @@ class SwagNoteType {
 	public var charNames:Null<Array<String>>;
 
 	public static function loadNoteType(name:String, modName:String, ?putInto:Null<String>) {
-		if (putInto == null) {
+		if (putInto == null)
 			putInto = name;
-		}
-		if (Note.loadedNoteTypes.exists('${modName}:${putInto}')) {
-			return Note.loadedNoteTypes.get('${modName}:${putInto}');
+		if (Note.loadedNoteTypes.exists('${modName}:${name}')) {
+			return Note.loadedNoteTypes.get('${modName}:${name}');
 		}
 		var parser = new JsonParser<SwagNoteType>();
 		var noteType:SwagNoteType;
@@ -274,7 +273,8 @@ class SwagNoteType {
 			}
 			ErrorReportSubstate.addError('failed to load notetype ${modName}:${name}, loading normal note instead');
 			//todo: there is a bug here where the note type loaded here is stored in "Normal Note" instead of what was originally tried to be loaded. no fkin idea why
-			return loadNoteType("Normal Note", modName, putInto); //a valid note type must be loaded!
+			Note.loadedNoteTypes.set('${modName}:${name}', loadNoteType("Normal Note", modName, putInto)); //a valid note type must be loaded!
+			return Note.loadedNoteTypes.get('${modName}:Normal Note'); //a nonstandard fix
 		}
 		noteType.healthHit = noteType.healthHit != null ? noteType.healthHit : 0.023;
 		noteType.healthHitSick = noteType.healthHitSick != null ? noteType.healthHitSick : noteType.healthHit;
