@@ -38,8 +38,7 @@ import sys.FileSystem;
 
 using StringTools;
 
-class ChartingState extends MusicBeatState
-{
+class ChartingState extends MusicBeatState {
 	var _file:FileReference;
 
 	var UI_box:FlxUITabMenu;
@@ -1218,6 +1217,8 @@ class ChartingState extends MusicBeatState
 				i--;
 			toTimeSig = i < 0 ? _song.timeSignature : _song.notes[i].timeSignature;
 		}
+		if (toTimeSig == null)
+			toTimeSig = 4;
 		if (toTimeSig != currentTimeSignature) {
 			trace("change time signature from "+currentTimeSignature+" to "+toTimeSig);
 			currentTimeSignature = toTimeSig;
