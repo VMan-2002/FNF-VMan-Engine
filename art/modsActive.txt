@@ -1,3 +1,0 @@
-0:work_folder
-0:example
-1:friday_night_funkin

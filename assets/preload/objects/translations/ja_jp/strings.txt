@@ -1,6 +1,6 @@
 lang_english language name::Japanese
 lang_native language name::日本語
-lang_translation description::by hyuponia\n\nNote: Unfinished
+lang_translation description::by hyuponia
 font_font::NotoSansJP-Medium.otf
 font_vcr font::DotGothic16-Regular.ttf
 font_pixel font::DotGothic16-Regular.ttf
@@ -53,6 +53,10 @@ options_set alt bind::キー設定(副)
 options_set alt bind_desc::キーの操作設定を変更します。左か右を押すことで違うキーを選択できます。
 options_set ui controls::メニュー操作の変更
 options_set ui controls_desc::メニューなどで使用する操作を変更します。
+options_set ui alt controls::メニュー操作副入力の変更
+options_set ui alt controls_desc::メニューなどで使用する操作を変更します。
+options_reset ui controls::メニュー操作の設定リセット
+options_reset ui controls_desc::メニューなどで使用する操作の設定をリセットします。
 options_change color::ノート色変更
 options_change color_desc::ノートの色を変更できます。左か右を押すことで違うキーを選択できます。
 options_change color advanced::ノート色詳細変更
@@ -77,6 +81,50 @@ options_noteskin creator::ノートスキンクリエータ
 options_noteskin creator_desc::ノート用のスキンを作成できます。
 options_spritesheet tool::スプライトシートツール
 options_spritesheet tool_desc::スプライトシートと個別の画像を変換できます。
+options_language::言語(Language)
+options_language_desc::このゲームがテキストで使用する言語を変更できます。
+options_silent countdown::カウントダウン消音
+options_silent countdown_desc::カウントダウンのサウンドを消すことができます。
+options_show fps::FPS表示
+options_show fps_desc::左上端にフレームレートを表示するか設定できます。
+options_audio on miss::ミス時サウンド
+options_audio on miss_desc::ノートをミスした際の音声を設定できます。
+optionsMenu_miss sound + mute vocals::ミス音＋ボーカル消
+optionsMenu_miss sound only::ミス音
+optionsMenu_mute vocals only::ボーカル消
+optionsMenu_do nothing::なにもしない
+options_reset button::リトライボタン
+options_reset button_desc::#0　を押して自滅するか設定できます。
+options_note camera movement::ノートのカメラ連動
+options_note camera movement_desc::ノートを押した際カメラがそのノートの方向に動くかどうか設定できます。
+options_input offset calibrate::入力遅延テスト
+options_input offset calibrate_desc::入力の遅延テスト用の曲を開始します。
+options_self awareness::メタ要素
+options_self awareness_desc::MODがコンピュータの名前を調べられるようになります。ライブ配信時などの際のために無効化できます。
+options_song restart reloads ui::曲リトライでUI再読み込み
+options_song restart reloads ui_desc::UIを曲リトライで再読み込みするかの設定ができます。
+//new
+options_flashing lights::Flashing Lights
+options_flashing lights_desc::Turn this off if you suffer from epilepsy or similar conditions.
+options_gameplay changes::ゲーム内設定
+options_gameplay changes_desc::ゲーム内の設定ができます。
+options_opponent mode::相手側モード
+options_opponent mode_desc::プレイヤーに割り当てられたノートではなく相手のノートで遊ぶか設定ができます。
+options_both side play::両側モード
+options_both side play_desc::プレイヤーと相手両方のノートで遊ぶか設定ができます。
+options_endless mode::エンドレス
+options_endless mode_desc::曲が永遠にループするようになります。（フリープレイのみ）
+options_guitar mode::ギターモード
+options_guitar mode_desc::Guitar Heroやギターフリークスのようにキーを押しながら #0 を押してノートを消す操作方法に変更できます。
+options_confusion::混乱
+options_confusion_desc::ノートがたまに見た目だけ他のレーンからやってくるようになります。
+options_clear gameplay changes::ゲーム内設定リセット
+options_clear gameplay changes_desc::現在のゲーム内設定をリセットできます。
+optionsMenu_cleared::デフォルト
+//"default"
+optionsMenu_not cleared::変更有
+//"change present"
+optionsMenu_incomplete feature::未実装/Coming Soon
 optionsMenu_unknown option::不明
 optionsMenu_will return to::プレイ中の曲　#0　へ戻ります。
 //used when accessing options menu from the pause menu. #0 is replaced with the song name.
@@ -111,6 +159,14 @@ difficulty_normal::Normal
 difficulty_hard::Hard
 difficulty_mania::Mania
 difficulty_extra::Extra
+//new - gameplay changes tag
+modifier_both::両側
+modifier_opponent::相手側
+modifier_endless::エンドレス
+modifier_guitar::ギター
+modifier_confusion::混乱
+modifier_separator::
+modifier_prefix::^
 mainmenu_story mode::STORY MODE
 mainmenu_free play::FREE PLAY
 mainmenu_donate::DONATE
@@ -180,7 +236,7 @@ playstate_hud_totalnotes::TotalNotes:#0
 playstate_hud_engine::VMan Engine
 playstate_hud_engine botplay::VMan Engine (Botplay)
 playstate_pause_resume::続ける
-playstate_pause_restart song::リスタート
+playstate_pause_restart song::リトライ//retry
 playstate_pause_options::設定
 playstate_pause_exit to menu::メニューに戻る
 announcechecker_title::新着情報
@@ -203,3 +259,18 @@ mods_enable::有効
 mods_disabled::無効
 mods_enable all::全部有効化する
 mods_disable all::全部無効化する
+
+//parts of what should be the last round of translatey stuff
+mods_reorder hint::#0: Reorder mods\n#1: Enable/Disable All
+//mod browser dont exist yet so you get GameBanana Button
+mods_more mods gamebanana::More Mods
+mods_more mods gamebanana_desc::Find more mods on GameBanana.
+mods_default desc::This mod has no mod.json
+
+credits_switch category hint::#0/#1: Switch category
+freeplay_no songs::You have no songs!\nYou need to enable a mod first.
+storymenu_no songs::You have no weeks!\nYou need to enable a mod first.
+
+//Also hi :) I checked the texts mentioning gameplay changes in google translate and i think it's better to describe "gameplay changes" as some kind of minigames rather than "in-game settings" (unless "in-game settings" is just a google translate inaccuracy).
+
+//And I think I forgot to put a //new on Flashing Lights when I added it to this file, so I put one there

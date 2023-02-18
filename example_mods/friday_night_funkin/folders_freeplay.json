@@ -1,5 +1,6 @@
 {
 	"groupName": "Friday Night Funkin'",
+	"color": "fd719b",
 	"folderIcons": {
 		"Week 1": "dad",
 		"Week 2": "spooky",
@@ -13,48 +14,49 @@
 	"initFolder": "rootFolder",
 	"categories": {
 		"Week 1": [
-			["Bopeebo", "song"],
-			["Fresh", "song"],
-			["Dad Battle", "song"]
+			["Bopeebo", "song", "9271fd"],
+			["Fresh", "song", "9271fd"],
+			["Dad Battle", "song", "9271fd"]
 		],
 		"Week 2": [
-			["Spookeez", "song"],
-			["South", "song"],
-			["Monster", "song"]
+			["Spookeez", "song", "223344"],
+			["South", "song", "223344"],
+			["Monster", "song", "223344"]
 		],
 		"Week 3": [
-			["Pico", "song"],
-			["Philly Nice", "song"],
-			["Blammed", "song"]
+			["Pico", "song", "941653"],
+			["Philly Nice", "song", "941653"],
+			["Blammed", "song", "941653"]
 		],
 		"Week 4": [
-			["Satin Panties", "song"],
-			["High", "song"],
-			["Milf", "song"]
+			["Satin Panties", "song", "fc96d7"],
+			["High", "song", "fc96d7"],
+			["Milf", "song", "fc96d7"]
 		],
 		"Week 5": [
-			["Cocoa", "song"],
-			["Eggnog", "song"],
-			["Winter Horrorland", "song"]
+			["Cocoa", "song", "a0d1ff"],
+			["Eggnog", "song", "a0d1ff"],
+			["Winter Horrorland", "song", "223344"]
 		],
 		"Week 6": [
-			["Senpai", "song"],
-			["Roses", "song"],
-			["Thorns", "song"]
+			["Senpai", "song", "ff78bf"],
+			["Roses", "song", "ff78bf"],
+			["Thorns", "song", "311F3F"]
 		],
 		"Week 7": [
-			["Ugh", "song"],
-			["Guns", "song"],
-			["Stress", "song"]
+			["Ugh", "song", "f6b604"],
+			["Guns", "song", "f6b604"],
+			["Stress", "song", "f6b604"]
 		],
 		"rootFolder": [
-			["Tutorial", "song"],
-			["Week 1", "folder"],
-			["Week 2", "folder"],
-			["Week 3", "folder"],
-			["Week 4", "folder"],
-			["Week 5", "folder"],
-			["Week 6", "folder"]
+			["Tutorial", "song", "A5004D"],
+			["Week 1", "folder", "9271fd"],
+			["Week 2", "folder", "223344"],
+			["Week 3", "folder", "941653"],
+			["Week 4", "folder", "fc96d7"],
+			["Week 5", "folder", "a0d1ff"],
+			["Week 6", "folder", "ff78bf"],
+			["Week 7", "folder", "f6b604"]
 		]
 	}
 }

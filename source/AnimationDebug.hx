@@ -30,6 +30,9 @@ class AnimationDebug extends MusicBeatState
 	
 	var nameTxtBox:FlxUIInputText;
 
+	//why does this error?
+	//var playHint:FlxText = new FlxText(8, 8, 0, 'Use your 4K binds: ${Options.controls.get("4k").map(function(a) {return ControlsSubState.ConvertKey(a[0], true)}).join(",")} to play sing anims\nHold Shift to play miss anims instead');
+
 	public function new(daAnim:String = 'spooky')
 	{
 		super();

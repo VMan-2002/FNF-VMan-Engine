@@ -1,0 +1,20 @@
+Hi! Read this before distributing your mods, that would be cool :)
+
+-----
+
+The "More Mods" button in the Mods menu opens up a GameBanana search, which only shows mods made for VMan Engine.
+
+To have your mod show up there, go to the "Technical" tab in the mod's edit page, and add a custom tag with "FNFVManEngine" (without quotes) as both the Title and Value. Make sure to save it!
+
+-----
+
+To add a link to automatically download and install the mod,
+add this URL as an Alternate File Source with the description "VMan Engine Auto-Download":
+
+https://vman-2002.github.io/ar.html#fnfvmanengine://gb_install/000000
+
+and replace the 000000 on the end with the number on the end of the GameBanana page's url.
+
+-----
+
+A proper mod browser may come later, but this method will still be supported.

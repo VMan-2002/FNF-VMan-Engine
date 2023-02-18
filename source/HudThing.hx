@@ -31,7 +31,7 @@ class HudThing extends FlxGroup
 			return !Options.botplay || botplayExclude.indexOf(item) == -1;
 		});
 		if (PlayState.SONG.actions.contains("hideDifficulty")) {
-			while (items.contains("difficulty")) {
+			if (items.contains("difficulty")) {
 				items.remove("difficulty");
 			}
 		}
@@ -43,13 +43,13 @@ class HudThing extends FlxGroup
 		add(textThing);
 	}
 
-	override function update(elapsed:Float)
-	{
+	override function update(elapsed:Float) {
 		super.update(elapsed);
 		if (autoUpdate)
 			updateInfo();
 	}
 	
+	//todo: This function is being called quite often and we should reduce that
 	public function getInfoText() {
 		var text = "";
 		var noteThing = PlayState.instance.songHits + PlayState.instance.songMisses;
@@ -67,11 +67,7 @@ class HudThing extends FlxGroup
 				case "song":
 					text += PlayState.instance.songTitle;
 				case "difficulty":
-					text += Translation.getTranslation(PlayState.instance.storyDifficultyText, "difficulty");
-					var thing = Highscore.getModeString();
-					if (thing != "") {
-						text += "^" + thing;
-					}
+					text += Translation.getTranslation(PlayState.instance.storyDifficultyText, "difficulty") + Highscore.getModeString(true, true);
 				case "accSimple":
 					text += Translation.getTranslation("hud_accsimple", "playstate", [trimNoPercent(PlayState.instance.songHits / noteThing)]);
 				case "accRating":

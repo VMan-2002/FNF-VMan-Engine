@@ -96,7 +96,7 @@
 	
 	<assets path='example_mods' rename='mods' embed='false'/>
 	<assets path='art/readme.txt' rename='do NOT readme.txt' unless="web"/>
-	<assets path='art/modsActive.txt' rename='modsActive.txt' unless="web"/>
+	<assets path='art/modDistRead.txt' rename='mods/Readme for mod creators.txt' unless="web"/>
 	<!-- <template path='mods' /> -->
 	
 	<assets path="CHANGELOG.md" rename='changelog.txt' unless="web"/>

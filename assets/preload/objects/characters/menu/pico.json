@@ -1,0 +1,23 @@
+{
+	"image": "campaign_menu_UI_characters",
+	"animations": [
+		{
+			"name": "idle",
+			"anim": "Pico Idle Dance",
+			"framerate": 24,
+			"loop": true,
+			"offset": [
+				0,
+				0
+			]
+		}
+	],
+	"initAnim": "idle",
+	"antialias": true,
+	"scale": 0.65,
+	"position": [
+		320,
+		10
+	],
+	"isPlayer": true
+}

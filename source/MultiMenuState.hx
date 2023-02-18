@@ -72,7 +72,8 @@ class MainMenuState extends MusicBeatState
 		magenta.visible = false;
 		magenta.antialiasing = true;
 		magenta.color = 0xFFfd719b;
-		add(magenta);
+		if (Options.flashingLights)
+			add(magenta);
 		// magenta.scrollFactor.set();
 
 		var thing:FlxText = new FlxText(0, 0, 0, "", 40);

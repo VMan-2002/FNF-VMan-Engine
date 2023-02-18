@@ -1,13 +1,12 @@
 package;
 
+import Options;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.app.Application;
-
-import Options;
 
 class OptionsWarningState extends MusicBeatState
 {
@@ -18,8 +17,11 @@ class OptionsWarningState extends MusicBeatState
 		super.create();
 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		add(bg);
-		var txt:FlxText = new FlxText(0, 0, FlxG.width,
+		/*var txt:FlxText = new FlxText(0, 0, FlxG.width,
 			"Hi!\n\nThis mod may contain *Flashing Lights*!\nIn addition, you can change the *Language*!\n\nPress O to go to the Options menu now,\nor press Enter to go to the main menu.",
+		32);*/
+		var txt:FlxText = new FlxText(0, 0, FlxG.width,
+			"Hi!\n\nThis mod may contain *Flashing Lights*!\nYou're supposed to be able to turn this off,\nas well as change the *Language*, but since I'm a lazy ass,\nyou can't change these right now.\n\nPress O to go to the Options menu,\nor press Enter to go to the main menu.",
 		32);
 		txt.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, CENTER);
 		txt.applyMarkup(txt.text, [
@@ -42,14 +44,14 @@ class OptionsWarningState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
-		if (controls.ACCEPT) {
+		if (FlxG.keys.justPressed.O) {
 			leftState = true;
-			Options.seenOptionsWarning = true;
-			FlxG.switchState(new MainMenuState());
-		} else if (FlxG.keys.justPressed.O) {
-			leftState = true;
-			Options.seenOptionsWarning = true;
+			Options.seenOptionsWarning += 1;
 			FlxG.switchState(new OptionsMenu());
+		} else if (controls.ACCEPT) {
+			leftState = true;
+			Options.seenOptionsWarning += 1;
+			FlxG.switchState(new MainMenuState());
 		}
 		super.update(elapsed);
 	}

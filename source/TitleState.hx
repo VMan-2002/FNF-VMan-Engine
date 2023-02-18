@@ -1,6 +1,9 @@
 package;
 
 import CoolUtil;
+import Note.SwagNoteSkin;
+import Note.SwagNoteType;
+import Note.SwagUIStyle;
 import NoteColor;
 import Options;
 import Translation;
@@ -64,8 +67,24 @@ class TitleState extends MusicBeatState {
 	
 	public static var doCoolText = true;
 	public var introTexts:Array<String>;
-	
-	public static var enabledMods = new Array<String>();
+
+	var replayTitle:Bool = false;
+	var reloadingMods:Bool = false;
+
+	override public function new(?replayTitle:Bool = false, ?reloadingMods:Bool = false) {
+		//todo: this doesn't always work
+		//this.replayTitle = replayTitle;
+		this.reloadingMods = reloadingMods;
+
+		if (reloadingMods) {
+			SwagNoteType.clearLoadedNoteTypes();
+			SwagNoteSkin.clearLoadedNoteSkins();
+			SwagUIStyle.clearLoadedUIStyles();
+			Character.charHealthIcons.clear();
+		}
+
+		super();
+	}
 
 	override public function create():Void {
 		//Paths.updateModsList();
@@ -124,16 +143,9 @@ class TitleState extends MusicBeatState {
 		stageObject = new Stage("_FnfTitle");
 
 		if (FlxG.save.data.weekUnlocked != null) {
-			// FIX LATER!!!
-			// WEEK UNLOCK PROGRESSION!!
-			// StoryMenuState.weekUnlocked = FlxG.save.data.weekUnlocked;
-
-			if (StoryMenuState.weekUnlocked.length < 4)
-				StoryMenuState.weekUnlocked.insert(0, true);
-
-			// QUICK PATCH OOPS!
-			if (!StoryMenuState.weekUnlocked[0])
-				StoryMenuState.weekUnlocked[0] = true;
+			//We don't need this anymore
+			Reflect.deleteField(FlxG.save.data, "weekUnlocked");
+			FlxG.save.data.weekUnlocked = null;
 		}
 		trace('starting lmao');
 		if (!initialized) {
@@ -188,6 +200,7 @@ class TitleState extends MusicBeatState {
 		persistentUpdate = true;
 
 		titleGroup.add(stageObject.elementsBack);
+		titleGroup.add(stageObject.elementsBetween);
 		titleGroup.add(stageObject.elementsFront);
 
 		#if FREEPLAY
@@ -196,13 +209,17 @@ class TitleState extends MusicBeatState {
 		FlxG.switchState(new ChartingState());
 		#else
 		new FlxTimer().start(1/6, function(tmr:FlxTimer) {
-			if (!initialized && Options.skipTitle) {
+			if ((!initialized && Options.skipTitle) || (reloadingMods && !replayTitle)) {
 				initialized = true;
-				CoolUtil.playMenuMusic(1);
+				CoolUtil.playMenuMusic(1); //todo: If we're reloading mods, only restart the menu music if it's now different
 				initTransitionShit();
 				FlxTransitionableState.skipNextTransOut = true;
+				if (reloadingMods) {
+					return MainMenuState.returnToMenuFocusOn("mods");
+				}
 				return MainMenuThing();
 			}
+			skippedIntro = false;
 			startIntro();
 		});
 		#end
@@ -241,7 +258,10 @@ class TitleState extends MusicBeatState {
 
 	function startIntro() {
 		
-		if (!initialized) {
+		if (!initialized || replayTitle) {
+			if (FlxG.sound.music != null) {
+				FlxG.sound.music.stop();
+			}
 			initTransitionShit();
 
 			// var music:FlxSound = new FlxSound();
@@ -298,7 +318,7 @@ class TitleState extends MusicBeatState {
 
 		FlxG.mouse.visible = false;
 
-		if (initialized)
+		if (initialized && !replayTitle)
 			skipIntro();
 		else
 			initialized = true;
@@ -360,13 +380,17 @@ class TitleState extends MusicBeatState {
 			if (Date.now().getDay() == 5) {
 				trace("It's Friday! swag");
 				//NGio.unlockMedal(61034);
+				if (Achievements.giveAchievement("fridayNight")) {
+					Achievements.SaveOptions();
+				};
 			}
 			#end
 
 			//titleText.animation.play('press');
 			stageObject.playAnim("press");
 
-			FlxG.camera.flash(FlxColor.WHITE, 1);
+			if (Options.flashingLights)
+				FlxG.camera.flash(FlxColor.WHITE, 1);
 			FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
 
 			transitioning = true;
@@ -548,7 +572,7 @@ class TitleState extends MusicBeatState {
 	}
 	
 	inline function MainMenuThing() {
-		if (!OptionsWarningState.leftState && !Options.seenOptionsWarning) {
+		if (!OptionsWarningState.leftState && Options.seenOptionsWarning <= 0) {
 			return FlxG.switchState(new OptionsWarningState());
 		}
 		FlxG.switchState(new MainMenuState());

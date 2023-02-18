@@ -1,6 +1,7 @@
 package;
 
 import sys.FileSystem;
+import sys.io.File;
 
 using StringTools;
 #if polymod
@@ -16,15 +17,22 @@ class ModLoad
 	
 	//copied from polymod flixel sample
 
-	public static function loadMods(dirs:Array<String>) {
+	public static function loadMods(dirs:Array<String>, ?doModCheck:Bool = true) {
+		if (doModCheck)
+			checkNewMods();
 		trace('Loading mods: ${dirs}');
 		Character.charHealthIcons = new Map<String, String>();
 		enabledMods = new Array<String>();
 		for (i in dirs) {
 			var f = i.replace("\r", "");
+			if (f.startsWith("0::"))
+				continue;
+			else if (f.startsWith("1::"))
+				f = f.substr(3);
 			var flashFolder = f+"/noflashing";
 			var string = "Mod: "+f;
 			if (!Options.flashingLights) {
+				//todo: this doesn't seem to work
 				if (FileSystem.exists(flashFolder) && FileSystem.isDirectory(flashFolder)) {
 					enabledMods.push(flashFolder);
 					string += " (loading with noflash)";
@@ -77,5 +85,53 @@ class ModLoad
 
 	public static function onError(error:PolymodError) {
 		trace('[${error.severity}] (${error.code.toUpperCase()}): ${error.message}');
+	}
+
+	/**
+		Get all folders in the mods folder, even ones that are inactive
+	**/
+	public static inline function getAllModFolders() {
+		return FileSystem.readDirectory("mods/").filter(function(a) {return FileSystem.isDirectory("mods/"+a);});
+	}
+
+	/**
+		Get mods list file as an array.
+	**/
+	public static inline function getModsListFileArr():Array<String> {
+		return FileSystem.exists("mods/modList.txt") ? File.getContent("mods/modList.txt").replace("\r", "").split("\n") : ["0::work_folder", "0::example", "1::friday_night_funkin"];
+	}
+
+	public static inline function normalizeModsListFileArr(arr:Array<String>) {
+		return arr.map(function(a) {
+			if (a.startsWith("1::") || a.startsWith("0::"))
+				return a.substr(3);
+			return a;
+		});
+	}
+
+	/**
+		Check if any new mods have been added to the mods folder
+	**/
+	public static function checkNewMods() {
+		var folderList = getAllModFolders();
+		trace(folderList.length+" Mod folders available: "+folderList.join(","));
+		var modsListFile = getModsListFileArr();
+		var listyMods = normalizeModsListFileArr(modsListFile);
+		var toAdd = new Array<String>();
+		for (folder in folderList) {
+			if (!listyMods.contains(folder)) {
+				toAdd.push((Options.newModsActive ? "1::" : "0::") + folder);
+			}
+		}
+		if (toAdd.length == 0)
+			return false;
+		var newModsListFile = modsListFile.map(function(a) {
+			if (a.startsWith("1::") || a.startsWith("0::"))
+				return a;
+			return "1::" + a;
+		}).concat(toAdd);
+		trace('Adding ${toAdd.length} new mods to modlist file');
+		File.saveContent("mods/modList.txt", newModsListFile.join("\n"));
+		return true;
 	}
 }

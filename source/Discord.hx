@@ -130,8 +130,8 @@ class DiscordClient
 		}
 		if (doStuff && PlayState.SONG != null) {
 			songName = PlayState.SONG.song;
-			modifierString = Highscore.getModeString();
-			difficultyText = modifierString == "" ? ' (${PlayState.instance.storyDifficultyText})' : ' (${PlayState.instance.storyDifficultyText}^${modifierString})';
+			modifierString = Highscore.getModeString(false, true);
+			difficultyText = '${PlayState.instance.storyDifficultyText}${modifierString}';
 		}
 		var detailsText:String = PlayState.isStoryMode ? "Story Mode: Week " + PlayState.storyWeek : "Freeplay";
 		var songText:String = songName + difficultyText;

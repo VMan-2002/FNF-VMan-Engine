@@ -35,6 +35,35 @@ class CoolUtil
 	public static var difficultyArray:Array<String> = defaultDifficultyArray;
 
 	/**
+		Switch difficulty array, and keep the current difficulty if possible. Assumes the difficulty is stored on `object` as an `Int` as an index in `CoolUtil.difficultyArray`.
+		
+		If the current difficulty can't be kept, switch to Normal if possible.
+
+		Returns true if the current difficulty was successfully retained, regardless of whether or not the difficulty number changed.
+	**/
+	public static function setNewDifficulties(newDiffs:Null<Array<String>>, object:Dynamic, diffVar:String) {
+		if (newDiffs == null || newDiffs.length == 0) {
+			newDiffs = defaultDifficultyArray;
+		}
+		if (difficultyArray.map(function(a) {return a.toLowerCase();}) != newDiffs.map(function(a) {return a.toLowerCase();})) {
+			var oldDiff = CoolUtil.difficultyArray[Reflect.getProperty(object, diffVar)].toLowerCase();
+			CoolUtil.difficultyArray = newDiffs;
+			var normalPos:Int = 0;
+			for (aDiff in CoolUtil.difficultyArray) {
+				if (aDiff.toLowerCase() == oldDiff) {
+					Reflect.setProperty(object, diffVar, CoolUtil.difficultyArray.indexOf(aDiff));
+					return true;
+				} else if (aDiff.toLowerCase() == "normal") {
+					normalPos = CoolUtil.difficultyArray.indexOf(aDiff);
+				}
+			}
+			Reflect.setProperty(object, diffVar, normalPos);
+			return false;
+		}
+		return true;
+	}
+
+	/**
 		Returns difficulty from number to string
 	**/
 	public static function difficultyString(?num:Null<Int> = null):String {
@@ -104,18 +133,18 @@ class CoolUtil
 	/**
 		Plays audio from music folder
 	**/
-	public inline static function playMusic(name:String, ?volume:Float = 1) {
+	public inline static function playMusic(name:String, ?volume:Float = 1, ?bpm:Null<Float> = null) {
 		playMusicRaw(Paths.music(name), name, volume);
+		var musicInfo = CoolUtil.coolTextFile('music/${name}');
+		if (musicInfo.length > 0 && bpm == null)
+			Conductor.changeBPM(Std.parseFloat(musicInfo[0]));
 	}
 
 	/**
 		Plays music using a sound asset
 	**/
-	public static function playMusicRaw(sndAsset, name:String, ?volume:Float = 1, ?bpm:Null<Float>) {
+	public static function playMusicRaw(sndAsset, name:String, ?volume:Float = 1, ?bpm:Null<Float> = null) {
 		FlxG.sound.playMusic(sndAsset, volume);
-		//var musicInfo = CoolUtil.coolTextFile('music/${name}');
-		//if (musicInfo.length > 0 && bpm == null)
-		//	Conductor.changeBPM(Std.parseFloat(musicInfo[0]));
 	}
 
 	/**
@@ -201,6 +230,29 @@ class CoolUtil
 			}
 		}
 		trace("tryPathBoth not found");
+		return null;
+	}
+	
+	/**
+		Attempt path from mod folder, then assets, returns path instead of asset
+	**/
+	public static function tryPathBothReturnPath(path:String, modName:String, ?assetLibPrefix:String = "") {
+		#if !html5
+		var modPath:String = "mods/" + modName + "/" + path;
+		trace("tryPathBothReturnPath mod folder "+modPath);
+		if (FileSystem.exists(modPath)) {
+			trace("tryPathBothReturnPath use modfolder path");
+			return modPath;
+		} else
+		#end
+		{
+			var anotherPath:String = "assets/" + assetLibPrefix + path;
+			trace("tryPathBothReturnPath asset folder "+anotherPath);
+			if (Assets.exists(anotherPath)) {
+				return anotherPath;
+			}
+		}
+		trace("tryPathBothReturnPath not found");
 		return null;
 	}
 	

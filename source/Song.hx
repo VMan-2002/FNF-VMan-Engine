@@ -50,6 +50,8 @@ typedef SwagSong = {
 	var instName:Null<String>;
 	
 	var threeLanes:Null<Bool>; //Pasta night :))))))
+
+	var picospeaker:Null<String>; //Week 7 stress
 }
 
 class Song {
@@ -113,7 +115,8 @@ class Song {
 			voicesName:null,
 			instName:null,
 			threeLanes:false,
-			newtitle:null
+			newtitle:null,
+			picospeaker:null
 		};
 	}
 

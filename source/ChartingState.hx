@@ -48,7 +48,7 @@ class ChartingState extends MusicBeatState
 	 * Array of notes showing when each section STARTS in STEPS
 	 * Usually rounded up??
 	 */
-	var curSection:Int = 0;
+	public var curSection:Int = 0;
 
 	public static var lastSection:Int = 0;
 
@@ -72,7 +72,7 @@ class ChartingState extends MusicBeatState
 
 	var gridBG:FlxSprite;
 
-	var _song:SwagSong;
+	public var _song:SwagSong;
 
 	var typingShit:FlxInputText;
 	/*
@@ -82,7 +82,7 @@ class ChartingState extends MusicBeatState
 
 	var tempBpm:Float = 0;
 
-	var vocals:FlxSound;
+	public var vocals:FlxSound;
 
 	var leftIcon:HealthIcon;
 	var rightIcon:HealthIcon;
@@ -117,6 +117,8 @@ class ChartingState extends MusicBeatState
 	var sectionInfo:Array<Dynamic>;
 	var nextSectionTime:Float;
 	var sectionBeatsActive:Bool = false;
+
+	var osuScroller:OsuScroller;
 
 	override function create()
 	{
@@ -179,6 +181,9 @@ class ChartingState extends MusicBeatState
 		FlxG.mouse.visible = true;
 		FlxG.save.bind('funkin', 'ninjamuffin99');
 
+		osuScroller = new OsuScroller(this, gridBG.x - 150);
+		add(osuScroller);
+
 		tempBpm = _song.bpm;
 
 		addSection();
@@ -188,6 +193,12 @@ class ChartingState extends MusicBeatState
 		updateGridChangeMania();
 
 		loadSong(_song.song);
+		if (curSection >= _song.notes.length)
+			curSection = 0;
+		osuScroller.setRowCount(_song.notes.length);
+		for (i in 0..._song.notes.length) {
+			osuScroller.setAmountForRow(i, _song.notes[i].sectionNotes.length);
+		}
 		Conductor.changeBPM(_song.bpm);
 		Conductor.mapBPMChanges(_song);
 
@@ -772,8 +783,7 @@ class ChartingState extends MusicBeatState
 			else
 				return _song.notes[curSection].lengthInSteps;
 	}*/
-	function sectionStartTime(?sectionFind:Null<Int>):Float
-	{
+	public function sectionStartTime(?sectionFind:Null<Int>):Float {
 		var timeSig = _song.timeSignature == null ? 4 : _song.timeSignature;
 		if (sectionFind == null) {
 			sectionFind = curSection;
@@ -1068,7 +1078,7 @@ class ChartingState extends MusicBeatState
 		updateSectionUI();
 	}
 
-	function changeSection(sec:Int = 0, ?updateMusic:Bool = true):Void
+	public function changeSection(sec:Int = 0, ?updateMusic:Bool = true):Void
 	{
 		if (sec < 0) {
 			sec = 0;
@@ -1195,11 +1205,12 @@ class ChartingState extends MusicBeatState
 	{
 		var toTimeSig = _song.timeSignature == null ? 4 : _song.timeSignature;
 		sectionBeatsActive = false;
-		if (_song.notes[curSection].sectionBeats > 0) {
-			toTimeSig = _song.notes[curSection].sectionBeats;
+		var thisSection:SwagSection = _song.notes[curSection];
+		if (thisSection.sectionBeats > 0) {
+			toTimeSig = thisSection.sectionBeats;
 			sectionBeatsActive = true;
-		} else if (_song.notes[curSection].changeTimeSignature == true && _song.notes[curSection].timeSignature > 0) {
-			toTimeSig = _song.notes[curSection].timeSignature;
+		} else if (thisSection.changeTimeSignature == true && thisSection.timeSignature > 0) {
+			toTimeSig = thisSection.timeSignature;
 		} else {
 			// get last time sig
 			var i:Int = curSection;
@@ -1218,23 +1229,21 @@ class ChartingState extends MusicBeatState
 		CoolUtil.clearMembers(curRenderedNoteTypes);
 		CoolUtil.clearMembers(curRenderedEvents);
 
-		if (_song.notes[curSection].sectionNotes == null) {
-			_song.notes[curSection].sectionNotes = new Array<Array<Dynamic>>();
+		if (thisSection.sectionNotes == null) {
+			thisSection.sectionNotes = new Array<Array<Dynamic>>();
 		}
-		sectionInfo = _song.notes[curSection].sectionNotes;
+		sectionInfo = thisSection.sectionNotes;
 
 		if (curNotesLayer > 0) {
-			if (_song.notes[curSection].notesMoreLayers == null) {
-				_song.notes[curSection].notesMoreLayers = new Array<Array<Dynamic>>();
-			}
-			if (_song.notes[curSection].notesMoreLayers[curNotesLayer-1] == null) {
-				_song.notes[curSection].notesMoreLayers[curNotesLayer-1] = new Array<Dynamic>();
-			}
-			sectionInfo = _song.notes[curSection].notesMoreLayers[curNotesLayer-1];
+			if (thisSection.notesMoreLayers == null)
+				thisSection.notesMoreLayers = new Array<Array<Dynamic>>();
+			if (thisSection.notesMoreLayers[curNotesLayer-1] == null)
+				thisSection.notesMoreLayers[curNotesLayer-1] = new Array<Dynamic>();
+			sectionInfo = thisSection.notesMoreLayers[curNotesLayer-1];
 		}
 
-		if (_song.notes[curSection].changeBPM && _song.notes[curSection].bpm > 0) {
-			Conductor.changeBPM(_song.notes[curSection].bpm);
+		if (thisSection.changeBPM && thisSection.bpm > 0) {
+			Conductor.changeBPM(thisSection.bpm);
 			FlxG.log.add('CHANGED BPM!');
 		} else {
 			// get last bpm
@@ -1269,6 +1278,7 @@ class ChartingState extends MusicBeatState
 			note.updateHitbox();
 			note.x = Math.floor(daNoteInfo * GRID_SIZE);
 			note.y = Math.floor(getYfromStrum((daStrumTime - startThing) % (Conductor.stepCrochet * getLengthInSteps(curSection))));
+			note.mustPress = daNoteInfo < currentChartMania.keys;
 
 			curRenderedNotes.add(note);
 
@@ -1287,8 +1297,8 @@ class ChartingState extends MusicBeatState
 		}
 
 		notesPast = new Map<Int, Bool>();
-		for (i in 0..._song.notes[curSection].sectionNotes.length) {
-			notesPast.set(i, _song.notes[curSection].sectionNotes[i][0] <= FlxG.sound.music.time + songAudioOffset);
+		for (i in 0...thisSection.sectionNotes.length) {
+			notesPast.set(i, thisSection.sectionNotes[i][0] <= FlxG.sound.music.time + songAudioOffset);
 		}
 	}
 
@@ -1316,6 +1326,8 @@ class ChartingState extends MusicBeatState
 		};
 
 		_song.notes.push(sec);
+
+		osuScroller.setRowCount(_song.notes.length);
 	}
 
 	inline function getLengthInSteps(num:Int) {
@@ -1339,7 +1351,7 @@ class ChartingState extends MusicBeatState
 		var result = getSectionNotes();
 		var didDelete = false;
 		for (i in result) {
-			if (i[0] == note.strumTime && i[1] % currentChartMania.keys == note.noteData) {
+			if (i[0] == note.strumTime && i[1] % currentChartMania.keys == note.noteData && (i[1] < currentChartMania.keys) == (note.mustPress)) {
 				FlxG.log.add('FOUND EVIL NUMBER');
 				result.remove(i);
 				didDelete = true;
@@ -1351,6 +1363,9 @@ class ChartingState extends MusicBeatState
 			return;
 		}
 		
+		if (curNotesLayer == 0) {
+			osuScroller.setAmountForRow(curSection, _song.notes[curSection].sectionNotes.length);
+		}
 		setSectionNotes(result);
 		updateGrid();
 	}
@@ -1374,7 +1389,7 @@ class ChartingState extends MusicBeatState
 	private function addNote(?offset:Float = 0, ?offset2:Int, ?uGrid:Bool = true):Void
 	{
 		var noteStrum = getStrumTime(dummyArrow.y) + sectionStartTime() + offset;
-		var noteData = (Math.floor(FlxG.mouse.x / GRID_SIZE) + offset2) % currentChartMania.keys;
+		var noteData = (Math.floor(FlxG.mouse.x / GRID_SIZE) + offset2) % (currentChartMania.keys * 2);
 		while (noteData < 0) {
 			noteData += currentChartMania.keys;
 		}
@@ -1391,14 +1406,16 @@ class ChartingState extends MusicBeatState
 
 		addTo.push(curSelectedNote);
 
-		if (FlxG.keys.pressed.CONTROL && curNotesLayer == 0) {
-			addTo.push([noteStrum, (noteData + 4) % 8, noteSus, curNoteTypeArr.indexOf(curNoteType)]);
-		}
+		if (FlxG.keys.pressed.CONTROL && curNotesLayer == 0)
+			addTo.push([noteStrum, (noteData + currentChartMania.keys) % (currentChartMania.keys * 2), noteSus, curNoteTypeArr.indexOf(curNoteType)]);
 
 		trace(noteStrum);
 		trace(curSection);
 
 		if (uGrid) {
+			if (curNotesLayer == 0) {
+				osuScroller.setAmountForRow(curSection, _song.notes[curSection].sectionNotes.length);
+			}
 			updateGrid();
 			updateNoteUI();
 

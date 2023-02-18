@@ -16,6 +16,7 @@ class Options
 	public static var offset:Int = 0;
 	public static var antialias:Bool = true;
 	public static var invisibleNotes:Bool = false;
+	public static var invisibleNotesType:Int = 0;
 	public static var freeplayFolders:Bool = true;
 	public static var newModsActive:Bool = true;
 	public static var tappingHorizontal:Bool = false;
@@ -77,7 +78,7 @@ class Options
 	public static var language = "en_us";
 	public static var modchartEnabled:Bool = false;
 	public static var antialiasing:Bool = true;
-	public static var seenOptionsWarning = false;
+	public static var seenOptionsWarning:Int = 0;
 	public static var silentCountdown:Bool = false;
 	public static var noteMissAction:Int = 0;
 	public static var noteMissAction_Vocals:Array<Bool> = [true, false, true, false];
@@ -140,13 +141,14 @@ class Options
 		svd.data.tappingHorizontal = tappingHorizontal;
 		svd.data.skipTitle = skipTitle;
 		svd.data.invisibleNotes = invisibleNotes;
+		svd.data.invisibleNotesType = invisibleNotesType;
 		svd.data.controls = controls;
 		svd.data.uiControls = uiControls;
 		svd.data.language = language;
 		svd.data.modchartEnabled = modchartEnabled;
 		svd.data.flashingLights = flashingLights;
 		svd.data.antialiasing = antialiasing;
-		svd.data.seenOptionsWarning = seenOptionsWarning;
+		svd.data.seenOptionsWarning_Int = seenOptionsWarning;
 		svd.data.silentCountdown = silentCountdown;
 		svd.data.noteMissAction = noteMissAction;
 		svd.data.showFPS = showFPS;
@@ -162,6 +164,8 @@ class Options
 		svd.data.playstate_endless = playstate_endless;
 		svd.data.playstate_guitar = playstate_guitar;
 		svd.data.playstate_confusion = playstate_confusion;
+
+		svd.data.optionVersion = Std.int(0);
 		svd.close();
 	}
 	
@@ -182,12 +186,13 @@ class Options
 		tappingHorizontal = ifNotNull(svd.data.tappingHorizontal, tappingHorizontal);
 		skipTitle = ifNotNull(svd.data.skipTitle, skipTitle);
 		invisibleNotes = ifNotNull(svd.data.invisibleNotes, invisibleNotes);
+		invisibleNotesType = ifNotNull(svd.data.invisibleNotesType, invisibleNotesType);
 		controls = ifNotNull(svd.data.controls, controls);
 		language = ifNotNull(svd.data.language, language);
 		modchartEnabled = ifNotNull(svd.data.modchartEnabled, modchartEnabled);
 		flashingLights = ifNotNull(svd.data.flashingLights, flashingLights);
 		antialiasing = ifNotNull(svd.data.antialiasing, antialiasing);
-		seenOptionsWarning = ifNotNull(svd.data.seenOptionsWarning, seenOptionsWarning);
+		seenOptionsWarning = ifNotNull(svd.data.seenOptionsWarning_Int, seenOptionsWarning);
 		silentCountdown = ifNotNull(svd.data.silentCountdown, silentCountdown);
 		noteMissAction = ifNotNull(svd.data.noteMissAction, noteMissAction);
 		showFPS = ifNotNull(svd.data.showFPS, showFPS);
@@ -223,7 +228,7 @@ class Options
 		svd.destroy();
 	}
 	
-	static function ifNotNull(a:Any, b:Any):Null<Any> {
+	static inline function ifNotNull(a:Any, b:Any):Null<Any> {
 		return a == null ? b : a;
 	}
 	
@@ -231,5 +236,13 @@ class Options
 		var svd = new FlxSave();
 		svd.bind("Options");
 		return svd;
+	}
+
+	public static function getControlName(mania:String, num:Int) {
+		return ControlsSubState.ConvertKey(controls.get(mania)[num][0], true);
+	}
+
+	public static function getUIControlName(num:String) {
+		return ControlsSubState.ConvertKey(uiControls.get(num)[0], true);
 	}
 }

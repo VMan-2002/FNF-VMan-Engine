@@ -81,7 +81,7 @@ class StrumNote extends FlxSprite
 				scale.x = PlayState.daPixelZoom * 1.5;
 				antialiasing = false;
 				
-				var i = noteData; //todo: It dont work properly in >4k! Lol
+				var i = noteData; //It dont work properly in >4k! Lol
 				var wide = 4;
 				animation.add('static', [i]);
 				animation.add('pressed', [wide+i, (wide * 2)+i], 12, false);

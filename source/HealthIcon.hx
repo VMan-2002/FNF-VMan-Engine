@@ -22,6 +22,7 @@ typedef SwagHealthIcon = {
 	public var animations:Array<SwagCharacterAnim>;
 	public var scale:Array<Float>;
 	public var folderType:String;
+	public var position_freeplay:Null<Array<Float>>;
 }
 
 typedef SwagHealthIconItem = {
@@ -59,8 +60,10 @@ class HealthIcon extends FlxSprite
 		'bf-car' => [0, 1, 0],
 		'bf-christmas' => [0, 1, 0],
 		'bf-pixel' => [21, 24, 21],
+		'bf-holding-gf' => [0, 1, 0],
 		'spooky' => [2, 3, 2],
 		'pico' => [4, 5, 4],
+		'pico-speaker' => [4, 5, 4],
 		'mom' => [6, 7, 6],
 		'mom-car' => [6, 7, 6],
 		'tankman' => [8, 9, 8],
@@ -73,7 +76,8 @@ class HealthIcon extends FlxSprite
 		'gf' => [16, 16, 16],
 		'gf-christmas' => [16, 16, 16],
 		'gf-pixel' => [16, 16, 16],
-		'gfcar' => [16, 16, 16],
+		'gf-tankmen' => [16, 16, 16],
+		'gf-car' => [16, 16, 16],
 		'parents-christmas' => [17, 17, 17],
 		'monster' => [19, 20, 19],
 		'monster-christmas' => [19, 20, 19]
@@ -211,6 +215,9 @@ class HealthIcon extends FlxSprite
 			}
 			animation.play("neutral");
 			updateHitbox();
+			if (Std.isOfType(FlxG.state, FreeplayState) && isJson && jsonData != null && jsonData.position_freeplay != null && jsonData.position_freeplay.length > 0) {
+				offset.add(jsonData.position_freeplay[0], jsonData.position_freeplay[1]);
+			}
 			return;
 		} else {
 			trace('using inbuilt health icon for ${char}');

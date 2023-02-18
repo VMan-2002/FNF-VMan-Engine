@@ -1,0 +1,23 @@
+{
+	"image": "campaign_menu_UI_characters",
+	"animations": [
+		{
+			"name": "idle",
+			"anim": "Dad idle dance BLACK LINE",
+			"framerate": 24,
+			"loop": true,
+			"offset": [
+				0,
+				0
+			]
+		}
+	],
+	"initAnim": "idle",
+	"antialias": true,
+	"scale": 0.5,
+	"position": [
+		300,
+		110
+	],
+	"isPlayer": false
+}

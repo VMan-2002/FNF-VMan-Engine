@@ -95,29 +95,25 @@ class Alphabet extends FlxSpriteGroup
 		doSplitWords();
 
 		var xPos:Float = 0;
-		for (character in splitWords)
-		{
+		var spaceCount:Int = 0;
+		for (character in splitWords) {
 			// if (character.fastCodeAt() == " ")
 			// {
 			// }
 
-			if (character == " " || character == "-")
-			{
-				lastWasSpace = true;
-			}
+			if (character == " ") 
+				spaceCount++;
 
-			if (AlphaCharacter.alphabet.contains(character.toLowerCase()))
+			var isLet = AlphaCharacter.alphabet.contains(character.toLowerCase());
+			var isNum = !isLet && AlphaCharacter.numbers.contains(character);
+			var isSym = !isNum && !isNum && AlphaCharacter.symbols.contains(character);
+
+			if (isLet || isNum || isSym)
 				// if (AlphaCharacter.alphabet.contains(character.toLowerCase()))
 			{
-				if (lastSprite != null)
-				{
-					xPos = lastSprite.x + lastSprite.width;
-				}
-
-				if (lastWasSpace)
-				{
-					xPos += 40;
-					lastWasSpace = false;
+				if (lastSprite != null) {
+					xPos = lastSprite.x + lastSprite.width + (spaceCount * 40);
+					spaceCount = 0;
 				}
 
 				// var letter:AlphaCharacter = new AlphaCharacter(30 * loopNum, 0);
@@ -125,10 +121,12 @@ class Alphabet extends FlxSpriteGroup
 
 				if (isBold)
 					letter.createBold(character);
+				else if (isNum)
+					letter.createNumber(character);
+				else if (isSym)
+					letter.createSymbol(character);
 				else
-				{
 					letter.createLetter(character);
-				}
 
 				add(letter);
 
@@ -139,12 +137,9 @@ class Alphabet extends FlxSpriteGroup
 		}
 	}
 
-	function doSplitWords():Void
-	{
+	function doSplitWords():Void {
 		splitWords = _finalText.split("");
 	}
-
-	public var personTalking:String = 'gf';
 
 	public function startTypedText():Void
 	{
@@ -208,32 +203,21 @@ class Alphabet extends FlxSpriteGroup
 				// var letter:AlphaCharacter = new AlphaCharacter(30 * loopNum, 0);
 				var letter:AlphaCharacter = new AlphaCharacter(xPos, 55 * yMulti);
 				letter.row = curRow;
-				if (isBold)
-				{
+				if (isBold) {
 					letter.createBold(splitWords[loopNum]);
-				}
-				else
-				{
+				} else {
 					if (isNumber)
-					{
 						letter.createNumber(splitWords[loopNum]);
-					}
 					else if (isSymbol)
-					{
 						letter.createSymbol(splitWords[loopNum]);
-					}
 					else
-					{
 						letter.createLetter(splitWords[loopNum]);
-					}
 
 					letter.x += 90;
 				}
 
-				if (FlxG.random.bool(40))
-				{
-					var daSound:String = "GF_";
-					FlxG.sound.play(Paths.soundRandom(daSound, 1, 4));
+				if (FlxG.random.bool(40)) {
+					FlxG.sound.play(Paths.soundRandom("GF_", 1, 4));
 				}
 
 				add(letter);
@@ -267,7 +251,8 @@ class AlphaCharacter extends FlxSprite
 
 	public static var numbers:String = "1234567890";
 
-	public static var symbols:String = "|~#$%()*+-:;<=>@[]^_.,'!?";
+	public static var symbols:String = "|~#$%()*+-:;<=>@[]^_.,'\"!?•";
+	//todo: draw these bold symbols: |~#$%*+;<=>@[]^,'!?
 
 	public var row:Int = 0;
 
@@ -280,9 +265,31 @@ class AlphaCharacter extends FlxSprite
 		antialiasing = true;
 	}
 
-	public function createBold(letter:String)
-	{
-		animation.addByPrefix(letter, letter.toUpperCase() + " bold", 24);
+	public function createBold(letter:String) {
+		var animLetter = letter;
+		switch(letter) {
+			case ".":
+				offset.set(0, 38);
+			case "•":
+				animLetter = ".";
+				offset.set(13, 20);
+			case ":":
+				offset.set(0, 12);
+			case "(" | ")":
+				offset.set(0, -10);
+			case "-":
+				offset.set(0, 20);
+			case "_":
+				animLetter = "-";
+				offset.set(0, 48);
+			case "'":
+				animLetter = "single quote";
+			case "\"":
+				animLetter = "double quote";
+			default:
+				animLetter = letter.toUpperCase();
+		}
+		animation.addByPrefix(letter, animLetter + " bold", 24);
 		animation.play(letter);
 		updateHitbox();
 	}
@@ -290,8 +297,7 @@ class AlphaCharacter extends FlxSprite
 	public function createLetter(letter:String):Void
 	{
 		var letterCase:String = "lowercase";
-		if (letter.toLowerCase() != letter)
-		{
+		if (letter.toLowerCase() != letter) {
 			letterCase = 'capital';
 		}
 

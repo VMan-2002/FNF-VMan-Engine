@@ -33,11 +33,12 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 	var optionsImage:FlxSprite;
 	
 	var willReturnToTxt:FlxText;
+	var upcomingTxt:FlxText;
 	
 	var canMoveSelected:Bool = true;
 	var backSubState:Int = 0;
 	
-	var curSelectedName:String = "finish the green one ash!!";
+	var curSelectedName:String = "the person reading this has nice hair";
 
 	var textTween:FlxTween;
 
@@ -58,6 +59,9 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 			optionText.ID = i;
 			Translation.setObjectFont(optionText);
 			grpOptionsTexts.add(optionText);
+			if (optionUpcoming(textMenuItems[i].toLowerCase())) {
+				optionText.color = FlxColor.GRAY;
+			}
 		}
 		
 		optionsImage = new FlxSprite(FlxG.width - 450, FlxG.height - 450);
@@ -76,6 +80,12 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 			Translation.setObjectFont(willReturnToTxt);
 		}
 		
+		upcomingTxt = new FlxText(8, FlxG.height - 50, FlxG.width - 16, Translation.getTranslation("incomplete feature", "optionsMenu", [], "Incomplete/Coming Soon"), 32);
+		upcomingTxt.alignment = FlxTextAlign.RIGHT;
+		upcomingTxt.visible = false;
+		add(upcomingTxt);
+		Translation.setObjectFont(upcomingTxt);
+		
 		currentOptionText = new FlxText(FlxG.width / 2, 20, FlxG.width / 2, "Hey look buddy. I'm an engineer, t", 32);
 		Translation.setObjectFont(currentOptionText);
 		add(currentOptionText);
@@ -83,7 +93,7 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 	}
 	
 	public function moveSelection(by:Int) {
-		grpOptionsTexts.members[curSelected].color = FlxColor.WHITE;
+		grpOptionsTexts.members[curSelected].color = optionUpcoming(textMenuItems[curSelected].toLowerCase()) ? FlxColor.GRAY : FlxColor.WHITE;
 		curSelected += by;
 
 		if (curSelected < 0)
@@ -108,11 +118,13 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 		var description:Array<String> = optionDescription(curSelectedName);
 		if (Translation.active) {
 			var translationKey:String = optionDescriptionTranslation(curSelectedName);
-			currentOptionText.text = description.length > 1 ? (Translation.getTranslation(translationKey, "options", null, description[0]) + "\n\n" + Translation.getTranslation(description[1], "optionsMenu")) : Translation.getTranslation(translationKey, "options");
+			var argArr:Null<Array<String>> = optionDescriptionTranslationArgs(curSelectedName);
+			currentOptionText.text = description.length > 1 ? (Translation.getTranslation(translationKey, "options", argArr, description[0]) + "\n\n" + Translation.getTranslation(description[1], "optionsMenu")) : Translation.getTranslation(translationKey, "options");
 		} else {
 			currentOptionText.text = description.length > 1 ? (description[0] + "\n\n" + description[1]) : description[0];
 		}
 		optionsImage.animation.play(description.length >= 3 ? description[2] : textMenuItems[curSelected].toLowerCase(), false);
+		upcomingTxt.visible = optionUpcoming(curSelectedName);
 	}
 	
 	public function optionUpdate(name:String) {
@@ -134,9 +146,19 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 		return '${curSelectedName}_desc';
 	}
 	
+	public function optionDescriptionTranslationArgs(name:String):Null<Array<String>> {
+		//thing
+		return null;
+	}
+	
 	public function optionBack():Bool {
 		//thing
 		return true;
+	}
+
+	public function optionUpcoming(name:String):Bool {
+		//thing
+		return false;
 	}
 
 	override function update(elapsed:Float)

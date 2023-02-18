@@ -9,6 +9,7 @@ import flixel.animation.FlxBaseAnimation;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
+import flixel.util.FlxSort;
 import haxe.Json;
 import lime.utils.Assets;
 
@@ -80,6 +81,8 @@ class Character extends SpriteVMan
 	public var stunned:Bool = false;
 
 	public var holdTimer:Float = 0;
+
+	public var animationNotes:Array<Dynamic> = [];
 	
 	public var danceType:Bool = false;
 	
@@ -89,7 +92,7 @@ class Character extends SpriteVMan
 	public var playableSwapped:Bool = false;
 	
 	public var healthIcon:String;
-	public var healthBarColor:FlxColor;
+	public var healthBarColor:FlxColor = new FlxColor(0xFF888888);
 	public var deathChar:Null<String> = null;
 	public var deathSound:Null<String> = null;
 
@@ -116,7 +119,7 @@ class Character extends SpriteVMan
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false, ?myMod:String = "") {
 		super(x, y);
 
-		curCharacter = character;
+		curCharacter = character.trim();
 		this.isPlayer = isPlayer;
 		healthIcon = curCharacter;
 		
@@ -130,8 +133,6 @@ class Character extends SpriteVMan
 
 		var tex:FlxAtlasFrames;
 		antialiasing = true;
-
-		healthBarColor = new FlxColor(0xFF888888);
 
 		noteCameraOffset.set("singLEFT", new FlxPoint(-45, 0));
 		noteCameraOffset.set("singRIGHT", new FlxPoint(45, 0));
@@ -212,13 +213,62 @@ class Character extends SpriteVMan
 
 				healthBarColor.setRGB(165, 0, 77);
 				isGirlfriend = true;
+			case 'gf-tankmen':
+				frames = Paths.getSparrowAtlas('characters/gfTankmen');
+				animation.addByIndices('sad', 'GF Crying at Gunpoint', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "", 24, true);
+				animation.addByIndices('danceLeft', 'GF Dancing at Gunpoint', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
+				animation.addByIndices('danceRight', 'GF Dancing at Gunpoint', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+
+				addOffset('sad', -2, -2);
+				addOffset('danceLeft', 0, -9);
+				addOffset('danceRight', 0, -9);
+
+				playAnim('danceRight');
+
+				healthBarColor.setRGB(165, 0, 77);
+				positionOffset[0] = -170;
+				positionOffset[1] = -75;
+				isGirlfriend = true;
+			case 'bf-holding-gf':
+				frames = Paths.getSparrowAtlas('characters/bfAndGF');
+				quickAnimAdd('idle', 'BF idle dance');
+				quickAnimAdd('singDOWN', 'BF NOTE DOWN0');
+				quickAnimAdd('singLEFT', 'BF NOTE LEFT0');
+				quickAnimAdd('singRIGHT', 'BF NOTE RIGHT0');
+				quickAnimAdd('singUP', 'BF NOTE UP0');
+
+				quickAnimAdd('singDOWNmiss', 'BF NOTE DOWN MISS');
+				quickAnimAdd('singLEFTmiss', 'BF NOTE LEFT MISS');
+				quickAnimAdd('singRIGHTmiss', 'BF NOTE RIGHT MISS');
+				quickAnimAdd('singUPmiss', 'BF NOTE UP MISS');
+				quickAnimAdd('bfCatch', 'BF catches GF');
+
+				//loadOffsetFile(curCharacter);
+
+				addOffset('idle', 0, 0);
+				addOffset('singUP', -29, 10);
+				addOffset('singRIGHT', -41, 23);
+				addOffset('singLEFT', 12, 7);
+				addOffset('singDOWN', -10, -10);
+				addOffset('singUPmiss', -29, 10);
+				addOffset('singRIGHTmiss', -41, 21);
+				addOffset('singLEFTmiss', 12, 7);
+				addOffset('singDOWNmiss', -10, -10);
+				addOffset('bfCatch', 0, 0);
+
+				playAnim('idle');
+
+				positionOffset[1] = 350;
+				deathChar = 'bf-holding-gf-dead';
+
+				flipX = true;
+				healthBarColor.setRGB(43, 176, 209);
 			case 'gf-car':
 				tex = Paths.getSparrowAtlas('characters/gfCar');
 				frames = tex;
 				animation.addByIndices('singUP', 'GF Dancing Beat Hair blowing CAR', [0], "", 24, false);
 				animation.addByIndices('danceLeft', 'GF Dancing Beat Hair blowing CAR', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
-				animation.addByIndices('danceRight', 'GF Dancing Beat Hair blowing CAR', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24,
-					false);
+				animation.addByIndices('danceRight', 'GF Dancing Beat Hair blowing CAR', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
 
 				addOffset('danceLeft', 0);
 				addOffset('danceRight', 0);
@@ -401,6 +451,28 @@ class Character extends SpriteVMan
 				positionOffset[1] = 300;
 
 				healthBarColor.setRGB(183, 216, 85);
+
+			case 'pico-speaker':
+				frames = Paths.getSparrowAtlas('characters/picoSpeaker');
+
+				quickAnimAdd('shoot1', "Pico shoot 1");
+				quickAnimAdd('shoot2', "Pico shoot 2");
+				quickAnimAdd('shoot3', "Pico shoot 3");
+				quickAnimAdd('shoot4', "Pico shoot 4");
+
+				// here for now, will be replaced later for less copypaste
+				//loadOffsetFile(curCharacter);
+				addOffset("shoot1", 0);
+				addOffset("shoot2", -1, -128);
+				addOffset("shoot3", 412, -64);
+				addOffset("shoot4", 439, -19);
+				playAnim('shoot1');
+				positionOffset[0] = -50;
+				positionOffset[1] = -200;
+
+				moduloDances = 0; //no dances :)
+				
+				healthBarColor.setRGB(183, 216, 85);
 			case 'bf':
 				var tex = Paths.getSparrowAtlas('characters/BOYFRIEND');
 				frames = tex;
@@ -582,6 +654,25 @@ class Character extends SpriteVMan
 				positionOffset[1] = 350;
 
 				healthBarColor.setRGB(123, 214, 246);
+
+			case 'bf-holding-gf-dead':
+				frames = Paths.getSparrowAtlas('characters/bfHoldingGF-DEAD');
+				quickAnimAdd('singUP', 'BF Dead with GF Loop');
+				quickAnimAdd('firstDeath', 'BF Dies with GF');
+				animation.addByPrefix('deathLoop', 'BF Dead with GF Loop', 24, true);
+				quickAnimAdd('deathConfirm', 'RETRY confirm holding gf');
+
+				//loadOffsetFile(curCharacter);
+				addOffset('firstDeath', 37, 14);
+				addOffset('deathLoop', 37, -3);
+				addOffset('deathConfirm', 37, 28);
+
+				playAnim('firstDeath');
+
+				positionOffset[1] = 350;
+
+				flipX = true;
+				healthBarColor.setRGB(123, 214, 246);
 			case 'senpai':
 				frames = Paths.getSparrowAtlas('characters/senpai');
 				animation.addByPrefix('idle', 'Senpai Idle', 24, false);
@@ -691,6 +782,47 @@ class Character extends SpriteVMan
 				positionOffset[0] = -500;
 
 				healthBarColor.setRGB(Std.int(217+175/2), Std.int(85+102/2), Std.int(142+206/2));
+			case 'tankman':
+				frames = Paths.getSparrowAtlas('characters/tankmanCaptain');
+
+				quickAnimAdd('idle', "Tankman Idle Dance");
+
+				quickAnimAdd('singLEFT', 'Tankman Note Left instance');
+				quickAnimAdd('singRIGHT', 'Tankman Right Note instance');
+				quickAnimAdd('singLEFTmiss', 'Tankman Note Left MISS');
+				quickAnimAdd('singRIGHTmiss', 'Tankman Right Note MISS');
+
+				quickAnimAdd('singUP', 'Tankman UP note instance');
+				quickAnimAdd('singDOWN', 'Tankman DOWN note instance');
+				quickAnimAdd('singUPmiss', 'Tankman UP note MISS');
+				quickAnimAdd('singDOWNmiss', 'Tankman DOWN note MISS');
+
+				// PRETTY GOOD tankman
+				// TANKMAN UGH instanc
+
+				quickAnimAdd('singDOWN-alt', 'PRETTY GOOD');
+				quickAnimAdd('singUP-alt', 'TANKMAN UGH');
+
+				//loadOffsetFile(curCharacter);
+
+				addOffset('idle');
+				addOffset("singUP", 24, 56);
+				addOffset("singRIGHT", -1, -7);
+				addOffset("singLEFT", 100, -14);
+				addOffset("singDOWN", 98, -90);
+				addOffset("singUPmiss", 53, 84);
+				addOffset("singRIGHTmiss", -1, -3);
+				addOffset("singLEFTmiss", -30, 16);
+				addOffset("singDOWNmiss", 69, -99);
+				addOffset("singUP-alt", 24, 56);
+				addOffset("singDOWN-alt", 98, -90);
+
+				playAnim('idle');
+				positionOffset[1] = 180;
+
+				flipX = true;
+
+				healthBarColor.setRGB(225, 225, 225);
 			default: //placeholder guy
 				//try to load character
 				var successLoad = false;
@@ -884,6 +1016,46 @@ class Character extends SpriteVMan
 		return null;
 	}
 
+	public function loadMappedAnims(song:String, file:String) {
+		var swagshit = Song.loadFromJson(file, song);
+
+		var notes = swagshit.notes;
+
+		for (section in notes)
+		{
+			for (idk in section.sectionNotes)
+			{
+				animationNotes.push(idk);
+			}
+		}
+
+		//TankmenBG.animationNotes = animationNotes;
+
+		trace(animationNotes);
+		animationNotes.sort(sortAnims);
+	}
+
+	function sortAnims(val1:Array<Dynamic>, val2:Array<Dynamic>):Int
+	{
+		return FlxSort.byValues(FlxSort.ASCENDING, val1[0], val2[0]);
+	}
+
+	inline function quickAnimAdd(name:String, prefix:String, ?loop:Bool = false) {
+		animation.addByPrefix(name, prefix, 24, loop);
+	}
+
+	@:deprecated("Don't use this, it causes crashes right now and also is basically obsolete in vman engine :)")
+	private function loadOffsetFile(offsetCharacter:String)
+	{
+		//this doesnt work don't use this :>
+		var daFile:Array<String> = CoolUtil.coolTextFile(Paths.file("images/characters/" + offsetCharacter + "Offsets.txt"));
+
+		for (i in daFile) {
+			var splitWords:Array<String> = i.split(" ");
+			addOffset(splitWords[0], Std.parseInt(splitWords[1]), Std.parseInt(splitWords[2]));
+		}
+	}
+
 	public static function getHealthIcon(name:String, mod:String, ?force:Bool = false) {
 		if (force || !charHealthIcons.exists('${mod}:${name}')) {
 			var json = loadCharacterJson(name, mod);
@@ -920,6 +1092,27 @@ class Character extends SpriteVMan
 			}
 		}
 
+		if (animationNotes.length > 0) {
+			if (Conductor.songPosition > animationNotes[0][0]) {
+				trace('played shoot anim' + animationNotes[0][1]);
+
+				var shootAnim:Int = 1;
+
+				if (animationNotes[0][1] >= 2)
+					shootAnim = 3;
+
+				shootAnim += FlxG.random.int(0, 1);
+
+				playAnim('shoot' + shootAnim, true);
+				animationNotes.shift();
+			}
+		}
+
+		//todo: replace this with `-loop` stuff
+		if (curCharacter == 'pico-speaker' && animation.curAnim.finished) {
+			playAnim(animation.curAnim.name, false, false, animation.curAnim.numFrames - 3);
+		}
+		
 		if (!hasMissAnims && misscolored && !animation.curAnim.name.endsWith('miss')) {
 			misscolored = false;
 			color = realcolor;
@@ -943,7 +1136,7 @@ class Character extends SpriteVMan
 	 * FOR GF DANCING SHIT
 	 */
 	public function dance(?anyway:Bool = false) {
-		if (debugMode || (animation.curAnim != null && (animation.curAnim.name == 'hairBlow' || (animation.curAnim.name.startsWith('sing') && !animation.curAnim.finished)))) {
+		if (debugMode || moduloDances == 0 || (animation.curAnim != null && (animation.curAnim.name == 'hairBlow' || (animation.curAnim.name.startsWith('sing') && !animation.curAnim.name.endsWith("-loop") && !animation.curAnim.finished)))) {
 			return;
 		}
 		if (!anyway) {

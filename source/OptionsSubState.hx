@@ -25,7 +25,9 @@ class OptionsSubState extends OptionsSubStateBasic
 			"Invisi-Notes",
 			"Instant Respawn",
 			"Botplay",
+			#if debug
 			"Freeplay Folders",
+			#end
 			#if MODS
 			"Activate New Mods",
 			#end
@@ -38,9 +40,16 @@ class OptionsSubState extends OptionsSubStateBasic
 			"Reset Button",
 			"Note Camera Movement",
 			"Input Offset Calibrate",
+			"Self Awareness",
+			#if MODS
+			"Song Restart Reloads UI",
+			#end
+			"Save Data Management",
 			"Exit Without Saving",
 			"Gameplay Changes",
-			"Self Awareness"
+			#if debug
+			"Options Warning Test"
+			#end
 		];
 	}
 	
@@ -59,22 +68,20 @@ class OptionsSubState extends OptionsSubStateBasic
 			case "scroll direction":
 				return ["The direction the notes move.", Options.downScroll ? "Downscroll" : "Upscroll"];
 			case "middlescroll":
-				return ["Move your notes to the middle of the screen, and hide the opponent's notes.", Options.middleScroll ? "Enabled" : "Disabled"];
+				return ["Move your notes to the middle of the screen, and hide the opponent's notes.", Options.middleScroll ? (Options.middleLarge ? "Large Middlescroll" : "Enabled") : "Disabled"];
 			case "ghost tapping":
-				var text = "Whether or not pressing the wrong arrow loses you health.";
 				var value = "Always antimash";
-				if (Options.ghostTapping) {
+				if (Options.ghostTapping)
 					value = Options.tappingHorizontal ? "Horizontal antimash" : "No antimash";
-				}
-				return [text, value];
+				return ["Whether or not pressing the wrong arrow loses you health.", value];
 			case "instant respawn":
 				return ["Respawn immediately upon dying.", Options.instantRespawn ? "Enabled" : "Disabled"];
 			case "botplay":
 				return ["Watch the game go brrr", Options.botplay ? "Enabled" : "Disabled"];
-			case "kade health":
+			//case "kade health":
 				//text = "Gain and lose more health for hitting notes, dont gain health while holding notes.";
 				//value = Options.playstyle == "kade" ? "Enabled" : "Disabled";
-			case "input offset":
+			//case "input offset":
 				//text = "More = you have to hit notes later, in milliseconds.";
 				//value = Std.string(Options.offset);
 			case "freeplay folders":
@@ -86,7 +93,7 @@ class OptionsSubState extends OptionsSubStateBasic
 			case "invisi-notes":
 				return ["Bad idea. Makes the notes invisible.", Options.invisibleNotes ? "Enabled" : "Disabled"];
 			case "language":
-				return ["Change the language. Some mods may make use of this option.", Translation.getTranslation("native language name")];
+				return ["Change the language. Some mods may make use of this option.", Translation.getTranslation("native language name", "lang")];
 			case "enable modcharts":
 				return ["Enable fancy movements for notes, in supported songs only.", Options.modchartEnabled ? "Enabled" : "Disabled"];
 			case "antialiasing":
@@ -111,7 +118,15 @@ class OptionsSubState extends OptionsSubStateBasic
 			case "note camera movement":
 				return ["That thing that's in every FNF mod nowadays. The camera will move around depending on the notes.", Options.noteCamMovement ? "Enabled" : "Disabled"];
 			case "self awareness":
-				return ["Scary... Bad for livestreamers, though. Only applies when the mod uses it.", Options.selfAware ? "Enabled" : "Disabled"];
+				return ["The mod might know your name. Scary... Bad for livestreamers, though. Only applies when the mod uses it.", Options.selfAware ? "Enabled" : "Disabled"];
+			case "song restart reloads ui":
+				return ["Reload UI style when restarting song.", Options.uiReloading ? "Enabled" : "Disabled"];
+			#if debug
+			case "options warning test":
+				return ["Test the options warning"];
+			#end
+			case "save data management":
+				return ["Look at your save data, and if necessary, kill it to death."];
 		}
 		return ["Unknown option.", name, 'unknownOption'];
 	}
@@ -123,10 +138,24 @@ class OptionsSubState extends OptionsSubStateBasic
 				FlxG.state.closeSubState();
 				FlxG.state.openSubState(new ControlsSubState());
 				return false;
+				#if debug
+			case "save data management":
+				FlxG.state.closeSubState();
+				FlxG.state.openSubState(new SaveDeleteSubState());
+				return false;
+				#end
 			case "scroll direction":
 				Options.downScroll = !Options.downScroll;
 			case "middlescroll":
-				Options.middleScroll = !Options.middleScroll;
+				if (Options.middleScroll) {
+					//middlescroll On: turn on large if not active
+					Options.middleScroll = !Options.middleLarge;
+					Options.middleLarge = Options.middleScroll; //this looks weird lmao
+				} else {
+					Options.middleScroll = true;
+					Options.middleLarge = false;
+				}
+				//Options.middleScroll = !Options.middleScroll;
 			case "ghost tapping":
 				//Logic!!!!!!!!!!!!!!!!
 				if (Options.ghostTapping) {
@@ -191,10 +220,22 @@ class OptionsSubState extends OptionsSubStateBasic
 				Options.resetButton = !Options.resetButton;
 			case "self awareness":
 				Options.selfAware = !Options.selfAware;
+			case "song restart reloads ui":
+				Options.uiReloading = !Options.uiReloading;
+			case "options warning test":
+				FlxG.switchState(new OptionsWarningState());
 			default:
 				trace("Tried to accept unknown option: " + name);
 		}
 		return true;
+	}
+
+	override function optionDescriptionTranslationArgs(name) {
+		switch (name) {
+			case "reset button":
+				return [Options.getUIControlName("reset")];
+		}
+		return null;
 	}
 
 	function moveVolume(a, isLeft):Float {
@@ -233,5 +274,13 @@ class OptionsSubState extends OptionsSubStateBasic
 					updateDescription();
 				}
 		}
+	}
+
+	override function optionUpcoming(name:String) {
+		switch (name) {
+			case "master volume" | "sound volume" | "instrumental volume" | "vocals volume" | "enable modcharts" | "flashing lights" | "input offset calibrate" | "self awareness":
+				return true;
+		}
+		return false;
 	}
 }

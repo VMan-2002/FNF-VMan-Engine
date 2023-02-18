@@ -24,6 +24,8 @@ import sys.io.File;
 import polymod.format.ParseRules.TargetSignatureElement;
 #end*/
 
+//todo: maybe i can implement this at some point https://github.com/TheZoroForce240/FNF-Modcharting-Tools
+
 class SwagNoteSkin {
 	public var image:String;
 	public var imageDownscroll:Null<String>;
@@ -174,6 +176,23 @@ class SwagUIStyle {
 				uiStyle.ratings.set("sick-cool", uiStyle.ratings.get("sick"));
 			}
 		}
+		//i'll probably use this but not now
+		/*if (uiStyle.ratings.get("marvelous") == null) {
+			uiStyle.ratings.set("marvelous", "normal/marvelous");
+			if (uiStyle.ratings.get("marvelous-cool") == null) {
+				uiStyle.ratings.set("marvelous-cool", "normal/marvelous-cool");
+			}
+			if (uiStyle.ratings.get("marvelous-epic") == null) {
+				uiStyle.ratings.set("marvelous-epic", "normal/marvelous-epic");
+			}
+		} else {
+			if (uiStyle.ratings.get("marvelous-cool") == null) {
+				uiStyle.ratings.set("marvelous-cool", uiStyle.ratings.get("marvelous"));
+			}
+			if (uiStyle.ratings.get("marvelous-epic") == null) {
+				uiStyle.ratings.set("marvelous-epic", uiStyle.ratings.get("marvelous"));
+			}
+		}*/
 		if (uiStyle.ratings.get("good") == null) {
 			uiStyle.ratings.set("good", "normal/good");
 		}

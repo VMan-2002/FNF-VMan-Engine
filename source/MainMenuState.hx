@@ -121,7 +121,7 @@ class MainMenuState extends MusicBeatState
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
 
-		var vmanEngineThing:FlxText = new FlxText(5, FlxG.height - 38, 0, "vman engine wip! :)", 12);
+		var vmanEngineThing:FlxText = new FlxText(5, FlxG.height - 38, 0, '${Translation.getTranslation("vman engine", "game")} - ${Main.gameVersionStr}', 12);
 		vmanEngineThing.scrollFactor.set();
 		vmanEngineThing.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(vmanEngineThing);
@@ -198,14 +198,21 @@ class MainMenuState extends MusicBeatState
 			}
 
 			#if !html5
+			#if debug
 			if (FlxG.keys.justPressed.U) {
 				hillarious = new MultiWindow(1, true);
 			}
+			#end
 
 			if (FlxG.keys.justPressed.SEVEN) {
 				FlxG.switchState(new OptionsMenu(new ToolsMenuSubState()));
 			}
 			#end
+
+			if (FlxG.keys.justPressed.A) {
+				trace('Achievements you have ${Achievements.achievements.length}/${Achievements.vanillaAchievements.length}:');
+				trace(Achievements.achievements.join("\n"));
+			}
 
 			if (controls.ACCEPT) {
 				#if !switch
@@ -243,8 +250,11 @@ class MainMenuState extends MusicBeatState
 									case 'freeplay':
 										FlxG.switchState(new FreeplayState());
 										trace("Freeplay Menu Selected");
-									case 'options' | 'mods': //mods menu will exist later
+									case 'options':
 										FlxG.switchState(new OptionsMenu());
+									case 'mods':
+										FlxG.switchState(new ModsMenuState());
+										trace("Mods Menu Selected");
 									case 'credits':
 										FlxG.switchState(new CreditsState());
 								}

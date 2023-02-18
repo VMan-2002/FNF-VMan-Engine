@@ -1,0 +1,23 @@
+{
+	"image": "campaign_menu_UI_characters",
+	"animations": [
+		{
+			"name": "idle",
+			"anim": "Mom Idle BLACK LINES",
+			"framerate": 24,
+			"loop": true,
+			"offset": [
+				0,
+				0
+			]
+		}
+	],
+	"initAnim": "idle",
+	"antialias": true,
+	"scale": 0.49,
+	"position": [
+		280,
+		120
+	],
+	"isPlayer": false
+}

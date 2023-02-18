@@ -58,6 +58,10 @@ class GameOverSubstate extends MusicBeatSubstate
 		FlxG.camera.target = null;
 
 		bf.playAnim('firstDeath');
+
+		if (Std.isOfType(FlxG.state, PlayStateOffsetCalibrate)) {
+			Achievements.giveAchievement("calibrateDeath");
+		}
 		
 		if (Options.instantRespawn) {
 			gotoplaystate();
@@ -77,7 +81,14 @@ class GameOverSubstate extends MusicBeatSubstate
 		{
 			FlxG.sound.music.stop();
 
-			if (PlayState.isStoryMode)
+			if (Std.isOfType(FlxG.state, PlayStateOffsetCalibrate)) {
+				if (Std.isOfType(FlxG.state, PlayStateOffsetCalibrate)) {
+					CoolUtil.playMenuMusic();
+				}
+				FlxG.state.closeSubState();
+				OptionsMenu.wasInPlayState = !Std.isOfType(FlxG.state, PlayStateOffsetCalibrate);
+				FlxG.switchState(new OptionsMenu());
+			} else if (PlayState.isStoryMode)
 				FlxG.switchState(new StoryMenuState());
 			else
 				FlxG.switchState(new FreeplayState());
@@ -124,6 +135,6 @@ class GameOverSubstate extends MusicBeatSubstate
 	}
 	
 	inline function gotoplaystate() {
-		LoadingState.loadAndSwitchState(new PlayState());
+		LoadingState.loadAndSwitchState(Std.isOfType(FlxG.state, PlayStateOffsetCalibrate) ? new PlayStateOffsetCalibrate() : new PlayState());
 	}
 }

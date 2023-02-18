@@ -1,0 +1,23 @@
+{
+	"image": "campaign_menu_UI_characters",
+	"animations": [
+		{
+			"name": "idle",
+			"anim": "Tankman Menu BLACK",
+			"framerate": 24,
+			"loop": true,
+			"offset": [
+				0,
+				0
+			]
+		}
+	],
+	"initAnim": "idle",
+	"antialias": true,
+	"scale": 1,
+	"position": [
+		200,
+		-60
+	],
+	"isPlayer": false
+}

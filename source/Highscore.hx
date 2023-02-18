@@ -115,7 +115,8 @@ class Highscore
 		return true;
 	}
 
-	public static function getModeString(?translated:Bool = false):String {
+	public static function getModeString(?translated:Bool = false, ?prefixed:Bool = false):String {
+		var prefix = prefixed ? (translated ? Translation.getTranslation("prefix", "modifier", null, "^") : "^") : "";
 		var result:Array<String> = new Array<String>();
 		if (Options.playstate_bothside) {
 			result.push("Both");
@@ -131,10 +132,13 @@ class Highscore
 		if (Options.playstate_confusion) {
 			result.push("Confusion");
 		}
-		if (translated) {
-			return result.map(function(a:String) { return Translation.getTranslation(a, "modifier"); }).join(Translation.getTranslation("separator", "modifer"));
+		if (result.length == 0) {
+			return "";
 		}
-		return result.join("");
+		if (translated) {
+			return prefix + result.map(function(a:String) { return Translation.getTranslation(a, "modifier"); }).join(Translation.getTranslation("separator", "modifer"));
+		}
+		return prefix + result.join("");
 	}
 
 	/**
@@ -167,8 +171,7 @@ class Highscore
 		return true;
 	}
 	
-	static function setAcc(song:String, score:Float):Bool
-	{
+	static function setAcc(song:String, score:Float):Bool {
 		// Reminder that I don't need to format this song, it should come formatted!
 		var formatted = formatSong(song);
 		if (songScoreAcc.exists(formatted) && songScoreAcc.get(formatted) > score) {
@@ -180,9 +183,8 @@ class Highscore
 		return true;
 	}
 
-	public static function formatSong(song:String, ?diff:Int = -1, ?mode:Bool = false):String
-	{
-		var daSong:String = (~/ /g).replace(song.toLowerCase(), "-") + (mode && getModeString() != "" ? "^" + getModeString().toLowerCase() : "");
+	public static function formatSong(song:String, ?diff:Int = -1, ?mode:Bool = false):String {
+		var daSong:String = (~/ /g).replace(song.toLowerCase(), "-") + (mode ? getModeString(false, true).toLowerCase() : "");
 		
 		if (diff == -1)
 			return daSong;

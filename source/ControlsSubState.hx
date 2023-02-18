@@ -31,6 +31,7 @@ class ControlsSubState extends OptionsSubStateBasic
 			"Set UI Controls",
 			"Set UI Alt Controls",
 			"Reset UI Controls",
+			//"Color By Quantization",
 			//"Change Color", //todo: this
 			//"Change Strumline Color",
 			//"Change Color Advanced"
@@ -313,6 +314,8 @@ class ControlsSubState extends OptionsSubStateBasic
 				return ["Change the colors of notes in a more detailed way."];
 			case "change strumline color":
 				return ["Change the color of the strumline.", "", "change color advanced"];
+			case "color by quantization":
+				return ["If enabled, note color is based on it's fractional position within the beat."];
 		}
 		return ["is it susergion", "is it laccolith", "unknownOption"];
 	}

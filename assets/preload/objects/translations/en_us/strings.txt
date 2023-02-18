@@ -61,6 +61,10 @@ options_set alt bind::Set Alt Bind
 options_set alt bind_desc::Change the second keybind of a note. Left/Right to change the key selected.
 options_set ui controls::Set UI Controls
 options_set ui controls_desc::Change the other controls, such as those for the UI.
+options_set ui controls::Set UI Alt Controls
+options_set ui controls_desc::Change 2nd keybind for the other controls, such as those for the UI.
+options_set ui controls::Reset UI Controls
+options_set ui controls_desc::Reset the UI controls to the defaults.
 options_change color::Change Color
 options_change color_desc::Change the colors of notes. Left/Right to change the key selected.
 options_change color advanced::Change Color Advanced
@@ -88,6 +92,8 @@ options_noteskin creator::Noteskin Creator
 options_noteskin creator_desc::Create noteskins.
 options_spritesheet tool::Spritesheet Tool
 options_spritesheet tool_desc::Convert spritesheets to or from individual frames.
+options_clear gameplay changes::Clear
+options_clear gameplay changes_desc::Disable all currently enabled changes.
 //Keys. you can add a translation for any key that exists, see https://api.haxeflixel.com/flixel/input/keyboard/FlxKeyList.html
 optionsKeys_backspace::BckSp.
 optionsKeys_escape::Esc
@@ -316,7 +322,7 @@ multiplayer_join_enter password::Enter Password
 options_language::Language
 options_language_desc::Change the language of the game's text.
 freeplay_no songs::You have no songs!\nYou need to enable a mod first.
-storymenu_no weeks::You have no weeks!\nYou need to enable a mod first.
+storymenu_no songs::You have no weeks!\nYou need to enable a mod first.
 charteditor_event_blammed lights::Blammed Lights
 charteditor_event_blammed lights_desc::Please stop overusing Blammed Lights *dies*
 //Rare description for blammed lights, make it hillarious pls :>

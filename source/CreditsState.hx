@@ -66,7 +66,9 @@ class CreditsState extends MusicBeatState {
 
 		add(funnyBar);
 		funnyBar.y = -40;
-		funnyBar.add(new FlxText(0, 41, 0, "Reset/GTStrum: Switch category", 16).setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK));
+		var hintText = new FlxText(0, 41, 0, Translation.getTranslation("switch category hint", "credits", [Options.getUIControlName("reset"), Options.getUIControlName("gtstrum")], "Reset/GTStrum: Switch category"), 16).setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		funnyBar.add(hintText);
+		Translation.setObjectFont(hintText);
 		add(funnyText);
 
 		add(descText);
@@ -77,6 +79,7 @@ class CreditsState extends MusicBeatState {
 		if (curSelectedSection < 0) {
 			curSelectedSection = creditsStuffs.length - 1;
 		}
+		scrollableTitles.members[curSelectedSection].color = FlxColor.YELLOW;
 		addOrReplace(currentCreditsThing, creditsStuffs[curSelectedSection]);
 		curSelected = 0;
 		currentCreditsThing = creditsStuffs[curSelectedSection];
@@ -104,6 +107,7 @@ class CreditsState extends MusicBeatState {
 			if (controls.BACK || controls.RESET || controls.GTSTRUM) {
 				toggleTabber();
 			} else if (controls.LEFT_P != controls.RIGHT_P) {
+				scrollableTitles.members[curSelectedSection].color = FlxColor.WHITE;
 				if (controls.LEFT_P) {
 					showCreditsThing(curSelectedSection - 1);
 				}
@@ -134,11 +138,8 @@ class CreditsState extends MusicBeatState {
 
 		currentCreditsThing.forEach(function(a) {
 			var n = currentCreditsThing.members.indexOf(a);
-			var targetX = 0;
+			var targetX = curSelected == n ? 75 : 0;
 			var targetY = ((n - curSelected) * 100) + (FlxG.height / 2);
-			if (curSelected == n) {
-				targetX += 75;
-			}
 			a.x = FlxMath.lerp(a.x, targetX, elapsed * 8);
 			a.y = FlxMath.lerp(a.y, targetY, elapsed * 8);
 		});
@@ -166,12 +167,12 @@ class CreditsState extends MusicBeatState {
 	}
 
 	public function addCreditsStuff(title:String, stuff:Array<CreditsEntry>, ?mod:Null<String>) {
-		trace("Adding credits of "+title);
+		//trace("Adding credits of "+title);
 		creditsInfo.push(stuff);
-		scrollableTitles.add(new FlxText(scrollableTitles.length == 0 ? 0 : scrollableTitles.width + 10, 0, 0, title == null ? "No title" : title, 20));
+		scrollableTitles.add(new FlxText(scrollableTitles.length == 0 ? 0 : scrollableTitles.width + 10, 0, 0, title == null ? mod : title, 20));
 		var stuffGroup = new FlxTypedSpriteGroup<FlxSpriteGroup>();
 		for (thing in stuff) {
-			trace("Add credits entry "+thing.name);
+			//trace("Add credits entry "+thing.name);
 			var thisEntry = new FlxSpriteGroup();
 			var icon = new HealthIcon(thing.icon, false, mod);
 			thisEntry.add(icon);
