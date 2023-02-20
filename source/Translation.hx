@@ -17,9 +17,11 @@ class Translation
 	public static var translation = new Map<String, Map<String, String>>();
 	public static var active:Bool = true;
 	public static var usesFont:Bool = false;
+	public static var translationId:String = "en_us";
 	
 	public static function loadTranslation(name:String):Map<String, Map<String, String>> {
 		var a = CoolUtil.coolTextFile('objects/translations/${name}/strings');
+		translationId = name;
 		var loadTranslat = new Map<String, Map<String, String>>();
 		for (tx in a) {
 			if (!tx.startsWith("//") && tx != "") {

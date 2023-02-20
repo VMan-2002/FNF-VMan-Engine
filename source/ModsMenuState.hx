@@ -26,7 +26,8 @@ typedef ModInfo = {
 	version:Null<Int>,
 	versionStr:Null<String>,
 	titleScreen:Null<Bool>,
-	gamebananaId:Null<Int>
+	gamebananaId:Null<Int>,
+	id:Null<String>
 }
 
 class ModsMenuState extends MusicBeatState {
@@ -66,7 +67,8 @@ class ModsMenuState extends MusicBeatState {
 			versionStr: "gamebananaMods",
 			description: Translation.getTranslation("more mods gamebanana_desc", "mods", null, "Find more mods on GameBanana"),
 			titleScreen: false,
-			gamebananaId: null
+			gamebananaId: null,
+			id: null
 		}, Paths.image("menu/moreModsIcon"));
 		updateCheckboxes();
 	}
@@ -77,6 +79,10 @@ class ModsMenuState extends MusicBeatState {
 		var bg:FlxSprite = CoolUtil.makeMenuBackground('Blue');
 		add(bg);
 		add(bgGroup);
+
+		Translation.setObjectFont(descTitleText);
+		Translation.setObjectFont(descVersionText);
+		Translation.setObjectFont(descText);
 
 		showCreditsThing();
 
@@ -93,10 +99,6 @@ class ModsMenuState extends MusicBeatState {
 		add(descTitleText);
 		add(descVersionText);
 		add(descText);
-
-		Translation.setObjectFont(descTitleText);
-		Translation.setObjectFont(descVersionText);
-		Translation.setObjectFont(descText);
 	}
 
 	public function showCreditsThing() {
@@ -115,13 +117,18 @@ class ModsMenuState extends MusicBeatState {
 				version: 0,
 				versionStr: "...",
 				titleScreen: false,
-				gamebananaId: null
+				gamebananaId: null,
+				id: mod
 			});
 		}
 	}
 
 	public function loadCreditsJsonString(stuff:String, ?mod:Null<String>) {
 		var creditsFile:ModInfo = CoolUtil.loadJsonFromString(stuff);
+		var descTranslationPath:String = 'mods/${mod}/modmenu_desc_${Translation.translationId}.txt';
+		if (FileSystem.exists(descTranslationPath)) {
+			creditsFile.description = File.getContent(descTranslationPath);
+		}
 		addCreditsStuff(mod, creditsFile);
 	}
 
