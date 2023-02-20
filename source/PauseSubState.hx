@@ -30,9 +30,16 @@ class PauseSubState extends MusicBeatSubstate
 		if (Std.isOfType(FlxG.state, PlayStateOffsetCalibrate)) {
 			menuItems.remove("Exit to menu");
 		}
+		var pauseMusicName = 'breakfast';
+		if (Std.isOfType(FlxG.state, PlayState)) {
+			var thingy:PlayState = cast FlxG.state;
+			if (thingy.currentUIStyle.pauseMusic != null) {
+				pauseMusicName = thingy.currentUIStyle.pauseMusic;
+			}
+		}
 
 		//Dont use CoolUtil.playMusic here
-		pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfast'), true, true);
+		pauseMusic = new FlxSound().loadEmbedded(Paths.music(pauseMusicName), true, true);
 		pauseMusic.volume = 0;
 		pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
 

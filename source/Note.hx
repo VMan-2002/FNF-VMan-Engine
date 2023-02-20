@@ -105,6 +105,9 @@ class SwagUIStyleFile { //Because Float->Float doesnt work with the JsonParser
 	public var iconEaseStr:Null<String>;
 	public var iconEase:Null<Float>;
 	public var font:Null<String>;
+	public var gameOverMusic:Null<String>;
+	public var gameOverMusicEnd:Null<String>;
+	public var pauseMusic:Null<String>;
 
 	public function new() {
 		return;
@@ -133,7 +136,11 @@ class SwagUIStyle {
 	public var hudThingPos:Null<Map<String, Array<Float>>>;
 	public var iconEase:Null<Float>;
 	public var iconEaseFunc:Null<Float->Float>;
-	public var font:String = "vcr font";
+	public var font:String = "vcr font"; //todo: is this implemented?
+	//todo: implement these
+	public var gameOverMusic:Null<String>;
+	public var gameOverMusicEnd:Null<String>;
+	public var pauseMusic:Null<String>;
 
 	public function new() {
 		return;
@@ -222,7 +229,9 @@ class SwagUIStyle {
 		}
 		uiStyle.font = uiStyleFile.font == null ? "vcr font" : uiStyleFile.font;
 		uiStyle.hudThingPos = uiStyleFile.hudThingPos == null ? new Map<String, Array<Float>>() : uiStyleFile.hudThingPos;
-		
+		uiStyle.gameOverMusic = uiStyleFile.gameOverMusic;
+		uiStyle.gameOverMusicEnd = uiStyleFile.gameOverMusicEnd;
+		uiStyle.pauseMusic = uiStyleFile.pauseMusic;
 		Note.loadedUIStyles.set('${modName}:${name}', uiStyle);
 		trace('loaded uistyle ${modName}:${name}');
 		return uiStyle;

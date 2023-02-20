@@ -18,7 +18,7 @@ import Sys;
 
 class Main extends Sprite
 {
-	public static final gameVersionStr = "v1.0.0 First Release";
+	public static final gameVersionStr = "v1.0.1 Funny Day 0 Patch";
 
 	var gameWidth:Int = 1280; // Width of the game in pixels (might be less / more in actual pixels depending on your zoom).
 	var gameHeight:Int = 720; // Height of the game in pixels (might be less / more in actual pixels depending on your zoom).
