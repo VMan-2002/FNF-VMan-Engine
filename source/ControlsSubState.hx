@@ -381,10 +381,10 @@ class ControlsSubState extends OptionsSubStateBasic
 					}
 					updateDescription();
 				}
-			case "set bind" | "set alt bind" | "change color" | "change color advanced" | "change strumline color":
+			case "set bind" | "set alt bind" | "change color" | "change color advanced" | "change strumline color" | "set ui controls" | "set ui alt controls" | "reset ui controls":
 				moveableNote(isMoveLR, isLeft);
-			case "set ui controls" | "set ui alt controls" | "reset ui controls":
-				moveableNote(isMoveLR, isLeft);
+			//case "set ui controls" | "set ui alt controls" | "reset ui controls":
+			//	moveableNote(isMoveLR, isLeft);
 				//FlxG.sound.play(Paths.sound('scrollMenu'));
 				//Options.ghostTapping = !Options.ghostTapping;
 		}

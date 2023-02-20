@@ -72,7 +72,7 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			case "dialogue editor":
 				return ["Edit dialogue."];
 			case "clone hero import":
-				return ["Import a song from Clone Hero.\n\nThe file must be in the same folder as the game executable and must be named \"clonehero_import.chart\".\nWork in progress :)", "", "chart editor"];
+				return ["Import a chart from Clone Hero.\n\nThe chart file must be in the same folder as the game executable and be named \"clonehero_import.chart\".\nWork in progress :)", "", "chart editor"];
 			case "strip file data":
 				return ["Strip unneeded data from saved files such as charts, drastically reducing the file size.", Options.dataStrip ? "Enabled" : "Disabled", "confusion"];
 		}
@@ -80,8 +80,7 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 	}
 
 	override function optionAccept(name:String) {
-		switch (name)
-		{
+		switch (name) {
 			case "chart editor":
 				FlxG.state.closeSubState();
 				FlxG.switchState(new ChartingState());

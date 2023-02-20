@@ -56,13 +56,13 @@ class OptionsSubState extends OptionsSubStateBasic
 	override function optionDescription(name:String) {
 		switch(name) {
 			case "master volume":
-				return ["Volume of everything.", "NYI, but "+Std.string(Options.masterVolume)];
+				return ["Volume of everything.", Std.string(Options.masterVolume)];
 			case "sound volume":
-				return ["Volume of sound effects.", "NYI, but "+Std.string(Options.soundVolume)];
+				return ["Volume of sound effects.", Std.string(Options.soundVolume)];
 			case "instrumental volume":
-				return ["Volume of song instrumentals.", "NYI, but "+Std.string(Options.instrumentalVolume)];
+				return ["Volume of song instrumentals.", Std.string(Options.instrumentalVolume)];
 			case "vocals volume":
-				return ["Volume of song vocals.", "NYI, but "+Std.string(Options.vocalsVolume)];
+				return ["Volume of song vocals.", Std.string(Options.vocalsVolume)];
 			case "controls":
 				return ["Change your controls."];
 			case "scroll direction":
@@ -108,7 +108,7 @@ class OptionsSubState extends OptionsSubStateBasic
 				var values = ["Miss sound + Mute vocals", "Miss sound only", "Mute vocals only", "Do nothing"];
 				return ["Change what you hear when you miss a note.", values[Options.noteMissAction]];
 			case "input offset calibrate":
-				return ["Do a short song to see what input offset is good.", "NYI, but "+Translation.getTranslation("offset ms", "optionsMenu", [Std.string(Options.offset)], Options.offset+"ms")];
+				return ["Do a short song to see what input offset is good.", Translation.getTranslation("offset ms", "optionsMenu", [Std.string(Options.offset)], Options.offset+"ms")];
 			case "exit without saving":
 				return ["Exit the options menu, and discard your changes.", '', 'unknownOption'];
 			case "gameplay changes":
@@ -147,6 +147,7 @@ class OptionsSubState extends OptionsSubStateBasic
 			case "scroll direction":
 				Options.downScroll = !Options.downScroll;
 			case "middlescroll":
+				#if debug
 				if (Options.middleScroll) {
 					//middlescroll On: turn on large if not active
 					Options.middleScroll = !Options.middleLarge;
@@ -155,7 +156,9 @@ class OptionsSubState extends OptionsSubStateBasic
 					Options.middleScroll = true;
 					Options.middleLarge = false;
 				}
-				//Options.middleScroll = !Options.middleScroll;
+				#else
+				Options.middleScroll = !Options.middleScroll;
+				#end
 			case "ghost tapping":
 				//Logic!!!!!!!!!!!!!!!!
 				if (Options.ghostTapping) {

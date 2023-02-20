@@ -1,9 +1,1 @@
-{
-	"healthHit": 0,
-	"healthHitSick": 0,
-	"healthHitBad": 0,
-	"healthHitShit": 0,
-	"healthMiss": 0,
-	"imagePrefix": "bob",
-	"bob": 1
-}
+{"healthHit":0,"healthHitSick":0,"healthHitBad":0,"healthHitShit":0,"healthMiss":0,"imagePrefix":"bob","bob":1,"acronym":"Bob"}

@@ -104,10 +104,10 @@ options_self awareness_desc::MODがコンピュータの名前を調べられる
 options_song restart reloads ui::曲リトライでUI再読み込み
 options_song restart reloads ui_desc::UIを曲リトライで再読み込みするかの設定ができます。
 //new
-options_flashing lights::Flashing Lights
-options_flashing lights_desc::Turn this off if you suffer from epilepsy or similar conditions.
-options_gameplay changes::ゲーム内設定
-options_gameplay changes_desc::ゲーム内の設定ができます。
+options_flashing lights::光の点滅
+options_flashing lights_desc::てんかん等の症状がある場合のため光の点滅の軽減を試みるか設定できます。
+options_gameplay changes::ゲーム内おじゃま
+options_gameplay changes_desc::ゲーム内ので使用するおじゃまの設定ができます。
 options_opponent mode::相手側モード
 options_opponent mode_desc::プレイヤーに割り当てられたノートではなく相手のノートで遊ぶか設定ができます。
 options_both side play::両側モード
@@ -118,8 +118,8 @@ options_guitar mode::ギターモード
 options_guitar mode_desc::Guitar Heroやギターフリークスのようにキーを押しながら #0 を押してノートを消す操作方法に変更できます。
 options_confusion::混乱
 options_confusion_desc::ノートがたまに見た目だけ他のレーンからやってくるようになります。
-options_clear gameplay changes::ゲーム内設定リセット
-options_clear gameplay changes_desc::現在のゲーム内設定をリセットできます。
+options_clear gameplay changes::ゲーム内おじゃまリセット
+options_clear gameplay changes_desc::現在のおじゃまの設定をリセットできます。
 optionsMenu_cleared::デフォルト
 //"default"
 optionsMenu_not cleared::変更有
@@ -236,7 +236,8 @@ playstate_hud_totalnotes::TotalNotes:#0
 playstate_hud_engine::VMan Engine
 playstate_hud_engine botplay::VMan Engine (Botplay)
 playstate_pause_resume::続ける
-playstate_pause_restart song::リトライ//retry
+playstate_pause_restart song::リトライ
+//retry
 playstate_pause_options::設定
 playstate_pause_exit to menu::メニューに戻る
 announcechecker_title::新着情報
@@ -261,16 +262,52 @@ mods_enable all::全部有効化する
 mods_disable all::全部無効化する
 
 //parts of what should be the last round of translatey stuff
-mods_reorder hint::#0: Reorder mods\n#1: Enable/Disable All
+mods_reorder hint::#0: MODを並べなおす\n#1: 全有効/無効
 //mod browser dont exist yet so you get GameBanana Button
-mods_more mods gamebanana::More Mods
-mods_more mods gamebanana_desc::Find more mods on GameBanana.
-mods_default desc::This mod has no mod.json
+mods_more mods gamebanana::MODを探す
+mods_more mods gamebanana_desc::GameBananaでMODを探す。
+mods_default desc::このMODにはmod.jsonがありません
 
 credits_switch category hint::#0/#1: Switch category
-freeplay_no songs::You have no songs!\nYou need to enable a mod first.
-storymenu_no songs::You have no weeks!\nYou need to enable a mod first.
+freeplay_no songs::曲がありません！\nMODを追加する必要があります。
+storymenu_no songs::Weekがありません。\nMODを追加する必要があります。
+
+optionsMenu_uikey_left::左
+optionsMenu_uikey_down::下
+optionsMenu_uikey_up::上
+optionsMenu_uikey_right::右
+optionsMenu_uikey_accept::決定
+optionsMenu_uikey_back::戻る
+optionsMenu_uikey_reset::リトライ
+optionsMenu_uikey_pause::ポーズ
+optionsMenu_uikey_gtstrum::ギターモード用キー
+
+optionsMenu_two keys::#0/#1
+optionsMenu_offset ms::#0ms
+
+options_strip file data::ファイル最小化
+options_strip file data_desc::このEngineのエディタなどで保存するファイルの不要な部分を取り除いてファイルサイズを少なくします。
+//REPLACE TRANSLATION KEY
+options_clone hero import::Clone Heroからインポート
+options_clone hero import_desc::Clone Heroから譜面をインポートします。譜面ファイルは「clonehero_import.chart」と名前を付け、このゲームの.exeと同じフォルダに置いてください。開発中です。
+
+//idk how to translate these　-h
+charteditor_step number::ステップ: #0
+charteditor_snap mult::スナップ x##1: #0
+charteditor_layer number::レイヤー: #0
+
+//Note stacking, which could also be referred to as repetitive notes or something like that
+charteditor_tab_notestacking::連続ノーツツール
+
+charteditor_notestacking_enable::連続ノーツツール on/off
+charteditor_notestacking_count::連続数
+charteditor_notestacking_offset::間隔
+charteditor_notestacking_sideways::横モード
+
+charteditor_clear all notes::ノートを全部消す
 
 //Also hi :) I checked the texts mentioning gameplay changes in google translate and i think it's better to describe "gameplay changes" as some kind of minigames rather than "in-game settings" (unless "in-game settings" is just a google translate inaccuracy).
+//now changed as such -h
 
 //And I think I forgot to put a //new on Flashing Lights when I added it to this file, so I put one there
+//either that or im blind -h

@@ -153,10 +153,8 @@ class ChartingState extends MusicBeatState {
 		if (PlayState.SONG != null)
 			_song = PlayState.SONG;
 		else
-		{
 			_song = Song.songFunc();
-			curNoteTypeArr = _song.usedNoteTypes;
-		}
+		curNoteTypeArr = _song.usedNoteTypes != null ? _song.usedNoteTypes : curNoteTypeArr;
 
 		leftIcon = new HealthIcon("bf", false, PlayState.modName);
 		rightIcon = new HealthIcon("dad", false, PlayState.modName);
@@ -188,12 +186,12 @@ class ChartingState extends MusicBeatState {
 		addSection();
 
 		// sections = _song.notes;
+		if (curSection >= _song.notes.length)
+			curSection = 0;
 
 		updateGridChangeMania();
 
 		loadSong(_song.song);
-		if (curSection >= _song.notes.length)
-			curSection = 0;
 		osuScroller.setRowCount(_song.notes.length);
 		for (i in 0..._song.notes.length) {
 			osuScroller.setAmountForRow(i, _song.notes[i].sectionNotes.length);
@@ -842,6 +840,7 @@ class ChartingState extends MusicBeatState {
 								PlayState.SONG.usedNoteTypes = curNoteTypeArr;
 							}
 							curSelectedNote[3] = curNoteTypeArr.indexOf(curNoteType);
+							updateGrid();
 						} else {
 							trace('tryin to delete note...');
 							deleteNote(note);
@@ -1267,6 +1266,8 @@ class ChartingState extends MusicBeatState {
 		 */
 
 		var startThing = sectionStartTime();
+		var hasNormalNote = _song.usedNoteTypes.contains("Normal Note");
+		var normalNoteNum = hasNormalNote ? _song.usedNoteTypes.indexOf("Normal Note") : 0;
 		for (pos in 0...sectionInfo.length) {
 			var i = sectionInfo[pos];
 			var daNoteInfo = i[1];
@@ -1288,8 +1289,10 @@ class ChartingState extends MusicBeatState {
 					note.y + GRID_SIZE).makeGraphic(8, Math.floor(FlxMath.remapToRange(daSus, 0, Conductor.stepCrochet * 4 * currentTimeSignature, 0, gridBG.height)));
 				curRenderedSustains.add(sustainVis);
 			}
-			if (i.length >= 4 && i[3] > 0) {
-				curRenderedNoteTypes.add(new FlxText(note.x, note.y, 10, Math.floor(i[3])).setFormat("VCR OSD Mono", 10, 0xffffffff, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE_FAST, 0xFF000000));
+			if ((!hasNormalNote || i[3] != normalNoteNum) && i.length >= 4) {
+				var roundedType = Math.round(i[3]);
+				curRenderedNoteTypes.add(new FlxText(note.x, note.y, GRID_SIZE, (roundedType >= _song.usedNoteTypes.length || roundedType < 0) ? '${roundedType}?' : Note.SwagNoteType.loadNoteType(_song.usedNoteTypes[roundedType], PlayState.modName).acronym).setFormat("VCR OSD Mono", 10, 0xffffffff, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE_FAST, 0xFF000000));
+				//trace("added rendered note type of "+_song.usedNoteTypes[Math.floor(i[3])]);
 			}
 		}
 
@@ -1520,6 +1523,8 @@ class ChartingState extends MusicBeatState {
 
 		if (Options.dataStrip && !FlxG.keys.pressed.SHIFT) {
 			var curTimeSig:Int = json.song.timeSignature;
+			//var remapNoteTypes = new Map<Float, Float>();
+			//var neededNoteTypes = new Array<String>();
 			for (thing in json.song.notes) {
 				//delete unneeded empty layers
 				if (thing.notesMoreLayers != null) {

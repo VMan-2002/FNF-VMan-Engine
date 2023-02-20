@@ -245,4 +245,8 @@ class Options
 	public static function getUIControlName(num:String) {
 		return ControlsSubState.ConvertKey(uiControls.get(num)[0], true);
 	}
+
+	public static function getUIControlNameBoth(num:String) {
+		return Translation.getTranslation("two keys", "optionsMenu", [ControlsSubState.ConvertKey(uiControls.get(num)[0], true), ControlsSubState.ConvertKey(uiControls.get(num)[1], true)], '${ControlsSubState.ConvertKey(uiControls.get(num)[0], true)}/${ControlsSubState.ConvertKey(uiControls.get(num)[1], true)}');
+	}
 }

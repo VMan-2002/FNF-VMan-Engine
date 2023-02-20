@@ -25,7 +25,8 @@ typedef ModInfo = {
 	description:String,
 	version:Null<Int>,
 	versionStr:Null<String>,
-	titleScreen:Null<Bool>
+	titleScreen:Null<Bool>,
+	gamebananaId:Null<Int>
 }
 
 class ModsMenuState extends MusicBeatState {
@@ -64,7 +65,8 @@ class ModsMenuState extends MusicBeatState {
 			version: 0,
 			versionStr: "gamebananaMods",
 			description: Translation.getTranslation("more mods gamebanana_desc", "mods", null, "Find more mods on GameBanana"),
-			titleScreen: false
+			titleScreen: false,
+			gamebananaId: null
 		}, Paths.image("menu/moreModsIcon"));
 		updateCheckboxes();
 	}
@@ -91,6 +93,10 @@ class ModsMenuState extends MusicBeatState {
 		add(descTitleText);
 		add(descVersionText);
 		add(descText);
+
+		Translation.setObjectFont(descTitleText);
+		Translation.setObjectFont(descVersionText);
+		Translation.setObjectFont(descText);
 	}
 
 	public function showCreditsThing() {
@@ -108,7 +114,8 @@ class ModsMenuState extends MusicBeatState {
 				description: Translation.getTranslation("default desc", "mods", null, "This mod has no mod.json"),
 				version: 0,
 				versionStr: "...",
-				titleScreen: false
+				titleScreen: false,
+				gamebananaId: null
 			});
 		}
 	}

@@ -40,6 +40,14 @@ class PlayStateChangesSubState extends OptionsSubStateBasic
 		return ["Unknown option.", name, 'unknownOption'];
 	}
 
+	override function optionDescriptionTranslationArgs(name) {
+		switch (name) {
+			case "guitar mode":
+				return [Options.getUIControlNameBoth("reset")];
+		}
+		return null;
+	}
+
 	override function optionAccept(name:String) {
 		switch (name)
 		{

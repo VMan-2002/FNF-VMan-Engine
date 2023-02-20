@@ -257,6 +257,7 @@ class SwagNoteType {
 	public var hasReleaseNote:Null<Bool>;
 	public var charNums:Null<Array<Int>>;
 	public var charNames:Null<Array<String>>;
+	public var acronym:Null<String>;
 
 	public static function loadNoteType(name:String, modName:String, ?putInto:Null<String>) {
 		if (putInto == null)
@@ -316,6 +317,7 @@ class SwagNoteType {
 		noteType.confused = noteType.confused == true;
 		noteType.hasPressNote = noteType.hasPressNote != false;
 		noteType.hasReleaseNote = noteType.hasReleaseNote == true;
+		noteType.acronym = noteType.acronym == null ? name.split(" ").map(function(a) {return a.charAt(0);}).join("") : noteType.acronym;
 		trace('loaded notetype ${modName}:${name}');
 		Note.loadedNoteTypes.set('${modName}:${putInto}', noteType);
 		return noteType;

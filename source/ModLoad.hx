@@ -29,7 +29,7 @@ class ModLoad
 				continue;
 			else if (f.startsWith("1::"))
 				f = f.substr(3);
-			var flashFolder = f+"/noflashing";
+			var flashFolder = "mods/"+f+"/noflashing";
 			var string = "Mod: "+f;
 			if (!Options.flashingLights) {
 				//todo: this doesn't seem to work

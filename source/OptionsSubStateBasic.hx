@@ -42,6 +42,8 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 
 	var textTween:FlxTween;
 
+	public static var flashingLightsWas:Bool = false;
+
 	public function new()
 	{
 		super();
@@ -200,11 +202,13 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 		FlxG.state.closeSubState();
 		switch(backSubState) {
 			case 1:
-			return FlxG.state.openSubState(new OptionsSubState());
+				return FlxG.state.openSubState(new OptionsSubState());
 			case 2:
-			return FlxG.switchState(new TitleState());
+				return FlxG.switchState(new TitleState());
 			case 3:
-			return FlxG.switchState(new PlayState());
+				if (flashingLightsWas != Options.flashingLights)
+					return FlxG.switchState(new TitleState(false, true, true, true));
+				return FlxG.switchState(new PlayState());
 		}
 		if (OptionsMenu.wasInPlayState)
 			return FlxG.switchState(new PlayState());

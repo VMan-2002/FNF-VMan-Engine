@@ -70,11 +70,15 @@ class TitleState extends MusicBeatState {
 
 	var replayTitle:Bool = false;
 	var reloadingMods:Bool = false;
+	var fromOptions:Bool = false;
+	var toPlayState:Bool = false;
 
-	override public function new(?replayTitle:Bool = false, ?reloadingMods:Bool = false) {
+	override public function new(?replayTitle:Bool = false, ?reloadingMods:Bool = false, ?fromOptions:Bool = false, ?toPlayState:Bool = false) {
 		//todo: this doesn't always work
 		//this.replayTitle = replayTitle;
 		this.reloadingMods = reloadingMods;
+		this.fromOptions = fromOptions;
+		this.toPlayState = toPlayState;
 
 		if (reloadingMods) {
 			SwagNoteType.clearLoadedNoteTypes();
@@ -214,8 +218,13 @@ class TitleState extends MusicBeatState {
 				CoolUtil.playMenuMusic(1); //todo: If we're reloading mods, only restart the menu music if it's now different
 				initTransitionShit();
 				FlxTransitionableState.skipNextTransOut = true;
+				if (toPlayState) {
+					switchTo(new PlayState());
+					return;
+				}
 				if (reloadingMods) {
-					return MainMenuState.returnToMenuFocusOn("mods");
+					MainMenuState.returnToMenuFocusOn(fromOptions ? "options" : "mods");
+					return;
 				}
 				return MainMenuThing();
 			}

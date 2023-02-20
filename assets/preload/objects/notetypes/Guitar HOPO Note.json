@@ -1,9 +1,1 @@
-{
-	"healthHit": 0.023,
-	"healthHitSick": 0.023,
-	"healthHitBad": 0.023,
-	"healthHitShit": 0.0,
-	"healthMiss": -0.0475,
-	"guitar": true,
-	"guitarHopo": true
-}
+{"healthHit":0.023,"healthHitSick":0.023,"healthHitBad":0.023,"healthHitShit":0.0,"healthMiss":-0.0475,"guitar":true,"guitarHopo":true,"acronym":"HOPO"}

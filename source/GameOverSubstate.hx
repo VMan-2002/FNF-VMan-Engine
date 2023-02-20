@@ -95,19 +95,13 @@ class GameOverSubstate extends MusicBeatSubstate
 		}
 
 		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.curFrame == 12)
-		{
 			FlxG.camera.follow(camFollow, LOCKON, 0.01);
-		}
 
 		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.finished)
-		{
 			CoolUtil.playMusic('gameOver' + stageSuffix);
-		}
 
 		if (FlxG.sound.music.playing)
-		{
 			Conductor.songPosition = FlxG.sound.music.time;
-		}
 	}
 
 	override function beatHit()
