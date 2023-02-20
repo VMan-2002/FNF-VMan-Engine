@@ -1,5 +1,6 @@
 package;
 
+import Discord.DiscordClient;
 import Translation;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -273,11 +274,18 @@ class ModsMenuState extends MusicBeatState {
 	}
 
 	public function updateCheckboxes() {
+		var enableCount = 0;
 		for (obj in modObjects) {
 			var enby = enables.get(obj.modName) == true;
+			if (enby)
+				enableCount++;
 			obj.members[1].animation.play(enby ? "enable" : "disable");
 			obj.members[0].alpha = enby ? 1 : 0.5;
 		}
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresenceSimple("menu", '$enableCount enabled, ${modObjects.length} available');
+		#end
 	}
 
 	public function moveSelection(by:Int) {

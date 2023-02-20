@@ -171,6 +171,10 @@ class DiscordClient
 				changePresence("Multiplayer - "+detailsText, songText, PlayState.instance.iconRPC);
 			case "playing_multi":
 				changePresence("Multiplayer - "+detailsText, songText, PlayState.instance.iconRPC, true, PlayState.instance.songLength);
+			case "mods":
+				changePresence("Mods Menu ("+extra+")");
+			case "credits":
+				changePresence("Credits Menu ("+extra+")");
 			default:
 				trace("unknown presence type "+type+", this shouldn't happen but whatever i'll just make it look nice");
 				changePresence((type.charAt(0).toUpperCase() + type.substring(1)).replace("_", " "));

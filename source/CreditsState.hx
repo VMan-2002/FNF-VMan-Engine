@@ -1,5 +1,6 @@
 package;
 
+import Discord.DiscordClient;
 import Translation;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -84,6 +85,10 @@ class CreditsState extends MusicBeatState {
 		curSelected = 0;
 		currentCreditsThing = creditsStuffs[curSelectedSection];
 		updateDesc();
+		#if desktop
+		// Updating Discord Rich Presence
+		DiscordClient.changePresenceSimple("credits", scrollableTitles.members[curSelectedSection].text);
+		#end
 	}
 
 	public inline function loadCreditsJson(path:String, ?mod:Null<String>) {
