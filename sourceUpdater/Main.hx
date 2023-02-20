@@ -152,7 +152,7 @@ class Main extends Sprite
 			trace("Got browser protocol url");
 			var thingToDo = launchArgs.split("/").slice(2);
 			switch(thingToDo.shift()) {
-				case "install_gb":
+				case "install_gb" | "gb_install":
 					trace("Install from GameBanana");
 					var url = 'https://api.gamebanana.com/Core/Item/Data?itemtype=Mod&itemid=${thingToDo[0]}&fields=Files().aFiles(),name';
 					trace(url);
