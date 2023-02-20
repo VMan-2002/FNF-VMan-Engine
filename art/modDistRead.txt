@@ -11,7 +11,7 @@ To have your mod show up there, go to the "Technical" tab in the mod's edit page
 To add a link to automatically download and install the mod,
 add this URL as an Alternate File Source with the description "VMan Engine Auto-Download":
 
-https://vman-2002.github.io/ar.html#fnfvmanengine://gb_install/000000
+https://vman-2002.github.io/ar.html#fnfvmanengine://install_gb/000000
 
 and replace the 000000 on the end with the number on the end of the GameBanana page's url.
 For this to work, the mod needs at a .zip file containing the mod in the downloads section.
