@@ -157,8 +157,6 @@ class DiscordClient
 					extra = extra.substring(0, extra.indexOf(":")) + " too long";
 				}
 				changePresence("Controls Menu", extra);
-			case "credits":
-				changePresence("Credits");
 			case "story":
 				changePresence("Story Mode Menu");
 			case "editor":
