@@ -1,0 +1,9 @@
+{
+	"name": "Week 5",
+	"title": "Red Snow",
+	"songs": [
+		"Cocoa","Eggnog","Winter Horrorland"
+	],
+	"menuChars": ["bf", "parents-christmas", "gf"],
+	"previous": "week4"
+}

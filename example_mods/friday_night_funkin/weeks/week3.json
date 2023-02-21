@@ -1,0 +1,9 @@
+{
+	"name": "Week 3",
+	"title": "Pico",
+	"songs": [
+		"Pico","Philly Nice","Blammed"
+	],
+	"menuChars": ["bf", "pico", "gf"],
+	"previous": "week2"
+}

@@ -1,0 +1,9 @@
+{
+	"name": "Week 1",
+	"title": "Daddy Dearest",
+	"songs": [
+		"Bopeebo","Fresh","Dad Battle"
+	],
+	"menuChars": ["bf", "dad", "gf"],
+	"previous": "tutorial"
+}

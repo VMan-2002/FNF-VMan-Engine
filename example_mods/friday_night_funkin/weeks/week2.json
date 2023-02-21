@@ -1,0 +1,9 @@
+{
+	"name": "Week 2",
+	"title": "Spooky Month",
+	"songs": [
+		"Spookeez","South","Monster"
+	],
+	"menuChars": ["bf", "spooky", "gf"],
+	"previous": "week1"
+}

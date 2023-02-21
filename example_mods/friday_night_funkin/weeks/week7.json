@@ -1,0 +1,9 @@
+{
+	"name": "Week 7",
+	"title": "Tankman",
+	"songs": [
+		"Ugh","Guns","Stress"
+	],
+	"menuChars": ["bf", "tankman", "gf"],
+	"previous": "week6"
+}

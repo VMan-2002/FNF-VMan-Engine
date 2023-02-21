@@ -1,0 +1,10 @@
+{
+	"name": "Tutorial",
+	"title": "",
+	"songs": [
+		"Tutorial"
+	],
+	"menuChars": ["bf", "", "gf"],
+	"previous": "",
+	"difficulties": ["Normal","Hard"]
+}
