@@ -135,7 +135,7 @@ class CoolUtil
 	**/
 	public inline static function playMusic(name:String, ?volume:Float = 1, ?bpm:Null<Float> = null) {
 		playMusicRaw(Paths.music(name), name, volume);
-		if (Assets.exists('assets/'+name+'.txt')) {
+		if (Assets.exists(Paths.music(name).replace(Paths.SOUND_EXT, "txt"))) {
 			var musicInfo = CoolUtil.coolTextFile('music/${name}');
 			if (musicInfo.length > 0 && bpm == null)
 				Conductor.changeBPM(Std.parseFloat(musicInfo[0]));
