@@ -5,6 +5,8 @@ import cpp.vm.Debugger.ThreadInfo;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 
+using StringTools;
+
 class BackgroundDancer extends FlxSprite {
 	public var dancerType:String;
 	public function new(x:Float, y:Float, ?type:String = "limoDancer") {
@@ -12,7 +14,7 @@ class BackgroundDancer extends FlxSprite {
 		
 		setType(type);
 		animation.play('danceLeft');
-		antialiasing = true;
+		antialiasing = !(type == "bgFreaks" || type == "bgFreaksAngry");
 	}
 
 	public function getScared():Void {

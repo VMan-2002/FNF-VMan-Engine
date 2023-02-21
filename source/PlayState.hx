@@ -1327,7 +1327,8 @@ class PlayState extends MusicBeatState
 		} else {
 			xPos = isMiddlescroll || SONG.actions.contains("hideOpponentNotes") ? FlxG.width * 8 : FlxG.width * 0.25;
 			if (SONG.moreStrumLines > 0 && !isMiddlescroll) {
-				scale /= SONG.moreStrumLines + 1;
+				if (!SONG.actions.contains("dontResizeStrumlines"))
+					scale /= SONG.moreStrumLines + 1;
 				var myNum = player == 0 ? 0.5 : player - 0.5;
 				xPos = (myNum * FlxG.width / 2) / (SONG.moreStrumLines + 1);
 			}
