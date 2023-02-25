@@ -316,6 +316,8 @@ class ControlsSubState extends OptionsSubStateBasic
 				return ["Change the color of the strumline.", "", "change color advanced"];
 			case "color by quantization":
 				return ["If enabled, note color is based on it's fractional position within the beat."];
+			case "reset ui controls":
+				return ["Reset UI Controls"];
 		}
 		return ["is it susergion", "is it laccolith", "unknownOption"];
 	}
@@ -356,6 +358,18 @@ class ControlsSubState extends OptionsSubStateBasic
 				canMoveSelected = true;
 			}
 			return;
+		}
+		
+		if (controls.RESET) { //given that it's... a control... why didnt i use it like this in the controls menu :thinking:
+			if (isChangingUIControls) {
+				Options.uiControls[Controls.controlNames[ncSelectedNote]][curSelectedName == "set ui alt controls" ? 1 : 0] = -1;
+				updateRowKeyNames();
+			} else {
+				if (ncControls.exists(ncManiaID)) {
+					ncControls[ncManiaID][ncSelectedNote][curSelectedName == "set alt bind" ? 1 : 0] = -1;
+					updateRowKeyNames();
+				}
+			}
 		}
 		
 		var isMoveLR = controls.LEFT_P != controls.RIGHT_P;

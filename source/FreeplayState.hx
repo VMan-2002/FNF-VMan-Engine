@@ -8,6 +8,7 @@ import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
+import flixel.system.FlxSound;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -15,6 +16,7 @@ import flixel.tweens.misc.ColorTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+import sys.thread.Thread;
 
 using StringTools;
 #if desktop
@@ -71,6 +73,10 @@ class FreeplayState extends MusicBeatState
 
 	public var bg:FlxSprite;
 	public var colorTween:ColorTween;
+
+	public var loadedAudios = new Array<String>();
+	public var loadingAudio:Bool = false;
+	public var threadResponse:Bool = false;
 
 	//too lazy to implement scripting right now, so it's hardcoded :^)
 	var isCornflower:Bool = false;
@@ -568,6 +574,13 @@ class FreeplayState extends MusicBeatState
 				LoadingState.loadAndSwitchState(new PlayState());
 			}
 		}
+
+		if (threadResponse) {
+			threadResponse = false;
+			loadingAudio = false;
+			if (songs[curSelected].type == 0)
+				songPreview(songs[curSelected].songName, songs[curSelected].mod);
+		}
 	}
 
 	function updateIsCornflower() {
@@ -646,9 +659,7 @@ class FreeplayState extends MusicBeatState
 		updateScoreDisp();
 
 		if (songSel.type == 0) {
-			#if PRELOAD_ALL
-			CoolUtil.playSongMusic(songSel.songName, 0);
-			#end
+			songPreview(songSel.songName, songSel.mod);
 			scoreText.visible = true;
 			//load difficulty stuf
 			/*var songDiff = songSel.difficulties.length == 0 ? CoolUtil.defaultDifficultyArray : songSel.difficulties;
@@ -703,6 +714,35 @@ class FreeplayState extends MusicBeatState
 		if (isCornflower) {
 			cornflowerClass.changeSelection(this);
 		}
+	}
+
+	public function songPreview(songName:String, songMod:String) {
+		var songPlayedId = '${songMod}:${songName}';
+		#if (!target.threaded)
+		#if PRELOAD_ALL
+		CoolUtil.playSongMusic(songName, 0);
+		if (!loadedAudios.contains(songPlayedId))
+			loadedAudios.push(songPlayedId);
+		#end
+		#else
+		var mainthread = Thread.current();
+		if (!loadedAudios.contains(songPlayedId)) {
+			if (loadingAudio)
+				return;
+			loadingAudio = true;
+			Thread.create(() -> {
+				var sound = new FlxSound().loadEmbedded(Paths.inst(songName));
+				//if we're still in FreeplayState by the time this song is loaded.
+				if (Std.isOfType(FlxG.state, FreeplayState)) {
+					loadedAudios.push(songPlayedId);
+					//is a song (not folder) still selected?
+					threadResponse = true;
+				}
+			});
+			return;
+		}
+		CoolUtil.playSongMusic(songName, 0);
+		#end
 	}
 }
 

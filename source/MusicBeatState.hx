@@ -27,6 +27,8 @@ class MusicBeatState extends FlxUIState
 		if (transIn != null)
 			trace('reg ' + transIn.region);
 
+		Conductor.offset = Options.offset;
+
 		super.create();
 	}
 

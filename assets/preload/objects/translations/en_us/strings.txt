@@ -61,10 +61,10 @@ options_set alt bind::Set Alt Bind
 options_set alt bind_desc::Change the second keybind of a note. Left/Right to change the key selected.
 options_set ui controls::Set UI Controls
 options_set ui controls_desc::Change the other controls, such as those for the UI.
-options_set ui controls::Set UI Alt Controls
-options_set ui controls_desc::Change 2nd keybind for the other controls, such as those for the UI.
-options_set ui controls::Reset UI Controls
-options_set ui controls_desc::Reset the UI controls to the defaults.
+options_set ui alt controls::Set UI Alt Controls
+options_set ui alt controls_desc::Change 2nd keybind for the other controls, such as those for the UI.
+options_reset ui controls::Reset UI Controls
+options_reset ui controls_desc::Reset the UI controls to the defaults.
 options_change color::Change Color
 options_change color_desc::Change the colors of notes. Left/Right to change the key selected.
 options_change color advanced::Change Color Advanced

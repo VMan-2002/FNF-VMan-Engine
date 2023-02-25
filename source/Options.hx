@@ -179,7 +179,7 @@ class Options
 		instantRespawn = ifNotNull(svd.data.instantRespawn, instantRespawn);
 		botplay = ifNotNull(svd.data.botplay, botplay);
 		playstyle = ifNotNull(svd.data.playstyle, playstyle);
-		offset = ifNotNull(svd.data.offset, offset);
+		offset = Std.int(CoolUtil.clamp(ifNotNull(svd.data.offset, offset), -500, 500));
 		antialias = ifNotNull(svd.data.antialias, antialias);
 		freeplayFolders = ifNotNull(svd.data.freeplayFolders, freeplayFolders);
 		newModsActive = ifNotNull(svd.data.newModsActive, newModsActive);

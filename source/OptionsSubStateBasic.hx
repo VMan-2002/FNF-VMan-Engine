@@ -44,6 +44,9 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 
 	public static var flashingLightsWas:Bool = false;
 
+	public var leftRightHold:Float = 0;
+	public var leftRightDir:Bool;
+
 	public function new()
 	{
 		super();
@@ -163,6 +166,11 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 		return false;
 	}
 
+	public function optionLeftRightHold(name:String, dir:Float):Bool {
+		//thing
+		return false;
+	}
+
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
@@ -173,6 +181,18 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 
 			if (controls.DOWN_P)
 				moveSelection(1);
+		}
+
+		if ((controls.LEFT != controls.RIGHT) && (controls.LEFT == leftRightDir)) {
+			leftRightHold += elapsed;
+			while (leftRightHold > 0.65) {
+				leftRightHold -= 0.05;
+				if (optionLeftRightHold(curSelectedName, leftRightDir ? -1 : 1))
+					updateDescription();
+			}
+		} else {
+			leftRightDir = controls.LEFT;
+			leftRightHold = 0;
 		}
 
 		var optname = curSelectedName;

@@ -20,6 +20,7 @@ class Conductor
 	public static var crochet:Float = ((60 / bpm) * 1000); // beats in milliseconds
 	public static var stepCrochet:Float = crochet / 4; // steps in milliseconds
 	public static var songPosition:Float;
+	public static var songPositionAudio(get, set):Float;
 	public static var lastSongPos:Float;
 	public static var offset:Float = 0;
 
@@ -28,6 +29,14 @@ class Conductor
 	public static var horizontalThing:Float = safeZoneOffset / 3; // how much time horizontal antimash makes you still miss after you hit a note
 
 	public static var bpmChangeMap:Array<BPMChangeEvent> = [];
+
+	public static function get_songPositionAudio() {
+		return songPosition - offset;
+	}
+
+	public static function set_songPositionAudio(v:Float) {
+		return songPosition = v + offset;
+	}
 
 	public function new()
 	{

@@ -24,11 +24,15 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			//"Folder Editor",
 			//"Menu Character Editor",
 			"Intro Text Test",
+			#if debug
+			"Title Intro Test",
+			#end
 			//"Stage Editor",
 			//"Dialogue Editor",
 			//"Spritesheet Tool",
 			//"Noteskin Creator",
-			"Clone Hero Import"
+			"Clone Hero Import",
+			"Documentation"
 		];
 	}
 	
@@ -45,6 +49,8 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 		optionsImage.animation.addByPrefix("freeplay folders", "freeplay folders0", 12, true);
 		optionsImage.animation.addByPrefix("change color advanced", "change color advanced0", 12, true);
 		optionsImage.animation.addByPrefix("confusion", "confusion0", 12, true);
+		optionsImage.animation.addByPrefix("skip intro", "skip intro0", 12, true);
+		optionsImage.animation.addByPrefix("activate new mods", "activate new mods0", 12, true);
 	}
 	
 	override function optionDescription(name:String) {
@@ -61,6 +67,8 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 				return ["Edit characters for the Story Mode menu.", "", "animation debug"];
 			case "intro text test":
 				return ["Preview the randomized intro text."];
+			case "title intro test":
+				return ["Preview the title screen intro.", "", "skip intro"];
 			case "stage editor":
 				return ["Edit stages, including positions of stage sprites."];
 			case "spritesheet tool":
@@ -75,6 +83,8 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 				return ["Import a chart from Clone Hero.\n\nThe chart file must be in the same folder as the game executable and be named \"clonehero_import.chart\".\nWork in progress :)", "", "chart editor"];
 			case "strip file data":
 				return ["Strip unneeded data from saved files such as charts, drastically reducing the file size.", Options.dataStrip ? "Enabled" : "Disabled", "confusion"];
+			case "documentation":
+				return ["Learn a few things about developing stuff in VMan Engine.", "", "activate new mods"];
 		}
 		return ["Unknown option.", '', 'unknownOption'];
 	}
@@ -90,10 +100,15 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			case "intro text test":
 				FlxG.state.closeSubState();
 				FlxG.switchState(new IntroTextTest());
+			case "title intro test":
+				FlxG.state.closeSubState();
+				FlxG.switchState(new TitleState(true));
 			case "clone hero import":
 				cloneHeroImport();
 			case "strip file data":
 				Options.dataStrip = !Options.dataStrip;
+			case "documentation":
+				FlxG.openURL("https://vman-2002.github.io/vmanengine_doc/index.html");
 		}
 		return false;
 	}

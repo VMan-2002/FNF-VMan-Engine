@@ -6,6 +6,7 @@ import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+import openfl.filters.DisplacementMapFilterMode;
 
 class OptionsSubState extends OptionsSubStateBasic
 {
@@ -272,11 +273,32 @@ class OptionsSubState extends OptionsSubStateBasic
 					updateDescription();
 				}
 			case "input offset calibrate":
-				if (pressLeftRight) {
+				if (controls.RESET) {
+					Options.offset = 0;
+					updateDescription();
+				} else if (pressLeftRight) {
 					Options.offset += controls.LEFT_P ? -1 : 1;
+					checkOffsetInRange();
 					updateDescription();
 				}
 		}
+	}
+
+	inline function checkOffsetInRange() {
+		if (Math.abs(Options.offset) > 500) {
+			Options.offset = Options.offset > 0 ? 500 : -500;
+		}
+	}
+
+	override function optionLeftRightHold(name:String, dir:Float) {
+		switch(name) {
+			case "input offset calibrate":
+				Options.offset += Std.int(dir);
+				checkOffsetInRange();
+				return true;
+				//i'll put the volume ones here when i actually make them work
+		}
+		return false;
 	}
 
 	override function optionUpcoming(name:String) {

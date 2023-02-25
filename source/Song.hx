@@ -34,6 +34,7 @@ typedef SwagSong = {
 
 	var actions:Array<String>;
 	var noteSkin:String;
+	var noteSkinOpponent:Array<String>;
 	var uiStyle:String;
 	
 	var vmanEventTime:Array<Float>;
@@ -105,6 +106,7 @@ class Song {
 			moreCharacters: new Array<String>(),
 			actions: new Array<String>(),
 			noteSkin: "",
+			noteSkinOpponent:[],
 			uiStyle: "",
 			vmanEventTime: new Array<Float>(),
 			vmanEventOrder: new Array<Int>(),

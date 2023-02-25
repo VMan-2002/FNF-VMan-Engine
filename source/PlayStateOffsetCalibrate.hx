@@ -24,12 +24,18 @@ class PlayStateOffsetCalibrate extends PlayState
 		super();
 	}
 
+	public override function create() {
+		super.create();
+		Conductor.offset = 0;
+	}
+
 	override function update(elapsed:Float) {
 		super.update(elapsed);
 	}
 
 	override function goodNoteHit(note:Note) {
-		var thisOffset = Conductor.songPosition - note.strumTime;
+		var thisOffset = Conductor.songPositionAudio - note.strumTime;
+		super.goodNoteHit(note);
 		if (hitOffsets.length == 0) {
 			hitOffsetMin = hitOffsetMax = thisOffset; //i think this is a thing
 		} else {
@@ -42,7 +48,6 @@ class PlayStateOffsetCalibrate extends PlayState
 			hitOffsetAvg += n;
 		}
 		hitOffsetAvg /= hitOffsets.length;
-		super.goodNoteHit(note);
 	}
 
 	override function endSong() {

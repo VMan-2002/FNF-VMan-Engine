@@ -1,0 +1,4 @@
+100
+Game Over
+bf
+Kawai Sprite
