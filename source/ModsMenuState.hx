@@ -28,7 +28,8 @@ typedef ModInfo = {
 	versionStr:Null<String>,
 	titleScreen:Null<Bool>,
 	gamebananaId:Null<Int>,
-	id:Null<String>
+	id:Null<String>,
+	devMode:Null<Bool>
 }
 
 class ModsMenuState extends MusicBeatState {
@@ -69,7 +70,8 @@ class ModsMenuState extends MusicBeatState {
 			description: Translation.getTranslation("more mods gamebanana_desc", "mods", null, "Find more mods on GameBanana"),
 			titleScreen: false,
 			gamebananaId: null,
-			id: null
+			id: null,
+			devMode: false
 		}, Paths.image("menu/moreModsIcon"));
 		updateCheckboxes();
 	}
@@ -119,7 +121,8 @@ class ModsMenuState extends MusicBeatState {
 				versionStr: "...",
 				titleScreen: false,
 				gamebananaId: null,
-				id: mod
+				id: mod,
+				devMode: false
 			});
 		}
 	}

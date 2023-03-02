@@ -124,4 +124,16 @@ class Translation
 	public inline static function getUIObjectIsMultiline(a:ILabeled) {
 		return getUIObjectLineNum(a) > 1;
 	}
+
+	public static function translateDifficulty(input:String) {
+		var splitted = input.split(" ");
+		if (splitted[0].toLowerCase().endsWith("k")) {
+			var num = splitted[0].substring(0, splitted[0].length - 1);
+			if (!Math.isNaN(Std.parseInt(num))) {
+				var special = splitted.splice(1, splitted.length).join(" ");
+				return getTranslation("keys", "mania", [num], '${num}K') + (splitted.length > 1 ? (" " + getTranslation(special, "mania", null, special)) : "");
+			}
+		}
+		return getTranslation(input, "difficulty", null, input);
+	}
 }
