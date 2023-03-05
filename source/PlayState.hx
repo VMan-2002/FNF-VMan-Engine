@@ -1453,11 +1453,13 @@ class PlayState extends MusicBeatState
 		}*/
 
 		for (thing in bobBleeds) {
-			var nextHealth = health - 1.5 * thing.mult * Math.min(elapsed, thing.timeLeft);
-			if (thing.mult < 0 && health < thing.maxHealth)
-				health = Math.min(nextHealth, thing.maxHealth)
-			else
+			var nextHealth = health - thing.mult * Math.min(elapsed, thing.timeLeft);
+			if (thing.mult < 0) {
+				if (health < thing.maxHealth)
+					health = Math.min(nextHealth, thing.maxHealth);
+			} else {
 				health = nextHealth;
+			}
 			thing.timeLeft -= elapsed;
 			if (thing.timeLeft <= 0)
 				bobBleeds.remove(thing);
@@ -2260,27 +2262,16 @@ class PlayState extends MusicBeatState
 					var possibleNote:Null<Note> = null;
 
 					notes.forEachAlive(function(daNote:Note) {
-						if (daNote.is(possibleNote != null && daNote.) && daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && ((Options.playstate_guitar && allowGameplayChanges) || daNote.getNoteTypeData().guitarOpen) && !daNote.isReleaseNote) {
+						if ((possibleNote == null || (daNote.strumTime < possibleNote.strumTime)) && daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && ((Options.playstate_guitar && allowGameplayChanges) || daNote.getNoteTypeData().guitarOpen) && !daNote.isReleaseNote) {
 							possibleNote = daNote;
 						}
 					});
 					//even i can make a input system
-					if (possibleNote != null) {}
-
+					if (possibleNote != null) {
+						hitNotes += 1;
+						goodNoteHit(possibleNote);
 					} else if (!Options.ghostTapping) {
 						noteMiss(0);
-					}
-					for (daNote in possibleNotes) {
-						if (keyHolding[daNote.noteData] && possibleNoteDatas[daNote.noteData] == true) {
-							hitNotes += 1;
-							possibleNoteDatas[daNote.noteData] = false;
-							goodNoteHit(daNote);
-						}
-					}
-					for (k in 0...controlArray.length) {
-						if (possibleNoteDatas[k] && (!(Options.ghostTapping) || (((hitNotes + possibleNotes.length > 0) || (songHits > 0 && Math.abs(Conductor.songPosition - lastHitNoteTime) <= Conductor.horizontalThing)) && Options.tappingHorizontal))) {
-							noteMiss(k);
-						}
 					}
 				}
 			}
@@ -2358,7 +2349,7 @@ class PlayState extends MusicBeatState
 				if (noteTypeData.bob != 0 && noteTypeData.glitch)
 					bobBleeds.push({
 						timeLeft: 3,
-						mult: noteTypeData.bob,
+						mult: noteTypeData.bob * 1.5,
 						maxHealth: 2 * noteTypeData.healthMaxMult
 					});
 			}
@@ -2419,7 +2410,7 @@ class PlayState extends MusicBeatState
 				if (noteTypeData.bob != 0 && !noteTypeData.glitch)
 					bobBleeds.push({
 						timeLeft: 3,
-						mult: noteTypeData.bob,
+						mult: noteTypeData.bob * 1.5,
 						maxHealth: 2 * noteTypeData.healthMaxMult
 					});
 			}
@@ -2837,6 +2828,23 @@ class PlayState extends MusicBeatState
 						trace("Dunno how to handle psych event "+event[1]+". This might be a bad thing, but it isn't always!");
 				}
 		}
+	}
+
+	public function addBleed(time:Float, health:Float, ?maxHealth:Float = 2, ?replaceSame:Bool = false) {
+		if (replaceSame) {
+			for (thing in bobBleeds) {
+				if (thing.mult == health && thing.maxHealth == maxHealth) {
+					thing.timeLeft = time;
+					return false;
+				}
+			}
+		}
+		bobBleeds.push({
+			timeLeft: time,
+			mult: health,
+			maxHealth: maxHealth
+		});
+		return true;
 	}
 
 	//Really long songs

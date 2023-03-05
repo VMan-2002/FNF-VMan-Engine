@@ -7,8 +7,7 @@ import flixel.util.FlxTimer;
 
 using StringTools;
 
-class PlayStateOffsetCalibrate extends PlayState
-{
+class PlayStateOffsetCalibrate extends PlayState {
 	public var hitOffsets = new Array<Float>();
 	public var hitOffsetMin:Float = 0;
 	public var hitOffsetMax:Float = 0;
@@ -29,9 +28,9 @@ class PlayStateOffsetCalibrate extends PlayState
 		Conductor.offset = 0;
 	}
 
-	override function update(elapsed:Float) {
+	/*override function update(elapsed:Float) {
 		super.update(elapsed);
-	}
+	}*/
 
 	override function goodNoteHit(note:Note) {
 		var thisOffset = Conductor.songPositionAudio - note.strumTime;

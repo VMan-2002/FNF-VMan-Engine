@@ -53,6 +53,8 @@ typedef SwagSong = {
 	var threeLanes:Null<Bool>; //Pasta night :))))))
 
 	var picospeaker:Null<String>; //Week 7 stress
+
+	var loopbackPoint:Null<Float>; //Music that is just endless on it's own
 }
 
 class Song {
@@ -118,7 +120,8 @@ class Song {
 			instName:null,
 			threeLanes:false,
 			newtitle:null,
-			picospeaker:null
+			picospeaker:null,
+			loopbackPoint:null
 		};
 	}
 
