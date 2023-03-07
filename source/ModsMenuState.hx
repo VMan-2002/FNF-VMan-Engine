@@ -29,7 +29,8 @@ typedef ModInfo = {
 	titleScreen:Null<Bool>,
 	gamebananaId:Null<Int>,
 	id:Null<String>,
-	devMode:Null<Bool>
+	devMode:Null<Bool>,
+	requiredGameVer:Null<Int>
 }
 
 class ModsMenuState extends MusicBeatState {
@@ -45,6 +46,7 @@ class ModsMenuState extends MusicBeatState {
 	public var descTitleText:FlxText = new FlxText(230, 8, FlxG.width - 235, "Really cool mod").setFormat("VCR OSD Mono", 32).setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 3, 0.5);
 	public var descVersionText:FlxText = new FlxText(230, 18, FlxG.width - 235, "Coolest version").setFormat("VCR OSD Mono", 20, FlxColor.WHITE, FlxTextAlign.RIGHT).setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 2, 0.5);
 	public var descText:FlxText = new FlxText(230, 48, FlxG.width - 235, "You should play it :)").setFormat("VCR OSD Mono", 20).setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 2, 0.5);
+	public var errorText:FlxText = new FlxText(230, 48, FlxG.width - 235, "Your version of VMan Engine is too outdated to enable this mod").setFormat("VCR OSD Mono", 20, FlxColor.RED).setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 2, 0.5);
 	//public var funnyText:FlxText = new FlxText(0, 0, FlxG.width - 220, "Lol").setFormat("VCR OSD Mono", 32).setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 2, 0);
 
 	public var enables:Map<String, Bool>;
@@ -71,7 +73,8 @@ class ModsMenuState extends MusicBeatState {
 			titleScreen: false,
 			gamebananaId: null,
 			id: null,
-			devMode: false
+			devMode: false,
+			requiredGameVer: null
 		}, Paths.image("menu/moreModsIcon"));
 		updateCheckboxes();
 	}
@@ -102,6 +105,7 @@ class ModsMenuState extends MusicBeatState {
 		add(descTitleText);
 		add(descVersionText);
 		add(descText);
+		add(errorText);
 	}
 
 	public function showCreditsThing() {
@@ -122,7 +126,8 @@ class ModsMenuState extends MusicBeatState {
 				titleScreen: false,
 				gamebananaId: null,
 				id: mod,
-				devMode: false
+				devMode: false,
+				requiredGameVer: null
 			});
 		}
 	}
@@ -247,9 +252,13 @@ class ModsMenuState extends MusicBeatState {
 			} else {
 				//Toggle Enabled
 				var thisOne = currentCreditsThing.members[curSelected].modName;
-				enables.set(thisOne, !enables.get(thisOne));
-				trace('Toggle state of ${thisOne} to ${enables.get(thisOne)}');
-				updateCheckboxes();
+				if (!enables.get(thisOne) && currentCreditsThing.members[curSelected].needsNewVer) {
+					
+				} else {
+					enables.set(thisOne, !enables.get(thisOne));
+					trace('Toggle state of ${thisOne} to ${enables.get(thisOne)}');
+					updateCheckboxes();
+				}
 			}
 		}
 
@@ -311,15 +320,17 @@ class ModsMenuState extends MusicBeatState {
 
 	public function updateDesc() {
 		var numbrThing = currentCreditsThing.members[curSelected];
-		descText.text = creditsInfo[numbrThing.ID].description;
+		var theModInfo = creditsInfo[numbrThing.ID];
+		descText.text = theModInfo.description;
 		//funnyText.text = creditsInfo[numbrThing].name;
-		descTitleText.text = creditsInfo[numbrThing.ID].name;
-		var ver:Null<String> = creditsInfo[numbrThing.ID].versionStr != null ? creditsInfo[numbrThing.ID].versionStr : (creditsInfo[numbrThing.ID].version != null ? 'v${creditsInfo[numbrThing.ID].version}' : null);
+		descTitleText.text = theModInfo.name;
+		var ver:Null<String> = theModInfo.versionStr != null ? theModInfo.versionStr : (theModInfo.version != null ? 'v${theModInfo.version}' : null);
 		descVersionText.visible = ver != null && curSelected < modObjects.length;
 		if (descVersionText.visible) {
 			descVersionText.text = ver;
 			//descVersionText.x = descTitleText.x + descTitleText.frameWidth + 2;
 		}
+		errorText.visible = theModInfo.requiredGameVer != null && theModInfo.requiredGameVer > Main.gameVersionInt;
 		setBg(numbrThing.modName);
 	}
 
@@ -378,6 +389,7 @@ class ModsMenuState extends MusicBeatState {
 			var thisEntry = new ModMenuItem();
 			thisEntry.modName = mod;
 			thisEntry.order = stuffGroup.length;
+			thisEntry.needsNewVer = stuff.requiredGameVer > Main.gameVersionInt;
 			var icon = new FlxSprite(0, 0);
 			if (image != null) {
 				icon.loadGraphic(image);
@@ -406,4 +418,5 @@ class ModsMenuState extends MusicBeatState {
 class ModMenuItem extends FlxSpriteGroup {
 	public var modName:String;
 	public var order:Int;
+	public var needsNewVer:Bool = false;
 }

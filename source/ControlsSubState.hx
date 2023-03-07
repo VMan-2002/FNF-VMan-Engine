@@ -152,6 +152,7 @@ class ControlsSubState extends OptionsSubStateBasic
 			note.frames = NoteAssetsFrames;
 			note.animation.addByPrefix('idle', "arrow"+ManiaInfo.StrumlineArrow[str]);
 			note.animation.addByPrefix('active', str+" confirm", false);
+			note.animation.addByPrefix('wait', str+" press", false);
 			note.animation.play('idle');
 			note.scale.x = 0.5;
 			note.scale.y = 0.5;
@@ -225,9 +226,7 @@ class ControlsSubState extends OptionsSubStateBasic
 	
 	function SelectNote(?n:Int = 0, ?direction:Float = 0) {
 		if (ncSelectedNote != n) {
-			grpNoteStuff.members[ncSelectedNote].animation.play('idle');
-			grpNoteStuff.members[ncSelectedNote].centerOffsets();
-			grpNoteStuff.members[ncSelectedNote].centerOrigin();
+			notePlayAnim(ncSelectedNote, "idle");
 			if (n >= grpNoteStuff.length) {
 				n = 0;
 			} else if (n < 0) {
@@ -235,9 +234,7 @@ class ControlsSubState extends OptionsSubStateBasic
 			}
 			ncSelectedNote = n;
 		}
-		grpNoteStuff.members[ncSelectedNote].animation.play('active', true);
-		grpNoteStuff.members[ncSelectedNote].centerOffsets();
-		grpNoteStuff.members[ncSelectedNote].centerOrigin();
+		notePlayAnim(ncSelectedNote, "active");
 		if (direction != 0) {
 			/*if (tweens[ncSelectedNote] != null) {
 				tweens[ncSelectedNote].cancel();
@@ -327,10 +324,10 @@ class ControlsSubState extends OptionsSubStateBasic
 			//wait for a control.
 			if (FlxG.keys.firstJustReleased() != -1) {
 				var newKey = FlxG.keys.firstJustReleased();
-				if ((FlxG.keys.pressed.C && FlxG.keys.justReleased.B) || (FlxG.keys.pressed.B && FlxG.keys.justReleased.C)) {
+				/*if ((FlxG.keys.pressed.C && FlxG.keys.justReleased.B) || (FlxG.keys.pressed.B && FlxG.keys.justReleased.C)) {
 					//clear bind.
 					newKey = -1;
-				}
+				}*/
 				if (Options.uiControls.get("accept").contains(newKey)) { //Enter key
 					if (!releasedEnter) {
 						releasedEnter = true;
@@ -356,6 +353,7 @@ class ControlsSubState extends OptionsSubStateBasic
 				updateRowKeyNames();
 				bindingControl = false;
 				canMoveSelected = true;
+				notePlayAnim(ncSelectedNote, "active");
 			}
 			return;
 		}
@@ -405,14 +403,14 @@ class ControlsSubState extends OptionsSubStateBasic
 	}
 	
 	override function optionAccept(name:String) {
-		if (bindingControl) {
+		if (bindingControl)
 			return false;
-		}
 		switch(name) {
 			case "set bind" | "set alt bind" | 'set ui controls' | 'set ui alt controls':
 				bindingControl = true;
 				canMoveSelected = false;
 				releasedEnter = false;
+				notePlayAnim(ncSelectedNote, "wait");
 			case "change color" | "change color advanced" | "change strumline color":
 				//colors
 			case "reset ui controls":
@@ -424,14 +422,13 @@ class ControlsSubState extends OptionsSubStateBasic
 	}
 	
 	override function optionBack() {
-		if (!bindingControl) {
-			for (i in ncControls.keys()) {
-				Options.controls.set(i, ncControls.get(i));
-			}
-			Options.applyControls();
-			return true;
+		if (bindingControl)
+			return false;
+		for (i in ncControls.keys()) {
+			Options.controls.set(i, ncControls.get(i));
 		}
-		return false;
+		Options.applyControls();
+		return true;
 	}
 	
 	inline function moveableNote(does:Bool, left:Bool) {
@@ -443,6 +440,12 @@ class ControlsSubState extends OptionsSubStateBasic
 				SelectNote(ncSelectedNote + 1, arrowBump);
 			}
 		}
+	}
+
+	function notePlayAnim(num:Int, name:String) {
+		grpNoteStuff.members[num].animation.play(name, true);
+		grpNoteStuff.members[num].centerOffsets();
+		grpNoteStuff.members[num].centerOrigin();
 	}
 	
 	public static function ConvertKey(n:Int, ?useTranslat:Bool = true) {

@@ -11,6 +11,7 @@ import lime.app.Application;
 class OptionsWarningState extends MusicBeatState
 {
 	public static var leftState:Bool = false;
+	public static var latestOptionsWarning:Int = 2;
 
 	override function create()
 	{
@@ -21,7 +22,7 @@ class OptionsWarningState extends MusicBeatState
 			"Hi!\n\nThis mod may contain *Flashing Lights*!\nIn addition, you can change the *Language*!\n\nPress O to go to the Options menu now,\nor press Enter to go to the main menu.",
 		32);*/
 		var txt:FlxText = new FlxText(0, 0, FlxG.width,
-			"Hi!\n\nThis mod may contain *Flashing Lights*!\nYou're supposed to be able to turn this off,\nas well as change the *Language*, but since I'm a lazy ass,\nyou can't change these right now.\n\nPress O to go to the Options menu,\nor press Enter to go to the main menu.",
+			"Hi!\n\nThis mod may contain *Flashing Lights*!\nYou're supposed to be able to turn this off,\nas well as change the *Language*, but since I'm a lazy ass,\nFlashing Lights doesn't do much right now.\n\nPress O to go to the Options menu,\nor press Enter to go to the main menu.",
 		32);
 		txt.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, CENTER);
 		txt.applyMarkup(txt.text, [
@@ -46,11 +47,11 @@ class OptionsWarningState extends MusicBeatState
 	{
 		if (FlxG.keys.justPressed.O) {
 			leftState = true;
-			Options.seenOptionsWarning += 1;
+			Options.seenOptionsWarning = latestOptionsWarning;
 			FlxG.switchState(new OptionsMenu());
 		} else if (controls.ACCEPT) {
 			leftState = true;
-			Options.seenOptionsWarning += 1;
+			Options.seenOptionsWarning = latestOptionsWarning;
 			FlxG.switchState(new MainMenuState());
 		}
 		super.update(elapsed);

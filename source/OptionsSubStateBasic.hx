@@ -79,11 +79,16 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 		optionsImage.antialiasing = true;
 		add(optionsImage);
 		
-		if (OptionsMenu.wasInPlayState) {
-			willReturnToTxt = new FlxText(8, FlxG.height - 24, 0, Translation.getTranslation("will return to", "optionsMenu", [PlayState.SONG.song]), 16);
-			add(willReturnToTxt);
-			Translation.setObjectFont(willReturnToTxt);
+		willReturnToTxt = new FlxText(8, FlxG.height - 24, FlxG.width - 16, "Hyuponia is very cool", 16);
+		Translation.setObjectFont(willReturnToTxt);
+		if (Std.isOfType(FlxG.state.subState, ToolsMenuSubState)) {
+			willReturnToTxt.text = Translation.getTranslation("version int", "optionsMenu", [Std.string(Main.gameVersionInt)], "Version Int: "+Main.gameVersionInt);
+			willReturnToTxt.visible = true;
+		} else {
+			willReturnToTxt.text = Translation.getTranslation("will return to", "optionsMenu", [PlayState.SONG.song]);
+			willReturnToTxt.visible = OptionsMenu.wasInPlayState;
 		}
+		add(willReturnToTxt);
 		
 		upcomingTxt = new FlxText(8, FlxG.height - 50, FlxG.width - 16, Translation.getTranslation("incomplete feature", "optionsMenu", [], "Incomplete/Coming Soon"), 32);
 		upcomingTxt.alignment = FlxTextAlign.RIGHT;

@@ -408,7 +408,7 @@ class TitleState extends MusicBeatState {
 			new FlxTimer().start(2, function(tmr:FlxTimer) {
 				// Check if version is outdated
 
-				var version:String = "v" + Application.current.meta.get('version');
+				var version:String = Main.gameVersionInt;
 
 				if (/*version.trim() != NGio.GAME_VER_NUMS.trim() &&*/ !OutdatedSubState.leftState && false) {//Todo: Update checker
 					FlxG.switchState(new OutdatedSubState());
@@ -581,7 +581,7 @@ class TitleState extends MusicBeatState {
 	}
 	
 	inline function MainMenuThing() {
-		if (!OptionsWarningState.leftState && Options.seenOptionsWarning <= 0) {
+		if (!OptionsWarningState.leftState && Options.seenOptionsWarning != OptionsWarningState.latestOptionsWarning) {
 			return FlxG.switchState(new OptionsWarningState());
 		}
 		FlxG.switchState(new MainMenuState());
