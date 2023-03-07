@@ -9,6 +9,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxArrayUtil;
 import flixel.util.FlxArrayUtil;
+import flixel.util.FlxTimer;
 import flixel.util.typeLimit.OneOfTwo;
 import haxe.Json;
 import haxe.format.JsonParser;
@@ -33,6 +34,8 @@ class CoolUtil
 {
 	public static var defaultDifficultyArray:Array<String> = ['Easy', "Normal", "Hard"];
 	public static var difficultyArray:Array<String> = defaultDifficultyArray;
+	public static var mainMusicTime:Float = 0;
+	public static var playingMainMusic:Bool = false;
 
 	/**
 		Switch difficulty array, and keep the current difficulty if possible. Assumes the difficulty is stored on `object` as an `Int` as an index in `CoolUtil.difficultyArray`.
@@ -134,6 +137,10 @@ class CoolUtil
 		Plays audio from music folder
 	**/
 	public inline static function playMusic(name:String, ?volume:Float = 1, ?bpm:Null<Float> = null) {
+		if (playingMainMusic) {
+			mainMusicTime = FlxG.sound.music.time;
+			playingMainMusic = false;
+		}
 		playMusicRaw(Paths.music(name), name, volume);
 		if (Assets.exists(Paths.music(name).replace(Paths.SOUND_EXT, "txt"))) {
 			var musicInfo = CoolUtil.coolTextFile('music/${name}');
@@ -153,7 +160,19 @@ class CoolUtil
 		Plays menu music
 	**/
 	public static inline function playMenuMusic(?volume:Float = 1) {
-		playMusic("freakyMenu", volume);
+		if (!playingMainMusic) {
+			playMusic("freakyMenu", volume);
+			FlxG.sound.music.time = mainMusicTime;
+			playingMainMusic = true;
+		}
+	}
+
+	/**
+		Reset menu music
+	**/
+	public static inline function resetMenuMusic() {
+		playingMainMusic = false;
+		mainMusicTime = 0;
 	}
 
 	/**

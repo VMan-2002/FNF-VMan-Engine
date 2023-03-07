@@ -100,8 +100,8 @@ class Main extends Sprite
 			protocolName = "psychinstall";
 		}
 		trace("Using protocol: "+protocolName);
-		var protocolCheck = new sys.io.Process("reg query HKCR\\"+protocolName+"").stdout.readAll().toString();
-		if (protocolCheck.contains("URL:"+protocolName+" Protocol") && protocolCheck.contains("URL Protocol")) {
+		var protocolCheck = new sys.io.Process("reg query HKCR\\"+protocolName+"\\shell\\open\\command").stdout.readAll().toString();
+		if (/*protocolCheck.contains("URL:"+protocolName+" Protocol") && protocolCheck.contains("URL Protocol")*/ protocolCheck.contains(Sys.programPath())) { //Instead, check that the protocol is installed to the CURRENT dir
 			trace("Browser protocol is installed");
 		} else if (!triedProtocolInstall) {
 			triedProtocolInstall = true;
@@ -185,13 +185,15 @@ class Main extends Sprite
 					loader.addEventListener(Event.COMPLETE, function(dat:Event) {
 						File.saveBytes(getPath("feri.png"), dat.target.data);
 					});
+				case "engine_update" | "update_engine":
+					textThing.text = "This arg would update VMan Engine itself, but that isn't implemented yet";
 				default:
 					trace("Dunno what to do. Launch arguments are "+launchArgs);
 					textThing.text = "Dunno what to do. Launch arguments are "+launchArgs;
 			}
 			return;
 		}
-		Sys.exit(0);
+		textThing.text = "This is the VMan Engine updater, used for Auto-Download links in mod pages and will eventually be able to update the engine itself";
 	}
 	
 	var title:String = "Updater";

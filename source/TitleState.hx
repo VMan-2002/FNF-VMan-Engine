@@ -408,7 +408,7 @@ class TitleState extends MusicBeatState {
 			new FlxTimer().start(2, function(tmr:FlxTimer) {
 				// Check if version is outdated
 
-				var version:String = Main.gameVersionInt;
+				var version:String = '${Main.gameVersionInt}';
 
 				if (/*version.trim() != NGio.GAME_VER_NUMS.trim() &&*/ !OutdatedSubState.leftState && false) {//Todo: Update checker
 					FlxG.switchState(new OutdatedSubState());

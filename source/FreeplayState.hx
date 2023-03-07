@@ -571,6 +571,7 @@ class FreeplayState extends MusicBeatState
 				//PlayState.storyWeek = songs[curSelected].week;
 				PlayState.storyWeek = "week1";
 				trace('CUR WEEK' + PlayState.storyWeek);
+				CoolUtil.resetMenuMusic();
 				LoadingState.loadAndSwitchState(new PlayState());
 			}
 		}

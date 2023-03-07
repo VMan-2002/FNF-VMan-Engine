@@ -2474,35 +2474,31 @@ class PlayState extends MusicBeatState
 		if (note != null) {
 			isBoyfriend = note.mustPress;
 			if (allowGameplayChanges) {
-				if (Options.playstate_bothside) {
+				if (Options.playstate_bothside)
 					isBoyfriend = (note.noteData >= curManiaInfo.keys / 2) == Options.playstate_opponentmode;
-				} else if (Options.playstate_opponentmode) {
+				else if (Options.playstate_opponentmode)
 					isBoyfriend = !isBoyfriend;
-				}
 			}
 		}
 		var noteTypeData = note != null ? note.getNoteTypeData() : Note.SwagNoteType.loadNoteType("Normal Note", modName);
 		if (noteTypeData.noAnim)
 			return;
 		var char:Character = noteTypeData.charNums != null ? Character.activeArray[noteTypeData.charNums[0]] : (isBoyfriend ? boyfriend : dad);
-		if (isMiss) {
-			return char.playAnim('sing${ManiaInfo.Dir[curManiaInfo.arrows[note == null ? noteData : note.noteData]]}miss', true);
-		}
+		var color = curManiaInfo.arrows[note == null ? noteData : note.noteData];
+		if (isMiss)
+			return char.playAvailableAnim(['sing${color.toUpperCase()}', 'sing${ManiaInfo.Dir[color]}miss'], true);
 		char.holdTimer = 0;
 		if (note.isSustainNote && char.animNoSustain)
 			return;
-		var anim = 'sing${ManiaInfo.Dir[curManiaInfo.arrows[note == null ? noteData : note.noteData]]}';
+		var anim = 'sing${ManiaInfo.Dir[color]}';
 		var defaultAnim = anim;
-		if (noteTypeData.animReplace != null) {
+		if (noteTypeData.animReplace != null)
 			anim = noteTypeData.animReplace;
-		}
-		if (noteTypeData.animPostfix != "-alt" && (!isBoyfriend && SONG.notes[currentSection] != null && SONG.notes[currentSection].altAnim)) {
+		if (noteTypeData.animPostfix != "-alt" && (!isBoyfriend && SONG.notes[currentSection] != null && SONG.notes[currentSection].altAnim))
 			anim += '-alt';
-		}
-		if (noteTypeData.animPostfix != null) {
+		if (noteTypeData.animPostfix != null)
 			anim += noteTypeData.animPostfix;
-		}
-		return char.playAvailableAnim(note.isSustainNote ? [anim+'-hold', anim, defaultAnim+'-hold', defaultAnim] : [anim, defaultAnim], true);
+		return char.playAvailableAnim(note.isSustainNote ? [anim+'-hold', anim, 'sing${color.toUpperCase()}', 'sing${color.toUpperCase()}-hold', defaultAnim+'-hold', defaultAnim] : [anim, 'sing${color.toUpperCase()}', defaultAnim], true);
 	}
 
 	var fastCarCanDrive:Bool = true;
@@ -2532,8 +2528,7 @@ class PlayState extends MusicBeatState
 	var trainFinishing:Bool = false;
 	var trainCooldown:Int = 0;
 
-	function trainStart():Void
-	{
+	function trainStart():Void {
 		trainMoving = true;
 		if (!trainSound.playing)
 			trainSound.play(true);
@@ -2575,8 +2570,7 @@ class PlayState extends MusicBeatState
 		startedMoving = false;
 	}
 
-	function lightningStrikeShit():Void
-	{
+	function lightningStrikeShit():Void {
 		FlxG.sound.play(Paths.soundRandom('thunder_', 1, 2));
 		//halloweenBG.animation.play('lightning');
 		currentStage.playAnim("lightning");
@@ -2588,8 +2582,7 @@ class PlayState extends MusicBeatState
 		gf.playAnim('scared', true);
 	}
 
-	override function stepHit()
-	{
+	override function stepHit() {
 		super.stepHit();
 		if (FlxG.sound.music.time > Conductor.songPosition + 20 || FlxG.sound.music.time < Conductor.songPosition - 20)
 		{
