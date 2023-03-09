@@ -83,10 +83,10 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 		Translation.setObjectFont(willReturnToTxt);
 		if (Std.isOfType(FlxG.state.subState, ToolsMenuSubState)) {
 			willReturnToTxt.text = Translation.getTranslation("version int", "optionsMenu", [Std.string(Main.gameVersionInt)], "Version Int: "+Main.gameVersionInt);
-			willReturnToTxt.visible = true;
-		} else {
+		} else if (OptionsMenu.wasInPlayState) {
 			willReturnToTxt.text = Translation.getTranslation("will return to", "optionsMenu", [PlayState.SONG.song]);
-			willReturnToTxt.visible = OptionsMenu.wasInPlayState;
+		} else {
+			willReturnToTxt.visible = false;
 		}
 		add(willReturnToTxt);
 		

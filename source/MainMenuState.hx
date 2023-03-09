@@ -73,8 +73,6 @@ class MainMenuState extends MusicBeatState
 		persistentUpdate = persistentDraw = true;
 
 		var bg:FlxSprite = CoolUtil.makeMenuBackground('', -80);
-		bg.scrollFactor.x = 0;
-		bg.scrollFactor.y = 0.18;
 		bg.setGraphicSize(Std.int(bg.width * 1.1));
 		bg.updateHitbox();
 		bg.screenCenter();
@@ -85,8 +83,6 @@ class MainMenuState extends MusicBeatState
 		add(camFollow);
 
 		magenta = new FlxSprite(-80).loadGraphic(Paths.image('menuBGDesat'));
-		magenta.scrollFactor.x = 0;
-		magenta.scrollFactor.y = 0.18;
 		magenta.setGraphicSize(Std.int(magenta.width * 1.1));
 		magenta.updateHitbox();
 		magenta.screenCenter();
@@ -113,6 +109,9 @@ class MainMenuState extends MusicBeatState
 			menuItem.scrollFactor.set(0, 0.5);
 			menuItem.antialiasing = true;
 		}
+
+		bg.scrollFactor.set(0, (0.5 / optionShit.length));
+		magenta.scrollFactor.set(bg.scrollFactor.x, bg.scrollFactor.y);
 
 		FlxG.camera.follow(camFollow, null, 0.06);
 
@@ -279,7 +278,7 @@ class MainMenuState extends MusicBeatState
 		menuItems.forEach(function(spr:FlxSprite) {
 			if (spr.ID == curSelected) {
 				spr.animation.play('selected', true);
-				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y);
+				camFollow.setPosition(0, spr.getGraphicMidpoint().y);
 				if (doZoomThing) {
 					spr.scale.set(1.1, 1.1);
 					FlxTween.cancelTweensOf(spr.scale);

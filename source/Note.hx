@@ -36,6 +36,7 @@ class SwagNoteSkin {
 	public var noteSplashImage:String;
 	public var noteSplashScale:Null<Float>;
 	public var noteSplashFramerate:Null<Int>;
+	public var variations:Map<String, String>;
 
 	public static function loadNoteSkin(name:String, modName:String) {
 		if (Note.loadedNoteSkins.exists('${modName}:${name}')) {
@@ -55,6 +56,13 @@ class SwagNoteSkin {
 			ErrorReportSubstate.addError("Could not load note skin " + name);
 			return null;
 		}
+		//todo: We can have note styles via options, such as circles
+		//or just wait until colors changing is implemented and then we can have note customization like *gasp* funky friday
+		/*if (noteSkin.variations != null) {
+			var funky = loadNoteSkin(noteSkin.variations.get(Options.noteShape), modName);
+			if (funky != null)
+				noteSkin = funky;
+		}*/
 		if (Options.downScroll && noteSkin.imageDownscroll != null) {
 			noteSkin.image = noteSkin.imageDownscroll;
 		}
@@ -297,6 +305,7 @@ class SwagNoteType {
 		noteType.healthHitShit = noteType.healthHitShit != null ? noteType.healthHitShit : (noteType.healthHit != null ? noteType.healthHit : defaultNote.healthHitShit);
 		noteType.healthMiss = noteType.healthMiss != null ? noteType.healthMiss : defaultNote.healthMiss;
 		noteType.healthMaxMult = noteType.healthMaxMult != null ? noteType.healthMaxMult : 1;
+		noteType.healthHold = noteType.healthHold != null ? noteType.healthHold : (noteType.healthHit != null ? noteType.healthHit : defaultNote.healthHold);
 		noteType.ignoreMiss = noteType.ignoreMiss != null ? noteType.ignoreMiss : false;
 		noteType.imagePrefix = noteType.imagePrefix != null ? noteType.imagePrefix : "";
 		noteType.animPostfix = noteType.animPostfix != "" ? noteType.animPostfix : null;
@@ -394,6 +403,7 @@ class Note extends FlxSprite
 	public var maniaFract:Float = 0;
 	public var strumLineNum:Int = 0;
 	public var strumNoteNum:Int = 0;
+	public var center:Bool = false;
 
 	public static var loadedNoteSkins:Map<String, SwagNoteSkin> = new Map<String, SwagNoteSkin>();
 	public static var loadedUIStyles:Map<String, SwagUIStyle> = new Map<String, SwagUIStyle>();
@@ -431,7 +441,6 @@ class Note extends FlxSprite
 		if (mania == null)
 			mania = PlayState.curManiaInfo;
 
-		maniaFract = noteData / mania.keys;
 		this.noteType = noteType == null ? 0 : noteType;
 
 		this.prevNote = prevNote;
@@ -451,6 +460,13 @@ class Note extends FlxSprite
 		//}
 
 		var typedata = getNoteTypeData();
+		if (typedata.guitarOpen) {
+			center = true;
+			maniaFract = 0.5;
+			myArrow = "opennote";
+		} else {
+			maniaFract = noteData / mania.keys;
+		}
 		
 		switch (PlayState.SONG.noteSkin) {
 			case 'pixel':
@@ -510,7 +526,7 @@ class Note extends FlxSprite
 
 		this.strumLineNum = strumLineNum;
 		
-		scale.x *= mania.scale;
+		scale.x *= typedata.guitarOpen ? 0.7 : mania.scale;
 		scale.y = scale.x;
 		
 		animation.play('${myArrow}Scroll');
@@ -558,8 +574,6 @@ class Note extends FlxSprite
 		switch(getNoteType()) {
 			case "Guitar Note":
 				color = 0xFF0000; //todo: this is temporary
-			case "Guitar Open Note":
-				color = 0x0000FF; //todo: this is temporary
 			case "Guitar HOPO Note":
 				color = 0xFFFF00; //todo: this is temporary
 			case "Guitar Open HOPO Note":
@@ -616,19 +630,16 @@ class Note extends FlxSprite
 	{
 		super.update(elapsed);
 
-		if (mustPress)
-		{
+		if (mustPress) {
 			// The * 0.5 is so that it's easier to hit them too late, instead of too early
 			if (strumTime > Conductor.songPosition - Conductor.safeZoneOffset
 				&& strumTime < Conductor.songPosition + (Conductor.safeZoneOffset * 0.5))
 				canBeHit = true;
 			else
 				canBeHit = false;
-		}
-		else
-		{
+		} else {
 			if (strumTime <= Conductor.songPosition)
-				wasGoodHit = true;
+				PlayState.instance.opponentNoteHit(this); //Avoib
 		}
 
 		if (!tooLate && strumTime < Conductor.songPosition - Conductor.safeZoneOffset) {

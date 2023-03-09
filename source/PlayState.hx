@@ -48,6 +48,7 @@ import lime.utils.Assets;
 import openfl.display.BlendMode;
 import openfl.display.GraphicsEndFill;
 import openfl.display.StageQuality;
+import openfl.events.KeyboardEvent;
 import openfl.filters.ShaderFilter;
 import sys.io.File;
 
@@ -76,7 +77,8 @@ typedef CamShake = {
 
 typedef NoteRow = {
 	time:Float,
-	notes:Array<Int>
+	notes:Array<Int>,
+	releaseNotes:Array<Int>
 }
 
 typedef BobBleed = {
@@ -229,7 +231,6 @@ class PlayState extends MusicBeatState
 	public var songTitle:String = "pewdiepie";
 
 	public var notesCanBeHit = true;
-	public var previousNoteRow:NoteRow;
 
 	public var camShakes:Array<CamShake> = new Array<CamShake>();
 
@@ -240,6 +241,9 @@ class PlayState extends MusicBeatState
 	public var useStageCharZooms:Bool = true;
 
 	public var bobBleeds = new Array<BobBleed>();
+
+	//Starpower
+	public var starActive = false;
 
 	//Scripting funny lol
 	//The only hscript your getting is ~~me porting the basegame update's hscript support~~ hscript.
@@ -1699,10 +1703,10 @@ class PlayState extends MusicBeatState
 				}
 				//todo: i guess. It's fine if you disallow both side mode when a song has mania changes
 				var isInManiaChange:Bool = false; //currentManiaPartName[strumNumber] == maniaPartArr[daNote.maniaPart][strumNumber];
-				var daStrum:StrumNote = strumLines.members[strumNumber].members[isInManiaChange ? 0 : daNote.strumNoteNum];
+				var daStrum:StrumNote = strumLines.members[strumNumber].members[(isInManiaChange || daNote.center) ? 0 : daNote.strumNoteNum];
 				daNote.y = (daStrum.y - (Conductor.songPosition - daNote.strumTime) * speed * daStrum.speedMult);
 				daNote.x = daStrum.x;
-				if (isInManiaChange) {
+				if (isInManiaChange || daNote.center) {
 					daNote.y += strumLines.members[strumNumber].spanY * daNote.maniaFract;
 					daNote.x += strumLines.members[strumNumber].spanX * daNote.maniaFract;
 				}
@@ -1998,7 +2002,8 @@ class PlayState extends MusicBeatState
 	private function popUpScore(daNote:Note):String {
 		var strumtime:Float = daNote.strumTime;
 
-		var noteDiff:Float = Math.abs(strumtime - Conductor.songPosition);
+		//var noteDiff:Float = Math.abs(strumtime - Conductor.songPosition);
+		var noteDiff:Float = Math.abs(strumtime - (FlxG.sound.music.time + Conductor.offset));
 		// boyfriend.playAnim('hey');
 		vocals.volume = 1;
 
@@ -2181,6 +2186,173 @@ class PlayState extends MusicBeatState
 		return daRating;
 	}
 
+	//New input system that's very cool (not the week 7 one actually.)
+	public inline function getNotesInRange(hold:Bool, release:Bool) {
+		var possibleNotes = new Array<Note>();
+		notes.forEachAlive(function(daNote:Note) {
+			if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && (daNote.isSustainNote == hold && daNote.isReleaseNote == release))
+				possibleNotes.push(daNote);
+		});
+		possibleNotes.sort((a, b) -> Std.int(a.strumTime - b.strumTime));
+		return possibleNotes;
+	}
+
+	public inline function filterNotesInRange(hold:Bool, release:Bool, func:Note->Bool) {
+		return getNotesInRange(hold, release).filter(func);
+	}
+
+	public function getNoteDataFromArray(arr:Array<Note>, noteData:Int) {
+		var i = 0;
+		while (true) {
+			if (arr[i].noteData == noteData)
+				return arr[i];
+			if (i++ == arr.length)
+				return null;
+		}
+	}
+
+	public var openHopoStuff:NoteRow = {
+		time: -8000,
+		notes: [],
+		releaseNotes: []
+	};
+
+	//and then the actual key event stuff
+	public function eventKeyPressed(evnt:KeyboardEvent) {
+		if (boyfriend.stunned || !generatedMusic)
+			return;
+		if (!curManiaInfo.control_any.contains(evnt.keyCode)) {
+			//Guitar Notes
+			if (Options.uiControls.get("gtstrum").contains(evnt.keyCode)) {
+				var possibleNotes = filterNotesInRange(false, false, function(note) {
+					return note.getNoteTypeData().guitar;
+				});
+				if (possibleNotes.length == 0)
+					return;
+				//Hit an open note
+				if (possibleNotes[0].getNoteTypeData().guitarOpen) {
+					if (!FlxG.keys.anyPressed(curManiaInfo.control_any))
+						goodNoteHit(possibleNotes[0]);
+					return;
+				}
+				//Hit standard guitar notes
+				for (i in 0...curManiaInfo.control_set.length) {
+					if (FlxG.keys.anyPressed(curManiaInfo.control_set[i])) {
+						goodExistsNoteHit(getNoteDataFromArray(possibleNotes, i));
+					}
+				}
+			}
+			return;
+		}
+		var possibleNotes = filterNotesInRange(false, false, function(note) {
+			var ntd = note.getNoteTypeData();
+			return !ntd.guitar || (ntd.guitarHopo && !ntd.guitarOpen && combo != 0);
+		});
+		if (possibleNotes.length == 0) {
+			if ((!Options.ghostTapping) || (Options.tappingHorizontal && (songHits != 0 && Math.abs(Conductor.songPosition - lastHitNoteTime) <= Conductor.horizontalThing))) {
+				for (i in 0...curManiaInfo.control_set.length) {
+					if (curManiaInfo.control_set[i].contains(evnt.keyCode)) {
+						noteMiss(i);
+						return;
+					}
+				}
+			}
+			return;
+		}
+		//Note rows for open hopos
+		if (!preOpenHopoCheck(possibleNotes[0])) {
+			openHopoStuff.time = possibleNotes[0].strumTime;
+			openHopoStuff.notes = new Array<Int>();
+			openHopoStuff.releaseNotes = new Array<Int>();
+			for (note in possibleNotes.filter(preOpenHopoCheck)) {
+				openHopoStuff.notes.push(note.noteData);
+			}
+		}
+		//Finally hit a note
+		for (i in 0...curManiaInfo.control_set.length) {
+			if (curManiaInfo.control_set[i].contains(evnt.keyCode)) {
+				playerStrums.strumNotes[i].isHeld = true;
+				if (goodExistsNoteHit(getNoteDataFromArray(possibleNotes, i))) {
+					openHopoStuff.notes.remove(i);
+					openHopoStuff.releaseNotes.push(i);
+				} else if ((!Options.ghostTapping) || (Options.tappingHorizontal && (songHits != 0 && Math.abs(Conductor.songPosition - lastHitNoteTime) <= Conductor.horizontalThing))) {
+					noteMiss(i);
+				}
+				return;
+			}
+		}
+	}
+
+	inline function preOpenHopoCheck(note:Note) {
+		return openHopoStuff.time - note.strumTime < (Conductor.stepCrochet * 0.02);
+	}
+
+	public function eventKeyReleased(evnt:KeyboardEvent) {
+		if (boyfriend.stunned || !generatedMusic)
+			return;
+		if (!curManiaInfo.control_any.contains(evnt.keyCode)) {
+			if (Options.uiControls.get("gtstrum").contains(evnt.keyCode)) {
+				//Hit an Open Release Note
+				//This is new so i can decide what they do
+				var possibleNotes = getNotesInRange(false, true);
+				if (possibleNotes.length == 0)
+					return;
+				var ntd = possibleNotes[0].getNoteTypeData();
+				if (ntd.guitar && ntd.guitarOpen)
+					goodNoteHit(possibleNotes[0]);
+			}
+			return;
+		}
+		var possibleNotes = filterNotesInRange(false, true, function(note) {
+			var ntd = note.getNoteTypeData();
+			return (!ntd.guitarHopo && !ntd.guitarOpen);
+		});
+		//Finally hit a note
+		var yeezys = openHopoStuff.releaseNotes.length != 0;
+		for (i in 0...curManiaInfo.control_set.length) {
+			if (curManiaInfo.control_set[i].contains(evnt.keyCode)) {
+				openHopoStuff.releaseNotes.remove(i);
+				if (goodExistsNoteHit(getNoteDataFromArray(possibleNotes, i))) {
+					playerStrums.strumNotes[i].isHeld = false;
+					return;
+				}
+				playerStrums.strumNotes[i].isHeld = false;
+			}
+		}
+		//Hit open hopo note
+		if (yeezys && openHopoStuff.releaseNotes.length == 0) {
+			goodExistsNoteHit(filterNotesInRange(false, false, function(note) {
+				var ntd = note.getNoteTypeData();
+				return (ntd.guitarHopo && ntd.guitarOpen && combo != 0);
+			})[0]); //this statement looks funny
+		}
+	}
+
+	public function keyHolds() {
+		var gtHold = !FlxG.keys.anyPressed(Options.uiControls.get("gtstrum"));
+		if (boyfriend.stunned || !generatedMusic || (!FlxG.keys.anyPressed(curManiaInfo.control_any) && gtHold))
+			return;
+		var possibleNotes = filterNotesInRange(true, false, function(note) {
+			return note.isSustainNote;
+		});
+		if (possibleNotes.length == 0)
+			return;
+		var keyHolding = new Array<Bool>();
+		for (i in curManiaInfo.control_set) {
+			keyHolding.push(FlxG.keys.anyPressed(i));
+		}
+		for (note in possibleNotes) {
+			if (note.getNoteTypeData().guitarOpen) {
+				if (gtHold)
+					goodNoteHit(note);
+			} else {
+				if (keyHolding[note.noteData])
+					goodNoteHit(note);
+			}
+		}
+	}
+
+	//old input system
 	private function keyShit():Void {
 		if (Options.botplay)
 			return;
@@ -2334,6 +2506,14 @@ class PlayState extends MusicBeatState
 
 	function noteMiss(direction:Int = 1, ?note:Note):Void {
 		if (!boyfriend.stunned) {
+			if (starActive) {
+				//Idk how i should star power lol! So im doing it like this (For now at least)
+				starActive = false;
+				songScore -= 5000;
+
+				if (Options.noteMissAction_MissSound[Options.noteMissAction])
+					FlxG.sound.play(Paths.soundRandom('badnoise', 1, 3), FlxG.random.float(0.15, 0.25));
+			}
 			var validNote = note != null;
 			var noteTypeData = validNote ? note.getNoteTypeData() : Note.SwagNoteType.loadNoteType(Note.SwagNoteType.normalNote, PlayState.modName);
 			health += noteTypeData.healthMiss;
@@ -2369,6 +2549,14 @@ class PlayState extends MusicBeatState
 			
 			animateForNote(note, true, direction, true);
 		}
+	}
+
+	public inline function goodExistsNoteHit(note:Null<Note>) {
+		if (note != null) {
+			goodNoteHit(note);
+			return true;
+		}
+		return false;
 	}
 
 	public function goodNoteHit(note:Note):Void {
@@ -2430,7 +2618,7 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	function opponentNoteHit(note:Note):Void {
+	public function opponentNoteHit(note:Note):Void {
 		if (!note.wasGoodHit) {
 			if (SONG.song != 'Tutorial')
 				camZooming = true;
@@ -2485,20 +2673,35 @@ class PlayState extends MusicBeatState
 			return;
 		var char:Character = noteTypeData.charNums != null ? Character.activeArray[noteTypeData.charNums[0]] : (isBoyfriend ? boyfriend : dad);
 		var color = curManiaInfo.arrows[note == null ? noteData : note.noteData];
+		var colorNote = "sing" + color.toUpperCase();
 		if (isMiss)
-			return char.playAvailableAnim(['sing${color.toUpperCase()}', 'sing${ManiaInfo.Dir[color]}miss'], true);
+			return char.playAvailableAnim(['${colorNote}miss', 'sing${ManiaInfo.Dir[color]}miss'], true);
 		char.holdTimer = 0;
 		if (note.isSustainNote && char.animNoSustain)
 			return;
-		var anim = 'sing${ManiaInfo.Dir[color]}';
-		var defaultAnim = anim;
-		if (noteTypeData.animReplace != null)
-			anim = noteTypeData.animReplace;
+		var postfix = "";
 		if (noteTypeData.animPostfix != "-alt" && (!isBoyfriend && SONG.notes[currentSection] != null && SONG.notes[currentSection].altAnim))
-			anim += '-alt';
+			postfix += '-alt';
 		if (noteTypeData.animPostfix != null)
-			anim += noteTypeData.animPostfix;
-		return char.playAvailableAnim(note.isSustainNote ? [anim+'-hold', anim, 'sing${color.toUpperCase()}', 'sing${color.toUpperCase()}-hold', defaultAnim+'-hold', defaultAnim] : [anim, 'sing${color.toUpperCase()}', defaultAnim], true);
+			postfix += noteTypeData.animPostfix;
+		var defaultAnim = 'sing${ManiaInfo.Dir[color]}';
+		if (noteTypeData.animReplace == null) {
+			var anim = defaultAnim + postfix;
+			var colorAnim = colorNote + postfix;
+			return char.playAvailableAnim(note.isSustainNote ? 
+				//Hold notes
+				['${colorAnim}-hold', colorAnim, anim+'-hold', anim, defaultAnim+'-hold', defaultAnim] :
+				//Non holds
+				[colorAnim, anim, colorNote, defaultAnim],
+			true);
+		}
+		var anim = noteTypeData.animReplace + postfix;
+		return char.playAvailableAnim(note.isSustainNote ? 
+			//Hold notes
+			[anim+'-hold', anim, defaultAnim+'-hold', defaultAnim] :
+			//Non holds
+			[colorNote, defaultAnim],
+		true);
 	}
 
 	var fastCarCanDrive:Bool = true;
@@ -2769,6 +2972,8 @@ class PlayState extends MusicBeatState
 					FlxTween.cancelTweensOf(cinematicBars.members[i], ["y"]);
 					FlxTween.tween(cinematicBars.members[i], {y: opo[i] + move[i]}, event[2], {ease:FlxEase.cubeOut});
 				}
+			case "Star Power State":
+				starActive = event[1];
 			case "Psych Engine Event": //event from an imported chart from Psych Engine
 				switch(event[1]) {
 					//case "Dadbattle Spotlight" | "Philly Glow" | "Kill Henchmen" | "Trigger BG Ghouls":
