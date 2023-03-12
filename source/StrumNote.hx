@@ -44,7 +44,7 @@ class StrumNote extends FlxSprite
 		super(x, y);
 		this.noteData = noteData;
 		this.parent = parent;
-		downScroll = Options.downScroll;
+		downScroll = Options.instance.downScroll;
 		setStyle(style);
 		scrollFactor.set();
 	}

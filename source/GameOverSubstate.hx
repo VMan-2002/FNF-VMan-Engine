@@ -31,7 +31,7 @@ class GameOverSubstate extends MusicBeatSubstate
 			default:
 				daBf = 'bf-dead';
 		}
-		var daChar:Character = (Options.playstate_opponentmode && PlayState.instance.dad.deathChar != null ? PlayState.instance.dad : PlayState.instance.boyfriend);
+		var daChar:Character = (Options.saved.playstate_opponentmode && PlayState.instance.dad.deathChar != null ? PlayState.instance.dad : PlayState.instance.boyfriend);
 		if (daChar.deathChar != null) {
 			daBf = daChar.deathChar;
 		}
@@ -78,7 +78,7 @@ class GameOverSubstate extends MusicBeatSubstate
 			Achievements.giveAchievement("calibrateDeath");
 		}
 		
-		if (Options.instantRespawn) {
+		if (Options.instance.instantRespawn) {
 			gotoplaystate();
 		}
 	}

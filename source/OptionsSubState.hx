@@ -67,21 +67,21 @@ class OptionsSubState extends OptionsSubStateBasic
 			case "controls":
 				return ["Change your controls."];
 			case "scroll direction":
-				return ["The direction the notes move.", Options.downScroll ? "Downscroll" : "Upscroll"];
+				return ["The direction the notes move.", Options.saved.downScroll ? "Downscroll" : "Upscroll"];
 			case "middlescroll":
-				return ["Move your notes to the middle of the screen, and hide the opponent's notes.", Options.middleScroll ? (Options.middleLarge ? "Large Middlescroll" : "Enabled") : "Disabled"];
+				return ["Move your notes to the middle of the screen, and hide the opponent's notes.", Options.saved.middleScroll ? (Options.saved.middleLarge ? "Large Middlescroll" : "Enabled") : "Disabled"];
 			case "ghost tapping":
 				var value = "Always antimash";
-				if (Options.ghostTapping)
-					value = Options.tappingHorizontal ? "Horizontal antimash" : "No antimash";
+				if (Options.saved.ghostTapping)
+					value = Options.saved.tappingHorizontal ? "Horizontal antimash" : "No antimash";
 				return ["Whether or not pressing the wrong arrow loses you health.", value];
 			case "instant respawn":
-				return ["Respawn immediately upon dying.", Options.instantRespawn ? "Enabled" : "Disabled"];
+				return ["Respawn immediately upon dying.", Options.saved.instantRespawn ? "Enabled" : "Disabled"];
 			case "botplay":
-				return ["Watch the game go brrr", Options.botplay ? "Enabled" : "Disabled"];
+				return ["Watch the game go brrr", Options.saved.botplay ? "Enabled" : "Disabled"];
 			//case "kade health":
 				//text = "Gain and lose more health for hitting notes, dont gain health while holding notes.";
-				//value = Options.playstyle == "kade" ? "Enabled" : "Disabled";
+				//value = Options.saved.playstyle == "kade" ? "Enabled" : "Disabled";
 			//case "input offset":
 				//text = "More = you have to hit notes later, in milliseconds.";
 				//value = Std.string(Options.offset);
@@ -92,22 +92,22 @@ class OptionsSubState extends OptionsSubStateBasic
 			case "skip title":
 				return ["Skip the title screen when the game starts.", Options.skipTitle ? "Enabled" : "Disabled"];
 			case "invisi-notes":
-				return ["Bad idea. Makes the notes invisible.", Options.invisibleNotes ? "Enabled" : "Disabled"];
+				return ["Bad idea. Makes the notes invisible.", Options.saved.invisibleNotes ? "Enabled" : "Disabled"];
 			case "language":
 				return ["Change the language. Some mods may make use of this option.", Translation.getTranslation("native language name", "lang")];
 			case "enable modcharts":
-				return ["Enable fancy movements for notes, in supported songs only.", Options.modchartEnabled ? "Enabled" : "Disabled"];
+				return ["Enable fancy movements for notes, in supported songs only.", Options.saved.modchartEnabled ? "Enabled" : "Disabled"];
 			case "antialiasing":
 				return ["Whether or not stuff gets a bit of smoothing, disabling this can boost framerates", "idk"];
 			case "flashing lights":
 				return ["Turn this off if you suffer from epilepsy or similar conditions.", Options.flashingLights ? "Enabled" : "Disabled"];
 			case "silent countdown":
-				return ["Silence the countdown, that's about it.", Options.silentCountdown ? "Enabled" : "Disabled"];
+				return ["Silence the countdown, that's about it.", Options.saved.silentCountdown ? "Enabled" : "Disabled"];
 			case "show fps":
 				return ["Show the framerate in the top left corner.", Options.showFPS ? "Enabled" : "Disabled"];
 			case "audio on miss":
 				var values = ["Miss sound + Mute vocals", "Miss sound only", "Mute vocals only", "Do nothing"];
-				return ["Change what you hear when you miss a note.", values[Options.noteMissAction]];
+				return ["Change what you hear when you miss a note.", values[Options.saved.noteMissAction]];
 			case "input offset calibrate":
 				return ["Do a short song to see what input offset is good.", Translation.getTranslation("offset ms", "optionsMenu", [Std.string(Options.offset)], Options.offset+"ms")];
 			case "exit without saving":
@@ -115,13 +115,13 @@ class OptionsSubState extends OptionsSubStateBasic
 			case "gameplay changes":
 				return ["Toggle gameplay changes.", Highscore.getModeString(true)];
 			case "reset button":
-				return ["Press R to die during a song.", Options.resetButton ? "Enabled" : "Disabled"];
+				return ["Press R to die during a song.", Options.saved.resetButton ? "Enabled" : "Disabled"];
 			case "note camera movement":
-				return ["That thing that's in every FNF mod nowadays. The camera will move around depending on the notes.", Options.noteCamMovement ? "Enabled" : "Disabled"];
+				return ["That thing that's in every FNF mod nowadays. The camera will move around depending on the notes.", Options.saved.noteCamMovement ? "Enabled" : "Disabled"];
 			case "self awareness":
-				return ["The mod might know your name. Scary... Bad for livestreamers, though. Only applies when the mod uses it.", Options.selfAware ? "Enabled" : "Disabled"];
+				return ["The mod might know your name. Scary... Bad for livestreamers, though. Only applies when the mod uses it.", Options.saved.selfAware ? "Enabled" : "Disabled"];
 			case "song restart reloads ui":
-				return ["Reload UI style when restarting song.", Options.uiReloading ? "Enabled" : "Disabled"];
+				return ["Reload UI style when restarting song.", Options.saved.uiReloading ? "Enabled" : "Disabled"];
 			#if debug
 			case "options warning test":
 				return ["Test the options warning"];
@@ -146,61 +146,61 @@ class OptionsSubState extends OptionsSubStateBasic
 				return false;
 				#end
 			case "scroll direction":
-				Options.downScroll = !Options.downScroll;
+				Options.saved.downScroll = !Options.saved.downScroll;
 			case "middlescroll":
 				#if debug
-				if (Options.middleScroll) {
+				if (Options.saved.middleScroll) {
 					//middlescroll On: turn on large if not active
-					Options.middleScroll = !Options.middleLarge;
-					Options.middleLarge = Options.middleScroll; //this looks weird lmao
+					Options.saved.middleScroll = !Options.saved.middleLarge;
+					Options.saved.middleLarge = Options.saved.middleScroll; //this looks weird lmao
 				} else {
-					Options.middleScroll = true;
-					Options.middleLarge = false;
+					Options.saved.middleScroll = true;
+					Options.saved.middleLarge = false;
 				}
 				#else
-				Options.middleScroll = !Options.middleScroll;
+				Options.saved.middleScroll = !Options.saved.middleScroll;
 				#end
 			case "ghost tapping":
 				//Logic!!!!!!!!!!!!!!!!
-				if (Options.ghostTapping) {
+				if (Options.saved.ghostTapping) {
 					//tappingHorizontal on: currently horizontal antimash -> change to no antimash
 					//tappingHorizontal off: currently no antimash -> change to full antimash
-					Options.ghostTapping = Options.tappingHorizontal;
-					Options.tappingHorizontal = false;
+					Options.saved.ghostTapping = Options.saved.tappingHorizontal;
+					Options.saved.tappingHorizontal = false;
 				} else {
 					//currently full antimash -> change to horizontal antimash
-					Options.ghostTapping = true;
-					Options.tappingHorizontal = true;
+					Options.saved.ghostTapping = true;
+					Options.saved.tappingHorizontal = true;
 				}
 			case "instant respawn":
-				Options.instantRespawn = !Options.instantRespawn;
+				Options.saved.instantRespawn = !Options.saved.instantRespawn;
 			case "playstyle preset":
-				Options.playstyle = Options.playstyle != "kade" ? "kade" : "default";
+				Options.saved.playstyle = Options.saved.playstyle != "kade" ? "kade" : "default";
 			case "botplay":
-				Options.botplay = !Options.botplay;
+				Options.saved.botplay = !Options.saved.botplay;
 			case "freeplay folders":
 				Options.freeplayFolders = !Options.freeplayFolders;
 			case "skip title":
 				Options.skipTitle = !Options.skipTitle;
 			case "invisi-notes":
-				Options.invisibleNotes = !Options.invisibleNotes;
+				Options.saved.invisibleNotes = !Options.saved.invisibleNotes;
 			case "language":
 				FlxG.state.closeSubState();
 				FlxG.state.openSubState(new LanguageOptionSubState());
 				return false;
 			case "enable modcharts":
-				Options.modchartEnabled = !Options.modchartEnabled;
+				Options.saved.modchartEnabled = !Options.saved.modchartEnabled;
 			case "antialiasing":
-				Options.antialiasing = !Options.antialiasing;
+				Options.saved.antialiasing = !Options.saved.antialiasing;
 			case "flashing lights":
 				Options.flashingLights = !Options.flashingLights;
 			case "silent countdown":
-				Options.silentCountdown = !Options.silentCountdown;
+				Options.saved.silentCountdown = !Options.saved.silentCountdown;
 			case "show fps":
 				Options.showFPS = !Options.showFPS;
 				Main.fps.visible = Options.showFPS;
 			case "audio on miss":
-				Options.noteMissAction = (Options.noteMissAction + 1) % 4;
+				Options.saved.noteMissAction = (Options.saved.noteMissAction + 1) % 4;
 			case "exit without saving":
 				var oldLang:String = Options.language;
 				Options.LoadOptions();
@@ -219,13 +219,13 @@ class OptionsSubState extends OptionsSubStateBasic
 				FlxG.state.openSubState(new PlayStateChangesSubState());
 				return false;
 			case "note camera movement":
-				Options.noteCamMovement = !Options.noteCamMovement;
+				Options.saved.noteCamMovement = !Options.saved.noteCamMovement;
 			case "reset button":
-				Options.resetButton = !Options.resetButton;
+				Options.saved.resetButton = !Options.saved.resetButton;
 			case "self awareness":
-				Options.selfAware = !Options.selfAware;
+				Options.saved.selfAware = !Options.saved.selfAware;
 			case "song restart reloads ui":
-				Options.uiReloading = !Options.uiReloading;
+				Options.saved.uiReloading = !Options.saved.uiReloading;
 			case "options warning test":
 				FlxG.switchState(new OptionsWarningState());
 			default:

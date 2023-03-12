@@ -15,7 +15,7 @@ class PlayStateOffsetCalibrate extends PlayState {
 
 	public function new() {
 		PlayState.modName = "";
-		Options.botplay = false;
+		Options.instance.botplay = false;
 		CoolUtil.difficultyArray = ["Normal"];
 		PlayState.SONG = Song.loadFromJson(Highscore.formatSong("Input Offset Calibrate"), "input-offset-calibrate");
 		PlayState.isStoryMode = false;

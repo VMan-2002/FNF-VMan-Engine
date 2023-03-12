@@ -3,23 +3,25 @@ import flixel.input.keyboard.FlxKey;
 import flixel.util.FlxSave;
 import lime.ui.ScanCode;
 
-class Options
-{
+class Options {
+	public static var saved:Options;
+	public static var instance:Options;
+
 	public static var masterVolume:Float = 1;
-	public static var downScroll:Bool = false;
-	public static var middleScroll:Bool = false;
-	public static var middleLarge:Bool = false;
-	public static var ghostTapping:Bool = false;
-	public static var instantRespawn:Bool = false;
-	public static var botplay:Bool = false;
-	public static var playstyle:String = "default";
+	public var downScroll:Bool = false;
+	public var middleScroll:Bool = false;
+	public var middleLarge:Bool = false;
+	public var ghostTapping:Bool = false;
+	public var instantRespawn:Bool = false;
+	public var botplay:Bool = false;
+	public var playstyle:String = "default";
 	public static var offset:Int = 0;
 	public static var antialias:Bool = true;
-	public static var invisibleNotes:Bool = false;
-	public static var invisibleNotesType:Int = 0;
+	public var invisibleNotes:Bool = false;
+	public var invisibleNotesType:Int = 0;
 	public static var freeplayFolders:Bool = true;
 	public static var newModsActive:Bool = true;
-	public static var tappingHorizontal:Bool = false;
+	public var tappingHorizontal:Bool = false;
 	public static var skipTitle:Bool = false;
 	public static var flashingLights:Bool = true;
 	public static var controls:Map<String, Array<Array<Int>>> = [
@@ -76,33 +78,33 @@ class Options
 		]
 	];
 	public static var language = "en_us";
-	public static var modchartEnabled:Bool = false;
-	public static var antialiasing:Bool = true;
+	public var modchartEnabled:Bool = false;
+	public var antialiasing:Bool = true;
 	public static var seenOptionsWarning:Int = 0;
-	public static var silentCountdown:Bool = false;
-	public static var noteMissAction:Int = 0;
+	public var silentCountdown:Bool = false;
+	public var noteMissAction:Int = 0;
 	public static var noteMissAction_Vocals:Array<Bool> = [true, false, true, false];
 	public static var noteMissAction_MissSound:Array<Bool> = [true, true, false, false];
 	public static var showFPS:Bool = #if mobile false #else true #end;
 	public static var soundVolume:Float = 1;
 	public static var instrumentalVolume:Float = 1;
 	public static var vocalsVolume:Float = 1;
-	public static var resetButton:Bool = false;
-	public static var noteCamMovement:Bool = false;
-	public static var selfAware:Bool = false;
+	public var resetButton:Bool = false;
+	public var noteCamMovement:Bool = false;
+	public var selfAware:Bool = false;
 	public static var dataStrip:Bool = true;
-	public static var uiReloading:Bool = false;
-	public static var noteQuant:Bool = false;
+	public var uiReloading:Bool = false;
+	public var noteQuant:Bool = false;
 	
 	//PlayState changeables
-	public static var playstate_opponentmode:Bool = false;
-	public static var playstate_bothside:Bool = false;
-	public static var playstate_endless:Bool = false;
-	public static var playstate_guitar:Bool = false;
-	public static var playstate_confusion:Bool = false;
+	public var playstate_opponentmode:Bool = false;
+	public var playstate_bothside:Bool = false;
+	public var playstate_endless:Bool = false;
+	public var playstate_guitar:Bool = false;
+	public var playstate_confusion:Bool = false;
 
 	public static var playstate_anychanges:Bool = false;
-	public static function updatePlayStateAny() {
+	public function updatePlayStateAny() {
 		playstate_anychanges = [playstate_opponentmode, playstate_bothside, playstate_endless, playstate_guitar, playstate_confusion, playstate_anychanges].contains(true);
 	}
 
@@ -120,11 +122,15 @@ class Options
 		"gtstrum" => [FlxKey.LBRACKET, FlxKey.RBRACKET]
 	];
 
+	public function new() {
+		
+	}
+
 	public static inline function applyControls() {
 		PlayerSettings.player1.controls.setKeyboardScheme(Custom);
 	}
 	
-	public static function SaveOptions() {
+	public function SaveOptions() {
 		var svd = GetSaveObj();
 		svd.data.masterVolume = masterVolume;
 		svd.data.downScroll = downScroll;
@@ -136,7 +142,9 @@ class Options
 		svd.data.playstyle = playstyle;
 		svd.data.offset = offset;
 		svd.data.antialias = antialias;
+		#if debug
 		svd.data.freeplayFolders = freeplayFolders;
+		#end
 		svd.data.newModsActive = newModsActive;
 		svd.data.tappingHorizontal = tappingHorizontal;
 		svd.data.skipTitle = skipTitle;
@@ -170,46 +178,47 @@ class Options
 	}
 	
 	public static function LoadOptions() {
+		saved = new Options();
 		var svd = GetSaveObj();
 		masterVolume = ifNotNull(svd.data.masterVolume, masterVolume);
-		downScroll = ifNotNull(svd.data.downScroll, downScroll);
-		middleScroll = ifNotNull(svd.data.middleScroll, middleScroll);
-		middleLarge = ifNotNull(svd.data.middleLarge, middleLarge);
-		ghostTapping = ifNotNull(svd.data.ghostTapping, ghostTapping);
-		instantRespawn = ifNotNull(svd.data.instantRespawn, instantRespawn);
-		botplay = ifNotNull(svd.data.botplay, botplay);
-		playstyle = ifNotNull(svd.data.playstyle, playstyle);
+		saved.downScroll = ifNotNull(svd.data.downScroll, saved.downScroll);
+		saved.middleScroll = ifNotNull(svd.data.middleScroll, saved.middleScroll);
+		saved.middleLarge = ifNotNull(svd.data.middleLarge, saved.middleLarge);
+		saved.ghostTapping = ifNotNull(svd.data.ghostTapping, saved.ghostTapping);
+		saved.instantRespawn = ifNotNull(svd.data.instantRespawn, saved.instantRespawn);
+		saved.botplay = ifNotNull(svd.data.botplay, saved.botplay);
+		saved.playstyle = ifNotNull(svd.data.playstyle, saved.playstyle);
 		offset = Std.int(CoolUtil.clamp(ifNotNull(svd.data.offset, offset), -500, 500));
 		antialias = ifNotNull(svd.data.antialias, antialias);
 		freeplayFolders = ifNotNull(svd.data.freeplayFolders, freeplayFolders);
 		newModsActive = ifNotNull(svd.data.newModsActive, newModsActive);
-		tappingHorizontal = ifNotNull(svd.data.tappingHorizontal, tappingHorizontal);
+		saved.tappingHorizontal = ifNotNull(svd.data.tappingHorizontal, saved.tappingHorizontal);
 		skipTitle = ifNotNull(svd.data.skipTitle, skipTitle);
-		invisibleNotes = ifNotNull(svd.data.invisibleNotes, invisibleNotes);
-		invisibleNotesType = ifNotNull(svd.data.invisibleNotesType, invisibleNotesType);
+		saved.invisibleNotes = ifNotNull(svd.data.invisibleNotes, saved.invisibleNotes);
+		saved.invisibleNotesType = ifNotNull(svd.data.invisibleNotesType, saved.invisibleNotesType);
 		controls = ifNotNull(svd.data.controls, controls);
 		language = ifNotNull(svd.data.language, language);
-		modchartEnabled = ifNotNull(svd.data.modchartEnabled, modchartEnabled);
+		saved.modchartEnabled = ifNotNull(svd.data.modchartEnabled, saved.modchartEnabled);
 		flashingLights = ifNotNull(svd.data.flashingLights, flashingLights);
-		antialiasing = ifNotNull(svd.data.antialiasing, antialiasing);
+		saved.antialiasing = ifNotNull(svd.data.antialiasing, saved.antialiasing);
 		seenOptionsWarning = ifNotNull(svd.data.seenOptionsWarning_Int, seenOptionsWarning);
-		silentCountdown = ifNotNull(svd.data.silentCountdown, silentCountdown);
-		noteMissAction = ifNotNull(svd.data.noteMissAction, noteMissAction);
+		saved.silentCountdown = ifNotNull(svd.data.silentCountdown, saved.silentCountdown);
+		saved.noteMissAction = ifNotNull(svd.data.noteMissAction, saved.noteMissAction);
 		showFPS = ifNotNull(svd.data.showFPS, showFPS);
-		resetButton = ifNotNull(svd.data.resetButton, resetButton);
-		noteCamMovement = ifNotNull(svd.data.noteCamMovement, noteCamMovement);
-		selfAware = ifNotNull(svd.data.selfAware, selfAware);
+		saved.resetButton = ifNotNull(svd.data.resetButton, saved.resetButton);
+		saved.noteCamMovement = ifNotNull(svd.data.noteCamMovement, saved.noteCamMovement);
+		saved.selfAware = ifNotNull(svd.data.selfAware, saved.selfAware);
 		dataStrip = ifNotNull(svd.data.dataStrip, dataStrip);
-		uiReloading = ifNotNull(svd.data.uiReloading, uiReloading);
-		noteQuant = ifNotNull(svd.data.noteQuant, noteQuant);
+		saved.uiReloading = ifNotNull(svd.data.uiReloading, saved.uiReloading);
+		saved.noteQuant = ifNotNull(svd.data.noteQuant, saved.noteQuant);
 		
-		playstate_opponentmode = ifNotNull(svd.data.playstate_opponentmode, playstate_opponentmode);
-		playstate_bothside = ifNotNull(svd.data.playstate_bothside, playstate_bothside);
-		playstate_endless = ifNotNull(svd.data.playstate_endless, playstate_endless);
-		playstate_guitar = ifNotNull(svd.data.playstate_guitar, playstate_guitar);
-		playstate_confusion = ifNotNull(svd.data.playstate_confusion, playstate_confusion);
+		saved.playstate_opponentmode = ifNotNull(svd.data.playstate_opponentmode, saved.playstate_opponentmode);
+		saved.playstate_bothside = ifNotNull(svd.data.playstate_bothside, saved.playstate_bothside);
+		saved.playstate_endless = ifNotNull(svd.data.playstate_endless, saved.playstate_endless);
+		saved.playstate_guitar = ifNotNull(svd.data.playstate_guitar, saved.playstate_guitar);
+		saved.playstate_confusion = ifNotNull(svd.data.playstate_confusion, saved.playstate_confusion);
 
-		updatePlayStateAny();
+		saved.updatePlayStateAny();
 		
 		/*var insertControls = new Map<String, Array<Array<Int>>>();
 		insertControls = ifNotNull(svd.data.controls, controls);
@@ -226,6 +235,7 @@ class Options
 		}
 
 		svd.destroy();
+		instance = saved.copy();
 	}
 	
 	static inline function ifNotNull(a:Any, b:Any):Null<Any> {
@@ -248,5 +258,13 @@ class Options
 
 	public static function getUIControlNameBoth(num:String) {
 		return Translation.getTranslation("two keys", "optionsMenu", [ControlsSubState.ConvertKey(uiControls.get(num)[0], true), ControlsSubState.ConvertKey(uiControls.get(num)[1], true)], '${ControlsSubState.ConvertKey(uiControls.get(num)[0], true)}/${ControlsSubState.ConvertKey(uiControls.get(num)[1], true)}');
+	}
+
+	public function copy() {
+		var a = new Options();
+		for (n in Reflect.fields(a)) { //n/a
+			Reflect.setProperty(a, n, Reflect.getProperty(this, n));
+		}
+		return a;
 	}
 }

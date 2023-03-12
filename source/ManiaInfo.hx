@@ -506,7 +506,7 @@ class ManiaInfo {
 		}
 		mi.scale = GetNoteScale(mi);
 		mi.spacing = GetNoteSpacing(mi);
-		if (Options.middleScroll && Options.middleLarge) {
+		if (Options.saved.middleScroll && Options.saved.middleLarge) {
 			//Middle Large
 			//we override right now
 			//todo: have handling for custom mania

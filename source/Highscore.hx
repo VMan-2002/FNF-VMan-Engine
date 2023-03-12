@@ -118,18 +118,18 @@ class Highscore
 	public static function getModeString(?translated:Bool = false, ?prefixed:Bool = false):String {
 		var prefix = prefixed ? (translated ? Translation.getTranslation("prefix", "modifier", null, "^") : "^") : "";
 		var result:Array<String> = new Array<String>();
-		if (Options.playstate_bothside) {
+		if (Options.instance.playstate_bothside) {
 			result.push("Both");
-		} else if (Options.playstate_opponentmode) {
+		} else if (Options.instance.playstate_opponentmode) {
 			result.push("Opponent");
 		}
-		if (Options.playstate_endless && !PlayState.isStoryMode) {
+		if (Options.instance.playstate_endless && !PlayState.isStoryMode) {
 			result.push("Endless");
 		}
-		if (Options.playstate_guitar) {
+		if (Options.instance.playstate_guitar) {
 			result.push("Guitar");
 		}
-		if (Options.playstate_confusion) {
+		if (Options.instance.playstate_confusion) {
 			result.push("Confusion");
 		}
 		if (result.length == 0) {

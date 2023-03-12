@@ -63,7 +63,7 @@ class SwagNoteSkin {
 			if (funky != null)
 				noteSkin = funky;
 		}*/
-		if (Options.downScroll && noteSkin.imageDownscroll != null) {
+		if (Options.instance.downScroll && noteSkin.imageDownscroll != null) {
 			noteSkin.image = noteSkin.imageDownscroll;
 		}
 		noteSkin.scale = noteSkin.scale != null ? noteSkin.scale : 1.0;
@@ -312,8 +312,8 @@ class SwagNoteType {
 		noteType.animReplace = noteType.animReplace != "" ? noteType.animReplace : null;
 		noteType.bob = noteType.bob != null ? noteType.bob : 0;
 		noteType.glitch = noteType.glitch != null ? noteType.glitch : false;
-		noteType.guitar = Options.playstate_guitar || (noteType.guitar == true);
-		noteType.guitarOpen = noteType.guitarOpen != null ? noteType.guitarOpen && !noteType.guitar : false;
+		noteType.guitar = Options.instance.playstate_guitar || (noteType.guitar == true);
+		noteType.guitarOpen = noteType.guitarOpen != null ? noteType.guitarOpen && noteType.guitar : false;
 		noteType.guitarHopo = noteType.guitarHopo != null ? noteType.guitarHopo : false;
 		if (noteType.characterName != null && noteType.characterName != "") {
 			if (noteType.charNames == null)
@@ -404,6 +404,7 @@ class Note extends FlxSprite
 	public var strumLineNum:Int = 0;
 	public var strumNoteNum:Int = 0;
 	public var center:Bool = false;
+	public var charNum:Int = -1;
 
 	public static var loadedNoteSkins:Map<String, SwagNoteSkin> = new Map<String, SwagNoteSkin>();
 	public static var loadedUIStyles:Map<String, SwagUIStyle> = new Map<String, SwagUIStyle>();
@@ -455,7 +456,7 @@ class Note extends FlxSprite
 
 		var myArrow = mania.arrows[noteData];
 
-		//if (Options.downScroll) {
+		//if (Options.instance.downScroll) {
 			//scrollDirection = 180;
 		//}
 
@@ -536,7 +537,7 @@ class Note extends FlxSprite
 		if (isSustainNote && prevNote != null) {
 			prevNote.nextNote = this;
 			
-			flipY = Options.downScroll;
+			flipY = Options.instance.downScroll;
 			
 			noteScore * 0.2;
 			alpha = 0.6;
@@ -555,7 +556,7 @@ class Note extends FlxSprite
 				//prevNote.updateHitbox();
 				// prevNote.setGraphicSize();
 			}
-		} else if (!getNoteTypeData().hasPressNote) {
+		} else if (!typedata.hasPressNote) {
 			//todo: make this look better
 			animation.play('${myArrow}holdstart');
 			isSustainNote = true;

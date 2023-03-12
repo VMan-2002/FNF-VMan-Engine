@@ -73,6 +73,7 @@ class Main extends Sprite
 		Options.LoadOptions();
 		Achievements.LoadOptions();
 		Weeks.LoadOptions();
+		PlayState.curManiaInfo = ManiaInfo.GetManiaInfo("4k");
 
 		setupGame();
 	}

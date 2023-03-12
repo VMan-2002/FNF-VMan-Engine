@@ -212,7 +212,7 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 			
 			if (controls.BACK) {
 				if (optionBack()) {
-					Options.SaveOptions();
+					Options.saved.SaveOptions();
 					goBack();
 					return;
 				}

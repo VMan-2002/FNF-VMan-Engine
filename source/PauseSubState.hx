@@ -120,7 +120,7 @@ class PauseSubState extends MusicBeatSubstate
 				case "resume":
 					close();
 				case "restart song":
-					if (Options.uiReloading) {
+					if (Options.instance.uiReloading) {
 						Note.SwagNoteSkin.clearLoadedNoteSkins();
 						Note.SwagUIStyle.clearLoadedUIStyles();
 						Note.SwagNoteType.clearLoadedNoteTypes();

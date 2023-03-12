@@ -50,7 +50,7 @@ class ResetControlsSubState extends MusicBeatSubstate
 
 		if (FlxG.keys.justPressed.ENTER) {
 			Options.uiControls = Options.uiControlsDefault;
-			Options.SaveOptions();
+			Options.saved.SaveOptions();
 			FlxG.switchState(new OptionsMenu(new ControlsSubState()));
 
 			close();

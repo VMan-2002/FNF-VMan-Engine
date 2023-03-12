@@ -22,13 +22,17 @@ class HudThing extends FlxGroup
 		"song", "engine"
 	];
 	public var autoUpdate:Bool = false;
+
+	//arbitrary whatevers
+	//public var ratingAcc:Array<Float> = [0.25, 0.5, 0.7, 0.8, 0.85, 0.9, 0.95, 0.975, 0.9825, 0.995, 1];
+	//public var ratingLetters:Array<String> = ["F", "D", "C", "B", "B+", "A-", "A", "A+", "S-", "S", "S+", "P"];
 	
 	public function new(x:Float, y:Float, list:Array<String>, ?vertical:Bool = false)
 	{
 		super();
 		
 		items = list.filter(function(item) {
-			return !Options.botplay || botplayExclude.indexOf(item) == -1;
+			return !Options.instance.botplay || botplayExclude.indexOf(item) == -1;
 		});
 		if (PlayState.SONG.actions.contains("hideDifficulty")) {
 			if (items.contains("difficulty")) {
@@ -102,7 +106,7 @@ class HudThing extends FlxGroup
 					text += Translation.getTranslation("hud_maxcombo", "playstate", [Std.string(PlayState.instance.maxCombo)]);
 				case "engine":
 					//this one should always show on the hud thing in the corner
-					text += Translation.getTranslation(Options.botplay ? "hud_engine botplay" : "hud_engine", "playstate");
+					text += Translation.getTranslation(Options.instance.botplay ? "hud_engine botplay" : "hud_engine", "playstate");
 				//For input offset calibrate
 				case "offset_min":
 					text += "MinOffset: "+offsetMilliseconds(getPlayState().hitOffsetMin);

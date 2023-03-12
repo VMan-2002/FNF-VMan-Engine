@@ -52,13 +52,14 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 
 			babyArrow.updateHitbox();
 			babyArrow.scrollFactor.set();
-			babyArrow.visible = babyArrow.visible && !Options.invisibleNotes;
+			babyArrow.visible = babyArrow.visible && !Options.instance.invisibleNotes;
 
 			babyArrow.animation.play('static');
 
 			add(babyArrow);
 			strumNotes.push(babyArrow);
 		}
+		updateSpan();
 
 		if (anim || (((PlayState.instance.startingSong && !PlayState.isStoryMode) || PlayState.SONG.actions.contains("forceStrumAppearAnim")) && !PlayState.SONG.actions.contains("noStrumAppearAnim"))) {
 			trace("play appear anim, num ");
@@ -74,7 +75,7 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 			var delay = 0.5 + (1.6 * i / Math.max(thisManiaInfo.keys, 8));
 			FlxTween.tween(babyArrow, {y: babyArrow.y + 10}, 1, {ease: FlxEase.circOut, startDelay: delay});
 			babyArrow.playAppearAnim(delay);
-			if (!Options.invisibleNotes && makeVisible) {
+			if (!Options.instance.invisibleNotes && makeVisible) {
 				babyArrow.visible = true;
 			}
 		}
