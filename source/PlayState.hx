@@ -106,6 +106,7 @@ class PlayState extends MusicBeatState
 	private var notes:FlxTypedGroup<Note>;
 	private var unspawnNotes:Array<Note> = [];
 	private var funnyNotes:Array<Note> = [];
+	private var funnyManias:Array<SwagMania> = [];
 
 	public var strumLine:FlxSprite;
 	private var curSection:Int = 0;
@@ -1284,6 +1285,7 @@ class PlayState extends MusicBeatState
 						}
 						generateNotes(section, section.sectionNotes, -1, funnyNotes);
 					}
+					funnyManias[i] = ManiaInfo.GetManiaInfo(swagshit.maniaStr);
 				}
 			}
 			funnyNotes.sort(sortByShit);
@@ -1338,15 +1340,13 @@ class PlayState extends MusicBeatState
 				}
 			}
 
-			var susLength:Float = swagNote.sustainLength;
-
-			susLength = susLength / Conductor.stepCrochet;
+			var susLength:Float = swagNote.sustainLength / Conductor.stepCrochet;
 			unspawnNotes.push(swagNote);
 
 			swagNote.mustPress = gottaHitNote;
 
 			for (susNote in 0...Math.floor(susLength)) {
-				oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
+				oldNote = unspawnNotes[unspawnNotes.length - 1];
 
 				var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, oldNote, true, null, swagNote.noteType, swagNote.strumLineNum);
 				sustainNote.scrollFactor.set();
@@ -1357,7 +1357,7 @@ class PlayState extends MusicBeatState
 			}
 
 			if (swagNote.getNoteTypeData().hasReleaseNote) {
-				unspawnNotes[Std.int(unspawnNotes.length - 1)].makeReleaseNote();
+				unspawnNotes[unspawnNotes.length - 1].makeReleaseNote();
 			}
 		}
 	}
@@ -1614,11 +1614,10 @@ class PlayState extends MusicBeatState
 				// trace(PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection);
 			}*/
 
-			var newFocus:Character = SONG.notes[currentSection].mustHitSection != false ? boyfriend : dad;
 			var focusNum:Null<Int> = SONG.notes[currentSection].focusCharacter;
-			if (focusNum != null && focusNum >= 0 && focusNum < Character.activeArray.length) {
-				newFocus = Character.activeArray[focusNum];
-			}
+			var newFocus:Character = (focusNum != null && focusNum >= 0 && focusNum < Character.activeArray.length) ?
+				(SONG.notes[currentSection].mustHitSection != false ? boyfriend : dad) :
+				Character.activeArray[focusNum];
 
 			if (focusCharacter != newFocus) {
 				camFollowSetOnCharacter(newFocus);
@@ -1728,35 +1727,36 @@ class PlayState extends MusicBeatState
 				}*/
 				
 				var strumNumber = daNote.strumLineNum;
-				if (strumLines.members[strumNumber] == null) {
-					return; //Do nothing if strumline not found
-				}
-				//todo: i guess. It's fine if you disallow both side mode when a song has mania changes
-				var isInManiaChange:Bool = false; //currentManiaPartName[strumNumber] == maniaPartArr[daNote.maniaPart][strumNumber];
-				var daStrum:StrumNote = strumLines.members[strumNumber].members[(isInManiaChange || daNote.center) ? 0 : daNote.strumNoteNum];
-				daNote.y = (daStrum.y - (Conductor.songPosition - daNote.strumTime) * speed * daStrum.speedMult);
-				daNote.x = daStrum.x;
-				if (isInManiaChange || daNote.center) {
-					daNote.y += strumLines.members[strumNumber].spanY * daNote.maniaFract;
-					daNote.x += strumLines.members[strumNumber].spanX * daNote.maniaFract;
-				}
+
 				var isComputer = (!daNote.mustPress) || Options.instance.botplay;
 				var isPass = daNote.strumTime <= Conductor.songPosition;
+				
+				if (strumLines.members[strumNumber] != null) { //Do nothing if strumline not found
+					//todo: i guess. It's fine if you disallow both side mode when a song has mania changes
+					var isInManiaChange:Bool = false; //currentManiaPartName[strumNumber] == maniaPartArr[daNote.maniaPart][strumNumber];
+					var daStrum:StrumNote = strumLines.members[strumNumber].members[(isInManiaChange || daNote.center) ? 0 : daNote.strumNoteNum];
+					daNote.y = (daStrum.y - (Conductor.songPosition - daNote.strumTime) * speed * daStrum.speedMult);
+					daNote.x = daStrum.x;
+					if (isInManiaChange || daNote.center) {
+						daNote.y += strumLines.members[strumNumber].spanY * daNote.maniaFract;
+						daNote.x += strumLines.members[strumNumber].spanX * daNote.maniaFract;
+					}
 
-				// i am so fucking sorry for this if condition
-				if (daNote.isSustainNote
-					//&& daNote.y + daNote.offset.y <= strumLine.y + Note.swagWidth / 2
-					&& isPass
-					&& (isComputer || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit)))
-				) {
-					//todo: make this better in downscroll
-					var since = Conductor.songPosition - daNote.strumTime;
-					var clipEnd = daNote.strumTime + Conductor.crochet;
-					var clipFraction = (clipEnd - since) / Conductor.crochet;
-					var swagRect = new FlxRect(0, clipFraction * daNote.height / daNote.scale.x, daNote.width / daNote.scale.x, daNote.height * daNote.scale.x);
-					swagRect.height -= swagRect.y;
+					// i am so fucking sorry for this if condition
+					if (daNote.isSustainNote
+						//&& daNote.y + daNote.offset.y <= strumLine.y + Note.swagWidth / 2
+						&& isPass
+						&& (isComputer || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit)))
+					) {
+						//todo: make this better in downscroll
+						var since = Conductor.songPosition - daNote.strumTime;
+						var clipEnd = daNote.strumTime + Conductor.crochet;
+						var clipFraction = (clipEnd - since) / Conductor.crochet;
+						var swagRect = new FlxRect(0, clipFraction * daNote.height / daNote.scale.x, daNote.width / daNote.scale.x, daNote.height * daNote.scale.x);
+						swagRect.height -= swagRect.y;
 
-					daNote.clipRect = swagRect;
+						daNote.clipRect = swagRect;
+					}
 				}
 
 				//todo: sometimes the opponent misses notes. why is this
@@ -1764,7 +1764,7 @@ class PlayState extends MusicBeatState
 					if (daNote.mustPress) {
 						goodNoteHit(daNote);
 					} else {
-						opponentNoteHit(daNote);
+						//opponentNoteHit(daNote);
 					}
 				}
 
@@ -2713,16 +2713,14 @@ class PlayState extends MusicBeatState
 		if (noteTypeData.noAnim)
 			return;
 		var char:Character = (note != null && note.charNum != -1) ? Character.activeArray[note.charNum] : (noteTypeData.charNums != null ? Character.activeArray[noteTypeData.charNums[0]] : (isBoyfriend ? boyfriend : dad));
-		var color = curManiaInfo.arrows[note == null ? noteData : note.noteData];
+		var color = (note.strumLineNum < 0 ? funnyManias[0 - note.strumLineNum] : curManiaInfo).arrows[note == null ? noteData : note.noteData];
 		var colorNote = "sing" + color.toUpperCase();
 		if (isMiss)
 			return char.playAvailableAnim(['${colorNote}miss', 'sing${ManiaInfo.Dir[color]}miss'], true);
 		char.holdTimer = 0;
 		if (note.isSustainNote && char.animNoSustain)
 			return;
-		var postfix = "";
-		if (noteTypeData.animPostfix != "-alt" && (!isBoyfriend && SONG.notes[currentSection] != null && SONG.notes[currentSection].altAnim))
-			postfix += '-alt';
+		var postfix = (noteTypeData.animPostfix != "-alt" && (!isBoyfriend && SONG.notes[currentSection] != null && SONG.notes[currentSection].altAnim)) ? '-alt' : "";
 		if (noteTypeData.animPostfix != null)
 			postfix += noteTypeData.animPostfix;
 		var defaultAnim = 'sing${ManiaInfo.Dir[color]}';
@@ -2747,7 +2745,12 @@ class PlayState extends MusicBeatState
 
 	var fastCarCanDrive:Bool = true;
 
+	//inline function getFastCar():SpriteVMan {
+	//	return currentStage.elementsNamed.get("fastCar");
+	//}
+
 	function resetFastCar():Void {
+		//var fastCar = getFastCar();
 		fastCar.x = -12600;
 		fastCar.y = FlxG.random.int(140, 250);
 		fastCar.velocity.x = 0;
@@ -2757,6 +2760,7 @@ class PlayState extends MusicBeatState
 	function fastCarDrive() {
 		FlxG.sound.play(Paths.soundRandom('carPass', 0, 1), 0.7);
 
+		//var fastCar = getFastCar();
 		fastCar.velocity.x = (FlxG.random.int(510, 660) / FlxG.elapsed);
 		fastCarCanDrive = false;
 		new FlxTimer().start(2, function(tmr:FlxTimer)
@@ -2771,6 +2775,10 @@ class PlayState extends MusicBeatState
 	var trainCars:Int = 8;
 	var trainFinishing:Bool = false;
 	var trainCooldown:Int = 0;
+
+	//inline function getTrain():SpriteVMan {
+	//	return currentStage.elementsNamed.get("phillyTrain");
+	//}
 
 	function trainStart():Void {
 		trainMoving = true;

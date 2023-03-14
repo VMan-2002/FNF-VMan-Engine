@@ -463,7 +463,7 @@ class ChartingState extends MusicBeatState {
 		// _song.needsVoices = check_mustHit.checked;
 		Translation.setUIObjectFont(check_mustHitSection);
 
-		check_altAnim = new FlxUICheckBox(10, 400, null, null, Translation.getTranslation("Alt Animation", "charteditor"), 100);
+		check_altAnim = new FlxUICheckBox(180, 30, null, null, Translation.getTranslation("Alt Animation", "charteditor"), 100);
 		check_altAnim.name = 'check_altAnim';
 		Translation.setUIObjectFont(check_altAnim);
 
@@ -482,7 +482,7 @@ class ChartingState extends MusicBeatState {
 			}
 		});
 
-		stepperSectionChar = new FlxUINumericStepper(10, 440, 4, -1, -1, 999, 0);
+		stepperSectionChar = new FlxUINumericStepper(180, 50, 1, -1, -1, 999, 0);
 		stepperSectionChar.name = "section_focuschar";
 
 		tab_group_section.add(stepperLength);

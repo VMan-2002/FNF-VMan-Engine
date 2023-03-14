@@ -56,6 +56,7 @@ class Stage
 	public var elementsBack:FlxTypedGroup<SpriteVMan>;
 	public var elementsBetween:FlxTypedGroup<SpriteVMan>;
 	public var elementsAll:Array<SpriteVMan>;
+	public var elementsNamed:Map<String, SpriteVMan>;
 	//public var namedElements:Map<String, FlxSprite>;
 	public var hide_girlfriend:Bool;
 	public var animFollowup:Map<String, String> = [
@@ -118,7 +119,7 @@ class Stage
 		};
 	}
 
-	public static function makeElements(elementsList:Null<Array<StageElement>>):FlxTypedGroup<SpriteVMan> {
+	public static function makeElements(elementsList:Null<Array<StageElement>>, ?stage:Stage):FlxTypedGroup<SpriteVMan> {
 		if (elementsList == null)
 			return new FlxTypedGroup<SpriteVMan>();
 		var result:FlxTypedGroup<SpriteVMan> = new FlxTypedGroup<SpriteVMan>();
@@ -153,6 +154,8 @@ class Stage
 			sprite.alpha = element.alpha == null ? 1 : element.alpha;
 			sprite.updateHitbox();
 			result.add(sprite);
+			if (stage != null)
+				stage.elementsNamed.set(element.name, sprite);
 		}
 		return result;
 	}
@@ -183,6 +186,7 @@ class Stage
 		target.charPosition = data.charPosition == null ? [[770,100],[100,100],[400,130]] : data.charPosition;
 		target.charFacing = data.charFacing == null ? [0] : data.charFacing;
 		target.defaultCamZoom = data.defaultCamZoom == null ? 1.05 : data.defaultCamZoom;
+		target.elementsNamed = new Map<String, SpriteVMan>();
 		target.elementsFront = makeElements(data.elementsFront);
 		target.elementsBack = makeElements(data.elementsBack);
 		target.elementsBetween = makeElements(data.elementsBetween);
