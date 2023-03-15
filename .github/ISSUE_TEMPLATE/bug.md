@@ -31,6 +31,8 @@ labels: bug
 - [ ] Google Chrome (or chomium based like Brave, vivaldi, MS Edge)
 - [ ] Firefox
 - [ ] Safari
+- [ ] Opera GX
+- [ ] Other
 
 ## What version of the game are you using? Look in the bottom left corner of the main menu. (ex: 0.2.7, 0.2.1, shit like that)
 
