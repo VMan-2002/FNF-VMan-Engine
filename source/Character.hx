@@ -999,7 +999,7 @@ class Character extends SpriteVMan
 		var thing:String = 'assets/objects/characters/${name}.json';
 		var thingMy:String = 'mods/${mod}/objects/characters/${name}.json';
 		var isMyMod = mod != "" && FileSystem.exists(thingMy);
-		trace('loading custom char of ${isMyMod ? thingMy : thing}');
+		trace('loading custom char file of ${isMyMod ? thingMy : thing}');
 		if (isMyMod ? FileSystem.exists(thingMy) : OpenFlAssets.exists(thing)) {
 			var loadStr = isMyMod ? File.getContent(thingMy) : Assets.getText(thing);
 			//trace(loadStr);

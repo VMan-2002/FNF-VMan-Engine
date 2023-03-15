@@ -129,7 +129,7 @@ class HudThing extends FlxGroup
 		return vertical ? text+"\n" : text; //vertical text needs an additional newline idk why
 	}
 	
-	public function getPlayState():Dynamic {
+	public inline function getPlayState():Dynamic {
 		return PlayState.instance;
 	}
 	

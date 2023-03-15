@@ -430,7 +430,6 @@ class DialogueCharacter extends SpriteVMan {
 
 	public override function update(elapsed:Float) {
 		if (animation.curAnim != null && animation.curAnim.finished) {
-			var animname = animation.curAnim.name;
 			if (animStartsWith("idle")) {
 				return super.update(elapsed); //do nothing
 			} else if (!talking && animStartsWith("talking")) {

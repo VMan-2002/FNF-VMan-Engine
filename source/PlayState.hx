@@ -1614,10 +1614,11 @@ class PlayState extends MusicBeatState
 				// trace(PlayState.SONG.notes[Std.int(curStep / 16)].mustHitSection);
 			}*/
 
+			var newFocus:Character = SONG.notes[currentSection].mustHitSection != false ? boyfriend : dad;
 			var focusNum:Null<Int> = SONG.notes[currentSection].focusCharacter;
-			var newFocus:Character = (focusNum != null && focusNum >= 0 && focusNum < Character.activeArray.length) ?
-				(SONG.notes[currentSection].mustHitSection != false ? boyfriend : dad) :
-				Character.activeArray[focusNum];
+			if (focusNum != null && focusNum >= 0 && focusNum < Character.activeArray.length) {
+				newFocus = Character.activeArray[focusNum];
+			}
 
 			if (focusCharacter != newFocus) {
 				camFollowSetOnCharacter(newFocus);
