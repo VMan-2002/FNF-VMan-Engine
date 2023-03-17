@@ -96,6 +96,8 @@ class HudThing extends FlxGroup
 					text += Translation.getTranslation("hud_bads", "playstate", [Std.string(PlayState.instance.bads)]);
 				case "shits":
 					text += Translation.getTranslation("hud_shits", "playstate", [Std.string(PlayState.instance.shits)]);
+				case "imperfects":
+					text += Translation.getTranslation("hud_imperfects", "playstate", [Std.string(PlayState.instance.shits + PlayState.instance.bads + PlayState.instance.goods)]);
 				case "hits":
 					text += Translation.getTranslation("hud_hits", "playstate", [Std.string(PlayState.instance.songHits)]);
 				case "totalnotes":

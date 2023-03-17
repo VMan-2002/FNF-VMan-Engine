@@ -54,8 +54,8 @@ class ChartingState extends MusicBeatState {
 	var bpmTxt:FlxText;
 
 	var strumLine:FlxSprite;
-	var curSong:String = 'Dadbattle'; //seems unused
-	var amountSteps:Int = 0;
+	//var curSong:String = 'Dadbattle'; //seems unused
+	//var amountSteps:Int = 0;
 	var bullshitUI:FlxGroup;
 
 	var highlight:FlxSprite;
@@ -1592,12 +1592,19 @@ class ChartingState extends MusicBeatState {
 			if (json.song.threeLanes != true) {
 				Reflect.deleteField(json.song, "threeLanes");
 			}
+			if (json.song.picospeaker != "") {
+				Reflect.deleteField(json.song, "picospeaker");
+			}
+			if (json.song.picocharts == null || json.song.picocharts.length == 0 || json.song.picocharts.filter(function(a) {
+				return a != "";
+			}).length == 0) {
+				Reflect.deleteField(json.song, "picocharts");
+			}
 		}
 
 		var data:String = Json.stringify(json);
 
-		if ((data != null) && (data.length > 0))
-		{
+		if ((data != null) && (data.length > 0)) {
 			_file = new FileReference();
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);

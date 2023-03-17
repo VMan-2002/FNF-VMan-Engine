@@ -22,6 +22,7 @@ import sys.io.File;
 class NoteColor
 {
 	//todo: this doesn't really work, but it's a start
+	//A mod already did this??????? What!!!!!!! https://gamebanana.com/mods/406432
 	
 	public static function TestThing() {
 		var arrs = makeNoteSet(
