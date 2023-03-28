@@ -27,11 +27,11 @@ import polymod.format.ParseRules.TargetSignatureElement;
 //todo: maybe i can implement this at some point https://github.com/TheZoroForce240/FNF-Modcharting-Tools
 
 class SwagNoteSkin {
-	public var image:String;
+	public var image:String = "normal/NOTE_assets";
 	public var imageDownscroll:String = "";
 	public var scale:Null<Float>;
 	public var antialias:Null<Bool>;
-	public var arrows:Map<String, Array<SwagCharacterAnim>>;
+	public var arrows:Null<Map<String, Array<SwagCharacterAnim>>>;
 	public var arrowColors:Map<String, Array<Int>>;
 	public var noteSplashImage:String;
 	public var noteSplashScale:Null<Float>;
@@ -500,10 +500,11 @@ class Note extends FlxSprite
 
 			default:
 				//load custom
-				var noteSkin:SwagNoteSkin = SwagNoteSkin.loadNoteSkin(PlayState.SONG.noteSkin, PlayState.modName);
-				var stuff = ((noteSkin.imageDownscroll != "" && Options.instance.downScroll) ? noteSkin.imageDownscroll : noteSkin.image).replace("\\", "/").split("/");
-				stuff[stuff.length] = typedata.imagePrefix + stuff[stuff.length];
+				var noteSkin:SwagNoteSkin = SwagNoteSkin.loadNoteSkin(skin, PlayState.modName);
+				var stuff = ((noteSkin.imageDownscroll != "" && noteSkin.imageDownscroll != null && Options.instance.downScroll) ? noteSkin.imageDownscroll : noteSkin.image).replace("\\", "/").split("/");
+				stuff[stuff.length - 1] = typedata.imagePrefix + stuff[stuff.length - 1];
 				frames = Paths.getSparrowAtlas(stuff.join("/"));
+				//trace('Images [normal: ${noteSkin.image}] [downscroll: ${noteSkin.imageDownscroll}] Stuff is ${stuff.join("/")}');
 				
 				if (noteSkin.arrows == null) {
 					animation.addByPrefix('${myArrow}Scroll', '${typedata.noteAnimPrefix}${myArrow}0', 24);
