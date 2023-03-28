@@ -89,105 +89,26 @@ typedef BobBleed = {
 
 class PlayState extends MusicBeatState
 {
-	public static var curStage:String = '';
+	public static var instance:PlayState;
+	public static var modName:String = "";
+	public var allowGameplayChanges:Bool;
+	
+	////::..
+	//Song / Audio
 	public static var SONG:SwagSong;
-	public static var isStoryMode:Bool = false;
-	public static var storyWeek:String = "week1";
-	public static var storyPlaylist:Array<String> = [];
-	public static var storyDifficulty:Int = 1;
-
+	public static var curStage:String = '';
+	public var curSong:String = "";
+	public var songLength:Float = 0;
 	public var vocals:FlxSound;
 
-	public var dad:Character;
-	public var gf:Character;
-	public var boyfriend:Boyfriend;
-	public var stageCharacters:Array<Character>;
-
-	private var notes:FlxTypedGroup<Note>;
-	private var unspawnNotes:Array<Note> = [];
-	private var funnyNotes:Array<Note> = [];
-	private var funnyManias:Array<SwagMania> = [];
-
-	public var strumLine:FlxSprite;
-	private var curSection:Int = 0;
-
-	public var camFollow:FlxObject;
-	public var camFollowPos:FlxObject;
-	public var camFollowOffset:FlxObject;
-	public var camFollowSpeed:Float = 1;
-	public var camOffset:FlxPoint = new FlxPoint(0, 0);
-	public var camIsFollowing:Bool = true;
-
-	public static var prevCamFollow:FlxObject;
-
-	public var strumLineNotes = new Array<StrumNote>();
-	public var strumLines:FlxTypedGroup<StrumLine>;
-	public var playerStrums = new StrumLine();
-	public var opponentStrums = new StrumLine();
-
-	public var camZooming:Bool = false;
-	public var zoomBeats:Int = 4;
-	public var curSong:String = "";
-
-	public var gfSpeed:Int = 1;
-	public var health:Float = 1;
-	public var maxHealth:Float = 2;
-	public var combo:Int = 0;
-	public var maxCombo:Int = 0;
-
-	private var healthBarBG:FlxSprite;
-	private var healthBar:FlxBar;
-
+	public var voicesName:String = "Voices";
+	public var instName:String = "Inst";
+	public var songTitle:String = "pewdiepie";
+	
+	public var currentSection:Int; //todo: So im making variable length sections (for example: with non 4/4 time signatures)
+	
 	private var generatedMusic:Bool = false;
 	public var startingSong:Bool = false;
-
-	public var iconP1:HealthIcon;
-	public var iconP2:HealthIcon;
-	public var camHUD:FlxCamera;
-	public var camGame:FlxCamera;
-
-	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
-	var dialogueVMan:DialogueBoxVMan;
-
-	//var halloweenBG:FlxSprite;
-	var isHalloween:Bool = false;
-
-	var phillyCityLights:FlxTypedGroup<FlxSprite>;
-	var phillyTrain:FlxSprite;
-	var trainSound:FlxSound;
-
-	var limo:FlxSprite;
-	var grpLimoDancers:FlxTypedGroup<BackgroundDancer>;
-	var fastCar:FlxSprite;
-
-	var bgGirls:BackgroundDancer;
-	var wiggleShit:WiggleEffect = new WiggleEffect();
-
-	var talking:Bool = true;
-	public var songScore:Int = 0;
-	public var possibleMoreScore:Int = 0;
-	//var scoreTxt:FlxText;
-	
-	public var songMisses:Int = 0;
-	public var songHits:Int = 0;
-	public var songHittableMisses:Int = 0;
-	
-	public var sicks:Int = 0;
-	public var goods:Int = 0;
-	public var bads:Int = 0;
-	public var shits:Int = 0;
-
-	public static var campaignScore:Int = 0;
-	public static var campaignMisses:Int = 0;
-
-	var defaultCamZoom:Float = 1.05;
-
-	// how big to stretch the pixel art assets
-	public static var daPixelZoom:Float = 6;
-
-	var inCutscene:Bool = false;
-	
-	public var lastHitNoteTime:Float = 0;
 
 	#if desktop
 	// Discord RPC variables
@@ -195,58 +116,168 @@ class PlayState extends MusicBeatState
 	var detailsText:String = "";
 	var detailsPausedText:String = "";
 	#end
-	public var songLength:Float = 0;
+
+	////::..
+	//Story Mode / Difficulty
+	public static var isStoryMode:Bool = false;
+	public static var storyWeek:String = "week1";
+	public static var storyPlaylist:Array<String> = [];
+	public static var storyDifficulty:Int = 1;
 	public var storyDifficultyText:String = "";
+
+	public static var campaignScore:Int = 0;
+	public static var campaignMisses:Int = 0;
+
+	////::..
+	//Characters
+	public var dad:Character;
+	public var gf:Character;
+	public var boyfriend:Boyfriend;
+	public var stageCharacters:Array<Character>;
+	
+	public var gfSpeed:Int = 1;
+
+	////::..
+	//Notes / Strumlines / Mania
+	private var notes:FlxTypedGroup<Note>;
+	private var unspawnNotes:Array<Note> = [];
+	private var funnyNotes:Array<Note> = [];
+	private var funnyManias:Array<SwagMania> = [];
+	public var lastHitNoteTime:Float = 0;
+	
+	public var strumLineNotes = new Array<StrumNote>();
+	public var strumLines:FlxTypedGroup<StrumLine>;
+	public var playerStrums = new StrumLine();
+	public var opponentStrums = new StrumLine();
+	
+	public var strumLine:FlxSprite;
 	
 	public static var curManiaInfo:SwagMania;
-	public static var instance:PlayState;
-	public static var modName:String = "";
 	
-	public var hudThings = new FlxTypedGroup<HudThing>();
+	public var notesCanBeHit = true;
+	var usedBotplay = false;
+	//todo: implement these
+	var currentManiaPart:Int = 0;
+	var currentManiaPartName:Array<String> = [];
+	var maniaPartArr:Array<Array<String>> = [];
 
-	public var ratingsGroup = new FlxTypedGroup<FlxSprite>();
+	////::..
+	//Health / Health Bar
+	public var health:Float = 1;
+	public var maxHealth:Float = 2;
+	public var bobBleeds = new Array<BobBleed>();
+
+	private var healthBarBG:FlxSprite;
+	private var healthBar:FlxBar;
+
+	public var iconP1:HealthIcon;
+	public var iconP2:HealthIcon;
+
+	////::..
+	//Statistics
+	public var combo:Int = 0;
+	public var maxCombo:Int = 0;
 	
-	public var currentSection:Int; //todo: So im making variable length sections (for example: with non 4/4 time signatures)
-	public var focusCharacter:Character;
+	public var songMisses:Int = 0;
+	public var songHits:Int = 0;
+	public var songHittableMisses:Int = 0;
+	public var songScore:Int = 0;
+	public var possibleMoreScore:Int = 0;
+	
+	public var sicks:Int = 0;
+	public var goods:Int = 0;
+	public var bads:Int = 0;
+	public var shits:Int = 0;
+	public var songFC:Int = 0; //todo: Not yet used in Highscore.hx
+	public static final fcTypes:Array<String> = ["sfc", "gfc", "fc", "sdcb", "clear"];
+
+	////::..
+	//Background Stuff
 	public var currentStageFront:FlxTypedGroup<SpriteVMan>;
 	public var currentStageBack:FlxTypedGroup<SpriteVMan>;
 	public var currentStageBetween:FlxTypedGroup<SpriteVMan>;
 	public var currentStage:Stage;
 
-	public var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
+	var isHalloween:Bool = false;
+	var lightningStrikeBeat:Int = 0;
+	var lightningOffset:Int = 8;
 
-	var usedBotplay = false;
+	var limo:FlxSprite;
+	var grpLimoDancers:FlxTypedGroup<BackgroundDancer>;
+	var fastCar:FlxSprite;
+	var fastCarCanDrive:Bool = true;
+	
+	var phillyCityLights:FlxTypedGroup<FlxSprite>;
+	var phillyTrain:FlxSprite;
+	var trainSound:FlxSound;
+	var trainMoving:Bool = false;
+	var trainFrameTiming:Float = 0;
+	var trainCars:Int = 8;
+	var trainFinishing:Bool = false;
+	var trainCooldown:Int = 0;
+	var startedMoving:Bool = false;
 
-	var currentManiaPart:Int = 0;
-	var currentManiaPartName:Array<String> = [];
-	var maniaPartArr:Array<Array<String>> = [];
+	var curLight:Int = 0;
+	
+	var bgGirls:BackgroundDancer;
+	var wiggleShit:WiggleEffect = new WiggleEffect();
 
-	public var currentUIStyle:SwagUIStyle;
+	////::..
+	//Camera / Zoom
+	public var camGame:FlxCamera;
+	
+	public var camFollow:FlxObject;
+	public var camFollowPos:FlxObject;
+	public var camFollowOffset:FlxObject;
+	public var camFollowSpeed:Float = 1;
+	public var camOffset:FlxPoint = new FlxPoint(0, 0);
+	public var camIsFollowing:Bool = true;
 
-	public var allowGameplayChanges:Bool;
-	public var isMiddlescroll:Bool = Options.instance.middleScroll;
-
-	public var events:Array<SwagEvent>;
-
-	public var voicesName:String = "Voices";
-	public var instName:String = "Inst";
-	public var songTitle:String = "pewdiepie";
-
-	public var notesCanBeHit = true;
-
+	public var camZooming:Bool = false;
+	public var zoomBeats:Int = 4;
 	public var camShakes:Array<CamShake> = new Array<CamShake>();
 
+	public static var prevCamFollow:FlxObject;
+	var defaultCamZoom:Float = 1.05;
+	public var useStageCharZooms:Bool = true;
+	public var focusCharacter:Character;
+
+	////::..
+	//HUD
+	public var camHUD:FlxCamera;
+
+	public var hudThings = new FlxTypedGroup<HudThing>();
+	public var ratingsGroup = new FlxTypedGroup<FlxSprite>();
+	public var currentUIStyle:SwagUIStyle;
+	public var isMiddlescroll:Bool = Options.instance.middleScroll;
+	
+	public var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
+	
 	public var timerThing:HudThing;
 	public var timerThingText:FlxText;
 
-	public var cinematicBars:FlxTypedGroup<FlxSprite>;
-	public var useStageCharZooms:Bool = true;
+	////::..
+	//Dialogue / Cutscenes
+	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
+	var dialogueVMan:DialogueBoxVMan;
+	var inCutscene:Bool = false;
 
-	public var bobBleeds = new Array<BobBleed>();
+	////::..
+	//Events
+	public var events:Array<SwagEvent>;
+	public var cinematicBars:FlxTypedGroup<FlxSprite>;
+
+	////::..
+	//Unsorted
+	//var talking:Bool = true;
+
+	// how big to stretch the pixel art assets
+	public static var daPixelZoom:Float = 6;
 
 	//Starpower
-	public var starActive = false;
+	public var starActive:Bool = false;
 
+	////::..
 	//Scripting funny lol
 	//The only hscript your getting is ~~me porting the basegame update's hscript support~~ hscript.
 	//I have since decided lua (Not the plantoid!!!) support is too hard to be worth it (also inspired by forever engine. thanks u lullaby)
@@ -659,8 +690,7 @@ class PlayState extends MusicBeatState
 		if (SONG.gfVersion.length > 0) {
 			gfVersion = SONG.gfVersion;
 		} else {
-			switch (curStage)
-			{
+			switch (curStage) {
 				case 'limo':
 					gfVersion = 'gf-car';
 				case 'mall' | 'mallEvil':
@@ -828,11 +858,6 @@ class PlayState extends MusicBeatState
 
 		add(camFollow);
 
-		if (!Std.isOfType(this, PlayStateOffsetCalibrate)) {
-			add(ratingsGroup);
-			ratingsGroup.cameras = [camHUD];
-		}
-
 		FlxG.camera.follow(camFollowPos, LOCKON, 1);
 		// FlxG.camera.setScrollBounds(0, FlxG.width, 0, FlxG.height);
 		FlxG.camera.zoom = defaultCamZoom;
@@ -989,7 +1014,7 @@ class PlayState extends MusicBeatState
 					});
 				});
 			} else {
-				switch (curSong.toLowerCase()) {
+				switch (curSong) {
 					case 'senpai' | 'thorns':
 						schoolIntro(doof);
 					case 'roses':
@@ -1079,7 +1104,7 @@ class PlayState extends MusicBeatState
 	}
 
 	var startTimer:FlxTimer;
-	var perfectMode:Bool = false;
+	//var perfectMode:Bool = false;
 
 	function startCountdown():Void {
 		inCutscene = false;
@@ -1094,7 +1119,7 @@ class PlayState extends MusicBeatState
 			i++;
 		}
 
-		talking = false;
+		//talking = false;
 		startedCountdown = true;
 		Conductor.songPosition = 0 - Conductor.crochet * 5;
 
@@ -1222,6 +1247,11 @@ class PlayState extends MusicBeatState
 		FlxG.sound.list.add(vocals);
 
 		checkNextSongAudio();
+		
+		if (!Std.isOfType(this, PlayStateOffsetCalibrate)) {
+			add(ratingsGroup);
+			ratingsGroup.cameras = [camHUD];
+		}
 
 		notes = new FlxTypedGroup<Note>();
 		add(notes);
@@ -1475,7 +1505,7 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float) {
 		#if !debug
-		perfectMode = false;
+		//perfectMode = false;
 		#end
 
 		/*if (FlxG.keys.justPressed.NINE)
@@ -1523,14 +1553,7 @@ class PlayState extends MusicBeatState
 			persistentDraw = true;
 			paused = true;
 
-			// 1 / idfk chance for Gitaroo Man easter egg
-			/*if (FlxG.random.bool(0.1))
-			{
-				// gitaroo man easter egg
-				FlxG.switchState(new GitarooPause());
-			}
-			else*/
-				openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
+			openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 		
 			#if desktop
 			DiscordClient.changePresenceSimple("paused");
@@ -1616,8 +1639,8 @@ class PlayState extends MusicBeatState
 
 			var newFocus:Character = SONG.notes[currentSection].mustHitSection != false ? boyfriend : dad;
 			var focusNum:Null<Int> = SONG.notes[currentSection].focusCharacter;
-			if (focusNum != null && focusNum >= 0 && focusNum < Character.activeArray.length) {
-				newFocus = Character.activeArray[focusNum];
+			if (focusNum != null && focusNum > 0 && focusNum <= Character.activeArray.length) {
+				newFocus = Character.activeArray[focusNum - 1];
 			}
 
 			if (focusCharacter != newFocus) {
@@ -1703,9 +1726,8 @@ class PlayState extends MusicBeatState
 					dunceNote.scale.y *= scaleThing;
 				notes.insert(0, dunceNote);
 				onSpawnNote(dunceNote);
-				if (unspawnNotes.length <= 0) {
+				if (unspawnNotes.length == 0)
 					break;
-				}
 			}
 		}
 
@@ -1812,7 +1834,7 @@ class PlayState extends MusicBeatState
 			if (camShakes.length != 0) {
 				FlxG.camera.targetOffset.set(0, 0);
 				var i = camShakes.length - 1;
-				while (i >= 0) {
+				while (i != -1) {
 					var thing = camShakes[i];
 					thing.prog += elapsed * thing.timemult;
 					if (thing.prog >= 1) {
@@ -1939,7 +1961,9 @@ class PlayState extends MusicBeatState
 			newState.bads = bads;
 			newState.shits = shits;
 			newState.combo = combo;
+			newState.maxCombo = maxCombo;
 			newState.possibleMoreScore = possibleMoreScore;
+			newState.songFC = songFC;
 			return FlxG.switchState(newState);
 		}
 
@@ -2075,9 +2099,16 @@ class PlayState extends MusicBeatState
 			//todo: sometimes notesplashes crash.
 			//grpNoteSplashes.recycle(NoteSplash, NoteSplash.new).playNoteSplash(playerStrums.members[daNote.strumNoteNum], daNote);
 		}
-		if (Options.instance.botplay) {
-			usedBotplay = true;
+		if (daRating != "sick" && songFC < 2) {
+			if (daRating == "good") {
+				if (songFC == 0)
+					songFC = 1;
+			} else if (songFC < 2) {
+				songFC = 2;
+			}
 		}
+		if (Options.instance.botplay)
+			usedBotplay = true;
 
 		songScore += Options.instance.botplay ? 350 : score;
 
@@ -2576,6 +2607,9 @@ class PlayState extends MusicBeatState
 					});
 			}
 
+			if (songFC != 4)
+				songFC = songMisses > 9 ? 4 : 3;
+
 			if (Options.noteMissAction_MissSound[Options.instance.noteMissAction])
 				FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 			// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
@@ -2609,9 +2643,8 @@ class PlayState extends MusicBeatState
 				rating = popUpScore(note);
 				combo += 1;
 				songHits += 1;
-				if (combo > maxCombo) {
+				if (combo > maxCombo)
 					maxCombo = combo;
-				}
 				lastHitNoteTime = note.strumTime;
 				
 				/*notes.forEachAlive(function(daNote:Note) {
@@ -2714,7 +2747,7 @@ class PlayState extends MusicBeatState
 		if (noteTypeData.noAnim)
 			return;
 		var char:Character = (note != null && note.charNum != -1) ? Character.activeArray[note.charNum] : (noteTypeData.charNums != null ? Character.activeArray[noteTypeData.charNums[0]] : (isBoyfriend ? boyfriend : dad));
-		var color = (note.strumLineNum < 0 ? funnyManias[0 - note.strumLineNum] : curManiaInfo).arrows[note == null ? noteData : note.noteData];
+		var color = (note.strumLineNum < 0 ? funnyManias[-1 - note.strumLineNum] : curManiaInfo).arrows[note == null ? noteData : note.noteData];
 		var colorNote = "sing" + color.toUpperCase();
 		if (isMiss)
 			return char.playAvailableAnim(['${colorNote}miss', 'sing${ManiaInfo.Dir[color]}miss'], true);
@@ -2744,8 +2777,6 @@ class PlayState extends MusicBeatState
 		true);
 	}
 
-	var fastCarCanDrive:Bool = true;
-
 	//inline function getFastCar():SpriteVMan {
 	//	return currentStage.elementsNamed.get("fastCar");
 	//}
@@ -2770,13 +2801,6 @@ class PlayState extends MusicBeatState
 		});
 	}
 
-	var trainMoving:Bool = false;
-	var trainFrameTiming:Float = 0;
-
-	var trainCars:Int = 8;
-	var trainFinishing:Bool = false;
-	var trainCooldown:Int = 0;
-
 	//inline function getTrain():SpriteVMan {
 	//	return currentStage.elementsNamed.get("phillyTrain");
 	//}
@@ -2786,8 +2810,6 @@ class PlayState extends MusicBeatState
 		if (!trainSound.playing)
 			trainSound.play(true);
 	}
-
-	var startedMoving:Bool = false;
 
 	function updateTrainPos():Void {
 		if (trainSound.time >= 4700) {
@@ -2837,19 +2859,14 @@ class PlayState extends MusicBeatState
 
 	override function stepHit() {
 		super.stepHit();
-		if (FlxG.sound.music.time > Conductor.songPosition + 20 || FlxG.sound.music.time < Conductor.songPosition - 20)
-		{
+		if (FlxG.sound.music.time > Conductor.songPosition + 20 || FlxG.sound.music.time < Conductor.songPosition - 20) {
 			resyncVocals();
 		}
 
-		if (dad.curCharacter == 'spooky' && curStep % 4 == 2)
-		{
+		if (dad.curCharacter == 'spooky' && curStep % 4 == 2) {
 			// dad.dance();
 		}
 	}
-
-	var lightningStrikeBeat:Int = 0;
-	var lightningOffset:Int = 8;
 
 	override function beatHit() {
 		super.beatHit();
@@ -2899,7 +2916,7 @@ class PlayState extends MusicBeatState
 		}
 
 		if (!boyfriend.animStartsWith("sing")) {
-			boyfriend.playAnim('idle');
+			boyfriend.dance();
 		}
 
 		if (curBeat % 8 == 7 && curSong == 'bopeebo') {
@@ -2936,8 +2953,7 @@ class PlayState extends MusicBeatState
 					trainCooldown += 1;
 
 				if (curBeat % 4 == 0) {
-					phillyCityLights.forEach(function(light:FlxSprite)
-					{
+					phillyCityLights.forEach(function(light:FlxSprite) {
 						light.visible = false;
 					});
 
@@ -2957,8 +2973,6 @@ class PlayState extends MusicBeatState
 			lightningStrikeShit();
 		}
 	}
-
-	var curLight:Int = 0;
 
 	public function setStage(stage:String):Void {
 		//todo: this isnt finished yet

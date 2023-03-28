@@ -29,6 +29,10 @@ import sys.io.File;
 import polymod.backends.PolymodAssets;
 #end
 
+typedef TwoStrings = {
+	one:String,
+	two:String
+}
 
 class CoolUtil
 {
@@ -45,9 +49,8 @@ class CoolUtil
 		Returns true if the current difficulty was successfully retained, regardless of whether or not the difficulty number changed.
 	**/
 	public static function setNewDifficulties(newDiffs:Null<Array<String>>, object:Dynamic, diffVar:String) {
-		if (newDiffs == null || newDiffs.length == 0) {
+		if (newDiffs == null || newDiffs.length == 0)
 			newDiffs = defaultDifficultyArray;
-		}
 		if (difficultyArray.map(function(a) {return a.toLowerCase();}) != newDiffs.map(function(a) {return a.toLowerCase();})) {
 			var oldDiff = CoolUtil.difficultyArray[Reflect.getProperty(object, diffVar)].toLowerCase();
 			CoolUtil.difficultyArray = newDiffs;
@@ -106,23 +109,19 @@ class CoolUtil
 		var daList:Array<String> = uncoolTextFile(path);
 		
 		for (i in 0...daList.length)
-		{
 			daList[i] = daList[i].trim();
-		}
 
 		return daList;
 	}
 
 	/**
-		Returns an array containing values from `min` to `max`
+		Returns an array containing `Int` values from `min` to `max`
 	**/
-	public static function numberArray(max:Int, ?min = 0):Array<Int>
+	public static function numberArray(max:Int, ?min:Int = 0):Array<Int>
 	{
 		var dumbArray:Array<Int> = [];
 		for (i in min...max)
-		{
 			dumbArray.push(i);
-		}
 		return dumbArray;
 	}
 
@@ -207,7 +206,7 @@ class CoolUtil
 	}
 	
 	/**
-		Parse JSON from file
+		Parse JSON from text file asset
 	**/
 	public static function loadJsonFromFile(thing:String) {
 		return loadJsonFromString(Assets.getText(thing));
@@ -223,7 +222,7 @@ class CoolUtil
 	/**
 		Return a value using Json2Object
 	**/
-	public static function useJson2Object(parser:Dynamic, input:String) {
+	public static function useJson2Object(parser:Dynamic, input:String):Dynamic {
 		if (!input.endsWith("}")) {
 			input = input.substr(0, input.lastIndexOf("}"));
 		}
@@ -305,18 +304,16 @@ class CoolUtil
 	}
 
 	/**
-		Clear members from a FlxTypeGroup or FlxSpriteGroup.
+		Clear members from a `FlxTypedGroup` or `FlxSpriteGroup`.
 
 		Also sets the Group's `length` value to 0 (unless the group is already empty)
 	**/
 	public static function clearMembers(grp:OneOfTwo<FlxTypedGroup<Dynamic>, FlxSpriteGroup>) {
 		var memb:Array<Dynamic> = Reflect.field(grp, "members"); //Typesafe is fucking my ass so i cant use grp.members
-		if (memb == null || memb.length == 0) {
+		if (memb == null || memb.length == 0)
 			return;
-		}
-		for (i in memb) {
+		for (i in memb)
 			i.destroy();
-		}
 		memb.resize(0);
 		@:privateAccess
 		Reflect.setField(grp, "length", 0); //why
@@ -326,15 +323,14 @@ class CoolUtil
 		Push `val` to `arr` if it exists, otherwise return array containing `val`
 	**/
 	public static function addToArrayPossiblyNull<T>(arr:Array<T>, val:T) { //putting <T> there just works, interesting
-		if (arr == null) {
+		if (arr == null)
 			return [val];
-		}
 		arr.push(val);
 		return arr;
 	}
 
 	/**
-		Is it a letter
+		Does the string contain 1 or more letters
 	**/
 	public static inline function isLetters(s:String) {
 		return s.toUpperCase() != s.toLowerCase();
@@ -398,5 +394,21 @@ class CoolUtil
 		if (!map.exists(name))
 			return;
 		arrPositionObjectWithin(object, map.get(name), containerWidth, containerHeight);
+	}
+
+	/**
+		If resource is formatted as `mod:resource`, `resource` and `mod` are returned from that instead.
+
+		Return values:
+
+		`one`: `resource`
+
+		`two`: `mod`
+	**/
+	public static function splitNamespace(resource:String, mod:String):TwoStrings {
+		var pos = resource.indexOf(":");
+		if (pos == -1)
+			return {one: resource, two: mod};
+		return {one: resource.substring(pos + 1), two: resource.substring(0, pos - 1)};
 	}
 }

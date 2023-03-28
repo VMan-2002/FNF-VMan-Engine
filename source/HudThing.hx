@@ -35,9 +35,8 @@ class HudThing extends FlxGroup
 			return !Options.instance.botplay || botplayExclude.indexOf(item) == -1;
 		});
 		if (PlayState.SONG.actions.contains("hideDifficulty")) {
-			if (items.contains("difficulty")) {
+			while (items.contains("difficulty"))
 				items.remove("difficulty");
-			}
 		}
 		this.vertical = vertical;
 		textThing = new FlxText(x, y, 0, "", 20);
@@ -77,17 +76,7 @@ class HudThing extends FlxGroup
 				case "accRating":
 					text += Translation.getTranslation("hud_accrating", "playstate", [trimNoPercent(PlayState.instance.songScore / ((noteThing * 350) + PlayState.instance.possibleMoreScore))]);
 				case "fc":
-					if (PlayState.instance.songMisses >= 10) {
-						text += Translation.getTranslation("fc_clear", "playstate");
-					} else if (PlayState.instance.songMisses > 0) {
-						text += Translation.getTranslation("fc_sdcb", "playstate");
-					} else if (PlayState.instance.bads + PlayState.instance.shits > 0) {
-						text += Translation.getTranslation("fc_fc", "playstate");
-					} else if (PlayState.instance.goods > 0) {
-						text += Translation.getTranslation("fc_gfc", "playstate");
-					} else {
-						text += Translation.getTranslation("fc_sfc", "playstate");
-					}
+					text += Translation.getTranslation("fc_"+PlayState.fcTypes[PlayState.instance.songFC], "playstate");
 				case "sicks":
 					text += Translation.getTranslation("hud_sicks", "playstate", [Std.string(PlayState.instance.sicks)]);
 				case "goods":

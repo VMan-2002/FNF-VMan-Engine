@@ -136,7 +136,7 @@ class Highscore
 			return "";
 		}
 		if (translated) {
-			return prefix + result.map(function(a:String) { return Translation.getTranslation(a, "modifier"); }).join(Translation.getTranslation("separator", "modifer"));
+			return prefix + result.map(function(a:String) { return Translation.getTranslation(a, "modifier"); }).join(Translation.getTranslation("separator", "modifer", null, ""));
 		}
 		return prefix + result.join("");
 	}

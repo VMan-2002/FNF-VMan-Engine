@@ -5,6 +5,7 @@ import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
+import flixel.math.FlxPoint;
 import flixel.text.FlxText;
 import flixel.util.FlxTimer;
 
@@ -267,21 +268,24 @@ class AlphaCharacter extends FlxSprite
 
 	public function createBold(letter:String) {
 		var animLetter = letter;
+		var newOffset = FlxPoint.weak(0, 0);
+		var extraWidth:Float = 0;
 		switch(letter) {
 			case ".":
-				offset.set(0, 38);
+				newOffset.set(0, -38);
 			case "•":
 				animLetter = ".";
-				offset.set(13, 20);
+				newOffset.set(-10, -20);
+				extraWidth = 20;
 			case ":":
-				offset.set(0, 12);
+				newOffset.set(0, -12);
 			case "(" | ")":
-				offset.set(0, -10);
+				newOffset.set(0, 10);
 			case "-":
-				offset.set(0, 20);
+				newOffset.set(0, -20);
 			case "_":
 				animLetter = "-";
-				offset.set(0, 48);
+				newOffset.set(0, -48);
 			case "'":
 				animLetter = "single quote";
 			case "\"":
@@ -292,6 +296,8 @@ class AlphaCharacter extends FlxSprite
 		animation.addByPrefix(letter, animLetter + " bold", 24);
 		animation.play(letter);
 		updateHitbox();
+		offset.copyFrom(newOffset);
+		width += extraWidth;
 	}
 
 	public function createLetter(letter:String):Void

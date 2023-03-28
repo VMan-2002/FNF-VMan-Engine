@@ -391,16 +391,13 @@ class FreeplayState extends MusicBeatState
 		grpSongs = new FlxTypedGroup<Alphabet>();
 		add(grpSongs);
 		
-		while (iconArray.length != 0) {
+		while (iconArray.length != 0)
 			remove(iconArray.pop());
-		}
 		
-		while (icon2Array.length != 0) {
+		while (icon2Array.length != 0)
 			remove(icon2Array.pop());
-		}
 
-		for (i in 0...songs.length)
-		{
+		for (i in 0...songs.length) {
 			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, songs[i].songName, true, false);
 			songText.isMenuItem = true;
 			songText.targetY = i;
@@ -447,51 +444,43 @@ class FreeplayState extends MusicBeatState
 		songs.push(new SongMetadata(songName, weekNum, songCharacter));
 	}
 
-	public function addWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>)
-	{
+	/*public function addWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>) s{
 		if (songCharacters == null || songCharacters.length <= 0)
 			songCharacters = ['bf'];
 
 		var num:Int = 0;
-		for (song in songs)
-		{
+		for (song in songs) {
 			addSong(song, weekNum, songCharacters[num]);
 
 			if (num + 1 < songCharacters.length)
 				num++;
 		}
-	}
+	}*/
 
-	public function returnWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>)
-	{
+	/*public function returnWeek(songs:Array<String>, weekNum:Int, ?songCharacters:Array<String>) {
 		var result = new Array<SongMetadata>();
 		if (songCharacters == null || songCharacters.length <= 0)
 			songCharacters = ['bf'];
 
 		var num:Int = 0;
-		for (song in songs)
-		{
+		for (song in songs) {
 			result.push(new SongMetadata(song, weekNum, songCharacters[num]));
 
 			if (num + 1 < songCharacters.length)
 				num++;
 		}
 		return result;
-	}
+	}*/
 
-	override function update(elapsed:Float)
-	{
+	override function update(elapsed:Float) {
 		super.update(elapsed);
 
 		if (FlxG.sound.music.volume < 0.7)
-		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
-		}
 		
 		if (nothingIncluded) {
-			if (controls.BACK) {
+			if (controls.BACK)
 				MainMenuState.returnToMenuFocusOn("freeplay");
-			}
 			return;
 		}
 
@@ -500,19 +489,17 @@ class FreeplayState extends MusicBeatState
 		if (Math.abs(lerpScore - intendedScore) <= 10)
 			lerpScore = intendedScore;
 
-		if (scoreText.visible) {
+		if (scoreText.visible)
 			scoreText.text = Translation.getTranslation("personal best", "freeplay", [Std.string(lerpScore)]);
-		}
 		
 		var upP = controls.UP_P;
 		var downP = controls.DOWN_P;
 		var accepted = controls.ACCEPT;
 
-		if (upP) {
+		if (upP)
 			changeSelection(FlxG.keys.pressed.SHIFT ? -3 : -1);
-		} if (downP) {
+		if (downP)
 			changeSelection(FlxG.keys.pressed.SHIFT ? 3 : 1);
-		}
 
 		if (controls.LEFT_P)
 			changeDiff(-1);

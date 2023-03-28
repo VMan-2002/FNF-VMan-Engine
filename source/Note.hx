@@ -28,7 +28,7 @@ import polymod.format.ParseRules.TargetSignatureElement;
 
 class SwagNoteSkin {
 	public var image:String;
-	public var imageDownscroll:Null<String>;
+	public var imageDownscroll:String = "";
 	public var scale:Null<Float>;
 	public var antialias:Null<Bool>;
 	public var arrows:Map<String, Array<SwagCharacterAnim>>;
@@ -54,7 +54,7 @@ class SwagNoteSkin {
 		noteSkin = parser.fromJson(CoolUtil.tryPathBoth('objects/noteskins/${name}.json', modName));
 		if (noteSkin == null) {
 			ErrorReportSubstate.addError("Could not load note skin " + name);
-			return null;
+			return loadNoteSkin("normal", modName);
 		}
 		//todo: We can have note styles via options, such as circles
 		//or just wait until colors changing is implemented and then we can have note customization like *gasp* funky friday
@@ -279,6 +279,7 @@ class SwagNoteType {
 	public var noteAnimPrefix:String;
 	public var noteAnimReplace:Null<String>;
 	public var noAnim:Null<Bool>;
+	public var noteSkinPrefix:String = "";
 	public static var normalNote:String = "Normal Note";
 
 	public static function loadNoteType(name:String, modName:String, ?putInto:Null<String>) {
@@ -468,9 +469,11 @@ class Note extends FlxSprite
 		} else {
 			maniaFract = noteData / mania.keys;
 		}
+
+		var skin = (PlayState.SONG.noteSkin == "" || PlayState.SONG.noteSkin == null) ? "normal" : PlayState.SONG.noteSkin;
 		
-		switch (PlayState.SONG.noteSkin) {
-			case 'pixel':
+		switch (skin) {
+			/*case 'pixel':
 				frames = Paths.getSparrowAtlas('pixelUI/NOTE_assets-pixel');
 				
 				animation.addByPrefix('${myArrow}Scroll', '${typedata.noteAnimPrefix}${myArrow}0', 24);
@@ -493,12 +496,12 @@ class Note extends FlxSprite
 				animation.addByPrefix('${myArrow}holdstart', '${typedata.noteAnimPrefix}${myArrow} hold start', 24);
 				//animation.appendByPrefix('purpleholdend', 'pruple end hold'); //develop your spritesheets properly challenge (impossible)
 
-				antialiasing = true;
+				antialiasing = true;*/
 
 			default:
 				//load custom
 				var noteSkin:SwagNoteSkin = SwagNoteSkin.loadNoteSkin(PlayState.SONG.noteSkin, PlayState.modName);
-				var stuff = noteSkin.image.replace("\\", "/").split("/");
+				var stuff = ((noteSkin.imageDownscroll != "" && Options.instance.downScroll) ? noteSkin.imageDownscroll : noteSkin.image).replace("\\", "/").split("/");
 				stuff[stuff.length] = typedata.imagePrefix + stuff[stuff.length];
 				frames = Paths.getSparrowAtlas(stuff.join("/"));
 				

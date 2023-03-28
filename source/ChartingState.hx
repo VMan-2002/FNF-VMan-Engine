@@ -571,7 +571,22 @@ class ChartingState extends MusicBeatState {
 		});
 		Translation.setUIObjectFont(applyLength2);
 
-		var applyLength3:FlxUIButton = new FlxUIButton(100, 70, Translation.getTranslation("Jump to event", "charteditor"), function() {
+		var applyLength4:FlxUIButton = new FlxUIButton(100, 70, Translation.getTranslation("Replace event here", "charteditor"), function() {
+			var closest:Int = 0;
+			var closestTime:Float = 0;
+			for (i in 0..._song.vmanEventTime.length) {
+				var time = _song.vmanEventTime[i];
+				if (Math.abs(time - (FlxG.sound.music.time + songAudioOffset)) < Math.abs(closestTime - (FlxG.sound.music.time + songAudioOffset))) {
+					continue;
+				}
+				closest = i;
+				closestTime = time;
+			}
+			_song.vmanEventData[closest] = ["Event"];
+		});
+		Translation.setUIObjectFont(applyLength4);
+
+		var applyLength3:FlxUIButton = new FlxUIButton(100, 90, Translation.getTranslation("Jump to event", "charteditor"), function() {
 			//todo: this needs fixing for really long songs
 			FlxG.sound.music.time = _song.vmanEventTime[Math.floor(stepperEventNumber.value)] - songAudioOffset;
 		});

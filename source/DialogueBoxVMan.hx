@@ -38,11 +38,14 @@ class DialogueLine {
 	public var portraitEvents:Array<PortraitEvent>;
 	public var boxStyle = "default";
 	public var skippable:Bool = true;
+	public var textMustPlay:Bool = false;
 	public var autoNext:Bool = false;
 	public var autoNextDelay:Float = 0.0;
 	public var fontSize:Float = 1.0;
 	public var font:String = "";
 	public var choices:Array<String>;
+	public var screenGraphic:String;
+	public var screenGraphicAnim:String = "";
 }
 
 class PortraitEvent {
@@ -51,7 +54,7 @@ class PortraitEvent {
 	public var expression:String = "";
 	public var isTalking:Bool = true;
 	public var flip:Bool = false;
-	public var side:Int = 1; //-1 left, 0 middle, 1 right
+	public var side:Float = 1; //-1 left, 0 middle, 1 right
 	public var removeCharacter:Bool = false;
 }
 
@@ -94,8 +97,10 @@ class DialogueBoxVMan extends FlxSpriteGroup
 
 	public var dialogueFile:DialogueFile;
 
-	var charList:Array<String> = [];
-	var charObjects:FlxTypedSpriteGroup<DialogueCharacter> = new FlxTypedSpriteGroup<DialogueCharacter>();
+	public var charList:Array<String> = [];
+	public var charObjects:FlxTypedSpriteGroup<DialogueCharacter> = new FlxTypedSpriteGroup<DialogueCharacter>();
+
+	public var screenGraphic:FlxSprite = new FlxSprite();
 
 	public function new(?file:String, ?dialogueFile:DialogueFile) {
 		super();
@@ -159,6 +164,12 @@ class DialogueBoxVMan extends FlxSpriteGroup
 				var face:FlxSprite = new FlxSprite(320, 170).loadGraphic(Paths.image('weeb/spiritFaceForward'));
 				face.setGraphicSize(Std.int(face.width * 6));
 				add(face);
+			case 'invisible':
+				box.frames = Paths.getSparrowAtlas('weeb/pixelUI/dialogueBox-pixel');
+				box.animation.addByIndices('normalOpen', 'Text Box Appear', [4], "", 24);
+				box.animation.addByIndices('normal', 'Text Box Appear', [4], "", 24);
+				box.animation.addByIndices('normalClose', 'Text Box Appear', [4], "", 24);
+				box.visible = false;
 			default:
 				//it's the same rn
 				box.frames = Paths.getSparrowAtlas('weeb/pixelUI/dialogueBox-pixel');
@@ -196,6 +207,12 @@ class DialogueBoxVMan extends FlxSpriteGroup
 		handSelect = new FlxSprite(FlxG.width * 0.9, FlxG.height * 0.9).loadGraphic(Paths.image('pixelUI/hand_textbox'));
 		handSelect.setGraphicSize(Std.int(handSelect.width * PlayState.daPixelZoom * 0.9));
 		add(handSelect);
+
+		if (dialogueFile.texts[0].boxStyle == "invisible") {
+			portraitLeft.x = -4000;
+			portraitRight.x = -4000;
+			handSelect.x = -4000;
+		}
 
 		swagDialogue = new FlxTypeText(240, 500, Std.int(FlxG.width * 0.6), "", 32);
 		swagDialogue.font = 'Pixel Arial 11 Bold';
