@@ -173,10 +173,10 @@ class Character extends SpriteVMan
 
 				playAnim('danceRight');
 
-				noteCameraOffset.get("singLEFT").set(-25, 0);
-				noteCameraOffset.get("singRIGHT").set(25, 0);
-				noteCameraOffset.get("singUP").set(0, -25);
-				noteCameraOffset.get("singDOWN").set(0, 25);
+				noteCameraOffset.get("singLEFT").x = 25;
+				noteCameraOffset.get("singRIGHT").x = 25;
+				noteCameraOffset.get("singUP").y = -25;
+				noteCameraOffset.get("singDOWN").y = 25;
 
 				healthBarColor.setRGB(165, 0, 77);
 				isGirlfriend = true;
