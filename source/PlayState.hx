@@ -1130,12 +1130,13 @@ class PlayState extends MusicBeatState
 			gf.dance();
 			boyfriend.playAnim('idle');
 
-			var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
+			/*var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
 			introAssets.set('default', ['', 'normal/ready', "normal/set", "normal/go"]);
 			introAssets.set('school', ['', 'pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
 			introAssets.set('schoolEvil', ['', 'pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
 
-			var introAlts:Array<String> = introAssets.get('default');
+			var introAlts:Array<String> = introAssets.get('default');*/
+			var introAlts:Array<String> = ['', 'normal/ready', "normal/set", "normal/go"];
 			var introAltsSounds:Array<String> = ["intro3", "intro2", "intro1", "introGo"];
 			var altSuffix:String = "";
 			var scale:Float = 1;
@@ -1144,7 +1145,7 @@ class PlayState extends MusicBeatState
 				introAlts = [currentUIStyle.three, currentUIStyle.two, currentUIStyle.one, currentUIStyle.go];
 				introAltsSounds = [currentUIStyle.threeSound, currentUIStyle.twoSound, currentUIStyle.oneSound, currentUIStyle.goSound];
 				scale = currentUIStyle.countdownScale;
-			} else {
+			} /* else {
 				for (value in introAssets.keys()) {
 					if (value == curStage) {
 						introAlts = introAssets.get(value);
@@ -1152,7 +1153,7 @@ class PlayState extends MusicBeatState
 						scale = daPixelZoom;
 					}
 				}
-			}
+			} */
 
 			if (swagCounter <= 3) {
 				playCountdownSprite(introAlts[swagCounter], scale, introAltsSounds[swagCounter]);
@@ -2153,14 +2154,14 @@ class PlayState extends MusicBeatState
 			});
 		}
 
-		if (validUIStyle) {
+		//if (validUIStyle) {
 			rating.scale.x = currentUIStyle.ratingScale;
 			rating.scale.y = currentUIStyle.ratingScale;
 			comboSpr.scale.x = currentUIStyle.ratingScale;
 			comboSpr.scale.y = currentUIStyle.ratingScale;
 			comboSpr.antialiasing = currentUIStyle.antialias;
 			coolText.antialiasing = currentUIStyle.antialias;
-		} else {
+		/*} else {
 			if (!curStage.startsWith('school')) {
 				rating.setGraphicSize(Std.int(rating.width * 0.7));
 				rating.antialiasing = true;
@@ -2170,7 +2171,7 @@ class PlayState extends MusicBeatState
 				rating.setGraphicSize(Std.int(rating.width * daPixelZoom * 0.7));
 				comboSpr.setGraphicSize(Std.int(comboSpr.width * daPixelZoom * 0.7));
 			}
-		}
+		}*/
 
 		comboSpr.updateHitbox();
 		rating.updateHitbox();
@@ -2182,9 +2183,8 @@ class PlayState extends MusicBeatState
 			seperatedScore.push(Math.floor((combo - (seperatedScore[0] * 100)) / 10));
 			seperatedScore.push(combo % 10);*/
 			
-			while (seperatedScore.length < 3) {
+			while (seperatedScore.length < 3)
 				seperatedScore.unshift("0");
-			}
 
 			for (i in 0...seperatedScore.length) {
 				var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image(validUIStyle ? currentUIStyle.numbers[Std.parseInt(seperatedScore[i])] : '${pixelShitPart1}num${seperatedScore[i] + pixelShitPart2}'));
@@ -2192,18 +2192,18 @@ class PlayState extends MusicBeatState
 				numScore.x = coolText.x + ((validUIStyle ? currentUIStyle.comboSpacing : 43) * i) - 90;
 				numScore.y += 80;
 
-				if (validUIStyle) {
+				//if (validUIStyle) {
 					numScore.scale.x = currentUIStyle.comboScale;
 					numScore.scale.y = currentUIStyle.comboScale;
 					numScore.antialiasing = currentUIStyle.antialias;
-				} else {
+				/*} else {
 					if (!curStage.startsWith('school')) {
 						numScore.antialiasing = true;
 						numScore.setGraphicSize(Std.int(numScore.width * 0.5));
 					} else {
 						numScore.setGraphicSize(Std.int(numScore.width * daPixelZoom));
 					}
-				}
+				}*/
 				numScore.updateHitbox();
 
 				numScore.acceleration.y = FlxG.random.int(200, 300);

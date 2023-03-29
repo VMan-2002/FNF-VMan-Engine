@@ -287,7 +287,7 @@ class ControlsSubState extends OptionsSubStateBasic
 		//optionsImage.visible = false;
 		
 		#if mobile
-		add(new FlxText(8, FlxG.height - 48, 0, "Playing on Mobile - You'll need to connect a keyboard, the game is not touch compatible right now.", 16));
+		add(new FlxText(8, FlxG.height - 48, 0, Translation.getTranslation("mobile incompatible controls", "optionsMenu", null, "Playing on Mobile - You'll need to connect a keyboard, the game is not touch compatible right now."), 16));
 		#end
 		
 		add(grpNoteStuff);
