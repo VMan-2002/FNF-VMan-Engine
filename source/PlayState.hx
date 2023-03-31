@@ -2718,10 +2718,12 @@ class PlayState extends MusicBeatState
 				health = Math.max(health - SONG.healthDrain, SONG.healthDrainMin);
 			}
 
-			var spr = strumLines.members[note.strumLineNum].members[note.noteData];
-			if (spr != null) {
-				spr.playAnim('confirm', true);
-				spr.returnTime = (Conductor.crochet / 3750) + 0.1;
+			if (note.strumLineNum >= 0) {
+				var spr = strumLines.members[note.strumLineNum].members[note.noteData];
+				if (spr != null) {
+					spr.playAnim('confirm', true);
+					spr.returnTime = (Conductor.crochet / 3750) + 0.1;
+				}
 			}
 
 			note.wasGoodHit = true;
