@@ -48,6 +48,7 @@ class CreditsState extends MusicBeatState {
 		for (cool in ModLoad.enabledMods) {
 			var path = 'mods/${cool}/objects/credits/credits.json';
 			if (FileSystem.exists(path)) {
+				trace("load credits of "+cool);
 				loadCreditsJson(path, cool);
 			}
 		}
@@ -165,6 +166,7 @@ class CreditsState extends MusicBeatState {
 
 	public inline function updateDesc() {
 		descText.text = creditsInfo[curSelectedSection][curSelected].description;
+		descText.y = FlxG.height - (21 + descText.textField.textHeight);
 		var funnyArr = creditsInfo[curSelectedSection][curSelected].funny;
 		funnyText.visible = funnyArr != null && funnyArr.length > 0;
 		if (funnyText.visible)

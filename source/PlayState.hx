@@ -1273,11 +1273,11 @@ class PlayState extends MusicBeatState
 		for (section in noteData) {
 			var coolSection:Int = Std.int(section.lengthInSteps / 4);
 
-			generateNotes(section, section.sectionNotes, 0);
+			generateNotes(section, section.sectionNotes, 0, unspawnNotes);
 			if (section.notesMoreLayers != null) {
 				var layerThing = 1;
 				for (thing in section.notesMoreLayers) {
-					generateNotes(section, thing, layerThing++);
+					generateNotes(section, thing, layerThing++, unspawnNotes);
 				}
 			}
 			daBeats += 1;
@@ -1305,7 +1305,8 @@ class PlayState extends MusicBeatState
 			for (i in 0...SONG.picocharts.length) {
 				//todo: picocharts
 				if (SONG.picocharts[i].length > 0) {
-					var swagshit = Song.loadFromJson(Highscore.formatSong(SONG.song), SONG.picocharts[i]);
+					trace("Inject chart "+SONG.picocharts[i]+" to slot "+i);
+					var swagshit = Song.loadFromJson(SONG.picocharts[i], Highscore.formatSong(SONG.song));
 					for (section in swagshit.notes) {
 						//we need to remap Note Types !!
 						for (note in section.sectionNotes) {
@@ -1314,7 +1315,7 @@ class PlayState extends MusicBeatState
 								SONG.usedNoteTypes.push(t);
 							note[3] = SONG.usedNoteTypes.indexOf(t);
 						}
-						generateNotes(section, section.sectionNotes, -1, funnyNotes);
+						generateNotes(section, section.sectionNotes, -1 - i, funnyNotes);
 					}
 					funnyManias[i] = ManiaInfo.GetManiaInfo(swagshit.maniaStr);
 				}
@@ -1330,9 +1331,7 @@ class PlayState extends MusicBeatState
 		generatedMusic = true;
 	}
 
-	function generateNotes(section:SwagSection, sectionNotes:Array<Dynamic>, layer:Int, ?addTo:Array<Note> = null) {
-		if (addTo == null)
-			addTo = unspawnNotes;
+	function generateNotes(section:SwagSection, sectionNotes:Array<Dynamic>, layer:Int, addTo:Array<Note>) {
 		for (songNotes in sectionNotes) {
 			var daStrumTime:Float = songNotes[0];
 			var daNoteData:Int = Std.int(songNotes[1] % curManiaInfo.keys);
@@ -1356,8 +1355,8 @@ class PlayState extends MusicBeatState
 			}
 
 			var oldNote:Note;
-			if (unspawnNotes.length > 0)
-				oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
+			if (addTo.length > 0)
+				oldNote = addTo[Std.int(addTo.length - 1)];
 			else
 				oldNote = null;
 
@@ -1372,23 +1371,23 @@ class PlayState extends MusicBeatState
 			}
 
 			var susLength:Float = swagNote.sustainLength / Conductor.stepCrochet;
-			unspawnNotes.push(swagNote);
+			addTo.push(swagNote);
 
 			swagNote.mustPress = gottaHitNote;
 
 			for (susNote in 0...Math.floor(susLength)) {
-				oldNote = unspawnNotes[unspawnNotes.length - 1];
+				oldNote = addTo[addTo.length - 1];
 
 				var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, daNoteData, oldNote, true, null, swagNote.noteType, swagNote.strumLineNum);
 				sustainNote.scrollFactor.set();
 				sustainNote.strumNoteNum = swagNote.strumNoteNum;
-				unspawnNotes.push(sustainNote);
+				addTo.push(sustainNote);
 
 				sustainNote.mustPress = gottaHitNote;
 			}
 
 			if (swagNote.getNoteTypeData().hasReleaseNote) {
-				unspawnNotes[unspawnNotes.length - 1].makeReleaseNote();
+				addTo[addTo.length - 1].makeReleaseNote();
 			}
 		}
 	}
@@ -1868,49 +1867,64 @@ class PlayState extends MusicBeatState
 	public function camFollowSetOnCharacter(char:Character) {
 		focusCharacter = char;
 		
-		if (char == dad) {
-			camFollow.setPosition(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
-
-			if (SONG.song.toLowerCase() == 'tutorial') {
+		if (SONG.song.toLowerCase() == 'tutorial') {
+			if (char == dad) {
 				tweenCamIn();
-			}
-		}
-
-		if (char == boyfriend) {
-			camFollow.setPosition(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
-
-			switch (curStage)
-			{
-				case 'limo':
-					camFollow.x = char.getMidpoint().x - 300;
-				case 'mall':
-					camFollow.y = char.getMidpoint().y - 200;
-				case 'school' | 'schoolEvil':
-					camFollow.x = char.getMidpoint().x - 200;
-					camFollow.y = char.getMidpoint().y - 200;
-			}
-
-			if (SONG.song.toLowerCase() == 'tutorial') {
+			} else if (char == boyfriend) {
 				FlxTween.tween(FlxG.camera, {zoom: 1}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut});
 			}
 		}
 
 		switch (char.curCharacter) {
 			case 'mom':
-				camFollow.y = char.getMidpoint().y;
 				vocals.volume = 1;
 		}
 
-		camFollow.x += char.cameraOffset[0];
-		camFollow.y += char.cameraOffset[1];
+		var point = getCharacterCamFollow(char);
+		camFollow.setPosition(point.x, point.y);
+		point.putWeak();
 
 		var guyId = Math.floor(Math.min(Character.activeArray.indexOf(char), currentStage.cameraOffset.length - 1));
-		camFollow.x += currentStage.cameraOffset[guyId][0];
-		camFollow.y += currentStage.cameraOffset[guyId][1];
 		
 		if (useStageCharZooms && currentStage.charZoom != null && currentStage.charZoom.length > guyId && currentStage.charZoom[guyId] != null) {
 			defaultCamZoom = currentStage.charZoom[guyId];
 		}
+	}
+
+	public function getCharacterCamFollow(char:Character):FlxPoint {
+		var result = FlxPoint.weak();
+		
+		if (char == dad) {
+			result.set(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
+		} else if (char == boyfriend) {
+			result.set(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
+
+			switch (curStage) {
+				case 'limo':
+					result.x = char.getMidpoint().x - 300;
+				case 'mall':
+					result.y = char.getMidpoint().y - 200;
+				case 'school' | 'schoolEvil':
+					result.x = char.getMidpoint().x - 200;
+					result.y = char.getMidpoint().y - 200;
+			}
+		} else {
+			result.set(char.getMidpoint().x + (char.isPlayer ? -100 : 150), char.getMidpoint().y - 100);
+		}
+
+		switch (char.curCharacter) {
+			case 'mom':
+				result.y = char.getMidpoint().y;
+		}
+
+		result.x += char.cameraOffset[0];
+		result.y += char.cameraOffset[1];
+
+		var guyId = Math.floor(Math.min(Character.activeArray.indexOf(char), currentStage.cameraOffset.length - 1));
+		result.x += currentStage.cameraOffset[guyId][0];
+		result.y += currentStage.cameraOffset[guyId][1];
+
+		return result;
 	}
 
 	function preEndSong() {

@@ -1610,9 +1610,12 @@ class ChartingState extends MusicBeatState {
 			if (json.song.picospeaker != "") {
 				Reflect.deleteField(json.song, "picospeaker");
 			}
-			if (json.song.picocharts == null || json.song.picocharts.length == 0 || json.song.picocharts.filter(function(a) {
-				return a != "";
-			}).length == 0) {
+			if (json.song.picocharts != null) {
+				while (json.song.picocharts.length != 0 && json.song.picocharts[json.song.picocharts.length - 1] == "")
+					json.song.picocharts.pop();
+				if (json.song.picocharts.length == 0)
+					Reflect.deleteField(json.song, "picocharts");
+			} else {
 				Reflect.deleteField(json.song, "picocharts");
 			}
 		}
