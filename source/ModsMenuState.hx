@@ -46,9 +46,9 @@ class ModsMenuState extends MusicBeatState {
 	public var descTitleText:FlxText = new FlxText(230, 8, FlxG.width - 235, "Really cool mod").setFormat("VCR OSD Mono", 32).setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 3, 0.5);
 	public var descVersionText:FlxText = new FlxText(230, 18, FlxG.width - 235, "Coolest version").setFormat("VCR OSD Mono", 20, FlxColor.WHITE, FlxTextAlign.RIGHT).setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 2, 0.5);
 	public var descText:FlxText = new FlxText(230, 48, FlxG.width - 235, "You should play it :)").setFormat("VCR OSD Mono", 20).setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 2, 0.5);
-	public var errorText:FlxText = new FlxText(230, 48, FlxG.width - 235, "Your version of VMan Engine is too outdated to enable this mod").setFormat("VCR OSD Mono", 20, FlxColor.RED).setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 2, 0.5);
+	public var errorText:FlxText = new FlxText(230, 0, FlxG.width - 235, Translation.getTranslation("engine outdated", "mods", null, "Your version of VMan Engine is outdated, please update!")).setFormat("VCR OSD Mono", 20, FlxColor.RED).setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 2, 0.5);
 	//public var funnyText:FlxText = new FlxText(0, 0, FlxG.width - 220, "Lol").setFormat("VCR OSD Mono", 32).setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 2, 0);
-
+	
 	public var enables:Map<String, Bool>;
 	public var modObjects:Null<Array<ModMenuItem>> = null;
 
@@ -89,6 +89,7 @@ class ModsMenuState extends MusicBeatState {
 		Translation.setObjectFont(descTitleText);
 		Translation.setObjectFont(descVersionText);
 		Translation.setObjectFont(descText);
+		Translation.setObjectFont(errorText);
 
 		showCreditsThing();
 
@@ -288,15 +289,16 @@ class ModsMenuState extends MusicBeatState {
 	public function updateCheckboxes() {
 		var enableCount = 0;
 		for (obj in modObjects) {
+			var needUpdate = obj.needsNewVer;
 			var enby = enables.get(obj.modName) == true;
 			if (enby)
 				enableCount++;
-			obj.members[1].animation.play(enby ? "enable" : "disable");
+			obj.members[1].animation.play(needUpdate ? "outdated" : (enby ? "enable" : "disable"));
 			obj.members[0].alpha = enby ? 1 : 0.5;
 		}
 		#if desktop
 		// Updating Discord Rich Presence
-		DiscordClient.changePresenceSimple("menu", '$enableCount enabled, ${modObjects.length} available');
+		DiscordClient.changePresenceSimple("mods", '$enableCount enabled, ${modObjects.length} available');
 		#end
 	}
 
@@ -406,6 +408,7 @@ class ModsMenuState extends MusicBeatState {
 				var checkmark = new FlxSprite(110, 110).loadGraphic(Paths.image("menu/modCheckmark"), true, 40, 40);
 				checkmark.animation.add("enable", [1]);
 				checkmark.animation.add("disable", [0]);
+				checkmark.animation.add("outdated", [2]);
 				thisEntry.add(checkmark);
 			}
 			thisEntry.y = stuffGroup.length * 100;
