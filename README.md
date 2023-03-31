@@ -48,15 +48,15 @@ flixel
 flixel-addons
 flixel-ui
 hscript
-polymod
+polymod 1.5.2
 hxcpp-debugger
 json2object
 extension-networking
 linc_luajit
 ```
-So for each of those type `haxelib install [library]` so shit like `haxelib install polymod`
+So for each of those type `haxelib install [library]` so shit like `haxelib install polymod 1.5.2`
 
-Make sure you have the latest version of Polymod `haxelib update polymod`
+Make sure you have version 1.5.2 of Polymod `haxelib install polymod 1.5.2`
 
 You'll also need to install a couple things that involve Gits. To do this, you need to do a few things first.
 1. Download [git-scm](https://git-scm.com/downloads). Works for Windows, Mac, and Linux, just select your build.
