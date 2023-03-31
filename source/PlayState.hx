@@ -1816,6 +1816,8 @@ class PlayState extends MusicBeatState
 					var haha = funnyNotes.shift();
 					opponentNoteHit(haha);
 					haha.destroy();
+					if (funnyNotes.length == 0)
+						break;
 				}
 			}
 		}
