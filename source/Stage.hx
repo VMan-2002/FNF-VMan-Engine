@@ -44,6 +44,7 @@ typedef SwagStage =
 	var hide_girlfriend:Bool;
 	var animFollowup:Array<Array<String>>;
 	var cameraOffset:Null<Array<Array<Float>>>;
+	var extraCamPos:Array<Array<Float>>;
 	var charFacing:Null<Array<Int>>;
 }
 
@@ -65,6 +66,7 @@ class Stage
 		"idle" => "idle"
 	];
 	public var cameraOffset:Array<Array<Float>> = [[0, 0, 0]];
+	public var extraCamPos:Array<Array<Float>> = [[0, 0, 0]];
 	public var charZoom:Array<Null<Float>>;
 
 	public static function getStage(name:String, ?mod:Null<String>):Null<SwagStage> {
@@ -115,7 +117,8 @@ class Stage
 			animFollowup: null,
 			cameraOffset: null,
 			charFacing: [0],
-			charZoom: null
+			charZoom: null,
+			extraCamPos: new Array<Array<Float>>()
 		};
 	}
 
@@ -195,6 +198,7 @@ class Stage
 		target.hide_girlfriend = data.hide_girlfriend == true;
 		target.cameraOffset = data.cameraOffset == null ? [] : data.cameraOffset;
 		target.cameraOffset.push([0, 0, 0]);
+		target.extraCamPos.push([0, 0]);
 		if (data.animFollowup != null && data.animFollowup.length != 0) {
 			for (thing in data.animFollowup) {
 				target.animFollowup.set(thing[0], thing[1]);

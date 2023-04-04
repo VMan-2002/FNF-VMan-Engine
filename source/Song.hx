@@ -33,6 +33,7 @@ typedef SwagSong = {
 	var moreCharacters:Array<String>;
 
 	var actions:Array<String>;
+	var attributes:Array<Array<Dynamic>>;
 	var noteSkin:String;
 	var noteSkinOpponent:Array<String>;
 	var uiStyle:String;
@@ -108,6 +109,7 @@ class Song {
 			healthDrainMin: 0,
 			moreCharacters: new Array<String>(),
 			actions: new Array<String>(),
+			attributes: new Array<Array<Dynamic>>(),
 			noteSkin: "",
 			noteSkinOpponent:[],
 			uiStyle: "",
@@ -178,24 +180,20 @@ class Song {
 			swagShit.keyCount = ManiaInfo.GetManiaInfo(swagShit.maniaStr).keys;
 		}
 
-		if (swagShit.usedNoteTypes == null || swagShit.usedNoteTypes.length == 0) {
+		if (swagShit.usedNoteTypes == null || swagShit.usedNoteTypes.length == 0)
 			swagShit.usedNoteTypes = ["Normal Note"];
-		}
 		/*if (Options.playstate_guitar && !swagShit.usedNoteTypes.contains("Guitar Note")) {
 			swagShit.usedNoteTypes[swagShit.usedNoteTypes.contains("Normal Note") ? swagShit.usedNoteTypes.indexOf("Normal Note") : swagShit.usedNoteTypes.length] = "Guitar Note";
 		}*/
 
-		if (swagShit.actions == null) {
+		if (swagShit.actions == null)
 			swagShit.actions = new Array<String>();
-		}
 
-		if (swagShit.vmanEventOrder == null) {
+		if (swagShit.vmanEventOrder == null)
 			swagShit.vmanEventOrder = new Array<Int>();
-		}
 
-		if (swagShit.timeSignature == null) {
+		if (swagShit.timeSignature == null)
 			swagShit.timeSignature = 4;
-		}
 
 		//todo: this is supposed to convert note types from Psych Engine
 		if (swagShit.notes != null) {
@@ -211,9 +209,8 @@ class Song {
 			}
 		}
 
-		if (swagShit.moreStrumLines == null) {
+		if (swagShit.moreStrumLines == null)
 			swagShit.moreStrumLines = 0;
-		}
 
 		if (swagShit.threeLanes == true && swagShit.moreStrumLines < 1) { //Pasta night
 			if (swagShit.moreStrumLines < 1) {

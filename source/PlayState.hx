@@ -104,6 +104,7 @@ class PlayState extends MusicBeatState
 	public var voicesName:String = "Voices";
 	public var instName:String = "Inst";
 	public var songTitle:String = "pewdiepie";
+	public var songAttributes:Map<String, Dynamic> = new Map<String, Dynamic>();
 	
 	public var currentSection:Int; //todo: So im making variable length sections (for example: with non 4/4 time signatures)
 	
@@ -124,6 +125,7 @@ class PlayState extends MusicBeatState
 	public static var storyPlaylist:Array<String> = [];
 	public static var storyDifficulty:Int = 1;
 	public var storyDifficultyText:String = "";
+	public static var playbackRate:Float = 1; //todo: this (it's here so that scripting will have access to the variable before it's actually implemented)
 
 	public static var campaignScore:Int = 0;
 	public static var campaignMisses:Int = 0;
@@ -230,6 +232,8 @@ class PlayState extends MusicBeatState
 	public var camFollowPos:FlxObject;
 	public var camFollowOffset:FlxObject;
 	public var camFollowSpeed:Float = 1;
+	public var camZoomSpeed:Float = 0.95;
+	public var hudZoomSpeed:Float = 0.95;
 	public var camOffset:FlxPoint = new FlxPoint(0, 0);
 	public var camIsFollowing:Bool = true;
 
@@ -311,6 +315,13 @@ class PlayState extends MusicBeatState
 
 		if (SONG == null)
 			SONG = Song.loadFromJson('tutorial');
+
+		if (SONG.attributes != null) {
+			for (thing in SONG.attributes) {
+				songAttributes.set(Std.string(thing[0]), thing[1]);
+			}
+			trace("Added "+SONG.attributes.length+" song attributes");
+		}
 		
 		curManiaInfo = ManiaInfo.GetManiaInfo(SONG.maniaStr);
 		if (Options.instance.playstate_bothside && allowGameplayChanges) {
@@ -925,11 +936,18 @@ class PlayState extends MusicBeatState
 			CoolUtil.mapPositionObjectWithin(cast timerThing.members[0], currentUIStyle.hudThingPos, Options.instance.downScroll ? "textTimerDown" : "textTimerUp");
 		}
 
-		iconP1 = new HealthIcon(boyfriend.healthIcon, true, modName);
+		var daIconPuts:Array<Dynamic> = [songAttributes.exists("playerIconP1") ? songAttributes.get("playerIconP1") : boyfriend.healthIcon, songAttributes.exists("playerIconP2") ? songAttributes.get("playerIconP2") : dad.healthIcon];
+		for (i in 0...daIconPuts.length) {
+			if (Std.isOfType(daIconPuts[i], Int))
+				daIconPuts[i] = Character.activeArray[daIconPuts[i]];
+		}
+		trace("Char icons: "+daIconPuts);
+
+		iconP1 = new HealthIcon(daIconPuts[0], true, modName);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
 		add(iconP1);
 
-		iconP2 = new HealthIcon(dad.healthIcon, false, modName);
+		iconP2 = new HealthIcon(daIconPuts[1], false, modName);
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
 
@@ -1639,19 +1657,24 @@ class PlayState extends MusicBeatState
 
 			var newFocus:Character = SONG.notes[currentSection].mustHitSection != false ? boyfriend : dad;
 			var focusNum:Null<Int> = SONG.notes[currentSection].focusCharacter;
-			if (focusNum != null && focusNum > 0 && focusNum <= Character.activeArray.length) {
-				newFocus = Character.activeArray[focusNum - 1];
-			}
+			if (focusNum < 0) {
+				focusCharacter = null;
+				//camFollow.setPosition()
+			} else {
+				if (focusNum != null && focusNum > 0 && focusNum <= Character.activeArray.length) {
+					newFocus = Character.activeArray[focusNum - 1];
+				}
 
-			if (focusCharacter != newFocus) {
-				camFollowSetOnCharacter(newFocus);
-				focusCharacter = newFocus;
+				if (focusCharacter != newFocus) {
+					camFollowSetOnCharacter(newFocus);
+					focusCharacter = newFocus;
+				}
 			}
 		}
 
 		if (camZooming) {
-			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, 0.95);
-			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, 0.95);
+			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, camZoomSpeed);
+			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, hudZoomSpeed);
 		}
 
 		FlxG.watch.addQuick("beatShit", curBeat);
@@ -1826,7 +1849,7 @@ class PlayState extends MusicBeatState
 			var speed = Math.min(camFollowSpeed * 2 * elapsed, 1);
 			var targetX = camFollow.x + camFollowOffset.x;
 			var targetY = camFollow.y + camFollowOffset.y;
-			if (Options.instance.noteCamMovement && focusCharacter.noteCameraOffset.exists(focusCharacter.animation.curAnim.name)) {
+			if (focusCharacter != null && Options.instance.noteCamMovement && focusCharacter.noteCameraOffset.exists(focusCharacter.animation.curAnim.name)) {
 				var thing = focusCharacter.noteCameraOffset.get(focusCharacter.animation.curAnim.name);
 				targetX += thing.x;
 				targetY += thing.y;
@@ -2139,7 +2162,7 @@ class PlayState extends MusicBeatState
 			pixelShitPart2 = '-pixel';
 		}
 
-		var daRatingImg = (songMisses == 0 && shits == 0 && bads == 0 && goods == 0) ? 'sick-cool' : daRating;
+		var daRatingImg = songFC == 0 ? 'sick-cool' : daRating;
 
 		var comboSpr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(validUIStyle ? currentUIStyle.combo : pixelShitPart1 + 'combo' + pixelShitPart2));
 		comboSpr.screenCenter();

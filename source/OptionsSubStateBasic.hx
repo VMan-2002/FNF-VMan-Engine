@@ -38,6 +38,9 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 	var canMoveSelected:Bool = true;
 	var backSubState:Int = 0;
 	
+	/**
+		This is in lowercase
+	**/
 	var curSelectedName:String = "the person reading this has nice hair";
 
 	var textTween:FlxTween;
@@ -141,6 +144,9 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 		//thing
 	}
 	
+	/**
+		Called when Accept button is pressed. Return `true` to update description.
+	**/
 	public function optionAccept(name:String):Bool {
 		//thing
 		return false;
@@ -161,11 +167,18 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 		return null;
 	}
 	
+	/**
+		Called when Back button is pressed. Return `true` to backout.
+	**/
 	public function optionBack():Bool {
 		//thing
 		return true;
 	}
 
+	
+	/**
+		Return `true` if the option is unfinished or unimplemented.
+	**/
 	public function optionUpcoming(name:String):Bool {
 		//thing
 		return false;
@@ -220,6 +233,17 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 		}
 		
 		optionUpdate(optname);
+	}
+
+	/**
+		Pass in an option substate instance, for example `changeOptionMenu(new ControlsSubState())`
+
+		Always returns `false`
+	**/
+	public inline function changeOptionMenu(a:Dynamic) {
+		FlxG.state.closeSubState();
+		FlxG.state.openSubState(a);
+		return false;
 	}
 	
 	public function goBack() {
