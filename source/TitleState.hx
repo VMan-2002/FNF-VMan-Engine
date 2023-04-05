@@ -27,6 +27,7 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
+import haxe.Http;
 import lime.app.Application;
 import openfl.Assets;
 
@@ -73,6 +74,9 @@ class TitleState extends MusicBeatState {
 	var fromOptions:Bool = false;
 	var toPlayState:Bool = false;
 
+	public var updateCheck:String = initialized ? "NO_CHECK" : Http.requestUrl("https://raw.githubusercontent.com/VMan-2002/FNF-VMan-Engine/master/version/vman_engine.txt");
+	public var needsUpdate:Bool = false;
+
 	override public function new(?replayTitle:Bool = false, ?reloadingMods:Bool = false, ?fromOptions:Bool = false, ?toPlayState:Bool = false) {
 		//todo: this doesn't always work
 		//this.replayTitle = replayTitle;
@@ -91,6 +95,11 @@ class TitleState extends MusicBeatState {
 	}
 
 	override public function create():Void {
+		if (!initialized) {
+			var stuffThings = updateCheck.split("\n");
+			if (stuffThings.length != 0 && Std.parseInt(stuffThings[0]) != null)
+				needsUpdate = Std.parseInt(stuffThings[0]) > Main.gameVersionInt;
+		}
 		//Paths.updateModsList();
 		/*#if MODS
 		var modListThing:Array<String> = File.getContent("mods/modList.txt").split("\n");
@@ -225,6 +234,10 @@ class TitleState extends MusicBeatState {
 				if (reloadingMods) {
 					MainMenuState.returnToMenuFocusOn(fromOptions ? "options" : "mods");
 					return;
+				}
+				if (needsUpdate) {
+					FlxG.switchState(new OutdatedSubState());
+					return trace("outdated but you're have skip title enabled");
 				}
 				return MainMenuThing();
 			}
@@ -408,15 +421,9 @@ class TitleState extends MusicBeatState {
 			new FlxTimer().start(2, function(tmr:FlxTimer) {
 				// Check if version is outdated
 
-				var version:String = '${Main.gameVersionInt}';
-
-				if (/*version.trim() != NGio.GAME_VER_NUMS.trim() &&*/ !OutdatedSubState.leftState && false) {//Todo: Update checker
+				if (needsUpdate) {
 					FlxG.switchState(new OutdatedSubState());
-					trace('OLD VERSION!');
-					trace('old ver');
-					trace(version.trim());
-					trace('cur ver');
-					//trace(NGio.GAME_VER_NUMS.trim());
+					trace('OLD VERSION detected! make nerd emojis in chat');
 				} else {
 					FlxG.switchState(new MainMenuState());
 				}
@@ -469,7 +476,7 @@ class TitleState extends MusicBeatState {
 		
 		stageObject.beatHit();
 		
-		if (skippedIntro || !doCoolText)
+		if (skippedIntro || !doCoolText || reloadingMods)
 			return;
 
 		if (curBeat >= introTexts.length) {

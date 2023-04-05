@@ -23,6 +23,12 @@ class HudThing extends FlxGroup
 	];
 	public var autoUpdate:Bool = false;
 
+	public static var hudThingDispTypes:Array<String> = [
+		"song", "difficulty", //Song info
+		"score", "hits", "misses", "accSimple", "accRating", "fc", "combo", "maxCombo", //performance
+		"sicks", "goods", "bads", "shits", "imperfects", "totalnotes" //ratings
+	];
+
 	//arbitrary whatevers
 	//public var ratingAcc:Array<Float> = [0.25, 0.5, 0.7, 0.8, 0.85, 0.9, 0.95, 0.975, 0.9825, 0.995, 1];
 	//public var ratingLetters:Array<String> = ["F", "D", "C", "B", "B+", "A-", "A", "A+", "S-", "S", "S+", "P"];

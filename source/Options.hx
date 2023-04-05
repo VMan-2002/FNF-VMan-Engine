@@ -95,6 +95,7 @@ class Options {
 	public static var dataStrip:Bool = true;
 	public var uiReloading:Bool = false;
 	public var noteQuant:Bool = false;
+	public var hudThingInfo:String = "score,misses,fc,accRating,accSimple,health\nsong,difficulty\nhits,sicks,goods,bads,shits,misses,totalnotes";
 	
 	//PlayState changeables
 	public var playstate_opponentmode:Bool = false;
@@ -166,6 +167,7 @@ class Options {
 		svd.data.dataStrip = dataStrip;
 		svd.data.uiReloading = uiReloading;
 		svd.data.noteQuant = noteQuant;
+		svd.data.hudThingInfo = hudThingInfo;
 
 		svd.data.playstate_opponentmode = playstate_opponentmode;
 		svd.data.playstate_bothside = playstate_bothside;
@@ -211,6 +213,7 @@ class Options {
 		dataStrip = ifNotNull(svd.data.dataStrip, dataStrip);
 		saved.uiReloading = ifNotNull(svd.data.uiReloading, saved.uiReloading);
 		saved.noteQuant = ifNotNull(svd.data.noteQuant, saved.noteQuant);
+		saved.hudThingInfo = Std.string(ifNotNull(svd.data.hudThingInfo, saved.hudThingInfo)).split("\n").slice(0, 2).join("\n"); //Ok
 		
 		saved.playstate_opponentmode = ifNotNull(svd.data.playstate_opponentmode, saved.playstate_opponentmode);
 		saved.playstate_bothside = ifNotNull(svd.data.playstate_bothside, saved.playstate_bothside);

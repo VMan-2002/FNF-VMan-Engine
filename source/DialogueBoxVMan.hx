@@ -27,8 +27,8 @@ import sys.io.File;
 class DialogueFile {
 	public var texts:Array<DialogueLine> = new Array<DialogueLine>();
 	public var dontClose:Bool = false;
-	public var music:String = "";
 	public var usedInFreeplay:Bool = false;
+	public var music:String;
 }
 
 class DialogueLine {
@@ -46,6 +46,7 @@ class DialogueLine {
 	public var choices:Array<String>;
 	public var screenGraphic:String;
 	public var screenGraphicAnim:String = "";
+	public var music:String;
 }
 
 class PortraitEvent {
@@ -121,7 +122,7 @@ class DialogueBoxVMan extends FlxSpriteGroup
 
 		trace(dialogueList[0].text);
 
-		if (dialogueFile.music != "") {
+		if (dialogueFile.music != "" && dialogueFile.music != null) {
 			FlxG.sound.playMusic(Paths.music(dialogueFile.music), 0);
 			FlxG.sound.music.fadeIn(1, 0, 0.8);
 		}

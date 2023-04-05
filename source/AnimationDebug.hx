@@ -117,8 +117,7 @@ class AnimationDebug extends MusicBeatState
 	{
 		var daLoop:Int = 0;
 
-		for (anim => offsets in char.animOffsets)
-		{
+		for (anim => offsets in char.animOffsets) {
 			var text:FlxText = new FlxText(10, 20 + (18 * daLoop), 0, anim + ": " + offsets, 15);
 			text.scrollFactor.set();
 			text.color = FlxColor.BLUE;
@@ -154,8 +153,7 @@ class AnimationDebug extends MusicBeatState
 			if (FlxG.keys.justPressed.Q)
 				FlxG.camera.zoom -= 0.25;
 
-			if (FlxG.keys.pressed.I || FlxG.keys.pressed.J || FlxG.keys.pressed.K || FlxG.keys.pressed.L)
-			{
+			if (FlxG.keys.pressed.I || FlxG.keys.pressed.J || FlxG.keys.pressed.K || FlxG.keys.pressed.L) {
 				if (FlxG.keys.pressed.I)
 					camFollow.velocity.y = -90 * multiplier;
 				else if (FlxG.keys.pressed.K)
@@ -169,19 +167,14 @@ class AnimationDebug extends MusicBeatState
 					camFollow.velocity.x = 90 * multiplier;
 				else
 					camFollow.velocity.x = 0;
-			}
-			else
-			{
+			} else {
 				camFollow.velocity.set();
 			}
 
 			if (FlxG.keys.justPressed.W)
-			{
 				curAnim -= 1;
-			}
 
-			if (FlxG.keys.justPressed.Z)
-			{
+			if (FlxG.keys.justPressed.Z) {
 				charGhost.playAnim(char.animation.curAnim.name, true);
 				charGhost.offset.x = char.offset.x;
 				charGhost.offset.y = char.offset.y;
@@ -191,14 +184,10 @@ class AnimationDebug extends MusicBeatState
 			}
 
 			if (FlxG.keys.justPressed.X)
-			{
 				charGhost.visible = false;
-			}
 
 			if (FlxG.keys.justPressed.S)
-			{
 				curAnim += 1;
-			}
 
 			if (curAnim < 0)
 				curAnim = animList.length - 1;
@@ -206,8 +195,7 @@ class AnimationDebug extends MusicBeatState
 			if (curAnim >= animList.length)
 				curAnim = 0;
 
-			if (FlxG.keys.justPressed.S || FlxG.keys.justPressed.W || FlxG.keys.justPressed.SPACE)
-			{
+			if (FlxG.keys.justPressed.S || FlxG.keys.justPressed.W || FlxG.keys.justPressed.SPACE) {
 				char.playAnim(animList[curAnim], true);
 
 				updateTexts();
@@ -218,8 +206,7 @@ class AnimationDebug extends MusicBeatState
 			var downP = FlxG.keys.anyJustPressed([DOWN]);
 			var leftP = FlxG.keys.anyJustPressed([LEFT]);
 
-			if (upP || rightP || downP || leftP)
-			{
+			if (upP || rightP || downP || leftP) {
 				updateTexts();
 				if (upP)
 					char.animOffsets.get(animList[curAnim])[1] += multiplier;
