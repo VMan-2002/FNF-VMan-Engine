@@ -254,7 +254,7 @@ class ModsMenuState extends MusicBeatState {
 				//Toggle Enabled
 				var thisOne = currentCreditsThing.members[curSelected].modName;
 				if (!enables.get(thisOne) && currentCreditsThing.members[curSelected].needsNewVer) {
-					
+					FlxG.openURL("https://github.com/VMan-2002/FNF-VMan-Engine/releases/latest");
 				} else {
 					enables.set(thisOne, !enables.get(thisOne));
 					trace('Toggle state of ${thisOne} to ${enables.get(thisOne)}');

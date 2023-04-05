@@ -23,6 +23,7 @@ class OutdatedSubState extends MusicBeatState {
 		bg.scale.y = bg.scale.x;
 		bg.updateHitbox();
 		bg.screenCenter();
+		bg.color = 0xFF858585;
 		add(bg);
 
 		changelogText = new FlxText(0, minPos, FlxG.width, Http.requestUrl("https://raw.githubusercontent.com/VMan-2002/FNF-VMan-Engine/master/version/vman_engine_changelog.txt"), 8).setFormat("VCR OSD Mono", 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -33,11 +34,11 @@ class OutdatedSubState extends MusicBeatState {
 		trace("Max pos "+maxPos);
 
 		var ver = "v" + Main.gameVersionInt;
-		var bar = new FlxSprite().makeGraphic(FlxG.width, 22, FlxColor.BLACK)
+		var bar = new FlxSprite().makeGraphic(FlxG.width, 22, FlxColor.BLACK);
 		bar.alpha = 0.75;
 		add(bar);
 		var txt:FlxText = new FlxText(0, 0, FlxG.width,
-			"Outdated Version! (You have "+ver+") | Accept: Go to Github | Back: Ignore for this session",
+			"Outdated Version! (You have "+(Main.gameVersionStr.substring(0, Main.gameVersionStr.indexOf(" ")))+") | Accept: Go to Download | Back: Ignore for this session",
 			8);
 		txt.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, CENTER);
 		txt.screenCenter(X);
