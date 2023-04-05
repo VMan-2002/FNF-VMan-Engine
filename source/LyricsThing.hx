@@ -7,9 +7,9 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 
-typedef LyricsItem {
-	text:Array<String>;
-	timing:Array<Float>;
+typedef LyricsItem = {
+	text:Array<String>,
+	timing:Array<Float>
 }
 
 class LyricsThing extends FlxGroup {
