@@ -47,7 +47,7 @@ class HudThingMenu extends MusicBeatState {
 
 		var textThingy = new FlxTypedGroup<FlxText>();
 		for (tx in titles)
-			textThingy.add(new FlxText(FlxG.width * 0.25 * textThingy.length, 0, FlxG.width * 0.25, tx).setFormat("VCR OSD Mono", 10, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK));
+			textThingy.add(new FlxText(FlxG.width * 0.25 * textThingy.length, 0, FlxG.width * 0.25, tx).setFormat("VCR OSD Mono", 16, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK));
 		add(textThingy);
 
 		super.create();

@@ -2793,6 +2793,8 @@ class PlayState extends MusicBeatState
 		if (noteTypeData.noAnim)
 			return;
 		var char:Character = (note != null && note.charNum != -1) ? Character.activeArray[note.charNum] : (noteTypeData.charNums != null ? Character.activeArray[noteTypeData.charNums[0]] : (isBoyfriend ? boyfriend : dad));
+		if (char == null)
+			return;
 		var color = (note.strumLineNum < 0 ? funnyManias[-1 - note.strumLineNum] : curManiaInfo).arrows[note == null ? noteData : note.noteData];
 		var colorNote = "sing" + color.toUpperCase();
 		if (isMiss)

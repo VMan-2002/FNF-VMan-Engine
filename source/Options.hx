@@ -152,7 +152,7 @@ class Options {
 		svd.data.invisibleNotes = invisibleNotes;
 		svd.data.invisibleNotesType = invisibleNotesType;
 		svd.data.controls = controls;
-		svd.data.uiControls = uiControls;
+		svd.data.uiControls = uiControls.copy();
 		svd.data.language = language;
 		svd.data.modchartEnabled = modchartEnabled;
 		svd.data.flashingLights = flashingLights;
