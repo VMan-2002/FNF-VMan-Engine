@@ -911,16 +911,17 @@ class PlayState extends MusicBeatState
 				["hits", "misses", "totalnotes", "health"]
 			];
 		} else {
-			/*hudThingLists = [
+			hudThingLists = [
 				["score", "misses", "fc", "accRating", "accSimple", "health"],
 				["song", "difficulty"],
 				["hits", "sicks", "goods", "bads", "shits", "misses", "totalnotes"]
-			];*/
-			hudThingLists = [];
+			];
+			//todo: fix crash
+			/*hudThingLists = [];
 			var hudThingAdds = Options.instance.hudThingInfo.split("\n");
 			while (hudThingAdds.length != 0) {
 				hudThingLists.push(hudThingAdds.shift().split(","));
-			}
+			}*/
 		}
 		hudThingLists[1].push("engine");
 		hudThings.add(new HudThing(healthBarBG.x, healthBarBG.y + 30, hudThingLists[0]));
