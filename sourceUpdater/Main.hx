@@ -106,6 +106,7 @@ class Main extends Sprite
 		} else if (!triedProtocolInstall) {
 			triedProtocolInstall = true;
 			trace("Browser protocol is NOT installed, try install");
+			titleText.text = "VMan Engine Updater";
 			//var msgbox = new MessageBox();
 			//todo: wtf am i doning
 			/*msgbox.title = "Info";
@@ -113,8 +114,10 @@ class Main extends Sprite
 			msgbox.type = TYPE_YESNO;
 			msgbox.onDialogClosed = function(evnt) {
 				if (evnt == DialogButton.YES) {*/
-					var elevateCheck = new sys.io.Process("net file").stdout.readAll().toString().toLowerCase().contains("access is denied");
-					if (!elevateCheck) {
+					var elevateCheck = new sys.io.Process("net file").stdout.readAll().toString().toLowerCase();
+					trace("elevate check: "+elevateCheck);
+					var elevateAllowed = (!elevateCheck.contains("access is denied")) && (elevateCheck.length > 1); //because for some reason, an empty response can happen.
+					if (elevateAllowed) {
 						trace(Sys.programPath());
 						var commands = [
 							"HKCR\\"+protocolName+" /d \"URL:"+protocolName+" Protocol\"",
@@ -129,6 +132,8 @@ class Main extends Sprite
 							new sys.io.Process("reg add "+cmd);
 						}
 						trace("Attempted installing the protocol");
+						textThing.text = "Attempted installing the browser protocol";
+						stage.invalidate();
 					} else {
 						//var msgbox = new MessageBox();
 						//msgbox.title = "Info";
@@ -194,6 +199,7 @@ class Main extends Sprite
 			return;
 		}
 		textThing.text = "This is the VMan Engine updater, used for Auto-Download links in mod pages and will eventually be able to update the engine itself";
+		titleText.text = "VMan Engine Updater";
 	}
 	
 	var title:String = "Updater";

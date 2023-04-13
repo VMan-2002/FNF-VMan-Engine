@@ -25,7 +25,8 @@ class Achievements
 		//"6kBothPlay", //Dunno lol
 		"fridayNight",
 		"calibrateDeath",
-		"modFunkboxPlay"
+		"modFunkboxPlay",
+		"modRegGuitPlay"
 	];
 
 	public static function giveAchievement(name:String, ?modName:Null<String>) {
@@ -98,6 +99,8 @@ class Achievements
 		switch(thing) {
 			case [428567, "funny_nep_mod"]:
 				return category == "storyModeWeek" && giveAchievement("modFunkboxPlay");
+			case [437809, "regular_guitar_song"]:
+				return giveAchievement("modRegGuitPlay");
 			default:
 				return false;
 		}

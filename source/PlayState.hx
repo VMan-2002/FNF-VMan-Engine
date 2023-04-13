@@ -2022,10 +2022,12 @@ class PlayState extends MusicBeatState
 			newState.maxCombo = maxCombo;
 			newState.possibleMoreScore = possibleMoreScore;
 			newState.songFC = songFC;
+			Achievements.awardModPlay("endless", ModLoad.primaryMod, this);
 			return FlxG.switchState(newState);
 		}
 
 		Achievements.giveAchievement("anyClear");
+		Achievements.awardModPlay("anyPlay", ModLoad.primaryMod, this);
 		if (songMisses <= 9 && songHits > 0) {
 			Achievements.giveAchievement("anySDCB");
 			if (songMisses <= 0) {
@@ -2060,6 +2062,7 @@ class PlayState extends MusicBeatState
 			campaignMisses += songMisses;
 
 			storyPlaylist.shift();
+			Achievements.awardModPlay("storyMode", ModLoad.primaryMod, this);
 
 			if (storyPlaylist.length <= 0) {
 				CoolUtil.playMenuMusic();
@@ -2112,6 +2115,7 @@ class PlayState extends MusicBeatState
 				LoadingState.loadAndSwitchState(new PlayState());
 			}
 		} else {
+			Achievements.awardModPlay("freeplay", ModLoad.primaryMod, this);
 			trace('WENT BACK TO FREEPLAY??');
 			FlxG.switchState(new FreeplayState());
 		}

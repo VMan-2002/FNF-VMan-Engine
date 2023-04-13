@@ -504,14 +504,15 @@ class Note extends FlxSprite
 				var stuff = ((noteSkin.imageDownscroll != "" && noteSkin.imageDownscroll != null && Options.instance.downScroll) ? noteSkin.imageDownscroll : noteSkin.image).replace("\\", "/").split("/");
 				stuff[stuff.length - 1] = typedata.imagePrefix + stuff[stuff.length - 1];
 				frames = Paths.getSparrowAtlas(stuff.join("/"));
+				var noteAnimPrefix = strumLineNum < 0 ? "" : typedata.noteAnimPrefix;
 				//trace('Images [normal: ${noteSkin.image}] [downscroll: ${noteSkin.imageDownscroll}] Stuff is ${stuff.join("/")}');
 				
 				if (noteSkin.arrows == null) {
-					animation.addByPrefix('${myArrow}Scroll', '${typedata.noteAnimPrefix}${myArrow}0', 24);
-					animation.addByPrefix('${myArrow}holdend', '${typedata.noteAnimPrefix}${myArrow} hold end', 24);
-					animation.addByPrefix('${myArrow}hold', '${typedata.noteAnimPrefix}${myArrow} hold piece', 24);
-					animation.addByPrefix('${myArrow}Release', '${typedata.noteAnimPrefix}${myArrow} release', 24);
-					animation.addByPrefix('${myArrow}holdstart', '${typedata.noteAnimPrefix}${myArrow} hold start', 24);
+					animation.addByPrefix('${myArrow}Scroll', '${noteAnimPrefix}${myArrow}0', 24);
+					animation.addByPrefix('${myArrow}holdend', '${noteAnimPrefix}${myArrow} hold end', 24);
+					animation.addByPrefix('${myArrow}hold', '${noteAnimPrefix}${myArrow} hold piece', 24);
+					animation.addByPrefix('${myArrow}Release', '${noteAnimPrefix}${myArrow} release', 24);
+					animation.addByPrefix('${myArrow}holdstart', '${noteAnimPrefix}${myArrow} hold start', 24);
 				} else {
 					for (anim in noteSkin.arrows[myArrow]) {
 						if (noteAnimExclude.indexOf(anim.name) > -1) {
@@ -519,7 +520,7 @@ class Note extends FlxSprite
 						}
 						animation.addByPrefix(
 							'${myArrow}${anim.name}',
-							'${typedata.noteAnimReplace != null ? typedata.noteAnimReplace : (typedata.noteAnimPrefix + anim.anim)}',
+							'${typedata.noteAnimReplace != null ? typedata.noteAnimReplace : (noteAnimPrefix + anim.anim)}',
 							anim.framerate,
 							anim.loop
 						);
