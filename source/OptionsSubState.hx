@@ -49,7 +49,8 @@ class OptionsSubState extends OptionsSubStateBasic
 			"Exit Without Saving",
 			"Gameplay Changes",
 			#if debug
-			"Options Warning Test"
+			"Options Warning Test",
+			"HudThing Editor"
 			#end
 		];
 	}
@@ -122,12 +123,12 @@ class OptionsSubState extends OptionsSubStateBasic
 				return ["The mod might know your name. Scary... Bad for livestreamers, though. Only applies when the mod uses it.", Options.saved.selfAware ? "Enabled" : "Disabled"];
 			case "song restart reloads ui":
 				return ["Reload UI style when restarting song.", Options.saved.uiReloading ? "Enabled" : "Disabled"];
-			#if debug
 			case "options warning test":
 				return ["Test the options warning"];
-			#end
 			case "save data management":
 				return ["Look at your save data, and if necessary, kill it to death."];
+			case "hudthing editor":
+				return ["Modify hud meters"];
 		}
 		return ["Unknown option.", name, 'unknownOption'];
 	}
@@ -136,9 +137,7 @@ class OptionsSubState extends OptionsSubStateBasic
 		switch (name)
 		{
 			case "controls":
-				FlxG.state.closeSubState();
-				FlxG.state.openSubState(new ControlsSubState());
-				return false;
+				return changeOptionMenu(new ControlsSubState());
 				#if debug
 			case "save data management":
 				FlxG.state.closeSubState();
@@ -226,8 +225,12 @@ class OptionsSubState extends OptionsSubStateBasic
 				Options.saved.selfAware = !Options.saved.selfAware;
 			case "song restart reloads ui":
 				Options.saved.uiReloading = !Options.saved.uiReloading;
+			#if debug
 			case "options warning test":
 				FlxG.switchState(new OptionsWarningState());
+			case "hudthing editor":
+				FlxG.switchState(new HudThingMenu());
+			#end
 			default:
 				trace("Tried to accept unknown option: " + name);
 		}
