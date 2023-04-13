@@ -33,7 +33,7 @@ class OutdatedSubState extends MusicBeatState {
 		bg.color = 0xFF858585;
 		add(bg);
 
-		changelogText = new FlxText(0, minPos, FlxG.width, Http.requestUrl("https://raw.githubusercontent.com/VMan-2002/FNF-VMan-Engine/master/version/vman_engine_changelog.txt"), 8).setFormat("VCR OSD Mono", 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		changelogText = new FlxText(0, minPos, FlxG.width, 'Changes in v${versionStr}' + "\n\n" + Http.requestUrl("https://raw.githubusercontent.com/VMan-2002/FNF-VMan-Engine/master/version/vman_engine_changelog.txt"), 8).setFormat("VCR OSD Mono", 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(changelogText);
 
 		minPos = Math.min((maxPos + FlxG.height) - (changelogText.textField.textHeight + 60), maxPos);
