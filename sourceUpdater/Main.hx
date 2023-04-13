@@ -100,54 +100,6 @@ class Main extends Sprite
 			protocolName = "psychinstall";
 		}
 		trace("Using protocol: "+protocolName);
-		var protocolCheck = new sys.io.Process("reg query HKCR\\"+protocolName+"\\shell\\open\\command").stdout.readAll().toString();
-		if (/*protocolCheck.contains("URL:"+protocolName+" Protocol") && protocolCheck.contains("URL Protocol")*/ protocolCheck.contains(Sys.programPath())) { //Instead, check that the protocol is installed to the CURRENT dir
-			trace("Browser protocol is installed");
-		} else if (!triedProtocolInstall) {
-			triedProtocolInstall = true;
-			trace("Browser protocol is NOT installed, try install");
-			titleText.text = "VMan Engine Updater";
-			//var msgbox = new MessageBox();
-			//todo: wtf am i doning
-			/*msgbox.title = "Info";
-			msgbox.text = "The browser protocol is not installed. If installed,\nyou can download mod packs using special links on GameBanana pages.\n\nInstall the browser protocol?";
-			msgbox.type = TYPE_YESNO;
-			msgbox.onDialogClosed = function(evnt) {
-				if (evnt == DialogButton.YES) {*/
-					var elevateCheck = new sys.io.Process("net file").stdout.readAll().toString().toLowerCase();
-					trace("elevate check: "+elevateCheck);
-					var elevateAllowed = (!elevateCheck.contains("access is denied")) && (elevateCheck.length > 1); //because for some reason, an empty response can happen.
-					if (elevateAllowed) {
-						trace(Sys.programPath());
-						var commands = [
-							"HKCR\\"+protocolName+" /d \"URL:"+protocolName+" Protocol\"",
-							"HKCR\\"+protocolName+" /v \"URL Protocol\"",
-							"HKCR\\"+protocolName+"\\shell",
-							"HKCR\\"+protocolName+"\\shell\\open",
-							"HKCR\\"+protocolName+"\\shell\\open\\command /d \"\\\""+Sys.programPath()+"\\\" \\\"%1\\\"\""
-						];
-						trace("running cmds");
-						for (cmd in commands) {
-							trace("reg add "+cmd);
-							new sys.io.Process("reg add "+cmd);
-						}
-						trace("Attempted installing the protocol");
-						textThing.text = "Attempted installing the browser protocol";
-						stage.invalidate();
-					} else {
-						//var msgbox = new MessageBox();
-						//msgbox.title = "Info";
-						//msgbox.text = "Please run as administrator first";
-						trace("Please run as administrator to install the browser protocol");
-						textThing.text = "Please run as administrator to install the browser protocol";
-						stage.invalidate();
-						//init();
-					}
-			//	}
-			//};
-			
-			return;
-		}
 
 		trace("Updater");
 		var launchArgs = Sys.args().join(" ");
@@ -156,7 +108,8 @@ class Main extends Sprite
 		if (launchArgs.startsWith(protocolName+"://")) {
 			trace("Got browser protocol url");
 			var thingToDo = launchArgs.split("/").slice(2);
-			var cmd = thingToDo.shift();
+			var cmd = thingToDo.shift().trim();
+			trace("command: "+cmd);
 			switch(cmd) {
 				case "install_gb" | "gb_install":
 					trace("Install from GameBanana");
@@ -183,12 +136,14 @@ class Main extends Sprite
 					};
 					req.request(false);
 				case "emki" | "feri":
+					trace("Downloading image of plamt");
 					var req = new URLRequest(cmd == "feri" ? "https://static.wikia.nocookie.net/advendure-plantoids/images/1/12/FeriAzazel3Art.png?format=original" : "https://cdn.discordapp.com/attachments/714737333462761513/1095648513012019271/preview.png");
 					req.contentType = "image/png";
 					var loader = new URLLoader();
 					loader.dataFormat = URLLoaderDataFormat.BINARY;
 					loader.load(req);
 					loader.addEventListener(Event.COMPLETE, function(dat:Event) {
+						trace("Download done");
 						File.saveBytes(getPath(cmd+".png"), dat.target.data);
 					});
 				case "engine_update" | "update_engine":
@@ -198,6 +153,55 @@ class Main extends Sprite
 					textThing.text = "Dunno what to do. Launch arguments are "+launchArgs;
 			}
 			return;
+		} else {
+			var protocolCheck = new sys.io.Process("reg query HKCR\\"+protocolName+"\\shell\\open\\command").stdout.readAll().toString();
+			if (/*protocolCheck.contains("URL:"+protocolName+" Protocol") && protocolCheck.contains("URL Protocol")*/ protocolCheck.contains(Sys.programPath())) { //Instead, check that the protocol is installed to the CURRENT dir
+				trace("Browser protocol is installed");
+			} else if (!triedProtocolInstall) {
+				triedProtocolInstall = true;
+				trace("Browser protocol is NOT installed, try install");
+				titleText.text = "VMan Engine Updater";
+				//var msgbox = new MessageBox();
+				//todo: wtf am i doning
+				/*msgbox.title = "Info";
+				msgbox.text = "The browser protocol is not installed. If installed,\nyou can download mod packs using special links on GameBanana pages.\n\nInstall the browser protocol?";
+				msgbox.type = TYPE_YESNO;
+				msgbox.onDialogClosed = function(evnt) {
+					if (evnt == DialogButton.YES) {*/
+						var elevateCheck = new sys.io.Process("net file").stdout.readAll().toString().toLowerCase();
+						trace("elevate check: "+elevateCheck);
+						var elevateAllowed = (!elevateCheck.contains("access is denied")) && (elevateCheck.length > 1); //because for some reason, an empty response can happen.
+						if (elevateAllowed) {
+							trace(Sys.programPath());
+							var commands = [
+								"HKEY_CLASSES_ROOT\\"+protocolName+" /d \"URL:"+protocolName+" Protocol\"",
+								"HKEY_CLASSES_ROOT\\"+protocolName+" /v \"URL Protocol\"",
+								"HKEY_CLASSES_ROOT\\"+protocolName+"\\shell",
+								"HKEY_CLASSES_ROOT\\"+protocolName+"\\shell\\open",
+								"HKEY_CLASSES_ROOT\\"+protocolName+"\\shell\\open\\command /d \"\\\""+Sys.programPath()+"\\\" \\\"%1\\\"\""
+							];
+							trace("running cmds");
+							for (cmd in commands) {
+								trace("reg add "+cmd);
+								new sys.io.Process("cmd /C reg add "+cmd);
+							}
+							trace("Attempted installing the protocol");
+							textThing.text = "Attempted installing the browser protocol";
+							stage.invalidate();
+						} else {
+							//var msgbox = new MessageBox();
+							//msgbox.title = "Info";
+							//msgbox.text = "Please run as administrator first";
+							trace("Please run as administrator to install the browser protocol");
+							textThing.text = "Please run as administrator to install the browser protocol";
+							stage.invalidate();
+							//init();
+						}
+				//	}
+				//};
+				
+				return;
+			}
 		}
 		textThing.text = "This is the VMan Engine updater, used for Auto-Download links in mod pages and will eventually be able to update the engine itself";
 		titleText.text = "VMan Engine Updater";
