@@ -13,6 +13,7 @@ class OutdatedSubState extends MusicBeatState {
 	public static var leftState:Bool = false;
 	public var minPos:Float = 40;
 	public var maxPos:Float = 40;
+	public var scrollable:Bool;
 	public var changelogText:FlxText;
 	public var versionStr:String;
 
@@ -38,6 +39,11 @@ class OutdatedSubState extends MusicBeatState {
 		minPos = Math.min((maxPos + FlxG.height) - (changelogText.textField.textHeight + 60), maxPos);
 		trace("Min pos "+minPos);
 		trace("Max pos "+maxPos);
+		scrollable = minPos != maxPos;
+		if (!scrollable) {
+			changelogText.screenCenter(Y);
+			changelogText.y += 11;
+		}
 
 		var ver = "v" + Main.gameVersionInt;
 		var bar = new FlxSprite().makeGraphic(FlxG.width, 22, FlxColor.BLACK);
@@ -60,13 +66,15 @@ class OutdatedSubState extends MusicBeatState {
 			FlxG.switchState(new MainMenuState());
 		}
 		
-		var scroll:Float = (FlxG.mouse.wheel * 32);
-		if (controls.UP)
-			scroll += elapsed * 120;
-		if (controls.DOWN)
-			scroll -= elapsed * 120;
+		if (scrollable) {
+			var scroll:Float = (FlxG.mouse.wheel * 32);
+			if (controls.UP)
+				scroll += elapsed * 120;
+			if (controls.DOWN)
+				scroll -= elapsed * 120;
 
-		changelogText.y = CoolUtil.clamp(changelogText.y + scroll, minPos, maxPos);
+			changelogText.y = CoolUtil.clamp(changelogText.y + scroll, minPos, maxPos);
+		}
 		
 		super.update(elapsed);
 	}
