@@ -156,7 +156,8 @@ class Main extends Sprite
 		if (launchArgs.startsWith(protocolName+"://")) {
 			trace("Got browser protocol url");
 			var thingToDo = launchArgs.split("/").slice(2);
-			switch(thingToDo.shift()) {
+			var cmd = thingToDo.shift();
+			switch(cmd) {
 				case "install_gb" | "gb_install":
 					trace("Install from GameBanana");
 					var url = 'https://api.gamebanana.com/Core/Item/Data?itemtype=Mod&itemid=${thingToDo[0]}&fields=Files().aFiles(),name';
@@ -181,14 +182,14 @@ class Main extends Sprite
 						trace("Couldn't find a .zip file to download.");
 					};
 					req.request(false);
-				case "emki":
-					var req = new URLRequest("https://cdn.discordapp.com/attachments/714737333462761513/1095648513012019271/preview.png");
+				case "emki" | "feri":
+					var req = new URLRequest(cmd == "feri" ? "https://static.wikia.nocookie.net/advendure-plantoids/images/1/12/FeriAzazel3Art.png?format=original" : "https://cdn.discordapp.com/attachments/714737333462761513/1095648513012019271/preview.png");
 					req.contentType = "image/png";
 					var loader = new URLLoader();
 					loader.dataFormat = URLLoaderDataFormat.BINARY;
 					loader.load(req);
 					loader.addEventListener(Event.COMPLETE, function(dat:Event) {
-						File.saveBytes(getPath("emki.png"), dat.target.data);
+						File.saveBytes(getPath(cmd+".png"), dat.target.data);
 					});
 				case "engine_update" | "update_engine":
 					textThing.text = "This arg would update VMan Engine itself, but that isn't implemented yet";
