@@ -1,19 +1,14 @@
-1.1.0
+A lot of changes are in this update but here's some highlights
 
-New features were added
-
-They're super fucking cool but there's like too many of em here to list so uhhhh im gonna put the most important ones here
-
-0: You can't read this ingame
-1: I made stuff
-2: You get to play the stuff
-3: You should enjoy the stuff
-4: I did 99% of the work on the stuff
-5: I am relying on people to volunteer themselves to help in order to gain help
-6: I should stop doing that and just say words to capable people
-7: But they're out of my league / other social anxiety things / I'm capable of doing it myself anyway but help would be appreciated
-8: And I'm sad
-9: And that's painful
-10: Regular lorem ipsum is too boring, we using cat ipsum in this (from www.catipsum.com)
-11: Cat ipsum dolor sit amet, slap kitten brother with paw eat fish on floor or poop in litter box, scratch the walls find empty spot in cupboard and sleep all day. Damn that dog push your water glass on the floor mrow lick the curtain just to be annoying. Cat snacks carefully drink from water glass and then spill it everywhere and proceed to lick the puddle or climb into cupboard and lick the salt off rice cakes. Ptracy take a big fluffing crap ðŸ’©. I is not fat, i is fluffy show belly. Cuddle no cuddle cuddle love scratch scratch meow sit in window and stare oooh, a bird, yum. Demand to be let outside at once, and expect owner to wait for me as i think about it get scared by sudden appearance of cucumber take a deep sniff of sock then walk around with mouth half open pee on walls it smells like breakfast for under the bed. Prance along on top of the garden fence, annoy the neighbor's dog and make it bark get video posted to internet for chasing red dot, present belly, scratch hand when stroked friends are not food or kick up litter spend six hours per day washing, but still have a crusty butthole yet behind the couch. Drink from the toilet walk on keyboard thinking longingly about tuna brine. Caticus cuteicus all of a sudden cat goes crazy. Get scared by sudden appearance of cucumber wack the mini furry mouse. Car rides are evil under the bed, yet jump five feet high and sideways when a shadow moves for meow meow you are my owner so here is a dead bird making sure that fluff gets into the owner's eyes get away from me stupid dog yet so you're just gonna scroll by without saying meowdy?. Stare at ceiling scratch the furniture so put toy mouse in food bowl run out of litter box at full speed . Blow up sofa in 3 seconds flop over attack like a vicious monster yet love fish. Stick butt in face cat not kitten around human is in bath tub, emergency! drowning! meooowww! for get poop stuck in paws jumping out of litter box and run around the house scream meowing and smearing hot cat mud all over, so get poop stuck in paws jumping out of litter box and run around the house scream meowing and smearing hot cat mud all over. Scratch the box stare at imaginary bug milk the cow. Just going to dip my paw in your coffee and do a taste test - oh never mind i forgot i don't like coffee - you can have that back now peer out window, chatter at birds, lure them to mouth or friends are not food, cat meoooow i iz master of hoomaan, not hoomaan master of i, oooh damn dat dog. Spill litter box, scratch at owner, destroy all furniture, especially couch lick plastic bags. Weigh eight pounds but take up a full-size bed sniff sniff so refuse to come home when humans are going to bed; stay out all night then yowl like i am dying at 4am so that box? i can fit in that box and i love cats i am one wake up scratch humans leg for food then purr then i have a and relax kitty for brown cats with pink ears. Car rides are evil eat my own ears look at dog hiiiiiisssss. Scratch ccccccccccccaaaaaaaaaaaaaaatttttttttttttttttssssssssssssssss crusty butthole hunt anything. Flee in terror at cucumber discovered on floor annoy kitten brother with poking kitty power present belly, scratch hand when stroked yet bird bird bird bird bird bird human why take bird out i could have eaten that howl uncontrollably for no reason for fight an alligator and win. Pet me pet me don't pet me tickle my belly at your own peril i will pester for food when you're in the kitchen even if it's salad but burrow under covers, but brown cats with pink ears and sleeps on my head but missing until dinner time, and pretend not to be evil. Find empty spot in cupboard and sleep all day bleghbleghvomit my furball really tie the room together i hate cucumber pls dont throw it at me. Jump five feet high and sideways when a shadow moves sit as close as possible to warm fire without sitting on cold floor. Hide at bottom of staircase to trip human. 
-12: If you can scroll you can read this
+Note hit judgements are now based on music time, which is more consistent
+Input offset option is now implemented
+You can now press Reset key to clear a control, or to reset Input Offset value
+You can now press and hold left/right to move the input offset ms faster instead of just pressing many times
+Known issue: You can't hit notes in Offset Calibrate. Idk how to fix can we get a more knowledgable programmer on this
+Friday Night Funkin weeks now actually show up
+Added documentation link to the Tools menu (which is accessable by pressing 7 in the main menu)
+Also updated the documentation
+Fixed meta txt files for music
+Implemented more note type attributes (also added "No Animation" note type)
+Additional stuff (check the documentation!)
+Let me know if anything shown on the documentation doesn't work

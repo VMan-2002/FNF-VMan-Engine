@@ -14,6 +14,12 @@ class OutdatedSubState extends MusicBeatState {
 	public var minPos:Float = 40;
 	public var maxPos:Float = 40;
 	public var changelogText:FlxText;
+	public var versionStr:String;
+
+	public function new(versionStr:String) {
+		this.versionStr = versionStr;
+		super();
+	}
 
 	override function create() {
 		super.create();

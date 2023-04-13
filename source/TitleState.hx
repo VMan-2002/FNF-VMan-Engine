@@ -28,6 +28,7 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import haxe.Http;
+// import io.newgrounds.NG;
 import lime.app.Application;
 import openfl.Assets;
 
@@ -37,9 +38,9 @@ import ThingThatSucks.HtmlModSelectMenu;
 #end
 #if desktop
 import Discord.DiscordClient;
-//import sys.thread.Thread;
+
+// import sys.thread.Thread;
 #end
-//import io.newgrounds.NG;
 #if polymod
 import polymod.Polymod.Framework;
 import polymod.Polymod;
@@ -74,7 +75,7 @@ class TitleState extends MusicBeatState {
 	var fromOptions:Bool = false;
 	var toPlayState:Bool = false;
 
-	public var updateCheck:String = initialized ? "NO_CHECK" : Http.requestUrl("https://raw.githubusercontent.com/VMan-2002/FNF-VMan-Engine/master/version/vman_engine.txt");
+	public var updateCheck:String = initialized ? "NO_CHECK" : Http.requestUrl("https://raw.githubusercontent.com/VMan-2002/FNF-VMan-Engine/master/version/vman_engine.txt").replace("\r", "");
 	public var needsUpdate:Bool = false;
 
 	override public function new(?replayTitle:Bool = false, ?reloadingMods:Bool = false, ?fromOptions:Bool = false, ?toPlayState:Bool = false) {
@@ -236,7 +237,7 @@ class TitleState extends MusicBeatState {
 					return;
 				}
 				if (needsUpdate) {
-					FlxG.switchState(new OutdatedSubState());
+					FlxG.switchState(new OutdatedSubState(updateCheck.split("\n")[1]));
 					return trace("outdated but you're have skip title enabled");
 				}
 				return MainMenuThing();
@@ -422,7 +423,7 @@ class TitleState extends MusicBeatState {
 				// Check if version is outdated
 
 				if (needsUpdate) {
-					FlxG.switchState(new OutdatedSubState());
+					FlxG.switchState(new OutdatedSubState(updateCheck.split("\n")[1]));
 					trace('OLD VERSION detected! make nerd emojis in chat');
 				} else {
 					FlxG.switchState(new MainMenuState());
