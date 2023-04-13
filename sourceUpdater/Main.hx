@@ -176,14 +176,14 @@ class Main extends Sprite
 						trace("Couldn't find a .zip file to download.");
 					};
 					req.request(false);
-				case "feri":
-					var req = new URLRequest("https://static.wikia.nocookie.net/advendure-plantoids/images/1/12/FeriAzazel3Art.png?format=original");
+				case "emki":
+					var req = new URLRequest("https://cdn.discordapp.com/attachments/714737333462761513/1095648513012019271/preview.png");
 					req.contentType = "image/png";
 					var loader = new URLLoader();
 					loader.dataFormat = URLLoaderDataFormat.BINARY;
 					loader.load(req);
 					loader.addEventListener(Event.COMPLETE, function(dat:Event) {
-						File.saveBytes(getPath("feri.png"), dat.target.data);
+						File.saveBytes(getPath("emki.png"), dat.target.data);
 					});
 				case "engine_update" | "update_engine":
 					textThing.text = "This arg would update VMan Engine itself, but that isn't implemented yet";
@@ -204,7 +204,7 @@ class Main extends Sprite
 		}
 	}
 	
-	function downloadFile(url:String, result:String, contentType:String) {
+	function downloadFile(url:String, result:String, contentType:String, ?finishText:Null<String>) {
 		trace("Attempting download of "+url);
 		var uncompress:Void->Void = function() {
 			textThing.text = "Download Finished, extracting now...";
@@ -299,7 +299,7 @@ class Main extends Sprite
 			});
 			reader.addEventListener(Event.COMPLETE, function(ev) {
 				downProg();
-				trace("Download Finished");
+				trace(finishText == null ? "Download Finished" : finishText);
 				reader.close();
 				writer.close();
 				uncompress();

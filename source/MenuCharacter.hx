@@ -18,14 +18,12 @@ typedef SwagMenuCharacter = {
 	public var scale:Null<Float>;
 }
 
-class MenuCharacter extends SpriteVMan
-{
+class MenuCharacter extends SpriteVMan {
 	public var character:String;
 	public var modName:String;
 	public var flipped:Bool = false;
 
-	public function new(x:Float, character:String = 'bf', ?flipped:Bool = false)
-	{
+	public function new(x:Float, character:String = 'bf', ?flipped:Bool = false) {
 		super(x);
 
 		this.flipped = flipped;
@@ -86,7 +84,7 @@ class MenuCharacter extends SpriteVMan
 					frames = Paths.getSparrowAtlas(input.image);
 					animOffsets.clear();
 					
-					antialiasing = input.antialias;
+					antialiasing = input.antialias != false;
 					flipX = (input.isPlayer == true) == flipped;
 					for (thing in input.animations) {
 						if (thing.indicies != null && thing.indicies.length > 0) {

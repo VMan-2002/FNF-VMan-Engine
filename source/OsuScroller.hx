@@ -117,7 +117,7 @@ class OsuScroller extends FlxTypedGroup<FlxSprite> {
         rectangle(bitmap, 0, 0, bg.frameWidth, bg.frameHeight, FlxColor.GRAY);
         var sep:Float = (FlxG.height - 14) / FlxG.sound.music.length;
         //var rowHeight:Int = Math.floor(Math.max(Math.min(((FlxG.height - 14) / rows.length), 10 + (300 / rows.length)), 1));
-        var rowHeight:Int = 2;
+        var rowHeight:Int = sep > 2.25 ? 2 : 1;
         for (i in 0...rows.length) {
             var barY = Math.round(3 + (sep * rowPos[i]));
             if (rows[i] == 0)

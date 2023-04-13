@@ -304,7 +304,7 @@ class SwagNoteType {
 		noteType.healthHitGood = noteType.healthHitGood != null ? noteType.healthHitGood : (noteType.healthHit != null ? noteType.healthHit : defaultNote.healthHitGood);
 		noteType.healthHitBad = noteType.healthHitBad != null ? noteType.healthHitBad : (noteType.healthHit != null ? noteType.healthHit : defaultNote.healthHitBad);
 		noteType.healthHitShit = noteType.healthHitShit != null ? noteType.healthHitShit : (noteType.healthHit != null ? noteType.healthHit : defaultNote.healthHitShit);
-		noteType.healthMiss = noteType.healthMiss != null ? noteType.healthMiss : defaultNote.healthMiss;
+		noteType.healthMiss = noteType.healthMiss != null ? noteType.healthMiss : (noteType.ignoreMiss ? 0 : defaultNote.healthMiss);
 		noteType.healthMaxMult = noteType.healthMaxMult != null ? noteType.healthMaxMult : 1;
 		noteType.healthHold = noteType.healthHold != null ? noteType.healthHold : (noteType.healthHit != null ? noteType.healthHit : defaultNote.healthHold);
 		noteType.ignoreMiss = noteType.ignoreMiss != null ? noteType.ignoreMiss : false;

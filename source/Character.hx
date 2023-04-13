@@ -993,8 +993,11 @@ class Character extends SpriteVMan
 	}
 
 	public static var charHealthIcons:Map<String, String> = new Map<String, String>();
+	public static var lastHealthColor = new FlxColor(0xFF888888);
+	public static var lastHealthColorIsValid:Bool = false;
 
 	public static function loadCharacterJson(name:String, mod:String) {
+		lastHealthColorIsValid = false;
 		#if !html5
 		var thing:String = 'assets/objects/characters/${name}.json';
 		var thingMy:String = 'mods/${mod}/objects/characters/${name}.json';
@@ -1005,12 +1008,15 @@ class Character extends SpriteVMan
 			//trace(loadStr);
 			var loadedStuff:SwagCharacter = cast CoolUtil.loadJsonFromString(loadStr);
 			charHealthIcons.set('${mod}:${name}', loadedStuff.healthIcon);
+			lastHealthColor.setRGB(loadedStuff.healthBarColor[0], loadedStuff.healthBarColor[1], loadedStuff.healthBarColor[2]);
+			lastHealthColorIsValid = true;
 			return loadedStuff;
 		}
 		#else
 		var loadStr = Assets.getText('assets/objects/characters/${name}.json');
 		var loadedStuff:SwagCharacter = cast CoolUtil.loadJsonFromString(loadStr);
 		charHealthIcons.set('${mod}:${name}', loadedStuff.healthIcon);
+		lastHealthColorIsValid = true;
 		return loadedStuff;
 		#end
 		return null;
@@ -1059,9 +1065,8 @@ class Character extends SpriteVMan
 	public static function getHealthIcon(name:String, mod:String, ?force:Bool = false) {
 		if (force || !charHealthIcons.exists('${mod}:${name}')) {
 			var json = loadCharacterJson(name, mod);
-			if (json != null) {
+			if (json != null)
 				return json.healthIcon;
-			}
 			return name;
 		}
 		return charHealthIcons.get('${mod}:${name}');

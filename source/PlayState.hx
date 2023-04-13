@@ -33,6 +33,7 @@ import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
 import flixel.system.FlxSound;
 import flixel.text.FlxText;
+// import flixel.text.FlxTextBorderStyle;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
@@ -60,7 +61,6 @@ import sys.FileSystem;
 #if desktop
 import Discord.DiscordClient;
 #end
-//import flixel.text.FlxTextBorderStyle;
 
 typedef SwagEvent = {
 	time:Float,
@@ -192,6 +192,8 @@ class PlayState extends MusicBeatState
 	public var shits:Int = 0;
 	public var songFC:Int = 0; //todo: Not yet used in Highscore.hx
 	public static final fcTypes:Array<String> = ["sfc", "gfc", "fc", "sdcb", "clear"];
+	public var overTaps:Int = 0;
+	public var overStrums:Int = 0;
 
 	////::..
 	//Background Stuff
@@ -259,6 +261,8 @@ class PlayState extends MusicBeatState
 	
 	public var timerThing:HudThing;
 	public var timerThingText:FlxText;
+
+	public var lyricsThing:LyricsThing;
 
 	////::..
 	//Dialogue / Cutscenes
@@ -891,13 +895,28 @@ class PlayState extends MusicBeatState
 		healthBarSides[3] += healthBarSides[1];
 		healthBarSides[2] += healthBarSides[0];
 
+		//todo: this does not entirely work
+		var daIconPuts:Array<Dynamic> = [songAttributes.exists("playerIconP1") ? songAttributes.get("playerIconP1") : boyfriend.healthIcon, songAttributes.exists("playerIconP2") ? songAttributes.get("playerIconP2") : dad.healthIcon];
+		var daIconColorPuts:Array<FlxColor> = [boyfriend.healthBarColor, dad.healthBarColor];
+		for (i in 0...daIconPuts.length) {
+			if (Std.isOfType(daIconPuts[i], String)) {
+				daIconPuts[i] = Character.getHealthIcon(daIconPuts[i], modName);
+				if (Character.lastHealthColorIsValid)
+					daIconColorPuts[i] = Character.lastHealthColor;
+			} else {
+				daIconPuts[i] = Character.activeArray[daIconPuts[i]];
+				daIconColorPuts[i] = Character.activeArray[daIconPuts[i]].healthBarColor;
+			} 
+		}
+		trace("Char icons: "+daIconPuts);
+
 		healthBar = new FlxBar(healthBarBG.x + healthBarSides[0], healthBarBG.y + healthBarSides[1], RIGHT_TO_LEFT, Std.int(healthBarBG.width - healthBarSides[2]), Std.int(healthBarBG.height - healthBarSides[3]), this, 'health', 0, 2);
 		healthBar.scrollFactor.set();
 		//healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
 		if (Options.instance.playstate_opponentmode && allowGameplayChanges) {
-			healthBar.createFilledBar(boyfriend.healthBarColor, dad.healthBarColor);
+			healthBar.createFilledBar(daIconColorPuts[0], daIconColorPuts[1]);
 		} else {
-			healthBar.createFilledBar(dad.healthBarColor, boyfriend.healthBarColor);
+			healthBar.createFilledBar(daIconColorPuts[1], daIconColorPuts[0]);
 		}
 		// healthBar
 		healthBar.flipX = allowGameplayChanges && Options.instance.playstate_opponentmode;
@@ -941,13 +960,6 @@ class PlayState extends MusicBeatState
 			CoolUtil.mapPositionObjectWithin(cast hudThings.members[2].members[0], currentUIStyle.hudThingPos, Options.instance.downScroll ? "textCornerDown" : "textCornerUp");
 			CoolUtil.mapPositionObjectWithin(cast timerThing.members[0], currentUIStyle.hudThingPos, Options.instance.downScroll ? "textTimerDown" : "textTimerUp");
 		}
-
-		var daIconPuts:Array<Dynamic> = [songAttributes.exists("playerIconP1") ? songAttributes.get("playerIconP1") : boyfriend.healthIcon, songAttributes.exists("playerIconP2") ? songAttributes.get("playerIconP2") : dad.healthIcon];
-		for (i in 0...daIconPuts.length) {
-			if (Std.isOfType(daIconPuts[i], Int))
-				daIconPuts[i] = Character.activeArray[daIconPuts[i]];
-		}
-		trace("Char icons: "+daIconPuts);
 
 		iconP1 = new HealthIcon(daIconPuts[0], true, modName);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
@@ -2065,6 +2077,7 @@ class PlayState extends MusicBeatState
 					//NGio.unlockMedal(60961);
 					Highscore.saveWeekScore('${modName}:${storyWeek}', campaignScore, storyDifficulty);
 					Achievements.giveAchievement("anyWeekClear");
+					Achievements.awardModPlay("storyModeWeek", ModLoad.primaryMod, this);
 					if (campaignMisses == 0) {
 						Achievements.giveAchievement("anyWeekFC");
 					}
@@ -2117,7 +2130,7 @@ class PlayState extends MusicBeatState
 
 		var placement:String = Std.string(combo);
 
-		var coolText:FlxText = new FlxText(0, 0, 0, placement, 32);
+		var coolText:FlxSprite = new FlxSprite();
 		coolText.screenCenter();
 		coolText.x = FlxG.width * 0.55;
 		//
@@ -2466,7 +2479,7 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	//old input system
+	//old input system (still used because i havent actually implemented new input)
 	private function keyShit():Void {
 		if (Options.instance.botplay)
 			return;
@@ -2512,8 +2525,10 @@ class PlayState extends MusicBeatState
 					}
 				}
 				for (k in 0...controlArray.length) {
-					if (controlArray[k] && (!(Options.instance.ghostTapping) || (((hitNotes + possibleNotes.length > 0) || (songHits > 0 && Math.abs(Conductor.songPosition - lastHitNoteTime) <= Conductor.horizontalThing)) && Options.instance.tappingHorizontal))) {
-						noteMiss(k);
+					if (controlArray[k]) {
+						overTaps += 1;
+						if ((!(Options.instance.ghostTapping) || (((hitNotes + possibleNotes.length > 0) || (songHits > 0 && Math.abs(Conductor.songPosition - lastHitNoteTime) <= Conductor.horizontalThing)) && Options.instance.tappingHorizontal)))
+							noteMiss(k);
 					}
 				}
 			}
@@ -2540,8 +2555,10 @@ class PlayState extends MusicBeatState
 						}
 					}
 					for (k in 0...controlArray.length) {
-						if (possibleNoteDatas[k] && (!(Options.instance.ghostTapping) || (((hitNotes + possibleNotes.length > 0) || (songHits > 0 && Math.abs(Conductor.songPosition - lastHitNoteTime) <= Conductor.horizontalThing)) && Options.instance.tappingHorizontal))) {
-							noteMiss(k);
+						if (possibleNoteDatas[k]) {
+							overStrums += 1;
+							if (!(Options.instance.ghostTapping) || (((hitNotes + possibleNotes.length > 0) || (songHits > 0 && Math.abs(Conductor.songPosition - lastHitNoteTime) <= Conductor.horizontalThing)) && Options.instance.tappingHorizontal))
+								noteMiss(k);
 						}
 					}
 				} else { //Open notes
@@ -2634,16 +2651,25 @@ class PlayState extends MusicBeatState
 			}
 			var validNote = note != null;
 			var noteTypeData = validNote ? note.getNoteTypeData() : Note.SwagNoteType.loadNoteType(Note.SwagNoteType.normalNote, PlayState.modName);
-			health += noteTypeData.healthMiss;
-			if (combo > 5)
-				gf.playAvailableAnim(Options.instance.playstate_opponentmode ? ["sad_opponent", "sad"] : ["sad"]);
-			combo = 0;
 
-			songScore -= 10;
-			songMisses += 1;
-			if (validNote)
-				if (!note.isSustainNote) {
+			if (validNote && !noteTypeData.ignoreMiss) {
+				health += noteTypeData.healthMiss;
+				if (combo > 5)
+					gf.playAvailableAnim(Options.instance.playstate_opponentmode ? ["sad_opponent", "sad"] : ["sad"]);
+				combo = 0;
+				
+				songScore -= 10;
+				songMisses += 1;
+
+				if (songFC != 4)
+					songFC = songMisses > 9 ? 4 : 3;
+
+				if (Options.noteMissAction_MissSound[Options.instance.noteMissAction])
+					FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
+				
+				if (!note.isSustainNote)
 					songHittableMisses += 1;
+				
 				if (noteTypeData.bob != 0 && noteTypeData.glitch)
 					bobBleeds.push({
 						timeLeft: 3,
@@ -2651,12 +2677,6 @@ class PlayState extends MusicBeatState
 						maxHealth: 2 * noteTypeData.healthMaxMult
 					});
 			}
-
-			if (songFC != 4)
-				songFC = songMisses > 9 ? 4 : 3;
-
-			if (Options.noteMissAction_MissSound[Options.instance.noteMissAction])
-				FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 			// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
 			// FlxG.log.add('played imss note');
 
@@ -3068,6 +3088,13 @@ class PlayState extends MusicBeatState
 					gameMoveY: event[3],
 					classic: event[4] == true
 				});
+			case "Camera Zoom":
+				if (event[2] == true) {
+					if (event[3] == true)
+						defaultCamZoom = event[1];
+					else
+						defaultCamZoom += event[1];
+				}
 			case "Cinematic Bars":
 				var halfy = FlxG.height / 2;
 				var opo = [-halfy, FlxG.height];

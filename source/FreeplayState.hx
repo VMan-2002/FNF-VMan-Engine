@@ -548,9 +548,9 @@ class FreeplayState extends MusicBeatState
 
 				trace(poop);
 				
-				ModLoad.primaryMod = songs[curSelected].mod;
+				ModLoad.primaryMod = ModsMenuState.quickModJsonData(songs[curSelected].mod);
 
-				PlayState.modName = ModLoad.primaryMod;
+				PlayState.modName = songs[curSelected].mod;
 				PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName);
 				PlayState.isStoryMode = false;
 				PlayState.storyDifficulty = curDifficulty;

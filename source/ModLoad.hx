@@ -1,5 +1,6 @@
 package;
 
+import ModsMenuState.ModInfo;
 import sys.FileSystem;
 import sys.io.File;
 
@@ -13,7 +14,7 @@ import polymod.Polymod;
 class ModLoad
 {
 	public static var enabledMods = new Array<String>();
-	public static var primaryMod:String = "friday_night_funkin";
+	public static var primaryMod:ModInfo = null;
 	
 	//copied from polymod flixel sample
 
@@ -43,8 +44,8 @@ class ModLoad
 			trace(string);
 			enabledMods.push(f);
 		}
-		primaryMod = enabledMods[0];
-		PlayState.modName = primaryMod;
+		primaryMod = ModsMenuState.quickModJsonData(enabledMods[0]);
+		PlayState.modName = enabledMods[0];
 		/*var modRoot = '../../../mods/';
 		#if mac
 		// account for <APPLICATION>.app/Contents/Resources

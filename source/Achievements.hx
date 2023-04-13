@@ -1,4 +1,5 @@
 package;
+import ModsMenuState.ModInfo;
 import flixel.input.keyboard.FlxKey;
 import flixel.util.FlxSave;
 import lime.ui.ScanCode;
@@ -23,7 +24,8 @@ class Achievements
 		"anyMultiModifierPlay",
 		//"6kBothPlay", //Dunno lol
 		"fridayNight",
-		"calibrateDeath"
+		"calibrateDeath",
+		"modFunkboxPlay"
 	];
 
 	public static function giveAchievement(name:String, ?modName:Null<String>) {
@@ -47,7 +49,7 @@ class Achievements
 
 	public static function achievementDescription(name:String, ?modName:Null<String>) {
 		if (modName != null) {
-			return ["Mod Achievement: "+name, "Achievement from a mod."]; //do nothing since mod achievements dont exist yet
+			return ["Mod Achievement: "+name, "Achievement from "+modName+"."]; //do nothing since mod achievements dont exist yet
 		}
 		switch(name) {
 			case "anyClear":
@@ -55,11 +57,11 @@ class Achievements
 			case "anySDCB":
 				return ["Rising Star", "Complete any song with less than 10 misses. (SDCB/Single Digit Combo Breaks)"];
 			case "anyFC":
-				return ["Got 'Em", "Complete any song with no misses. (FC/Full Combo)"];
+				return ["Got 'Em", "Complete any song with no misses. (FC, aka Full Combo)"];
 			case "anyGFC":
-				return ["That's Epic", "Complete any song with no misses, and you hit only \"Good\" or better. (GFC/Good Full Combo)"];
+				return ["That's Epic", "Complete any song with no misses, and you hit only \"Good\" or better. (GFC, aka Good Full Combo)"];
 			case "anySFC":
-				return ["Perfect Combo", "Complete any song with no misses, and you hit only \"Sick!\". (SFC/Sick Full Combo)"];
+				return ["Perfect Combo", "Complete any song with no misses, and you hit only \"Sick!\". (SFC, aka Sick Full Combo)"];
 			case "anyWeekComplete":
 				return ["Storytold", "Complete any week in Story Mode."];
 			case "anyWeekFC":
@@ -73,15 +75,32 @@ class Achievements
 			case "anyConfusionPlay":
 				return ["Walking Slick", "Complete any song with Confusion active."];
 			case "anyMultiModifierPlay":
-				return ["Musical Multitasking", "Complete any song with multiple gameplay modifiers active (no Endless, Opponent/Bothside count as one.)."];
+				return ["Musical Multitasking", "Complete any song with multiple gameplay modifiers active (Endless isn't counted, Opponent/Bothside count as one)."];
+			case "11kPlay":
+				return ["Overfinger", "Complete a song with 11 or more keys."];
 			case "6kBothPlay":
 				return ["Six Fingered", "Complete a song with 6 or more keys with Both Side Play active."];
 			case "fridayNight":
 				return ["Just Like The Game", "Funk on a Friday (real time)."];
 			case "calibrateDeath":
 				return checkAchievement("calibrateDeath") ? ["???", "Hidden Achievement"] : ["Out Of Time", "Die during Input Offset Calibrate."];
+			//hmm should i do this
+			case "modFunkboxPlay":
+				return ["Beepy on a Friday Night", "Complete a Story Mode week from `Friday Night Funkbox`."];
 		}
 		return ["Unknown Achievement: "+name, "This is likely a bug, tell VMan about this."];
+	}
+
+	public static function awardModPlay(category:String, mod:ModInfo, state:PlayState) {
+		if (mod.devMode)
+			return false;
+		var thing:Array<Dynamic> = [mod.gamebananaId, mod.id];
+		switch(thing) {
+			case [428567, "funny_nep_mod"]:
+				return category == "storyModeWeek" && giveAchievement("modFunkboxPlay");
+			default:
+				return false;
+		}
 	}
 	
 	public static function SaveOptions() {

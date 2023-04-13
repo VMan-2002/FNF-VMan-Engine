@@ -11,6 +11,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
+// import flixel.text.FlxTextFormat;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
@@ -20,7 +21,6 @@ using StringTools;
 #if desktop
 import Discord.DiscordClient;
 #end
-//import flixel.text.FlxTextFormat;
 
 class StoryMenuState extends MusicBeatState
 {
@@ -284,16 +284,15 @@ class StoryMenuState extends MusicBeatState
 			grpWeekCharacters.members[1].playAvailableAnim(['confirm']);
 			stopspamming = true;
 
-			PlayState.modName = "friday_night_funkin";
 			PlayState.isStoryMode = true;
 			selectedWeek = true;
 			PlayState.storyDifficulty = curDifficulty;
 			PlayState.storyWeek = curWeekName;
 			PlayState.campaignScore = 0;
 			
-			ModLoad.primaryMod = weeks[curWeek].modName;
+			ModLoad.primaryMod = ModsMenuState.quickModJsonData(weeks[curWeek].modName);
 
-			PlayState.modName = ModLoad.primaryMod;
+			PlayState.modName = weeks[curWeek].modName;
 			if (weeks[curWeek].songs.length > 0) {
 				PlayState.storyPlaylist = weeks[curWeek].songs;
 				PlayState.SONG = Song.loadFromJson(Highscore.formatSong(PlayState.storyPlaylist[0], PlayState.storyDifficulty), PlayState.storyPlaylist[0]);

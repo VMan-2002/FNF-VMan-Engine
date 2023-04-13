@@ -115,6 +115,34 @@ class ModsMenuState extends MusicBeatState {
 		updateDesc();
 	}
 
+	//todo: use this in other functions here
+	public static function getModJsonData(path:String, mod:String, ?fillDesc = false) {
+		if (FileSystem.exists(path + "/mod.json")) {
+			var creditsFile:ModInfo = CoolUtil.loadJsonFromString(File.getContent(path + "/mod.json"));
+			var descTranslationPath:String = 'mods/${mod}/modmenu_desc_${Translation.translationId}.txt';
+			if (FileSystem.exists(descTranslationPath)) {
+				creditsFile.description = File.getContent(descTranslationPath);
+			}
+			return creditsFile;
+		} else {
+			return {
+				name: mod,
+				description: fillDesc ? Translation.getTranslation("default desc", "mods", null, "This mod has no mod.json") : "",
+				version: 0,
+				versionStr: "",
+				titleScreen: false,
+				gamebananaId: null,
+				id: mod,
+				devMode: false,
+				requiredGameVer: null
+			};
+		}
+	}
+
+	public static inline function quickModJsonData(mod:String) {
+		return getModJsonData(mod+"/mod.json", mod, false);
+	}
+
 	public inline function loadCreditsJson(path:String, mod:String) {
 		if (FileSystem.exists(path + "/mod.json")) {
 			loadCreditsJsonString(File.getContent(path + "/mod.json"), mod);
@@ -123,7 +151,7 @@ class ModsMenuState extends MusicBeatState {
 				name: mod,
 				description: Translation.getTranslation("default desc", "mods", null, "This mod has no mod.json"),
 				version: 0,
-				versionStr: "...",
+				versionStr: "",
 				titleScreen: false,
 				gamebananaId: null,
 				id: mod,

@@ -1534,6 +1534,12 @@ class ChartingState extends MusicBeatState {
 		};
 
 		if (Options.dataStrip && !FlxG.keys.pressed.SHIFT) {
+			var shrunkNoteTypeArr = new Array<String>();
+			for (i in 0...curNoteTypeArr.length) {
+				if (curNoteTypeArr.indexOf(curNoteTypeArr[i]) == i)
+					shrunkNoteTypeArr.push(curNoteTypeArr[i]);
+			}
+
 			var curTimeSig:Int = json.song.timeSignature;
 			//var remapNoteTypes = new Map<Float, Float>();
 			//var neededNoteTypes = new Array<String>();
@@ -1579,6 +1585,11 @@ class ChartingState extends MusicBeatState {
 				}
 				if (thing.mustHitSection != false) {
 					Reflect.deleteField(thing, "mustHitSection");
+				}
+				if (shrunkNoteTypeArr.length != curNoteTypeArr.length) {
+					for (i in thing.sectionNotes) {
+						i[3] = shrunkNoteTypeArr.indexOf(curNoteTypeArr[i[3]]);
+					}
 				}
 			}
 			if (json.song.maniaStr == "4k") {
