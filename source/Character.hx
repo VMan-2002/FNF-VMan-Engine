@@ -1008,8 +1008,10 @@ class Character extends SpriteVMan
 			//trace(loadStr);
 			var loadedStuff:SwagCharacter = cast CoolUtil.loadJsonFromString(loadStr);
 			charHealthIcons.set('${mod}:${name}', loadedStuff.healthIcon);
-			lastHealthColor.setRGB(loadedStuff.healthBarColor[0], loadedStuff.healthBarColor[1], loadedStuff.healthBarColor[2]);
-			lastHealthColorIsValid = true;
+			if (loadedStuff.healthBarColor != null && loadedStuff.healthBarColor.length >= 3) {
+				lastHealthColor.setRGB(loadedStuff.healthBarColor[0], loadedStuff.healthBarColor[1], loadedStuff.healthBarColor[2]);
+				lastHealthColorIsValid = true;
+			}
 			return loadedStuff;
 		}
 		#else
