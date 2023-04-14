@@ -18,8 +18,8 @@ import Sys;
 
 class Main extends Sprite
 {
-	public static final gameVersionInt = 2;
-	public static final gameVersionStr = "v1.1.0 I'm Guitarin'";
+	public static final gameVersionInt = 3;
+	public static final gameVersionStr = "v1.1.1 I'm Guitarin' (& icons)";
 
 	var gameWidth:Int = 1280; // Width of the game in pixels (might be less / more in actual pixels depending on your zoom).
 	var gameHeight:Int = 720; // Height of the game in pixels (might be less / more in actual pixels depending on your zoom).

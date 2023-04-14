@@ -900,7 +900,7 @@ class PlayState extends MusicBeatState
 		var daIconColorPuts:Array<FlxColor> = [boyfriend.healthBarColor, dad.healthBarColor];
 		for (i in 0...daIconPuts.length) {
 			if (Std.isOfType(daIconPuts[i], String)) {
-				daIconPuts[i] = Character.getHealthIcon(daIconPuts[i], modName);
+				daIconPuts[i] = Character.getHealthIcon(daIconPuts[i], modName, true);
 				if (Character.lastHealthColorIsValid)
 					daIconColorPuts[i] = Character.lastHealthColor;
 			} else {
@@ -1351,7 +1351,7 @@ class PlayState extends MusicBeatState
 								SONG.usedNoteTypes.push(t);
 							note[3] = SONG.usedNoteTypes.indexOf(t);
 						}
-						generateNotes(section, section.sectionNotes, -1 - i, funnyNotes);
+						generateNotes(section, section.sectionNotes, -2 - i, funnyNotes);
 					}
 					funnyManias[i] = ManiaInfo.GetManiaInfo(swagshit.maniaStr);
 				}
@@ -2820,7 +2820,7 @@ class PlayState extends MusicBeatState
 		var char:Character = (note != null && note.charNum != -1) ? Character.activeArray[note.charNum] : (noteTypeData.charNums != null ? Character.activeArray[noteTypeData.charNums[0]] : (isBoyfriend ? boyfriend : dad));
 		if (char == null)
 			return;
-		var color = (note.strumLineNum < 0 ? funnyManias[-1 - note.strumLineNum] : curManiaInfo).arrows[note == null ? noteData : note.noteData];
+		var color = (note.strumLineNum < 0 ? funnyManias[-2 - note.strumLineNum] : curManiaInfo).arrows[note == null ? noteData : note.noteData];
 		var colorNote = "sing" + color.toUpperCase();
 		if (isMiss)
 			return char.playAvailableAnim(['${colorNote}miss', 'sing${ManiaInfo.Dir[color]}miss'], true);

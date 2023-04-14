@@ -1,14 +1,3 @@
-A lot of changes are in this update but here's some highlights
+fixed some bugs related to charts i think. also in chart editor. uhhhhhhhhhh
 
-Note hit judgements are now based on music time, which is more consistent
-Input offset option is now implemented
-You can now press Reset key to clear a control, or to reset Input Offset value
-You can now press and hold left/right to move the input offset ms faster instead of just pressing many times
-Known issue: You can't hit notes in Offset Calibrate. Idk how to fix can we get a more knowledgable programmer on this
-Friday Night Funkin weeks now actually show up
-Added documentation link to the Tools menu (which is accessable by pressing 7 in the main menu)
-Also updated the documentation
-Fixed meta txt files for music
-Implemented more note type attributes (also added "No Animation" note type)
-Additional stuff (check the documentation!)
-Let me know if anything shown on the documentation doesn't work
+JP translation still not up to date. this is a Hotfix.

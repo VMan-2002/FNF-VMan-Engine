@@ -1132,8 +1132,9 @@ class ChartingState extends MusicBeatState {
 		var daSec = FlxMath.maxInt(curSection, sectionNum);
 
 		var result = getSectionNotes();
+		var addTime:Float = sectionStartTime(daSec) - sectionStartTime(daSec - sectionNum);
 		for (note in (curNotesLayer == 0 ? _song.notes[daSec - sectionNum].sectionNotes : _song.notes[daSec - sectionNum].notesMoreLayers[curNotesLayer - 1])) {
-			var strum = note[0] + Conductor.stepCrochet * (getLengthInSteps(daSec) * sectionNum);
+			var strum = note[0] + addTime;
 
 			var copiedNote:Array<Dynamic> = [strum, note[1], note[2], note[3]];
 			_song.notes[daSec].sectionNotes.push(copiedNote);
@@ -1629,6 +1630,7 @@ class ChartingState extends MusicBeatState {
 			} else {
 				Reflect.deleteField(json.song, "picocharts");
 			}
+			_song.usedNoteTypes = shrunkNoteTypeArr;
 		}
 
 		var data:String = Json.stringify(json);
