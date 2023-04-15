@@ -16,6 +16,7 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 import openfl.display.BitmapData;
+import openfl.net.URLLoaderDataFormat;
 import sys.FileSystem;
 import sys.io.File;
 
@@ -30,7 +31,14 @@ typedef ModInfo = {
 	gamebananaId:Null<Int>,
 	id:Null<String>,
 	devMode:Null<Bool>,
-	requiredGameVer:Null<Int>
+	requiredGameVer:Null<Int>,
+	loadableGameVer:Null<Int>
+}
+
+typedef ModMenuInfo = {
+	antialiasIcon:Null<Bool>,
+	antialiasBg:Null<Bool>,
+	antialiasBlur:Null<Bool>
 }
 
 class ModsMenuState extends MusicBeatState {
@@ -59,7 +67,7 @@ class ModsMenuState extends MusicBeatState {
 		enables = new Map<String, Bool>();
 		ModLoad.checkNewMods();
 		for (cool in ModLoad.normalizeModsListFileArr(ModLoad.getModsListFileArr())) {
-			enables.set(cool, ModLoad.enabledMods.contains(cool));
+			enables.set(cool, ModLoad.enabledMods.contains(cool) && ModLoad.modLoadAllowed(cool));
 			loadCreditsJson("mods/"+cool, cool);
 			if (titleScreenWas == "" && enables.get(cool) && creditsInfo.get(currentCreditsThing.members[currentCreditsThing.length - 1].ID).titleScreen == true)
 				titleScreenWas = cool;
@@ -74,7 +82,8 @@ class ModsMenuState extends MusicBeatState {
 			gamebananaId: null,
 			id: null,
 			devMode: false,
-			requiredGameVer: null
+			requiredGameVer: null,
+			loadableGameVer: null
 		}, Paths.image("menu/moreModsIcon"));
 		updateCheckboxes();
 	}
@@ -125,16 +134,18 @@ class ModsMenuState extends MusicBeatState {
 			}
 			return creditsFile;
 		} else {
+			var exists = FileSystem.exists(path + "/");
 			return {
 				name: mod,
-				description: fillDesc ? Translation.getTranslation("default desc", "mods", null, "This mod has no mod.json") : "",
+				description: fillDesc ? Translation.getTranslation(exists ? "default desc" : "no exist desc", "mods", null, exists ? "This mod has no mod.json" : "This mod folder doesn't exist (possibly deleted?)") : "",
 				version: 0,
 				versionStr: "",
 				titleScreen: false,
 				gamebananaId: null,
 				id: mod,
 				devMode: false,
-				requiredGameVer: null
+				requiredGameVer: null,
+				loadableGameVer: null
 			};
 		}
 	}
@@ -156,7 +167,8 @@ class ModsMenuState extends MusicBeatState {
 				gamebananaId: null,
 				id: mod,
 				devMode: false,
-				requiredGameVer: null
+				requiredGameVer: null,
+				loadableGameVer: null
 			});
 		}
 	}
@@ -231,8 +243,9 @@ class ModsMenuState extends MusicBeatState {
 			exitingModsChanged = true;
 		//ModLoad.enabledMods = newModsFile; //let's just hope nothing bad happens from reusing this var
 		//ModLoad.reloadMods = true;
-		if (titleThing.modName != titleScreenWas)
-			return true;
+		//todo: why does this crash
+		/*if (titleThing.modName != titleScreenWas)
+			return true;*/
 		return false;
 	}
 
@@ -241,6 +254,7 @@ class ModsMenuState extends MusicBeatState {
 	public override function update(elapsed:Float) {
 		if (controls.BACK) {
 			var exitingTitleChanged = checkModChanges();
+			CoolUtil.resetMenuMusic();
 			switchTo(new TitleState(exitingTitleChanged, true/*,exitingModsChanged || exitingTitleChanged || controls.GTSTRUM*/));
 			//somehow only TitleState can reload mods. this doesn't make sense lol
 		}
@@ -321,7 +335,7 @@ class ModsMenuState extends MusicBeatState {
 			var enby = enables.get(obj.modName) == true;
 			if (enby)
 				enableCount++;
-			obj.members[1].animation.play(needUpdate ? "outdated" : (enby ? "enable" : "disable"));
+			obj.members[1].animation.play(needUpdate ? (enby ? "outdatedWeak" : "outdated") : (enby ? "enable" : "disable"));
 			obj.members[0].alpha = enby ? 1 : 0.5;
 		}
 		#if desktop
@@ -361,7 +375,7 @@ class ModsMenuState extends MusicBeatState {
 			//descVersionText.x = descTitleText.x + descTitleText.frameWidth + 2;
 		}
 		errorText.visible = theModInfo.requiredGameVer != null && theModInfo.requiredGameVer > Main.gameVersionInt;
-		setBg(numbrThing.modName);
+		setBg(numbrThing.modName, numbrThing);
 	}
 
 	//Bg stuff
@@ -371,7 +385,7 @@ class ModsMenuState extends MusicBeatState {
 	public var newBgCorner = new FlxSprite();
 	public var bgCornerRect = new FlxRect(230, FlxG.height - 1, FlxG.width - 230, 1);
 
-	public inline function setBg(mod:String) {
+	public inline function setBg(mod:String, ?item:ModMenuItem) {
 		var bgPath = 'mods/${mod}/modmenu_bg.png';
 		var bgImg = FileSystem.exists(bgPath) ? BitmapData.fromFile(bgPath) : null;
 
@@ -401,6 +415,15 @@ class ModsMenuState extends MusicBeatState {
 			newBgCorner.visible = false;
 		}
 
+		if (item != null) {
+			if (newBgCorner.visible) {
+				newBg.antialiasing = item.menuStuff.antialiasBlur != false;
+				newBgCorner.antialiasing = item.menuStuff.antialiasBg == true;
+			} else {
+				newBg.antialiasing = item.menuStuff.antialiasBg == true;
+			}
+		}
+
 		//FlxTween.tween(bgCornerRect, {y: descText.height + descText.y + 4}, 1, {ease:FlxEase.cubeOut, onUpdate: updateBgRect, onComplete: updateBgRect});
 		bgCornerRect.y = Math.round((descText.height + descText.y + 4) / newBgCorner.scale.y);
 		updateBgRect();
@@ -420,6 +443,16 @@ class ModsMenuState extends MusicBeatState {
 			thisEntry.modName = mod;
 			thisEntry.order = stuffGroup.length;
 			thisEntry.needsNewVer = stuff.requiredGameVer > Main.gameVersionInt;
+			if (modObjects == null) {
+				if (FileSystem.exists('mods/${mod}/modmenu.json'))
+					thisEntry.menuStuff = CoolUtil.loadJsonFromString(File.getContent('mods/${mod}/modmenu.json'));
+			} else {
+				thisEntry.menuStuff = {
+					antialiasIcon: true,
+					antialiasBlur: null,
+					antialiasBg: null
+				}
+			}
 			var icon = new FlxSprite(0, 0);
 			if (image != null) {
 				icon.loadGraphic(image);
@@ -430,6 +463,7 @@ class ModsMenuState extends MusicBeatState {
 				else 
 					icon.loadGraphic(Paths.image("menu/noModIcon"));
 			}
+			icon.antialiasing = thisEntry.menuStuff.antialiasIcon == true;
 			icon.offset.set((icon.frameWidth - 150) * 0.5, (icon.frameHeight - 150) * 0.5);
 			thisEntry.add(icon);
 			if (modObjects == null) {
@@ -437,6 +471,8 @@ class ModsMenuState extends MusicBeatState {
 				checkmark.animation.add("enable", [1]);
 				checkmark.animation.add("disable", [0]);
 				checkmark.animation.add("outdated", [2]);
+				checkmark.animation.add("outdatedWeak", [4]);
+				checkmark.antialiasing = true;
 				thisEntry.add(checkmark);
 			}
 			thisEntry.y = stuffGroup.length * 100;
@@ -450,4 +486,9 @@ class ModMenuItem extends FlxSpriteGroup {
 	public var modName:String;
 	public var order:Int;
 	public var needsNewVer:Bool = false;
+	public var menuStuff:ModMenuInfo = {
+		antialiasBlur: null,
+		antialiasBg: null,
+		antialiasIcon: null
+	};
 }

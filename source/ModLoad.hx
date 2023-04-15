@@ -30,6 +30,8 @@ class ModLoad
 				continue;
 			else if (f.startsWith("1::"))
 				f = f.substr(3);
+			if (!modLoadAllowed(f))
+				continue;
 			var flashFolder = "mods/"+f+"/noflashing";
 			var string = "Mod: "+f;
 			if (!Options.flashingLights) {
@@ -86,6 +88,15 @@ class ModLoad
 
 	public static function onError(error:PolymodError) {
 		trace('[${error.severity}] (${Std.string(error.code).toUpperCase()}): ${error.message}');
+	}
+
+	public static function modLoadAllowed(name:String) {
+		var path = 'mods/${name}/mod.json';
+		trace("check if "+path+" is allowed to load");
+		if (!FileSystem.exists(path))
+			return FileSystem.exists('mods/${name}');
+		var modInfo:ModInfo = CoolUtil.loadJsonFromString(File.getContent(path));
+		return modInfo.loadableGameVer == null || modInfo.loadableGameVer <= Main.gameVersionInt;
 	}
 
 	/**

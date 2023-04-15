@@ -117,7 +117,11 @@ class TitleState extends MusicBeatState {
 		
 		#if polymod
 		#if !html5
-		var modListThing:Array<String> = File.getContent("mods/modList.txt").split("\n");
+		/*if (!FileSystem.exists("mods/modList.txt")) {
+			File.saveContent
+		}*/
+		//var modListThing:Array<String> = File.getContent("mods/modList.txt").split("\n");
+		var modListThing:Array<String> = ModLoad.getModsListFileArr();
 		#else
 		var modListThing:Array<String> = [ModLoad.primaryMod];
 		#end
