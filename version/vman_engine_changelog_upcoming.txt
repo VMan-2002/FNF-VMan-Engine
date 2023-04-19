@@ -1,0 +1,2 @@
+Botplay now visible in discord
+Fixed an antimash crash fix (specifically, when you miss without an associated note)

@@ -6,6 +6,7 @@ import lime.ui.ScanCode;
 class Options {
 	public static var saved:Options;
 	public static var instance:Options;
+	public static var playedVersion:Int = -1; //-1 when you've never played before
 
 	public static var masterVolume:Float = 1;
 	public var downScroll:Bool = false;
@@ -175,6 +176,7 @@ class Options {
 		svd.data.playstate_guitar = playstate_guitar;
 		svd.data.playstate_confusion = playstate_confusion;
 
+		svd.data.playedVersion = Main.gameVersionInt;
 		svd.data.optionVersion = Std.int(0);
 		svd.close();
 	}

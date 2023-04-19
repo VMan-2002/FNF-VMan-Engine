@@ -132,9 +132,12 @@ class DiscordClient
 			songName = PlayState.SONG.song;
 			modifierString = Highscore.getModeString(false, true);
 			difficultyText = '${PlayState.instance.storyDifficultyText}${modifierString}';
+			if (Options.instance.botplay) {
+				difficultyText += " (Botplay)";
+			}
 		}
 		var detailsText:String = PlayState.isStoryMode ? "Story Mode: Week " + PlayState.storyWeek : "Freeplay";
-		var songText:String = songName + difficultyText;
+		var songText:String = songName + " " + difficultyText;
 		switch(type) {
 			case "paused":
 				changePresence("Paused - "+detailsText, songText, PlayState.instance.iconRPC);

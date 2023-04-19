@@ -23,6 +23,8 @@ typedef SwagHealthIcon = {
 	public var scale:Array<Float>;
 	public var folderType:String;
 	public var position_freeplay:Null<Array<Float>>;
+	public var tileWidth:Null<Int>;
+	public var tileHeight:Null<Int>;
 }
 
 typedef SwagHealthIconItem = {
@@ -178,7 +180,10 @@ class HealthIcon extends FlxSprite
 				loadGraphic(bitmap);
 				var ratio = width / height;
 				var intHeight = Math.floor(height);
-				if (ratio > 2.5) {
+				if (isJson && jsonData != null && jsonData.tileWidth != null) {
+					//todo: load anims
+					loadGraphic(bitmap, true, jsonData.tileWidth, jsonData.tileHeight == null ? intHeight : jsonData.tileHeight);
+				} else if (ratio > 2.5) {
 					loadGraphic(bitmap, true, Math.floor(width / 3), intHeight);
 					animation.add('winning', [2], 0, false, isPlayer);
 					animation.add('neutral', [0], 0, false, isPlayer);

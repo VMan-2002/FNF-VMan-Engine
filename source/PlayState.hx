@@ -2656,7 +2656,7 @@ class PlayState extends MusicBeatState
 			var validNote = note != null;
 			var noteTypeData = validNote ? note.getNoteTypeData() : Note.SwagNoteType.loadNoteType(Note.SwagNoteType.normalNote, PlayState.modName);
 
-			if (validNote && !noteTypeData.ignoreMiss) {
+			if ((validNote && !noteTypeData.ignoreMiss) || !validNote) {
 				health += noteTypeData.healthMiss;
 				if (combo > 5)
 					gf.playAvailableAnim(Options.instance.playstate_opponentmode ? ["sad_opponent", "sad"] : ["sad"]);
@@ -2671,15 +2671,17 @@ class PlayState extends MusicBeatState
 				if (Options.noteMissAction_MissSound[Options.instance.noteMissAction])
 					FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 				
-				if (!note.isSustainNote)
-					songHittableMisses += 1;
-				
-				if (noteTypeData.bob != 0 && noteTypeData.glitch)
-					bobBleeds.push({
-						timeLeft: 3,
-						mult: noteTypeData.bob * 1.5,
-						maxHealth: 2 * noteTypeData.healthMaxMult
-					});
+				if (validNote) {
+					if (!note.isSustainNote)
+						songHittableMisses += 1;
+					
+					if (noteTypeData.bob != 0 && noteTypeData.glitch)
+						bobBleeds.push({
+							timeLeft: 3,
+							mult: noteTypeData.bob * 1.5,
+							maxHealth: 2 * noteTypeData.healthMaxMult
+						});
+				}
 			}
 			// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
 			// FlxG.log.add('played imss note');
@@ -2805,7 +2807,9 @@ class PlayState extends MusicBeatState
 	}
 
 	function animateForNote(?note:Note, ?isBoyfriend:Bool = true, ?noteData:Int = 0, ?isMiss:Bool = false):Void {
-		if (note != null) {
+		//Note to editors: Check if the note EXISTS before doing anything with it
+		var validNote = note != null;
+		if (validNote) {
 			isBoyfriend = note.mustPress;
 			if (allowGameplayChanges) {
 				if (Options.instance.playstate_bothside)
@@ -2814,13 +2818,13 @@ class PlayState extends MusicBeatState
 					isBoyfriend = !isBoyfriend;
 			}
 		}
-		var noteTypeData = note != null ? note.getNoteTypeData() : Note.SwagNoteType.loadNoteType("Normal Note", modName);
+		var noteTypeData = validNote ? note.getNoteTypeData() : Note.SwagNoteType.loadNoteType("Normal Note", modName);
 		if (noteTypeData.noAnim)
 			return;
-		var char:Character = (note != null && note.charNum != -1) ? Character.activeArray[note.charNum] : (noteTypeData.charNums != null ? Character.activeArray[noteTypeData.charNums[0]] : (isBoyfriend ? boyfriend : dad));
+		var char:Character = (validNote && note.charNum != -1) ? Character.activeArray[note.charNum] : (noteTypeData.charNums != null ? Character.activeArray[noteTypeData.charNums[0]] : (isBoyfriend ? boyfriend : dad));
 		if (char == null)
 			return;
-		var color = (note.strumLineNum < 0 ? funnyManias[-2 - note.strumLineNum] : curManiaInfo).arrows[note == null ? noteData : note.noteData];
+		var color = validNote ? ((note.strumLineNum < 0 ? funnyManias[-2 - note.strumLineNum] : curManiaInfo).arrows[note.noteData]) : curManiaInfo.arrows[noteData];
 		var colorNote = "sing" + color.toUpperCase();
 		if (isMiss)
 			return char.playAvailableAnim(['${colorNote}miss', 'sing${ManiaInfo.Dir[color]}miss'], true);

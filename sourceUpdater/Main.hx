@@ -43,6 +43,11 @@ class Main extends Sprite
 		"songs"
 	];
 
+	var dontCopyGameContent:Array<String> = [
+		"mods/modList.txt", //this file shouldn't exist in distributed versions but if it DOES....!!!
+		"vmanengineupdater.exe" //would be moved in by the game.
+	];
+
 	public static function main():Void
 	{
 		#if (debug && !html5)

@@ -30,7 +30,7 @@ class PlayStateChangesSubState extends OptionsSubStateBasic
 			case "endless mode":
 				return ["The song repeats forever! Freeplay Only", Options.saved.playstate_endless ? "Enabled" : "Disabled"];
 			case "guitar mode":
-				return ["Guitar Hero, basically. Hold the arrow key down and use square bracket keys to hit notes.", Options.saved.playstate_guitar ? "Enabled" : "Disabled"];
+				return ["Guitar Hero, basically. Hold the arrow key down and use Guitar Strum keybind to hit notes.", Options.saved.playstate_guitar ? "Enabled" : "Disabled"];
 			case "confusion":
 				return ["Notes may sometimes appear visually in wrong lanes.", Options.saved.playstate_confusion ? "Enabled" : "Disabled"];
 			case "clear gameplay changes":
