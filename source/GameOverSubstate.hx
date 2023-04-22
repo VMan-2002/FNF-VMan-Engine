@@ -34,6 +34,8 @@ class GameOverSubstate extends MusicBeatSubstate
 		var daChar:Character = (Options.saved.playstate_opponentmode && PlayState.instance.dad.deathChar != null ? PlayState.instance.dad : PlayState.instance.boyfriend);
 		if (daChar.deathChar != null) {
 			daBf = daChar.deathChar;
+		} else if (daChar.hasAnim("firstDeath")) {
+			daBf = daChar.curCharacter;
 		}
 		var deathSound:String = "fnf_loss_sfx";
 		if (daChar.deathSound != null) {

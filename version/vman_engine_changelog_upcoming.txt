@@ -1,5 +1,8 @@
 Removed ThatAzazelFire
 Improved unused animations for Girlfriend (Christmas variant)
-Added save button to Animation Debug
+Added improvements to Animation Debug, such as a save button
 Compress some more image assets
 Added "baseNoteType" var for note types
+Added "Miss Animation" note type
+Unhardcode characters that were hardcoded
+<Hopefully update the JP translation... It was outdated in 1.1 because Regular Guitar Song and i was rushing.>

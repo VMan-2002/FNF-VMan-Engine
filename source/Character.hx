@@ -304,7 +304,7 @@ class Character extends SpriteVMan
 
 				healthBarColor.setRGB(165, 0, 77);
 				isGirlfriend = true;
-			case 'dad':
+			/*case 'dad':
 				// DAD ANIMATION LOADING CODE
 				tex = Paths.getSparrowAtlas('characters/DADDY_DEAREST');
 				AnimationDebug.imageFile = 'characters/DADDY_DEAREST';
@@ -323,8 +323,8 @@ class Character extends SpriteVMan
 
 				playAnim('idle');
 
-				healthBarColor.setRGB(170, 99, 200);
-			case 'spooky':
+				healthBarColor.setRGB(170, 99, 200);*/
+			/*case 'spooky':
 				tex = Paths.getSparrowAtlas('characters/spooky_kids_assets');
 				AnimationDebug.imageFile = 'characters/spooky_kids_assets';
 				frames = tex;
@@ -347,8 +347,8 @@ class Character extends SpriteVMan
 				
 				positionOffset[1] = 200;
 
-				healthBarColor.setRGB(213, 126, 0);
-			case 'mom':
+				healthBarColor.setRGB(213, 126, 0);*/
+			/*case 'mom':
 				tex = Paths.getSparrowAtlas('characters/Mom_Assets');
 				AnimationDebug.imageFile = 'characters/Mom_Assets';
 				frames = tex;
@@ -369,7 +369,7 @@ class Character extends SpriteVMan
 
 				playAnim('idle');
 
-				healthBarColor.setRGB(216, 85, 142);
+				healthBarColor.setRGB(216, 85, 142);*/
 			case 'mom-car':
 				tex = Paths.getSparrowAtlas('characters/momCar');
 				AnimationDebug.imageFile = 'characters/momCar';
@@ -432,7 +432,7 @@ class Character extends SpriteVMan
 				positionOffset[1] = 130;
 
 				healthBarColor.setRGB(243, 255, 110);
-			case 'pico':
+			/*case 'pico':
 				tex = Paths.getSparrowAtlas('characters/Pico_FNF_assetss');
 				AnimationDebug.imageFile = 'characters/Pico_FNF_assetss';
 				frames = tex;
@@ -464,7 +464,7 @@ class Character extends SpriteVMan
 				
 				positionOffset[1] = 300;
 
-				healthBarColor.setRGB(183, 216, 85);
+				healthBarColor.setRGB(183, 216, 85);*/
 
 			case 'pico-speaker':
 				frames = Paths.getSparrowAtlas('characters/picoSpeaker');
@@ -858,29 +858,38 @@ class Character extends SpriteVMan
 				try {
 					loadedStuff = loadCharacterJson(curCharacter, myMod);
 				} catch(e) {
-					ErrorReportSubstate.addError("Error loading character "+curCharacter+": " + e.message);
+					ErrorReportSubstate.addError("Error loading character json "+curCharacter+": " + e.message);
 				}
 				if (loadedStuff != null) {
 					trace('loaded custom char for ' + curCharacter);
 					
 					//Char stuff is load. now set up
 					frames = Paths.getSparrowAtlas(loadedStuff.image);
+					AnimationDebug.imageFile = loadedStuff.image;
 					for (anim in loadedStuff.animations) {
 						loadAnimation(this, anim);
 						var flippedPlayer:Bool = (loadedStuff.isPlayer != flipX);
 						if (anim.offset != null && anim.offset.length > 0) {
-							//			LEN 2	LEN 3
-							//NO FLIP	0,1,n	0,1,2
-							//IS FLIP	0,1,n	2,1,0	
-							var xNormal = anim.offset.length > 2 ? (anim.offset[!flippedPlayer ? 0 : 2]) : (!flippedPlayer ? anim.offset[0] : null);
-							var xFlip = anim.offset.length > 2 ? (anim.offset[flippedPlayer ? 0 : 2]) : (flippedPlayer ? anim.offset[0] : null);
-							addOffset(anim.name, xNormal, anim.offset[1], xFlip);
+							if (anim.offset.length >= 3) {
+								//I made a system but it breaks saving so whatever
+								//This is technically a breaking change but i'm hoping that mods haven't used that
+								addOffset(anim.name, anim.offset[0], anim.offset[1], anim.offset[2]);
+							} else {
+								//			LEN 2	LEN 3
+								//NO FLIP	0,1,n	0,1,2
+								//IS FLIP	0,1,n	2,1,0
+								/*var xNormal = anim.offset.length > 2 ? (anim.offset[!flippedPlayer ? 0 : 2]) : (!flippedPlayer ? anim.offset[0] : null);
+								var xFlip = anim.offset.length > 2 ? (anim.offset[flippedPlayer ? 0 : 2]) : (flippedPlayer ? anim.offset[0] : null);*/
+								var xNormal = anim.offset.length > 2 ? (anim.offset[!flippedPlayer ? 0 : 2]) : (!flippedPlayer ? anim.offset[0] : null);
+								var xFlip = anim.offset.length > 2 ? (anim.offset[flippedPlayer ? 0 : 2]) : (flippedPlayer ? anim.offset[0] : null);
+								addOffset(anim.name, xNormal, anim.offset[1], xFlip);
+							}
 						} else {
 							addOffset(anim.name);
 						}
 						if (anim.noteCameraOffset == null || anim.noteCameraOffset.length == 0) {
-							if (anim.name.startsWith("sing")) {
-								/*switch(anim.name.toLowerCase()) {
+							/*if (anim.name.startsWith("sing")) {
+								switch(anim.name.toLowerCase()) {
 									case "singleft":
 										noteCameraOffset.set(anim.name, new FlxPoint(-45, 0));
 									case "singright":
@@ -889,8 +898,8 @@ class Character extends SpriteVMan
 										noteCameraOffset.set(anim.name, new FlxPoint(0, -45));
 									case "singdown":
 										noteCameraOffset.set(anim.name, new FlxPoint(0, 45));
-								}*/
-							}
+								}
+							}*/
 						} else {
 							noteCameraOffset.set(anim.name, new FlxPoint(anim.noteCameraOffset[0], anim.noteCameraOffset[1]));
 						}
@@ -935,9 +944,9 @@ class Character extends SpriteVMan
 						this.animNoSustain = loadedStuff.animNoSustain;
 					}
 					this.isGirlfriend = loadedStuff.isGirlfriend == true;
-					playAvailableAnim([loadedStuff.initAnim, "danceLeft", "idle"]);
+					playAvailableAnim([loadedStuff.initAnim, "danceLeft", "idle", "firstDeath"]);
 					if (loadedStuff.initAnim != animation.curAnim.name) {
-						trace("The set InitAnim wasn't found, but an idle anim was found");
+						trace("The set initAnim wasn't found, but an idle anim was found");
 					}
 					antialiasing = loadedStuff.antialias != false;
 					successLoad = true;
@@ -1013,7 +1022,6 @@ class Character extends SpriteVMan
 		
 		if (animation.curAnim == null) {
 			ErrorReportSubstate.addError("Animation for char "+curCharacter+" is null somehow! This will cause a crash!");
-			
 		}
 		
 		danceType = hasAnim("danceLeft");
@@ -1102,11 +1110,17 @@ class Character extends SpriteVMan
 		return charHealthIcons.get('${mod}:${name}');
 	}
 
-	public static function loadAnimation(sprite:FlxSprite, anim:SwagCharacterAnim) {
+	public static function loadAnimation(sprite:FlxSprite, anim:SwagCharacterAnim, ?flip:Bool = false) {
 		if (anim.indicies != null && anim.indicies.length > 0) {
-			sprite.animation.addByIndices(anim.name, anim.anim, anim.indicies, "", anim.framerate, anim.loop);
+			sprite.animation.addByIndices(anim.name, anim.anim, anim.indicies, "", anim.framerate, anim.loop, flip);
 		} else {
-			sprite.animation.addByPrefix(anim.name, anim.anim, anim.framerate, anim.loop);
+			sprite.animation.addByPrefix(anim.name, anim.anim, anim.framerate, anim.loop, flip);
+		}
+	}
+
+	public static function loadAnimationNameless(sprite:FlxSprite, anim:SwagCharacterAnim, ?flip:Bool = false) {
+		if (anim.indicies != null && anim.indicies.length > 0) {
+			sprite.animation.add(anim.name, anim.indicies, anim.framerate, anim.loop, flip);
 		}
 	}
 

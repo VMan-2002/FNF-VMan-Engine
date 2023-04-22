@@ -22,8 +22,6 @@ using StringTools;
  */
 class AnimationDebug extends MusicBeatState
 {
-	var bf:Boyfriend;
-	var dad:Character;
 	var char:Character;
 	var charGhost:Character;
 	var textAnim:FlxText;
@@ -33,6 +31,9 @@ class AnimationDebug extends MusicBeatState
 	var isDad:Bool = true;
 	var daAnim:String = 'spooky';
 	var camFollow:FlxObject;
+
+	var colorBar:FlxSprite;
+	var healthIcon:HealthIcon;
 	
 	var nameTxtBox:FlxUIInputText;
 
@@ -50,9 +51,10 @@ class AnimationDebug extends MusicBeatState
 	var substitutable:Bool = false;
 	var initAnim:Null<String> = null;
 
-	override function create()
-	{
+	override function create() {
 		FlxG.sound.music.stop();
+
+		FlxG.mouse.visible = true;
 
 		var gridBG:FlxSprite = FlxGridOverlay.create(10, 10);
 		gridBG.scrollFactor.set(0.5, 0.5);
@@ -69,27 +71,18 @@ class AnimationDebug extends MusicBeatState
 		originThing.alpha = 0.5;
 		add(originThing);
 
-		if (daAnim == 'bf')
-			isDad = false;
+		//
+		var dad = new Character(xPositionThing, 0, daAnim);
+		dad.debugMode = true;
+		add(dad);
 
-		if (isDad) {
-			dad = new Character(xPositionThing, 0, daAnim);
-			dad.debugMode = true;
-			add(dad);
-
-			char = dad;
-		} else {
-			bf = new Boyfriend(xPositionThing, 0);
-			bf.debugMode = true;
-			add(bf);
-
-			char = bf;
-		}
+		char = dad;
+		//
 
 		charGhost = new Character(xPositionThing, 0, daAnim);
 		charGhost.debugMode = true;
 		charGhost.alpha = 0.5;
-		charGhost.color = FlxColor.GRAY;
+		charGhost.realcolor = FlxColor.GRAY;
 		charGhost.visible = false;
 		add(charGhost);
 		
@@ -103,7 +96,7 @@ class AnimationDebug extends MusicBeatState
 		textAnim.scrollFactor.set();
 		add(textAnim);
 
-		genBoyOffsets();
+		updateTexts();
 
 		camFollow = new FlxObject(0, 0, 2, 2);
 		camFollow.screenCenter();
@@ -124,29 +117,41 @@ class AnimationDebug extends MusicBeatState
 		var UI_click:FlxUIButton = new FlxUIButton(FlxG.width - 120, 8, "Load", function() {
 			FlxG.switchState(new AnimationDebug(nameTxtBox.text));
 		});
-		var UI_save:FlxUIButton = new FlxUIButton(FlxG.width - 120, 8 + 20, "Save", function() {
+		var UI_save:FlxUIButton = new FlxUIButton(FlxG.width - 120, UI_click.y + 24, "Save", function() {
 			var anims = new Array<SwagCharacterAnim>();
 			var validFile = fileAnims.keys().hasNext();
 			var emptyIntArr = validFile ? null : new Array<Int>();
 			for (anim in char.animation.getAnimationList()) {
+				if (anim.name.endsWith("miss") && !char.hasMissAnims)
+					continue;
 				var note_cam_offset = char.noteCameraOffset.exists(anim.name) ? [char.noteCameraOffset[anim.name].x, char.noteCameraOffset[anim.name].y] : null;
-				anims.push({
+				var validAnim = validFile && fileAnims.exists(anim.name);
+				var newAnim = {
 					name: anim.name,
-					anim: validFile ? "<from hardcode>" : fileAnims[anim.name].anim,
+					anim: !validAnim ? "<from hardcode>" : fileAnims[anim.name].anim,
 					framerate: Std.int(anim.frameRate),
 					offset: char.animOffsets[anim.name],
-					indicies: validFile ? emptyIntArr : fileAnims[anim.name].indicies,
+					indicies: !validAnim ? emptyIntArr : fileAnims[anim.name].indicies,
 					loop: anim.looped,
 					noteCameraOffset: note_cam_offset,
-					nextAnim: validFile ? null : fileAnims[anim.name].nextAnim
-				});
+					nextAnim: !validAnim ? null : fileAnims[anim.name].nextAnim
+				};
+				if (Options.dataStrip) {
+					if (newAnim.nextAnim == null)
+						Reflect.deleteField(newAnim, "nextAnim");
+					if (newAnim.noteCameraOffset == null)
+						Reflect.deleteField(newAnim, "noteCameraOffset");
+					if (newAnim.indicies == null || newAnim.indicies.length == 0)
+						Reflect.deleteField(newAnim, "indicies");
+				}
+				anims.push(newAnim);
 			}
 			var savedChar:SwagCharacter = {
 				image: imageFile,
 				healthIcon: Character.getHealthIcon(char.curCharacter, null),
 				deathChar: char.deathChar,
 				deathSound: char.deathSound,
-				initAnim: validFile && initAnim != null ? initAnim : ["danceLeft", "idle"].filter(function(a) {return char.hasAnim(a);})[0],
+				initAnim: validFile && initAnim != null ? initAnim : ["danceLeft", "idle", "firstDeath"].filter(function(a) {return char.hasAnim(a);})[0],
 				antialias: char.antialiasing,
 				animations: anims,
 				position: char.positionOffset,
@@ -159,51 +164,108 @@ class AnimationDebug extends MusicBeatState
 				isGirlfriend: char.isGirlfriend,
 				substitutable: validFile ? substitutable : (char.curCharacter.startsWith("bf_") || char.curCharacter == "bf" || char.curCharacter.startsWith("gf_") || char.curCharacter == "gf")
 			};
+			if (Options.dataStrip) {
+				if (savedChar.substitutable != true)
+					Reflect.deleteField(savedChar, "substitutable");
+				if (savedChar.deathSound == null)
+					Reflect.deleteField(savedChar, "deathSound");
+				if (savedChar.deathChar == null)
+					Reflect.deleteField(savedChar, "deathChar");
+				if (savedChar.antialias != false)
+					Reflect.deleteField(savedChar, "antialias");
+				if (savedChar.isGirlfriend != true)
+					Reflect.deleteField(savedChar, "isGirlfriend");
+				if (savedChar.isPlayer != true)
+					Reflect.deleteField(savedChar, "isPlayer");
+				if (savedChar.scale == null || savedChar.scale == 1)
+					Reflect.deleteField(savedChar, "scale");
+				if (savedChar.position == null || (savedChar.position[0] == 0 && savedChar.position[1] == 0))
+					Reflect.deleteField(savedChar, "position");
+				if (savedChar.danceModulo == null || savedChar.danceModulo == 1)
+					Reflect.deleteField(savedChar, "danceModulo");
+				if (savedChar.cameraOffset == null || (savedChar.cameraOffset[0] == 0 && savedChar.cameraOffset[1] == 0))
+					Reflect.deleteField(savedChar, "cameraOffset");
+				if (savedChar.animNoSustain != true)
+					Reflect.deleteField(savedChar, "animNoSustain");
+				if (savedChar.healthBarColor == null)
+					Reflect.deleteField(savedChar, "healthBarColor");
+			}
 			var _file = new FileReference();
 			_file.save(Json.stringify(savedChar), char.curCharacter + ".json");
 		});
 		add(nameTxtBox);
 		add(UI_click);
 		add(UI_save);
-		UI_click.scrollFactor.set(0, 0);
-		UI_save.scrollFactor.set(0, 0);
+		nameTxtBox.scrollFactor.set();
+
+		var text:FlxText = new FlxText(10, UI_save.y + 24, FlxG.width - 20, [
+			"E/Q: Zoom in/out",
+			"IJKL: Move camera",
+			"W/S: Prev/Next Anim",
+			"Arrow keys: Move offset",
+			"Shift: Move offset/camera faster",
+			"Z: Set ghost to current anim",
+			"X: Remove ghost",
+			"C: Toggle flip",
+			Options.getUIControlName("back") + ": Exit"
+		].join("\n"), 15);
+		text.alignment = FlxTextAlign.RIGHT;
+		text.scrollFactor.set();
+		add(text);
+
+		var barSprite:FlxSprite = new FlxSprite(20, FlxG.height - 80, Paths.image("normal/healthBarShorter2"));
+		colorBar = new FlxSprite(barSprite.x + 4, barSprite.y + 4).makeGraphic(barSprite.frameWidth - 8, barSprite.frameHeight - 8);
+		colorBar.color = char.healthBarColor;
+		barSprite.scrollFactor.set();
+		colorBar.scrollFactor.set();
+		add(barSprite);
+		add(colorBar);
+
+		healthIcon = new HealthIcon(char.healthIcon);
+		healthIcon.y = colorBar.y - (healthIcon.height / 2);
+		healthIcon.x = colorBar.x + colorBar.width + 26 - 150;
+		add(healthIcon);
 
 		super.create();
 	}
 
-	function genBoyOffsets(pushList:Bool = true):Void
-	{
+	inline function genBoyOffsets():Void {
 		var daLoop:Int = 0;
 
 		for (anim => offsets in char.animOffsets) {
 			var text:FlxText = new FlxText(10, 20 + (18 * daLoop), 0, anim + ": " + offsets, 15);
 			text.scrollFactor.set();
-			text.color = FlxColor.BLUE;
 			dumbTexts.add(text);
 
-			if (pushList)
+			if (!animList.contains(anim))
 				animList.push(anim);
 
 			daLoop++;
 		}
+
+		offsetTextCol();
 	}
 
-	function updateTexts():Void
-	{
-		dumbTexts.forEach(function(text:FlxText)
-		{
-			text.kill();
+	public function offsetTextCol() {
+		for (i in 0...animList.length) {
+			dumbTexts.members[i].color = curAnim == i ? FlxColor.YELLOW : FlxColor.BLUE;
+		}
+	}
+
+	function updateTexts():Void {
+		/*dumbTexts.forEach(function(text:FlxText) {
+			text.destroy();
 			dumbTexts.remove(text, true);
-		});
+		});*/
+		CoolUtil.clearMembers(dumbTexts);
+		genBoyOffsets();
 	}
 
 	override function update(elapsed:Float) {
 		textAnim.text = char.animation.curAnim.name;
 		if (!nameTxtBox.hasFocus) {
 			var holdShift = FlxG.keys.pressed.SHIFT;
-			var multiplier = 1;
-			if (holdShift)
-				multiplier = 10;
+			var multiplier = holdShift ? 10 : 1;
 				
 			if (FlxG.keys.justPressed.E)
 				FlxG.camera.zoom += 0.25;
@@ -227,9 +289,16 @@ class AnimationDebug extends MusicBeatState
 			} else {
 				camFollow.velocity.set();
 			}
+			
+			if (FlxG.keys.justPressed.W || FlxG.keys.justPressed.S) {
+				if (FlxG.keys.justPressed.W)
+					curAnim -= 1;
 
-			if (FlxG.keys.justPressed.W)
-				curAnim -= 1;
+				if (FlxG.keys.justPressed.S)
+					curAnim += 1;
+				
+				offsetTextCol();
+			}
 
 			if (FlxG.keys.justPressed.Z) {
 				charGhost.playAnim(char.animation.curAnim.name, true);
@@ -238,13 +307,14 @@ class AnimationDebug extends MusicBeatState
 				charGhost.x = char.x;
 				charGhost.y = char.y;
 				charGhost.visible = true;
+				charGhost.flipX = char.flipX;
 			}
 
 			if (FlxG.keys.justPressed.X)
 				charGhost.visible = false;
 
-			if (FlxG.keys.justPressed.S)
-				curAnim += 1;
+			if (FlxG.keys.justPressed.C)
+				char.flipX = !char.flipX;
 
 			if (curAnim < 0)
 				curAnim = animList.length - 1;
@@ -256,7 +326,6 @@ class AnimationDebug extends MusicBeatState
 				char.playAnim(animList[curAnim], true);
 
 				updateTexts();
-				genBoyOffsets(false);
 			}
 			var upP = FlxG.keys.anyJustPressed([UP]);
 			var rightP = FlxG.keys.anyJustPressed([RIGHT]);
@@ -264,7 +333,6 @@ class AnimationDebug extends MusicBeatState
 			var leftP = FlxG.keys.anyJustPressed([LEFT]);
 
 			if (upP || rightP || downP || leftP) {
-				updateTexts();
 				if (upP)
 					char.animOffsets.get(animList[curAnim])[1] += multiplier;
 				if (downP)
@@ -275,11 +343,13 @@ class AnimationDebug extends MusicBeatState
 					char.animOffsets.get(animList[curAnim])[char.flipX ? 2 : 0] -= multiplier;
 
 				updateTexts();
-				genBoyOffsets(false);
 				char.playAnim(animList[curAnim]);
+				offsetTextCol();
 			}
 			
 			if (controls.BACK) {
+				FlxG.mouse.visible = false;
+
 				FlxG.switchState(new MainMenuState());
 			}
 		}

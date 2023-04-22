@@ -4,6 +4,7 @@ import Character;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
+import haxe.Json;
 import openfl.Assets;
 import openfl.display.BitmapData;
 #if polymod
@@ -38,7 +39,7 @@ typedef SwagMultiHealthIcon = {
 	public var items:Array<SwagHealthIconItem>;
 }
 
-class HealthIcon extends FlxSprite
+class HealthIcon extends SpriteVMan
 {
 	/**
 	 * Used for FreeplayState! If you use it elsewhere, prob gonna annoying
@@ -94,6 +95,22 @@ class HealthIcon extends FlxSprite
 		this.isPlayer = isPlayer;
 
 		changeCharacter(char, isPlayer, myMod);
+	}
+
+	inline function loadAnimsForIcon(anims:Array<SwagCharacterAnim>, loadFunc:(FlxSprite,SwagCharacterAnim,Bool)->Void, flip:Bool) {
+		for (anim in anims) {
+			loadFunc(this, anim, flip);
+			if (anim.offset != null && anim.offset.length >= 2)
+				addOffset(anim.name, anim.offset[flip && anim.offset.length >= 3 ? 2 : 0], anim.offset[1], 0);
+			if (animation.getByName(anim.name).frames.length != 0) {
+				switch(anim.name) {
+					case "winning":
+						hasWinning = true;
+					case "losing":
+						hasLosing = true;
+				}
+			}
+		}
 	}
 
 	public function changeCharacter(char:String, isPlayer:Bool = false, ?myMod:String) {
@@ -176,6 +193,26 @@ class HealthIcon extends FlxSprite
 				#end
 				hasWinning = false;
 				hasLosing = false;
+				loadAnimsForIcon(jsonData != null && jsonData.animations != null ? jsonData.animations : [
+					cast {
+						name: "neutral",
+						anim: "neutral",
+						framerate: 24,
+						loop: true
+					},
+					cast {
+						name: "winning",
+						anim: "winning",
+						framerate: 24,
+						loop: true
+					},
+					cast {
+						name: "losing",
+						anim: "losing",
+						framerate: 24,
+						loop: true
+					}
+				], Character.loadAnimationNameless, isPlayer);
 			} else {
 				loadGraphic(bitmap);
 				var ratio = width / height;
@@ -183,6 +220,7 @@ class HealthIcon extends FlxSprite
 				if (isJson && jsonData != null && jsonData.tileWidth != null) {
 					//todo: load anims
 					loadGraphic(bitmap, true, jsonData.tileWidth, jsonData.tileHeight == null ? intHeight : jsonData.tileHeight);
+					loadAnimsForIcon(jsonData.animations, Character.loadAnimationNameless, isPlayer);
 				} else if (ratio > 2.5) {
 					loadGraphic(bitmap, true, Math.floor(width / 3), intHeight);
 					animation.add('winning', [2], 0, false, isPlayer);

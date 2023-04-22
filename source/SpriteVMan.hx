@@ -36,7 +36,7 @@ class SpriteVMan extends FlxSprite {
 		for (thing in animOffsets.keys()) {
 			if (animation.getByName(thing) == null) {
 				trace("NULL ANIM "+thing+" when generate flip offsets");
-				while (animOffsets[thing][2] == null) {
+				while (animOffsets[thing][2] == null || animOffsets[thing].length < 3) {
 					animOffsets[thing].push(0);
 				}
 				continue;
@@ -108,7 +108,7 @@ class SpriteVMan extends FlxSprite {
 				break;
 			case "vertical":
 				wiggleShit.effectType = WiggleEffectType.HEAT_WAVE_VERTICAL
-				break;;
+				break;
 			case "flag":
 				wiggleShit.effectType = WiggleEffectType.FLAG;
 				break;

@@ -769,6 +769,7 @@ class PlayState extends MusicBeatState
 			case 'limo':
 				boyfriend.y -= 220;
 				boyfriend.x += 260;
+				dad.y += 30;
 
 				resetFastCar();
 				add(fastCar);

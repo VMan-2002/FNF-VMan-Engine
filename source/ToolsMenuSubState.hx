@@ -107,6 +107,7 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 				cloneHeroImport();
 			case "strip file data":
 				Options.dataStrip = !Options.dataStrip;
+				return true;
 			case "documentation":
 				FlxG.openURL("https://vman-2002.github.io/vmanengine_doc/index.html");
 		}
