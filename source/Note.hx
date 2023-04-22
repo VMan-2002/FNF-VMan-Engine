@@ -280,6 +280,7 @@ class SwagNoteType {
 	public var noteAnimReplace:Null<String>;
 	public var noAnim:Null<Bool>;
 	public var noteSkinPrefix:String = "";
+	public var baseNoteType:Null<String>;
 	public static var normalNote:String = "Normal Note";
 
 	public static function loadNoteType(name:String, modName:String, ?putInto:Null<String>) {
@@ -298,7 +299,7 @@ class SwagNoteType {
 			Note.loadedNoteTypes.set('${modName}:${name}', loadNoteType(normalNote, modName, putInto)); //a valid note type must be loaded!
 			return Note.loadedNoteTypes.get('${modName}:${normalNote}'); //a nonstandard fix
 		}
-		var defaultNote = name == normalNote ? noteType : loadNoteType(normalNote, modName);
+		var defaultNote = name == normalNote ? noteType : loadNoteType(noteType.baseNoteType == null ? normalNote : noteType.baseNoteType, modName);
 		noteType.healthHit = noteType.healthHit != null ? noteType.healthHit : defaultNote.healthHit;
 		noteType.healthHitSick = noteType.healthHitSick != null ? noteType.healthHitSick : (noteType.healthHit != null ? noteType.healthHit : defaultNote.healthHitSick);
 		noteType.healthHitGood = noteType.healthHitGood != null ? noteType.healthHitGood : (noteType.healthHit != null ? noteType.healthHit : defaultNote.healthHitGood);
@@ -346,31 +347,26 @@ class SwagNoteType {
 	}
 
 	public static function recalculateNoteChars(name:Null<String>) {
-		if (name != null) {
+		if (name != null)
 			return recalculateCharsForNote(Note.loadedNoteTypes.get(name));
-		}
-		for (nt in Note.loadedNoteTypes) {
+		for (nt in Note.loadedNoteTypes)
 			recalculateCharsForNote(nt);
-		}
 	}
 
 	static inline function recalculateCharsForNote(nt:SwagNoteType) {
-		if (nt.charNames != null) {
-			if (nt.charNums == null) {
-				nt.charNums = new Array<Int>();
-			} else {
-				FlxArrayUtil.clearArray(nt.charNums);
-			}
-			for (thing in nt.charNames) {
-				var newnum = Character.findSuitableCharacterNum(thing, -1);
-				if (newnum != -1 && !nt.charNums.contains(newnum)) {
-					nt.charNums.push(newnum);
-				}
-			}
-			if (nt.charNums.length == 0) {
-				nt.charNums = null;
-			}
+		if (nt.charNames == null)
+			return;
+		if (nt.charNums == null)
+			nt.charNums = new Array<Int>();
+		else
+			FlxArrayUtil.clearArray(nt.charNums);
+		for (thing in nt.charNames) {
+			var newnum = Character.findSuitableCharacterNum(thing, -1);
+			if (newnum != -1 && !nt.charNums.contains(newnum))
+				nt.charNums.push(newnum);
 		}
+		if (nt.charNums.length == 0)
+			nt.charNums = null;
 	}
 
 	public static function clearLoadedNoteTypes() {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextureAtlas imagePath="logoBumpin.png">
-	<!-- Used VMan_2002's spritesheet converter. -->
+	<!-- No need for Adobe Animate. Lmao -->
+	<!-- This was made with VMan_2002's own converter -->
 	<SubTexture name="logo bumpin0000" x="0" y="0" width="683" height="425" frameX="-137" frameY="-121" frameWidth="939" frameHeight="703"/>
 	<SubTexture name="logo bumpin0001" x="684" y="0" width="718" height="447" frameX="-120" frameY="-109" frameWidth="939" frameHeight="703"/>
 	<SubTexture name="logo bumpin0002" x="684" y="0" width="718" height="447" frameX="-120" frameY="-109" frameWidth="939" frameHeight="703"/>

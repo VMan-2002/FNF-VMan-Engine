@@ -124,6 +124,10 @@ class Options {
 		"gtstrum" => [FlxKey.LBRACKET, FlxKey.RBRACKET]
 	];
 
+	//todo: Mod options
+	//public static var modOptions:Map<String, Map<String, Dynamic>>;
+	//public static var modGameplayChanges:Map<String, Array<String>>;
+
 	public function new() {
 		
 	}

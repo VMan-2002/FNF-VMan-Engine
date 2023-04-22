@@ -1,14 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <TextureAtlas imagePath="senpaiPortrait.png">
-	<!-- Created with Adobe Animate version 20.0.0.17400 -->
-	<!-- http://www.adobe.com/products/animate.html -->
-	<SubTexture name="Senpai Portrait Enter instance 10000" x="0" y="0" width="249" height="145"/>
-	<SubTexture name="Senpai Portrait Enter instance 10001" x="259" y="0" width="249" height="145"/>
-	<SubTexture name="Senpai Portrait Enter instance 10002" x="259" y="0" width="249" height="145"/>
-	<SubTexture name="Senpai Portrait Enter instance 10003" x="0" y="155" width="249" height="145"/>
-	<SubTexture name="Senpai Portrait Enter instance 10004" x="0" y="155" width="249" height="145"/>
-	<SubTexture name="Senpai Portrait Enter instance 10005" x="259" y="155" width="249" height="145"/>
-	<SubTexture name="Senpai Portrait Enter instance 10006" x="259" y="155" width="249" height="145"/>
-	<SubTexture name="Senpai Portrait Enter instance 10007" x="259" y="155" width="249" height="145"/>
-	<SubTexture name="Senpai Portrait Enter instance 10008" x="259" y="155" width="249" height="145"/>
+	<!-- Used VMan_2002's spritesheet converter. -->
+	<SubTexture name="Boyfriend portrait enter instance 10000" x="0" y="0" width="58" height="45" frameX="-14" frameY="0" frameWidth="72" frameHeight="45"/>
+	<SubTexture name="Boyfriend portrait enter instance 10001" x="59" y="0" width="58" height="45" frameX="-7" frameY="0" frameWidth="72" frameHeight="45"/>
+	<SubTexture name="Boyfriend portrait enter instance 10002" x="59" y="0" width="58" height="45" frameX="-7" frameY="0" frameWidth="72" frameHeight="45"/>
+	<SubTexture name="Boyfriend portrait enter instance 10003" x="118" y="0" width="58" height="45" frameX="-1" frameY="0" frameWidth="72" frameHeight="45"/>
+	<SubTexture name="Boyfriend portrait enter instance 10004" x="118" y="0" width="58" height="45" frameX="-1" frameY="0" frameWidth="72" frameHeight="45"/>
+	<SubTexture name="Boyfriend portrait enter instance 10005" x="177" y="0" width="58" height="45" frameX="0" frameY="0" frameWidth="72" frameHeight="45"/>
+	<SubTexture name="Boyfriend portrait enter instance 10006" x="177" y="0" width="58" height="45" frameX="0" frameY="0" frameWidth="72" frameHeight="45"/>
+	<SubTexture name="Boyfriend portrait enter instance 10007" x="177" y="0" width="58" height="45" frameX="0" frameY="0" frameWidth="72" frameHeight="45"/>
+	<SubTexture name="Boyfriend portrait enter instance 10008" x="177" y="0" width="58" height="45" frameX="0" frameY="0" frameWidth="72" frameHeight="45"/>
+	<SubTexture name="Senpai Portrait Enter instance 10000" x="0" y="46" width="51" height="57" frameX="-38" frameY="-17" frameWidth="62" frameHeight="57"/>
+	<SubTexture name="Senpai Portrait Enter instance 10001" x="52" y="46" width="51" height="57" frameX="-45" frameY="-17" frameWidth="62" frameHeight="57"/>
+	<SubTexture name="Senpai Portrait Enter instance 10002" x="52" y="46" width="51" height="57" frameX="-45" frameY="-17" frameWidth="62" frameHeight="57"/>
+	<SubTexture name="Senpai Portrait Enter instance 10003" x="104" y="46" width="51" height="57" frameX="-48" frameY="-17" frameWidth="62" frameHeight="57"/>
+	<SubTexture name="Senpai Portrait Enter instance 10004" x="104" y="46" width="51" height="57" frameX="-48" frameY="-17" frameWidth="62" frameHeight="57"/>
+	<SubTexture name="Senpai Portrait Enter instance 10005" x="156" y="46" width="51" height="57" frameX="-49" frameY="-17" frameWidth="62" frameHeight="57"/>
+	<SubTexture name="Senpai Portrait Enter instance 10006" x="156" y="46" width="51" height="57" frameX="-49" frameY="-17" frameWidth="62" frameHeight="57"/>
+	<SubTexture name="Senpai Portrait Enter instance 10007" x="156" y="46" width="51" height="57" frameX="-49" frameY="-17" frameWidth="62" frameHeight="57"/>
+	<SubTexture name="Senpai Portrait Enter instance 10008" x="156" y="46" width="51" height="57" frameX="-49" frameY="-17" frameWidth="62" frameHeight="57"/>
 </TextureAtlas>

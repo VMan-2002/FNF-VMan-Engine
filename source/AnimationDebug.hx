@@ -1,5 +1,7 @@
 package;
 
+import Character.SwagCharacter;
+import Character.SwagCharacterAnim;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -10,6 +12,10 @@ import flixel.addons.ui.FlxUIInputText;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+import haxe.Json;
+import openfl.net.FileReference;
+
+using StringTools;
 
 /**
 	*DEBUG MODE
@@ -39,6 +45,11 @@ class AnimationDebug extends MusicBeatState
 		this.daAnim = daAnim;
 	}
 
+	public static var imageFile:String;
+	var fileAnims = new Map<String, SwagCharacterAnim>();
+	var substitutable:Bool = false;
+	var initAnim:Null<String> = null;
+
 	override function create()
 	{
 		FlxG.sound.music.stop();
@@ -61,16 +72,13 @@ class AnimationDebug extends MusicBeatState
 		if (daAnim == 'bf')
 			isDad = false;
 
-		if (isDad)
-		{
+		if (isDad) {
 			dad = new Character(xPositionThing, 0, daAnim);
 			dad.debugMode = true;
 			add(dad);
 
 			char = dad;
-		}
-		else
-		{
+		} else {
 			bf = new Boyfriend(xPositionThing, 0);
 			bf.debugMode = true;
 			add(bf);
@@ -102,13 +110,63 @@ class AnimationDebug extends MusicBeatState
 		add(camFollow);
 
 		FlxG.camera.follow(camFollow);
+
+		var animThing = Character.loadCharacterJson(daAnim, null);
+		if (animThing != null && animThing.animations != null) {
+			for (anim in animThing.animations) {
+				fileAnims.set(anim.name, anim);
+			}
+			substitutable = animThing.substitutable == true;
+			initAnim = animThing.initAnim;
+		}
 		
 		nameTxtBox = new FlxUIInputText(FlxG.width - 200, 10, 70, daAnim, 8);
 		var UI_click:FlxUIButton = new FlxUIButton(FlxG.width - 120, 8, "Load", function() {
 			FlxG.switchState(new AnimationDebug(nameTxtBox.text));
 		});
+		var UI_save:FlxUIButton = new FlxUIButton(FlxG.width - 120, 8 + 20, "Save", function() {
+			var anims = new Array<SwagCharacterAnim>();
+			var validFile = fileAnims.keys().hasNext();
+			var emptyIntArr = validFile ? null : new Array<Int>();
+			for (anim in char.animation.getAnimationList()) {
+				var note_cam_offset = char.noteCameraOffset.exists(anim.name) ? [char.noteCameraOffset[anim.name].x, char.noteCameraOffset[anim.name].y] : null;
+				anims.push({
+					name: anim.name,
+					anim: validFile ? "<from hardcode>" : fileAnims[anim.name].anim,
+					framerate: Std.int(anim.frameRate),
+					offset: char.animOffsets[anim.name],
+					indicies: validFile ? emptyIntArr : fileAnims[anim.name].indicies,
+					loop: anim.looped,
+					noteCameraOffset: note_cam_offset,
+					nextAnim: validFile ? null : fileAnims[anim.name].nextAnim
+				});
+			}
+			var savedChar:SwagCharacter = {
+				image: imageFile,
+				healthIcon: Character.getHealthIcon(char.curCharacter, null),
+				deathChar: char.deathChar,
+				deathSound: char.deathSound,
+				initAnim: validFile && initAnim != null ? initAnim : ["danceLeft", "idle"].filter(function(a) {return char.hasAnim(a);})[0],
+				antialias: char.antialiasing,
+				animations: anims,
+				position: char.positionOffset,
+				isPlayer: char.isPlayer,
+				scale: char.scale.x,
+				danceModulo: char.moduloDances,
+				cameraOffset: char.cameraOffset,
+				healthBarColor: [char.healthBarColor.red, char.healthBarColor.green, char.healthBarColor.blue],
+				animNoSustain: char.animNoSustain,
+				isGirlfriend: char.isGirlfriend,
+				substitutable: validFile ? substitutable : (char.curCharacter.startsWith("bf_") || char.curCharacter == "bf" || char.curCharacter.startsWith("gf_") || char.curCharacter == "gf")
+			};
+			var _file = new FileReference();
+			_file.save(Json.stringify(savedChar), char.curCharacter + ".json");
+		});
 		add(nameTxtBox);
 		add(UI_click);
+		add(UI_save);
+		UI_click.scrollFactor.set(0, 0);
+		UI_save.scrollFactor.set(0, 0);
 
 		super.create();
 	}
@@ -139,8 +197,7 @@ class AnimationDebug extends MusicBeatState
 		});
 	}
 
-	override function update(elapsed:Float)
-	{
+	override function update(elapsed:Float) {
 		textAnim.text = char.animation.curAnim.name;
 		if (!nameTxtBox.hasFocus) {
 			var holdShift = FlxG.keys.pressed.SHIFT;

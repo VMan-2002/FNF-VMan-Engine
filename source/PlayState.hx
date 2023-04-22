@@ -107,6 +107,7 @@ class PlayState extends MusicBeatState
 	public var songAttributes:Map<String, Dynamic> = new Map<String, Dynamic>();
 	
 	public var currentSection:Int; //todo: So im making variable length sections (for example: with non 4/4 time signatures)
+	public var nextSectionStep:Int;
 	
 	private var generatedMusic:Bool = false;
 	public var startingSong:Bool = false;
@@ -577,7 +578,7 @@ class PlayState extends MusicBeatState
 				add(fgTrees);
 
 				var bgTrees:FlxSprite = new FlxSprite(repositionShit - 380, -800);
-				var treetex = Paths.getPackerAtlas('weeb/weebTrees');
+				var treetex = Paths.getSparrowAtlas('weeb/weebTreesNew');
 				bgTrees.frames = treetex;
 				bgTrees.animation.add('treeLoop', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18], 12);
 				bgTrees.animation.play('treeLoop');

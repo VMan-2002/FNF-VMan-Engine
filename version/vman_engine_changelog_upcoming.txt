@@ -1,2 +1,5 @@
-Botplay now visible in discord
-Fixed an antimash crash fix (specifically, when you miss without an associated note)
+Removed ThatAzazelFire
+Improved unused animations for Girlfriend (Christmas variant)
+Added save button to Animation Debug
+Compress some more image assets
+Added "baseNoteType" var for note types

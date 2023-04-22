@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="ColorBar.png">
+	<!-- No need for Adobe Animate. Lmao -->
+	<!-- This was made with VMan_2002's own converter -->
+	<SubTexture name="Blue0000" x="0" y="0" width="300" height="10" frameX="0" frameY="0" frameWidth="300" frameHeight="10"/>
+	<SubTexture name="Green0000" x="301" y="0" width="300" height="10" frameX="0" frameY="0" frameWidth="300" frameHeight="10"/>
+	<SubTexture name="Hue0000" x="602" y="0" width="300" height="10" frameX="0" frameY="0" frameWidth="300" frameHeight="10"/>
+	<SubTexture name="Red0000" x="0" y="11" width="300" height="10" frameX="0" frameY="0" frameWidth="300" frameHeight="10"/>
+	<SubTexture name="Saturation0000" x="301" y="11" width="300" height="10" frameX="0" frameY="0" frameWidth="300" frameHeight="10"/>
+	<SubTexture name="Value0000" x="602" y="11" width="300" height="10" frameX="0" frameY="0" frameWidth="300" frameHeight="10"/>
+	<SubTexture name="Whitebar0000" x="0" y="22" width="300" height="10" frameX="0" frameY="0" frameWidth="300" frameHeight="10"/>
+</TextureAtlas>
