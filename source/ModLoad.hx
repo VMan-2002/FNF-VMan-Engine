@@ -11,10 +11,15 @@ import polymod.Polymod;
 #end
 
 
-class ModLoad
-{
+class ModLoad {
 	public static var enabledMods = new Array<String>();
 	public static var primaryMod:ModInfo = null;
+
+	#if FEATURE_STATIC_MOD_LIST
+	static final staticModList = [
+		"friday_night_funkin"
+	];
+	#end
 	
 	//copied from polymod flixel sample
 
@@ -103,14 +108,22 @@ class ModLoad
 		Get all folders in the mods folder, even ones that are inactive
 	**/
 	public static inline function getAllModFolders() {
+		#if FEATURE_STATIC_MOD_LIST
+		return staticModList;
+		#else
 		return FileSystem.readDirectory("mods/").filter(function(a) {return FileSystem.isDirectory("mods/"+a);});
+		#end
 	}
 
 	/**
 		Get mods list file as an array.
 	**/
 	public static inline function getModsListFileArr():Array<String> {
+		#if FEATURE_STATIC_MOD_LIST
+		return staticModList.map(function(a) {return "1::" + a;});
+		#else
 		return FileSystem.exists("mods/modList.txt") ? File.getContent("mods/modList.txt").replace("\r", "").split("\n") : ["0::work_folder", "0::example", "1::friday_night_funkin"];
+		#end
 	}
 
 	public static inline function normalizeModsListFileArr(arr:Array<String>) {
@@ -125,6 +138,9 @@ class ModLoad
 		Check if any new mods have been added to the mods folder
 	**/
 	public static function checkNewMods() {
+		#if FEATURE_STATIC_MOD_LIST
+		return false
+		#else
 		var folderList = getAllModFolders();
 		trace(folderList.length+" Mod folders available: "+folderList.join(","));
 		var modsListFile = getModsListFileArr();
@@ -145,5 +161,6 @@ class ModLoad
 		trace('Adding ${toAdd.length} new mods to modlist file');
 		File.saveContent("mods/modList.txt", newModsListFile.join("\n"));
 		return true;
+		#end
 	}
 }

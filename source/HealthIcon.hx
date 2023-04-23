@@ -39,6 +39,12 @@ typedef SwagMultiHealthIcon = {
 	public var items:Array<SwagHealthIconItem>;
 }
 
+//todo: implememt
+typedef HealthState = {
+	public var amount:Float;
+	public var name:String;
+}
+
 class HealthIcon extends SpriteVMan
 {
 	/**

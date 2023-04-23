@@ -16,8 +16,7 @@ import js.Browser;
 import Sys;
 #end
 
-class Main extends Sprite
-{
+class Main extends Sprite {
 	public static final gameVersionInt = 6;
 	public static final gameVersionStr = "v1.1.4 I'm Guitarin' (& fix the misses)";
 
