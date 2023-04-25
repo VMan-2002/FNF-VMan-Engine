@@ -17,8 +17,24 @@ import Sys;
 #end
 
 class Main extends Sprite {
-	public static final gameVersionInt = 6;
-	public static final gameVersionStr = "v1.1.4 I'm Guitarin' (& fix the misses)";
+	public static var gameVersionInt(default, never) = 6;
+	public static var gameVersionStr(default, never) = "v1.1.4 I'm Guitarin' (& fix the misses)";
+	public static var gameVersionNoSubtitle(default, never) = gameVersionStr.substring(0, gameVersionStr.indexOf(" "));
+
+	public static var gamePlatform(default, never) =
+	#if windows 
+		"windows";
+	#elseif html5
+		"html5";
+	#elseif android
+		"android";
+	#elseif ios
+		"ios";
+	#elseif linux
+		"linux";
+	#else
+		"unknown";
+	#end
 
 	var gameWidth:Int = 1280; // Width of the game in pixels (might be less / more in actual pixels depending on your zoom).
 	var gameHeight:Int = 720; // Height of the game in pixels (might be less / more in actual pixels depending on your zoom).

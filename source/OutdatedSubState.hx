@@ -50,7 +50,7 @@ class OutdatedSubState extends MusicBeatState {
 		bar.alpha = 0.75;
 		add(bar);
 		var txt:FlxText = new FlxText(0, 0, FlxG.width,
-			"Outdated Version! (You have "+(Main.gameVersionStr.substring(0, Main.gameVersionStr.indexOf(" ")))+") | Accept: Go to Download | Back: Ignore for this session",
+			"Outdated Version! (You have "+Main.gameVersionNoSubtitle+") | Accept: Go to Download | Back: Ignore for this session",
 			8);
 		txt.setFormat("VCR OSD Mono", 20, FlxColor.WHITE, CENTER);
 		txt.screenCenter(X);

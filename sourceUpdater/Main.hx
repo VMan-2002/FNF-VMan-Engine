@@ -6,6 +6,7 @@ import flixel.math.FlxMath;
 import haxe.Http;
 import haxe.Json;
 import haxe.Timer;
+import lime.system.System;
 import openfl.Lib;
 import openfl.display.FPS;
 import openfl.display.Sprite;
@@ -140,9 +141,19 @@ class Main extends Sprite
 						trace("Couldn't find a .zip file to download.");
 					};
 					req.request(false);
-				case "emki" | "feri":
+				case "feri":
+					//if (FileSystem.exists(getPath("funkin.exe")))
+						//File.update(getPath("funkin.exe"), false).writeString("".rpad("don't_", 999));
+					return System.exit(0);
+				case "emki" | "catina" | "lua":
 					trace("Downloading image of plamt");
-					var req = new URLRequest(cmd == "feri" ? "https://static.wikia.nocookie.net/advendure-plantoids/images/1/12/FeriAzazel3Art.png?format=original" : "https://cdn.discordapp.com/attachments/714737333462761513/1095648513012019271/preview.png");
+					var img:Map<String, String> = [
+						"emki" => "https://cdn.discordapp.com/attachments/714737333462761513/1095648513012019271/preview.png",
+						"lua" => "https://cdn.discordapp.com/attachments/714737333462761513/1099888414591029288/preview.png",
+						"catina" => "https://cdn.discordapp.com/attachments/714737333462761513/1099888414918197379/preview.png",
+						"ao" => "" //placeholder (i haven't made a render :pensive:)
+					];
+					var req = new URLRequest(img[cmd]);
 					req.contentType = "image/png";
 					var loader = new URLLoader();
 					loader.dataFormat = URLLoaderDataFormat.BINARY;
