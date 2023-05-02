@@ -5,8 +5,10 @@ import Translation;
 import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.FlxState;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import flixel.math.FlxMath;
 import flixel.system.FlxSound;
 import flixel.text.FlxText;
@@ -77,6 +79,8 @@ class FreeplayState extends MusicBeatState
 	public var loadedAudios = new Array<String>();
 	public var loadingAudio:Bool = false;
 	public var threadResponse:Bool = false;
+
+	public var highscoreNotif:HighscoreNotification;
 
 	//too lazy to implement scripting right now, so it's hardcoded :^)
 	var isCornflower:Bool = false;
@@ -381,6 +385,10 @@ class FreeplayState extends MusicBeatState
 			cornflowerClass.makeSonglist(this);
 		}
 
+		if (HighscoreNotification.shouldCreate()) {
+			highscoreNotif = new HighscoreNotification();
+		}
+
 		super.create();
 	}
 	
@@ -500,6 +508,12 @@ class FreeplayState extends MusicBeatState
 			changeSelection(FlxG.keys.pressed.SHIFT ? -3 : -1);
 		if (downP)
 			changeSelection(FlxG.keys.pressed.SHIFT ? 3 : 1);
+
+		if (upP || downP || controls.LEFT_P || controls.RIGHT_P) {
+			if (highscoreNotif != null) {
+				highscoreNotif.untoast();
+			}
+		}
 
 		if (controls.LEFT_P)
 			changeDiff(-1);
@@ -755,5 +769,44 @@ class SongMetadata
 		if (color != null) {
 			this.color = color;
 		}
+	}
+}
+
+class HighscoreNotification extends FlxTypedSpriteGroup<FlxSprite> {
+	public static var dat:Null<Array<String>> = null;
+	public var untoasting = false;
+
+	public static inline function shouldCreate() {
+		return dat != null && dat.length != 0;
+	}
+
+	public function new() {
+		var bg = new FlxSprite(0, 0);
+		var title = new FlxText(2, 2, 0, "New Highscore", 32);
+		var subtitle = new FlxText(2, title.y + 26, 0, PlayState.SONG.song + " - " + CoolUtil.difficultyArray[PlayState.storyDifficulty], 24);
+		var detail = new FlxText(2, subtitle.y + 19, 0, "Old: "+dat.join(" | "), 16);
+		var w = Math.max(Math.max(title.textField.textWidth, subtitle.textField.textWidth), detail.textField.textWidth);
+		bg.makeGraphic(Std.int(w) + 4, Std.int(detail.y) + 13 + 4, FlxColor.BLACK);
+		bg.alpha = 0.6;
+		add(bg);
+		add(title);
+		add(subtitle);
+		add(detail);
+		x = FlxG.width - bg.frameWidth;
+		y = FlxG.height - (bg.frameHeight + 32);
+
+		dat = null;
+
+		super();
+	}
+
+	public function untoast() {
+		if (untoasting) {
+			return;
+		}
+		untoasting = true;
+		FlxTween.tween(this, {x:FlxG.width}, 0.75, {ease:FlxEase.quadIn, onComplete: function(twn) {
+			FlxG.state.remove(this, true);
+		}});
 	}
 }

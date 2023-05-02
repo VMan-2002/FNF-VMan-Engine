@@ -29,7 +29,7 @@ class RedirectState extends MusicBeatState
 		//	FlxG.openURL("https://vman-2002.github.io/fnf_mods.html#vmanengine");
 		//}
 		if (controls.ACCEPT || FlxG.keys.justPressed.G) {
-			FlxG.openURL("https://vman-2002.github.io/downloadvmanengine.html");
+			FlxG.openURL(true ? "https://github.com/VMan-2002/FNF-VMan-Engine/releases/latest" : "https://vman-2002.github.io/downloadvmanengine.html");
 		}
 		super.update(elapsed);
 	}

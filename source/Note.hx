@@ -282,6 +282,7 @@ class SwagNoteType {
 	public var noteSkinPrefix:String = "";
 	public var baseNoteType:Null<String>;
 	public static var normalNote:String = "Normal Note";
+	public var shouldBotHit:Null<Bool>;
 
 	public static function loadNoteType(name:String, modName:String, ?putInto:Null<String>) {
 		if (putInto == null)
@@ -341,6 +342,15 @@ class SwagNoteType {
 		noteType.acronym = noteType.acronym == null ? name.split(" ").map(function(a) {return a.charAt(0);}).join("") : noteType.acronym;
 		noteType.noteAnimPrefix = noteType.noteAnimPrefix != null ? noteType.noteAnimPrefix : "";
 		noteType.noAnim = noteType.noAnim == true;
+
+		//Should bot hit
+		if (noteType.shouldBotHit == null) {
+			noteType.shouldBotHit = false;
+			if (noteType.healthHitSick >= 0 && (noteType.bob <= 0 || noteType.glitch)) {
+				noteType.shouldBotHit = true;
+			}
+		}
+
 		trace('loaded notetype ${modName}:${name}');
 		Note.loadedNoteTypes.set('${modName}:${putInto}', noteType);
 		return noteType;
@@ -640,7 +650,7 @@ class Note extends FlxSprite
 			else
 				canBeHit = false;
 		} else {
-			if (strumTime <= Conductor.songPosition)
+			if (strumTime <= Conductor.songPosition && getNoteTypeData().shouldBotHit)
 				PlayState.instance.opponentNoteHit(this); //Avoib
 		}
 

@@ -937,12 +937,10 @@ class PlayState extends MusicBeatState
 				["song", "difficulty"],
 				["hits", "sicks", "goods", "bads", "shits", "misses", "totalnotes"]
 			];
-			//todo: fix crash
-			/*hudThingLists = [];
 			var hudThingAdds = Options.instance.hudThingInfo.split("\n");
-			while (hudThingAdds.length != 0) {
-				hudThingLists.push(hudThingAdds.shift().split(","));
-			}*/
+			if (hudThingAdds.length == 3) {
+				hudThingLists = [hudThingAdds[0].split(","), hudThingAdds[2].split(","), hudThingAdds[1].split(",")];
+			}
 		}
 		hudThingLists[1].push("engine");
 		hudThings.add(new HudThing(healthBarBG.x, healthBarBG.y + 30, hudThingLists[0]));
@@ -1794,7 +1792,7 @@ class PlayState extends MusicBeatState
 				
 				var strumNumber = daNote.strumLineNum;
 
-				var isComputer = (!daNote.mustPress) || Options.instance.botplay;
+				var isComputer = Options.instance.botplay;
 				var isPass = daNote.strumTime <= Conductor.songPosition;
 				
 				if (strumLines.members[strumNumber] != null) { //Do nothing if strumline not found
@@ -1826,12 +1824,12 @@ class PlayState extends MusicBeatState
 				}
 
 				//todo: sometimes the opponent misses notes. why is this
-				if (isComputer && isPass) {
-					if (daNote.mustPress) {
+				if (isComputer && isPass && daNote.getNoteTypeData().shouldBotHit) {
+					//if (daNote.mustPress) {
 						goodNoteHit(daNote);
-					} else {
+					//} else {
 						//opponentNoteHit(daNote);
-					}
+					//}
 				}
 
 				// WIP interpolation shit? Need to fix the pause issue

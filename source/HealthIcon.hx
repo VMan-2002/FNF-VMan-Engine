@@ -218,7 +218,7 @@ class HealthIcon extends SpriteVMan
 						framerate: 24,
 						loop: true
 					}
-				], Character.loadAnimationNameless, isPlayer);
+				], Character.loadAnimation, isPlayer);
 			} else {
 				loadGraphic(bitmap);
 				var ratio = width / height;

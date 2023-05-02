@@ -52,6 +52,8 @@ typedef SwagCharacterAnim = {
 	public var loop:Bool;
 	public var noteCameraOffset:Array<Float>;
 	public var nextAnim:Null<String>;
+	public var flipX:Null<Bool>;
+	public var flipY:Null<Bool>;
 }
 
 class Character extends SpriteVMan
@@ -1112,9 +1114,9 @@ class Character extends SpriteVMan
 
 	public static function loadAnimation(sprite:FlxSprite, anim:SwagCharacterAnim, ?flip:Bool = false) {
 		if (anim.indicies != null && anim.indicies.length > 0) {
-			sprite.animation.addByIndices(anim.name, anim.anim, anim.indicies, "", anim.framerate, anim.loop, flip);
+			sprite.animation.addByIndices(anim.name, anim.anim, anim.indicies, "", anim.framerate, anim.loop, flip != (anim.flipX == true), anim.flipY == true);
 		} else {
-			sprite.animation.addByPrefix(anim.name, anim.anim, anim.framerate, anim.loop, flip);
+			sprite.animation.addByPrefix(anim.name, anim.anim, anim.framerate, anim.loop, flip != (anim.flipX == true), anim.flipY == true);
 		}
 	}
 
