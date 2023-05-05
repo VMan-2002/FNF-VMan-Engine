@@ -566,8 +566,6 @@ class ChartingState extends MusicBeatState {
 				closestTime = time;
 			}
 			_song.vmanEventTime.splice(closest, 1);
-			_song.vmanEventOrder.splice(closest, 1);
-			_song.vmanEventData.splice(closest, 1);
 		});
 		Translation.setUIObjectFont(applyLength2);
 

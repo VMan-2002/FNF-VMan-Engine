@@ -104,8 +104,14 @@ class Options {
 	public var playstate_endless:Bool = false;
 	public var playstate_guitar:Bool = false;
 	public var playstate_confusion:Bool = false;
-
 	public static var playstate_anychanges:Bool = false;
+
+	//Practice tools
+	public var practice_enabled:Bool = false;
+	public var practice_preplay_menu:Bool = false;
+	public var practice_disable_death:Bool = false;
+	public var practice_disable_mechanics:Bool = false;
+
 	public function updatePlayStateAny() {
 		playstate_anychanges = [playstate_opponentmode, playstate_bothside, playstate_endless, playstate_guitar, playstate_confusion, playstate_anychanges].contains(true);
 	}
@@ -271,8 +277,13 @@ class Options {
 
 	public function copy() {
 		var a = new Options();
-		for (n in Reflect.fields(a)) { //n/a
+		for (n in Reflect.fields(a)) {
 			Reflect.setProperty(a, n, Reflect.getProperty(this, n));
+		}
+		if (!a.practice_enabled) {
+			a.practice_disable_death = false;
+			a.practice_disable_mechanics = false;
+			a.practice_preplay_menu = false;
 		}
 		return a;
 	}

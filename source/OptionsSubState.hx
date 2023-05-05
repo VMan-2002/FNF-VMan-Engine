@@ -115,6 +115,8 @@ class OptionsSubState extends OptionsSubStateBasic
 				return ["Exit the options menu, and discard your changes.", '', 'unknownOption'];
 			case "gameplay changes":
 				return ["Toggle gameplay changes.", Highscore.getModeString(true)];
+			case "practice tools":
+				return ["Toggle several tools to make practicing songs easier.", Options.saved.practice_enabled ? "Enabled" : "Disabled"];
 			case "reset button":
 				return ["Press R to die during a song.", Options.saved.resetButton ? "Enabled" : "Disabled"];
 			case "note camera movement":
@@ -214,8 +216,20 @@ class OptionsSubState extends OptionsSubStateBasic
 				FlxG.state.closeSubState();
 				FlxG.switchState(new PlayStateOffsetCalibrate());
 			case "gameplay changes":
+				if (OptionsMenu.wasInPlayState && PlayState.isStoryMode) {
+					FlxG.sound.play(Paths.sound('buzzer'));
+					return false;
+				}
 				FlxG.state.closeSubState();
 				FlxG.state.openSubState(new PlayStateChangesSubState());
+				return false;
+			case "practice tools":
+				if (OptionsMenu.wasInPlayState && PlayState.isStoryMode) {
+					FlxG.sound.play(Paths.sound('buzzer'));
+					return false;
+				}
+				FlxG.state.closeSubState();
+				FlxG.state.openSubState(new OptionsPracticeSubState());
 				return false;
 			case "note camera movement":
 				Options.saved.noteCamMovement = !Options.saved.noteCamMovement;

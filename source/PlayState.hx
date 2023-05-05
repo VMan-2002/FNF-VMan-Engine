@@ -147,6 +147,7 @@ class PlayState extends MusicBeatState
 	private var funnyNotes:Array<Note> = [];
 	private var funnyManias:Array<SwagMania> = [];
 	public var lastHitNoteTime:Float = 0;
+	public var scrollSpeed:Float = 1;
 	
 	public var strumLineNotes = new Array<StrumNote>();
 	public var strumLines:FlxTypedGroup<StrumLine>;
@@ -158,7 +159,7 @@ class PlayState extends MusicBeatState
 	public static var curManiaInfo:SwagMania;
 	
 	public var notesCanBeHit = true;
-	var usedBotplay = false;
+	public static var usedBotplay = false;
 	//todo: implement these
 	var currentManiaPart:Int = 0;
 	var currentManiaPartName:Array<String> = [];
@@ -320,6 +321,8 @@ class PlayState extends MusicBeatState
 
 		if (SONG == null)
 			SONG = Song.loadFromJson('tutorial');
+
+		scrollSpeed = SONG.speed;
 
 		if (SONG.attributes != null) {
 			for (thing in SONG.attributes) {
@@ -1737,7 +1740,7 @@ class PlayState extends MusicBeatState
 			trace("User is cheating!");
 		}
 
-		if (health <= 0) {
+		if (health <= 0 && !Options.instance.practice_disable_death) {
 			boyfriend.stunned = true;
 
 			persistentUpdate = false;
@@ -1773,10 +1776,9 @@ class PlayState extends MusicBeatState
 		}
 
 		if (generatedMusic) {
-			var speed = (0.45 * FlxMath.roundDecimal(SONG.speed, 3));
-			if (Options.instance.downScroll) {
+			var speed = (0.45 * FlxMath.roundDecimal(scrollSpeed, 3));
+			if (Options.instance.downScroll)
 				speed = 0 - speed;
-			}
 			notes.forEachAlive(function(daNote:Note) {
 				/*if (daNote.y > FlxG.height) {
 					daNote.active = false;
@@ -2076,7 +2078,7 @@ class PlayState extends MusicBeatState
 				// if ()
 				//StoryMenuState.weekUnlocked[Std.int(Math.min(storyWeek + 1, StoryMenuState.weekUnlocked.length - 1))] = true;
 
-				if (SONG.validScore && !Options.instance.botplay) {
+				if (SONG.validScore && !Options.instance.botplay && !Options.instance.practice_enabled) {
 					//NGio.unlockMedal(60961);
 					Highscore.saveWeekScore('${modName}:${storyWeek}', campaignScore, storyDifficulty);
 					Achievements.giveAchievement("anyWeekClear");
@@ -2170,8 +2172,8 @@ class PlayState extends MusicBeatState
 				songFC = 2;
 			}
 		}
-		if (Options.instance.botplay)
-			usedBotplay = true;
+		if (!usedBotplay || !isStoryMode)
+			usedBotplay = Options.instance.botplay || Options.instance.practice_enabled;
 
 		songScore += Options.instance.botplay ? 350 : score;
 
@@ -3122,6 +3124,13 @@ class PlayState extends MusicBeatState
 				}
 			case "Star Power State":
 				starActive = event[1];
+			case "Change Character":
+				var oldCharNum = Std.parseInt(event[1]);
+				var oldChar:Character = Character.activeArray[oldCharNum];
+				var newChar:Character = new Character(oldChar.x - oldChar.positionOffset[0], oldChar.y - oldChar.positionOffset[1], event[2]);
+				insert(members.indexOf(oldChar), newChar);
+				remove(oldChar);
+				Character.activeArray[oldCharNum] = newChar;
 			case "Psych Engine Event": //event from an imported chart from Psych Engine
 				switch(event[1]) {
 					//case "Dadbattle Spotlight" | "Philly Glow" | "Kill Henchmen" | "Trigger BG Ghouls":

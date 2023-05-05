@@ -289,6 +289,7 @@ class StoryMenuState extends MusicBeatState
 			PlayState.storyDifficulty = curDifficulty;
 			PlayState.storyWeek = curWeekName;
 			PlayState.campaignScore = 0;
+			PlayState.usedBotplay = false;
 			
 			ModLoad.primaryMod = ModsMenuState.quickModJsonData(weeks[curWeek].modName);
 

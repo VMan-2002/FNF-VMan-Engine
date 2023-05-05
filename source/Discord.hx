@@ -137,6 +137,9 @@ class DiscordClient
 			}
 		}
 		var detailsText:String = PlayState.isStoryMode ? "Story Mode: Week " + PlayState.storyWeek : "Freeplay";
+		if (Options.instance.practice_enabled) {
+			detailsText += " (Practice)";
+		}
 		var songText:String = songName + " " + difficultyText;
 		switch(type) {
 			case "paused":

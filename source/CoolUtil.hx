@@ -411,4 +411,50 @@ class CoolUtil
 			return {one: resource, two: mod};
 		return {one: resource.substring(pos + 1), two: resource.substring(0, pos - 1)};
 	}
+
+	/**
+		Setup PlayState to play a song. Doesn't switch to the state immediately though.
+		
+		Calling this while PlayState is active is bound to cause weird behaviour, so please don't do that (or at least be VERY careful).
+		
+		Doesn't set `PlayState.storyDifficulty` or `PlayState.isStoryMode` variables, you should do those before calling this function!
+	**/
+	public static function setupPlayState(songName:String, modName:Null<String>, week:Null<String>) {
+		if (modName == null)
+			PlayState.modName = modName;
+		
+		var songStuffPath = 'mods/${PlayState.modName}/data/${Highscore.formatSong(songName)}/song.txt';
+		if (FileSystem.exists(songStuffPath)) {
+			var thing = File.getContent(songStuffPath).split("\n");
+			if (thing.length > 4) {
+				CoolUtil.setNewDifficulties(thing[4].split(",").map(a -> a.trim()), PlayState, "storyDifficulty");
+			} else {
+				CoolUtil.setNewDifficulties(null, PlayState, "storyDifficulty");
+			}
+		}
+
+		var poop:String = Highscore.formatSong(songName, PlayState.storyDifficulty);
+
+		trace(poop);
+		
+		ModLoad.primaryMod = ModsMenuState.quickModJsonData(PlayState.modName);
+
+		PlayState.SONG = Song.loadFromJson(poop, songName);
+		PlayState.usedBotplay = false;
+
+		//PlayState.storyWeek = songs[curSelected].week;
+		PlayState.storyWeek = week == null ? "week1" : week;
+		trace('CUR WEEK' + PlayState.storyWeek);
+		CoolUtil.resetMenuMusic();
+	}
+
+	/**
+		Play a song in PlayState.
+		
+		Doesn't set `PlayState.storyDifficulty` or `PlayState.isStoryMode` variables, you should do those before calling this function!
+	**/
+	public static inline function playSongState(songName:String, modName:Null<String>, week:Null<String>) {
+		setupPlayState(songName, modName, week);
+		return LoadingState.loadAndSwitchState(new PlayState());
+	}
 }
