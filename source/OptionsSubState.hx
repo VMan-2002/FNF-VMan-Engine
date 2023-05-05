@@ -107,7 +107,7 @@ class OptionsSubState extends OptionsSubStateBasic
 			case "show fps":
 				return ["Show the framerate in the top left corner.", Options.showFPS ? "Enabled" : "Disabled"];
 			case "audio on miss":
-				var values = ["Miss sound + Mute vocals", "Miss sound only", "Mute vocals only", "Do nothing"];
+				final values = ["Miss sound + Mute vocals", "Miss sound only", "Mute vocals only", "Do nothing"];
 				return ["Change what you hear when you miss a note.", values[Options.saved.noteMissAction]];
 			case "input offset calibrate":
 				return ["Do a short song to see what input offset is good.", Translation.getTranslation("offset ms", "optionsMenu", [Std.string(Options.offset)], Options.offset+"ms")];

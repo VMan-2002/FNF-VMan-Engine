@@ -1,4 +1,4 @@
-Removed ThatAzazelFire (He still thinks social anxiety is easy to ignore.)
+Removed ThatAzazelFire (He still thinks social anxiety is easy to ignore after 9 months)
 Improved unused animations for Girlfriend (Christmas variant)
 Added improvements to Animation Debug, such as a save button
 Compress some more image assets
