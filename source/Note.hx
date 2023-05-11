@@ -282,6 +282,7 @@ class SwagNoteType {
 	public var noteSkinPrefix:String = "";
 	public var baseNoteType:Null<String>;
 	public static var normalNote:String = "Normal Note";
+	public var scrollSpeedMult:Float = 1.0;
 	public var shouldBotHit:Null<Bool>;
 
 	public static function loadNoteType(name:String, modName:String, ?putInto:Null<String>) {

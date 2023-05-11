@@ -41,6 +41,9 @@ typedef SwagCharacter = {
 	public var animNoSustain:Null<Bool>;
 	public var isGirlfriend:Null<Bool>;
 	public var substitutable:Null<Bool>;
+
+	public var singTime:Null<Float>;
+	public var singBeats:Null<Float>;
 }
 
 typedef SwagCharacterAnim = {
@@ -84,6 +87,8 @@ class Character extends SpriteVMan
 	public var stunned:Bool = false;
 
 	public var holdTimer:Float = 0;
+	public var singTime:Float = 0;
+	public var singBeats:Float = 4;
 
 	public var animationNotes:Array<Dynamic> = [];
 	
@@ -1132,12 +1137,9 @@ class Character extends SpriteVMan
 				holdTimer += elapsed;
 			}
 
-			var dadVar:Float = 4;
-
-			if (curCharacter == 'dad')
-				dadVar = 6.1;
-			if (holdTimer >= Conductor.stepCrochet * dadVar * 0.001)
-			{
+			var dadVar:Float = (curCharacter == 'dad') ? 6.1 : 4;
+			
+			if (holdTimer >= Conductor.stepCrochet * dadVar * 0.001) {
 				dance(true);
 				holdTimer = 0;
 			}

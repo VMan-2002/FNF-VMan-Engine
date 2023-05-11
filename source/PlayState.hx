@@ -268,7 +268,7 @@ class PlayState extends MusicBeatState
 
 	////::..
 	//Dialogue / Cutscenes
-	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
+	//var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
 	var dialogueVMan:DialogueBoxVMan;
 	var inCutscene:Bool = false;
 
@@ -365,7 +365,7 @@ class PlayState extends MusicBeatState
 		Conductor.changeBPM(SONG.bpm);
 		
 		var sn:String = Highscore.formatSong(SONG.song);
-		switch (sn) {
+		/*switch (sn) {
 			case 'tutorial':
 				dialogue = ["Hey you're pretty cute.", 'Use the arrow keys to keep up\nwith me singing.'];
 			case 'bopeebo':
@@ -387,7 +387,7 @@ class PlayState extends MusicBeatState
 				];
 			//case 'senpai' | "roses" | "thorns":
 			//	dialogue = CoolUtil.coolTextFile('data/${sn}/${sn}Dialogue');
-		}
+		}*/
 
 		var dialoguePath:String = Paths.getModOrGamePath('data/${sn}/dialogue/start.json', modName, null);
 		if (
@@ -837,11 +837,11 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		var doof:DialogueBox = new DialogueBox(false, dialogue);
+		//var doof:DialogueBox = new DialogueBox(false, dialogue);
 		// doof.x += 70;
 		// doof.y = FlxG.height * 0.5;
-		doof.scrollFactor.set();
-		doof.finishThing = startCountdown;
+		//doof.scrollFactor.set();
+		//doof.finishThing = startCountdown;
 
 		Conductor.songPosition = -5000;
 
@@ -984,7 +984,7 @@ class PlayState extends MusicBeatState
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		hudThings.cameras = [camHUD];
-		doof.cameras = [camHUD];
+		//doof.cameras = [camHUD];
 		grpNoteSplashes.cameras = [camHUD];
 
 		// if (SONG.song == 'South')
@@ -1055,19 +1055,21 @@ class PlayState extends MusicBeatState
 			} else {
 				switch (curSong) {
 					case 'senpai' | 'thorns':
-						schoolIntro(doof);
+						schoolIntro(dialogueVMan);
 					case 'roses':
 						FlxG.sound.play(Paths.sound('ANGRY'));
-						schoolIntro(doof);
+						schoolIntro(dialogueVMan);
 					default:
-						if (!SONG.actions.contains("winterHorrorlandIntro")) {
+						if (dialogueVMan != null) {
+							schoolIntro(dialogueVMan);
+						} else if (!SONG.actions.contains("winterHorrorlandIntro")) {
 							startCountdown();
 						}
 				}
 			}
 		} else {
 			if (dialogueVMan != null && dialogueVMan.dialogueFile.usedInFreeplay || isStoryMode) {
-				schoolIntro(doof);
+				schoolIntro(dialogueVMan);
 			} else {
 				startCountdown();
 			}
@@ -1080,7 +1082,7 @@ class PlayState extends MusicBeatState
 		ErrorReportSubstate.displayReport();
 	}
 
-	function schoolIntro(?dialogueBox:DialogueBox):Void {
+	function schoolIntro(?dialogueBox:DialogueBoxVMan):Void {
 		var black:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
 		black.scrollFactor.set();
 		
@@ -1801,7 +1803,7 @@ class PlayState extends MusicBeatState
 					//todo: i guess. It's fine if you disallow both side mode when a song has mania changes
 					var isInManiaChange:Bool = false; //currentManiaPartName[strumNumber] == maniaPartArr[daNote.maniaPart][strumNumber];
 					var daStrum:StrumNote = strumLines.members[strumNumber].members[(isInManiaChange || daNote.center) ? 0 : daNote.strumNoteNum];
-					daNote.y = (daStrum.y - (Conductor.songPosition - daNote.strumTime) * speed * daStrum.speedMult);
+					daNote.y = (daStrum.y - (Conductor.songPosition - daNote.strumTime) * speed * daStrum.speedMult * daNote.getNoteTypeData().scrollSpeedMult);
 					daNote.x = daStrum.x;
 					if (isInManiaChange || daNote.center) {
 						daNote.y += strumLines.members[strumNumber].spanY * daNote.maniaFract;

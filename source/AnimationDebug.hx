@@ -134,7 +134,8 @@ class AnimationDebug extends MusicBeatState
 					indicies: !validAnim ? emptyIntArr : fileAnims[anim.name].indicies,
 					loop: anim.looped,
 					noteCameraOffset: note_cam_offset,
-					nextAnim: !validAnim ? null : fileAnims[anim.name].nextAnim
+					nextAnim: !validAnim ? null : fileAnims[anim.name].nextAnim,
+					flipX: !validAnim ? false : fileAnims[anim.name].flipX
 				};
 				if (Options.dataStrip) {
 					if (newAnim.nextAnim == null)
@@ -143,6 +144,8 @@ class AnimationDebug extends MusicBeatState
 						Reflect.deleteField(newAnim, "noteCameraOffset");
 					if (newAnim.indicies == null || newAnim.indicies.length == 0)
 						Reflect.deleteField(newAnim, "indicies");
+					if (newAnim.flipX != true)
+						Reflect.deleteField(newAnim, "flipX");
 				}
 				anims.push(newAnim);
 			}
@@ -162,7 +165,9 @@ class AnimationDebug extends MusicBeatState
 				healthBarColor: [char.healthBarColor.red, char.healthBarColor.green, char.healthBarColor.blue],
 				animNoSustain: char.animNoSustain,
 				isGirlfriend: char.isGirlfriend,
-				substitutable: validFile ? substitutable : (char.curCharacter.startsWith("bf_") || char.curCharacter == "bf" || char.curCharacter.startsWith("gf_") || char.curCharacter == "gf")
+				substitutable: validFile ? substitutable : (char.curCharacter.startsWith("bf_") || char.curCharacter == "bf" || char.curCharacter.startsWith("gf_") || char.curCharacter == "gf"),
+				singTime: null,
+				singBeats: null
 			};
 			if (Options.dataStrip) {
 				if (savedChar.substitutable != true)
@@ -189,6 +194,10 @@ class AnimationDebug extends MusicBeatState
 					Reflect.deleteField(savedChar, "animNoSustain");
 				if (savedChar.healthBarColor == null)
 					Reflect.deleteField(savedChar, "healthBarColor");
+				if (savedChar.singTime == null || savedChar.singTime == 0)
+					Reflect.deleteField(savedChar, "singTime");
+				if (savedChar.singBeats == null || savedChar.singBeats == 0)
+					Reflect.deleteField(savedChar, "singBeats");
 			}
 			var _file = new FileReference();
 			_file.save(Json.stringify(savedChar), char.curCharacter + ".json");
