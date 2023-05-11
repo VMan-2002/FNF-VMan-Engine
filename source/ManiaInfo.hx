@@ -1,5 +1,6 @@
 package;
 
+// import ClientPrefs;
 import Controls;
 import Math;
 import Translation;
@@ -8,9 +9,8 @@ import flixel.group.FlxGroup;
 import flixel.input.keyboard.FlxKey;
 import lime.utils.Assets;
 
+// import lime;
 using StringTools;
-//import ClientPrefs;
-//import lime;
 
 
 typedef SwagMania = {
@@ -22,6 +22,7 @@ typedef SwagMania = {
 	var control_any:Null<Array<Int>>;
 	var splashName:Map<String, String>;
 	var image:String;
+	var dataJump:Int;
 	// for unhardcoded
 	var scale:Null<Float>;
 	var spacing:Null<Float>;
@@ -494,6 +495,7 @@ class ManiaInfo {
 		//}
 		var mi:SwagMania = {
 			keys: keys,
+			dataJump: keys + keys,
 			arrows: arrows,
 			special: special,
 			specialTag: specialTag,

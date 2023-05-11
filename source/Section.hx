@@ -17,6 +17,7 @@ typedef SwagSection =
 	var changeTimeSignature:Bool;
 	var timeSignature:Int;
 	var sectionBeats:Int;
+	var dType:Int; //this exists because Final Destination!!!
 }
 
 class Section
@@ -53,7 +54,8 @@ class Section
 			notesMoreLayers: null,
 			changeTimeSignature:false,
 			timeSignature:4,
-			sectionBeats:-1
+			sectionBeats:-1,
+			dType:-1
 		};
 	}
 }

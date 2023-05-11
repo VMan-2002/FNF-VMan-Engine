@@ -1372,10 +1372,16 @@ class PlayState extends MusicBeatState
 		generatedMusic = true;
 	}
 
-	function generateNotes(section:SwagSection, sectionNotes:Array<Dynamic>, layer:Int, addTo:Array<Note>) {
+	static final shaggyMattNotes = ["Death Note", "Death Warning Note"];
+
+	function generateNotes(section:SwagSection, sectionNotes:Array<Dynamic>, layer:Int, addTo:Array<Note>, ?mania:Null<SwagMania>) {
+		if (mania == null)
+			mania = curManiaInfo;
+		//i should move dType handling to Song.hx probably
+		var hasDType = mania.keys == 9 && section.dType != -1;
 		for (songNotes in sectionNotes) {
 			var daStrumTime:Float = songNotes[0];
-			var daNoteData:Int = Std.int(songNotes[1] % curManiaInfo.keys);
+			var daNoteData:Int = Std.int(songNotes[1] % mania.keys);
 			if (daNoteData < 0) {
 				trace('Bad note data ${daNoteData} at ${daStrumTime}, skipping');
 				continue;
@@ -1383,31 +1389,48 @@ class PlayState extends MusicBeatState
 
 			var gottaHitNote:Bool = false;
 			if (layer == 0) {
-				gottaHitNote = (section.mustHitSection != false) != (songNotes[1] >= curManiaInfo.keys);
+				gottaHitNote = (section.mustHitSection != false) != (songNotes[1] % mania.dataJump >= mania.keys);
 				if (allowGameplayChanges) {
 					if (Options.instance.playstate_opponentmode) {
 						gottaHitNote = !gottaHitNote;
 					}
 					if (Options.instance.playstate_bothside && !gottaHitNote) {
 						gottaHitNote = true;
-						daNoteData = (daNoteData + Math.floor(curManiaInfo.keys / 2)) % curManiaInfo.keys;
+						daNoteData = (daNoteData + Math.floor(mania.keys / 2)) % mania.keys;
 					}
 				}
 			}
 
-			var oldNote:Note;
-			if (addTo.length > 0)
-				oldNote = addTo[Std.int(addTo.length - 1)];
-			else
-				oldNote = null;
+			var oldNote:Note = addTo.length != 0 ? addTo[Std.int(addTo.length - 1)] : null;
 
-			var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote, false, null, songNotes[3], layer < 0 ? layer : (layer == 0 ? (gottaHitNote ? 1 : 0) : layer + 1));
+			var noteType = songNotes[3];
+			if (hasDType && (noteType == null || noteType == 0)) {
+				var noteTypeStr = "Normal Note";
+				if (songNotes[1] < mania.dataJump) {
+					if ((section.mustHitSection != false) == (songNotes[1] < mania.keys)) {
+						switch(section.dType) {
+							case 0:
+								noteTypeStr = "Player4";
+							case 2:
+								if (daNoteData <= 4)
+									noteTypeStr = daNoteData == 4 ? "Duo" : "Player4";
+						}
+					}
+				} else {
+					//noteTypeStr = 
+				}
+				if (!SONG.usedNoteTypes.contains(noteTypeStr))
+					SONG.usedNoteTypes.push(noteTypeStr);
+				noteType = SONG.usedNoteTypes.indexOf(noteTypeStr);
+			}
+
+			var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote, false, null, noteType, layer < 0 ? layer : (layer == 0 ? (gottaHitNote ? 1 : 0) : layer + 1));
 			swagNote.sustainLength = songNotes[2];
 			swagNote.scrollFactor.set(0, 0);
-			if (((swagNote.getNoteTypeData().confused) || (allowGameplayChanges && Options.instance.playstate_confusion && Math.random() <= 0.3)) && curManiaInfo.keys > 1) {
+			if (mania.keys != 1 && ((swagNote.getNoteTypeData().confused) || (allowGameplayChanges && Options.instance.playstate_confusion && Math.random() <= 0.3))) {
 				//swagNote.strumNoteNum = Math.floor(Math.random() * strumLines.members[swagNote.strumLineNum].thisManiaInfo.keys);
 				while (swagNote.strumNoteNum == swagNote.noteData) {
-					swagNote.strumNoteNum = Math.floor(Math.random() * curManiaInfo.keys);
+					swagNote.strumNoteNum = Math.floor(Math.random() * mania.keys);
 				}
 			}
 

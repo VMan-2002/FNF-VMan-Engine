@@ -1337,7 +1337,8 @@ class ChartingState extends MusicBeatState {
 			notesMoreLayers: null,
 			timeSignature: 4,
 			changeTimeSignature: false,
-			sectionBeats: -1
+			sectionBeats: -1,
+			dType: -1
 		};
 
 		_song.notes.push(sec);

@@ -135,7 +135,8 @@ class AnimationDebug extends MusicBeatState
 					loop: anim.looped,
 					noteCameraOffset: note_cam_offset,
 					nextAnim: !validAnim ? null : fileAnims[anim.name].nextAnim,
-					flipX: !validAnim ? false : fileAnims[anim.name].flipX
+					flipX: !validAnim ? false : fileAnims[anim.name].flipX,
+					flipY: !validAnim ? false : fileAnims[anim.name].flipY
 				};
 				if (Options.dataStrip) {
 					if (newAnim.nextAnim == null)
@@ -146,6 +147,8 @@ class AnimationDebug extends MusicBeatState
 						Reflect.deleteField(newAnim, "indicies");
 					if (newAnim.flipX != true)
 						Reflect.deleteField(newAnim, "flipX");
+					if (newAnim.flipY != true)
+						Reflect.deleteField(newAnim, "flipY");
 				}
 				anims.push(newAnim);
 			}

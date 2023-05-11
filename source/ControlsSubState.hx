@@ -2,6 +2,7 @@ package;
 
 //some things in here are copied from my own code in a psych engine mod (this should be fine, right?)
 
+// import
 import Discord.DiscordClient;
 import ManiaInfo;
 import flixel.FlxG;
@@ -17,7 +18,6 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 
 using StringTools;
-//import 
 
 
 class ControlsSubState extends OptionsSubStateBasic
@@ -123,7 +123,8 @@ class ControlsSubState extends OptionsSubStateBasic
 				splashName: new Map<String, String>(),
 				image: "",
 				scale: null,
-				spacing: null
+				spacing: null,
+				dataJump: controlKeyNames.length,
 			};
 			ManiaName = "UI controls";
 			//i do it in the most badass way possible
