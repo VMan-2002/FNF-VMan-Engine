@@ -1404,7 +1404,7 @@ class PlayState extends MusicBeatState
 			var oldNote:Note = addTo.length != 0 ? addTo[Std.int(addTo.length - 1)] : null;
 
 			var noteType = songNotes[3];
-			if (hasDType && (noteType == null || noteType == 0)) {
+			if (hasDType && (songNotes.length < 3 || noteType == 0)) {
 				var noteTypeStr = "Normal Note";
 				if (songNotes[1] < mania.dataJump) {
 					if ((section.mustHitSection != false) == (songNotes[1] < mania.keys)) {
