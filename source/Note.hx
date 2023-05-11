@@ -282,7 +282,7 @@ class SwagNoteType {
 	public var noteSkinPrefix:String = "";
 	public var baseNoteType:Null<String>;
 	public static var normalNote:String = "Normal Note";
-	public var scrollSpeedMult:Float = 1.0;
+	public var scrollSpeedMult:Null<Float>;
 	public var shouldBotHit:Null<Bool>;
 
 	public static function loadNoteType(name:String, modName:String, ?putInto:Null<String>) {
@@ -343,6 +343,7 @@ class SwagNoteType {
 		noteType.acronym = noteType.acronym == null ? name.split(" ").map(function(a) {return a.charAt(0);}).join("") : noteType.acronym;
 		noteType.noteAnimPrefix = noteType.noteAnimPrefix != null ? noteType.noteAnimPrefix : "";
 		noteType.noAnim = noteType.noAnim == true;
+		noteType.scrollSpeedMult = noteType.scrollSpeedMult == null ? 1 : noteType.scrollSpeedMult;
 
 		//Should bot hit
 		if (noteType.shouldBotHit == null) {
