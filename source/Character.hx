@@ -644,7 +644,7 @@ class Character extends SpriteVMan
 				addOffset("singLEFTmiss");
 				addOffset("singDOWNmiss");
 
-				setGraphicSize(Std.int(width * 6));
+				scale.set(6, 6);
 				updateHitbox();
 
 				playAnim('idle');
@@ -673,8 +673,8 @@ class Character extends SpriteVMan
 				addOffset('deathLoop', -37);
 				addOffset('deathConfirm', -37);
 				playAnim('firstDeath');
-				// pixel bullshit
-				setGraphicSize(Std.int(width * 6));
+
+				scale.set(6, 6);
 				updateHitbox();
 				antialiasing = false;
 				flipX = true;
@@ -719,7 +719,7 @@ class Character extends SpriteVMan
 
 				playAnim('idle');
 
-				setGraphicSize(Std.int(width * 6));
+				scale.set(6, 6);
 				updateHitbox();
 
 				antialiasing = false;
@@ -747,7 +747,7 @@ class Character extends SpriteVMan
 				addOffset("singDOWN", 14);
 				playAnim('idle');
 
-				setGraphicSize(Std.int(width * 6));
+				scale.set(6, 6);
 				updateHitbox();
 
 				antialiasing = false;
@@ -774,7 +774,7 @@ class Character extends SpriteVMan
 				addOffset("singLEFT", -200, -280);
 				addOffset("singDOWN", 170, 110);
 
-				setGraphicSize(Std.int(width * 6));
+				scale.set(6, 6);
 				updateHitbox();
 
 				playAnim('idle');
