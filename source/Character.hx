@@ -107,7 +107,7 @@ class Character extends SpriteVMan
 	public var curDances:Int = 0;
 	public var moduloDances:Int = 1;
 
-	public var cameraOffset:Array<Float> = [0, 0, 0];
+	public var cameraOffset:Array<Float> = [0, 0];
 	public var animNoSustain:Bool = false;
 	public var hasMissAnims:Bool = false;
 
@@ -938,9 +938,9 @@ class Character extends SpriteVMan
 					}
 					if (loadedStuff.cameraOffset != null) {
 						this.cameraOffset = loadedStuff.cameraOffset;
-						if (this.cameraOffset.length <= 2) {
+						/*if (this.cameraOffset.length <= 2) {
 							this.cameraOffset[2] = -this.cameraOffset[0];
-						}
+						}*/
 					} else {
 						this.cameraOffset = [0, 0, 0];
 					}
@@ -991,6 +991,9 @@ class Character extends SpriteVMan
 					playAnim('idle');
 				}
 		}
+
+		if (cameraOffset.length <= 2)
+			cameraOffset[2] = -cameraOffset[0];
 
 		hasMissAnims = hasAnim('singRIGHTmiss');
 		

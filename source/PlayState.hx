@@ -1987,7 +1987,7 @@ class PlayState extends MusicBeatState
 				result.y = char.getMidpoint().y;
 		}
 
-		result.x += char.cameraOffset[0];
+		result.x += char.cameraOffset[char.flipX ? 2 : 0];
 		result.y += char.cameraOffset[1];
 
 		var guyId = Math.floor(Math.min(Character.activeArray.indexOf(char), currentStage.cameraOffset.length - 1));
