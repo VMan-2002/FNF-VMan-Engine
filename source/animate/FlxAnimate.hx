@@ -1,8 +1,8 @@
 package animate;
 
+import animate.FlxSymbol.Parsed;
 // import animateAtlasPlayer.assets.AssetManager;
 // import animateAtlasPlayer.core.Animation;
-import animate.FlxSymbol.Parsed;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.FlxGraphic;
@@ -23,9 +23,7 @@ class FlxAnimate extends FlxSymbol
 
 	var swagFrames:Array<BitmapData> = [];
 
-	public function new(x:Float, y:Float)
-	{
-		var folder:String = 'tightBars';
+	public function new(x:Float, y:Float, ?folder:String = "tightBars") {
 		coolParse = cast Json.parse(Assets.getText(Paths.file('images/' + folder + '/Animation.json')));
 		coolParse.AN.TL.L.reverse();
 		super(x, y, coolParse);

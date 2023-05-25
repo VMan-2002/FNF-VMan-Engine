@@ -78,7 +78,7 @@ class DialogueBoxVMan extends FlxSpriteGroup
 {
 	var box:FlxSprite;
 
-	var curCharacter:String = '';
+	var curCharacter:DialogueCharacter;
 
 	var dialogue:Alphabet;
 	var dialogueList:Array<DialogueLine> = [];
@@ -281,7 +281,7 @@ class DialogueBoxVMan extends FlxSpriteGroup
 						if (dialogueFile.dontClose) {
 							finishThing();
 						} else {
-							if (PlayState.SONG.song.toLowerCase() == 'senpai' || PlayState.SONG.song.toLowerCase() == 'thorns')
+							if (FlxG.sound.music != null && FlxG.sound.music.playing)
 								FlxG.sound.music.fadeOut(2.2, 0);
 
 							new FlxTimer().start(0.2, function(tmr:FlxTimer) {
@@ -299,7 +299,7 @@ class DialogueBoxVMan extends FlxSpriteGroup
 						}
 					}
 				} else {
-					dialogueList.remove(dialogueList[0]);
+					dialogueList.shift();
 					startDialogue();
 				}
 			}
@@ -318,13 +318,12 @@ class DialogueBoxVMan extends FlxSpriteGroup
 					if (charObjects.members[ev.number] != null) {
 						charObjects.members[ev.number].setCharacter(ev.character);
 					} else {
-						charObjects.add(new DialogueCharacter(ev.character, PlayState.modName));
+						charObjects.add(new DialogueCharacter(ev.character, PlayState.modName, this));
 					}
 				}
 				var charObject = charObjects.members[ev.number];
-				if (ev.isTalking) {
-					curCharacter = charList[ev.number];
-				}
+				if (ev.isTalking)
+					curCharacter = charObject;
 				charObject.setExpression(ev.expression);
 				charObject.setTalking(ev.isTalking);
 				charObject.setFlip(ev.flip);
@@ -335,7 +334,7 @@ class DialogueBoxVMan extends FlxSpriteGroup
 			}
 		}
 
-		trace("curCharacter: " + curCharacter);
+		trace("curCharacter: " + curCharacter.characterName);
 		// var theDialog:Alphabet = new Alphabet(0, 70, dialogueList[0], false, true);
 		// dialogue = theDialog;
 		// add(theDialog);
@@ -344,7 +343,7 @@ class DialogueBoxVMan extends FlxSpriteGroup
 		swagDialogue.resetText(dialogueList[0].text);
 		swagDialogue.start(0.04, true);
 
-		switch (curCharacter) {
+		switch (curCharacter.characterName) {
 			case 'senpai-pixel' | 'spirit-pixel':
 				portraitRight.visible = false;
 				if (!portraitLeft.visible)
@@ -364,17 +363,21 @@ class DialogueBoxVMan extends FlxSpriteGroup
 }
 
 class DialogueCharacter extends SpriteVMan {
-	var expression:String;
-	var talking:Bool;
-	var parent:DialogueBoxVMan;
-	var isJustAdded:Bool;
+	public var expression:String;
+	public var talking:Bool;
+	public var parent:DialogueBoxVMan;
+	public var isJustAdded:Bool;
 	var myMod:String;
+	public var characterName:String;
+	public var isPlayer:Bool;
 
-	public function new(char:String, mod:String) {
+	public function new(char:String, mod:String, parent:DialogueBoxVMan) {
 		super(0, 0);
 		expression = "normal";
 		talking = false;
 		isJustAdded = true;
+		characterName = char;
+		this.parent = parent;
 		setCharacter(char, mod);
 	}
 
@@ -406,37 +409,30 @@ class DialogueCharacter extends SpriteVMan {
 			Character.loadAnimation(this, anim);
 			addOffset(anim.name, anim.offset[0], anim.offset[1]);
 		}
-		if (jsonThing.initAnim != null) {
-			playAvailableAnim([jsonThing.initAnim]);
-		}
+		if (jsonThing.initAnim != null)
+			playAvailableAnim([jsonThing.initAnim, "idle_neutral", "idle_normal"]);
 	}
 
 	public function setFlip(flip:Bool) {
-		if (flipX == flip) {
+		if (flipX == flip)
 			return;
-		}
 		flipX = flip;
-		if (!talking) {
-			playAvailableAnim(["talkflip_"+expression, "flip_"+expression]);
-		}
+		playAvailableAnim(talking ? ["talkflip_"+expression, "flip_"+expression] : ["flip_"+expression]);
 	}
 
 	public function setExpression(expression:String) {
-		if (this.expression == expression) {
+		if (this.expression == expression)
 			return;
-		}
 		playAvailableAnim(talking ? ["talkswitch_"+this.expression+"_"+expression, "talking_"+this.expression] : ["idleswitch_"+this.expression+"_"+expression, "idle_"+this.expression]);
 		this.expression = expression;
 	}
 
 	public function setTalking(isTalking:Bool) {
-		if (talking == isTalking) {
+		if (talking == isTalking)
 			return;
-		}
 		talking = isTalking;
-		if (talking) {
+		if (talking)
 			playAvailableAnim(["talkstart_"+this.expression, "talking_"+this.expression]);
-		}
 	}
 
 	public function exit() {
@@ -447,7 +443,7 @@ class DialogueCharacter extends SpriteVMan {
 	}
 
 	public override function update(elapsed:Float) {
-		if (animation.curAnim != null && animation.curAnim.finished) {
+		if (animation.curAnim != null && (animation.curAnim.finished || animation.curAnim.looped)) {
 			if (animStartsWith("idle")) {
 				return super.update(elapsed); //do nothing
 			} else if (!talking && animStartsWith("talking")) {
@@ -456,6 +452,8 @@ class DialogueCharacter extends SpriteVMan {
 				playAvailableAnim(["talking_"+expression, "idle_"+expression]);
 			} else if (animStartsWith("stoptalk")) {
 				playAvailableAnim(["idle_"+expression]);
+			} else if (animStartsWith("talkflip") || animStartsWith("flip")) {
+				playAvailableAnim(talking ? ["talking_"+expression, "idle_"+expression] : ["idle_"+expression]);
 			}
 		}
 		super.update(elapsed);

@@ -14,7 +14,6 @@ class BackgroundDancer extends FlxSprite {
 		
 		setType(type);
 		animation.play('danceLeft');
-		antialiasing = !(type == "bgFreaks" || type == "bgFreaksAngry");
 	}
 
 	public function getScared():Void {
@@ -28,11 +27,12 @@ class BackgroundDancer extends FlxSprite {
 
 	public function setType(t:String) {
 		dancerType = t;
+		antialiasing = !(t == "bgFreaks" || t == "bgFreaksAngry");
 		switch(t) {
 			case "limoDancer":
 				frames = Paths.getSparrowAtlas("limo/limoDancer");
-				animation.addByIndices('danceLeft', 'bg dancer sketch PINK', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
-				animation.addByIndices('danceRight', 'bg dancer sketch PINK', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+				animation.addByIndices('danceLeft', 'bg dancer sketch PINK', CoolUtil.numberArray(14), "", 24, false);
+				animation.addByIndices('danceRight', 'bg dancer sketch PINK', CoolUtil.numberArray(29, 15), "", 24, false);
 			case "bgFreaks":
 				// BG fangirls dissuaded
 				frames = Paths.getSparrowAtlas('weeb/bgFreaks');
@@ -52,10 +52,6 @@ class BackgroundDancer extends FlxSprite {
 
 	public function dance():Void {
 		danceDir = !danceDir;
-
-		if (danceDir)
-			animation.play('danceRight', true);
-		else
-			animation.play('danceLeft', true);
+		animation.play(danceDir ? 'danceRight' : 'danceLeft', true);
 	}
 }

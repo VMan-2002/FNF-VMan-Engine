@@ -479,7 +479,7 @@ class PlayState extends MusicBeatState
 
 				var city:FlxSprite = new FlxSprite(-10).loadGraphic(Paths.image('philly/city'));
 				city.scrollFactor.set(0.3, 0.3);
-				city.setGraphicSize(Std.int(city.width * 0.85));
+				city.scale.set(0.85, 0.85);
 				city.updateHitbox();
 				add(city);
 
@@ -492,7 +492,7 @@ class PlayState extends MusicBeatState
 					light.scrollFactor.set(0.3, 0.3);
 					light.visible = false;
 					light.color = FlxColor.fromString(lightColors[i]);
-					light.setGraphicSize(Std.int(light.width * 0.85));
+					light.scale.set(0.85, 0.85);
 					light.updateHitbox();
 					light.antialiasing = true;
 					phillyCityLights.add(light);
@@ -597,7 +597,7 @@ class PlayState extends MusicBeatState
 
 				var widShit = Std.int(bgSky.width * 6);
 
-				bgSky.setGraphicSize(widShit);
+				bgSky.scale.set(6, 6);
 				bgSchool.setGraphicSize(widShit);
 				bgStreet.setGraphicSize(widShit);
 				bgTrees.setGraphicSize(Std.int(widShit * 1.4));
@@ -614,7 +614,7 @@ class PlayState extends MusicBeatState
 				bgGirls = new BackgroundDancer(-100, 190, SONG.actions.contains("bgFreaksAngry") ? "bgFreaksAngry" : "bgFreaks");
 				bgGirls.scrollFactor.set(0.9, 0.9);
 
-				bgGirls.setGraphicSize(Std.int(bgGirls.width * daPixelZoom));
+				bgGirls.scale.set(daPixelZoom, daPixelZoom);
 				bgGirls.updateHitbox();
 				add(bgGirls);
 			}
@@ -1092,7 +1092,7 @@ class PlayState extends MusicBeatState
 		var senpaiEvil:FlxSprite = new FlxSprite();
 		senpaiEvil.frames = Paths.getSparrowAtlas('weeb/senpaiCrazy');
 		senpaiEvil.animation.addByPrefix('idle', 'Senpai Pre Explosion', 24, false);
-		senpaiEvil.setGraphicSize(Std.int(senpaiEvil.width * 6));
+		senpaiEvil.scale.set(6, 6);
 		senpaiEvil.scrollFactor.set();
 		senpaiEvil.updateHitbox();
 		senpaiEvil.screenCenter();
@@ -1142,6 +1142,10 @@ class PlayState extends MusicBeatState
 				remove(black);
 			}
 		});
+
+		//Wacky workaround to fix character offsets
+		for (n in Character.activeArray)
+			n.dance();
 	}
 
 	var startTimer:FlxTimer;
@@ -1417,7 +1421,7 @@ class PlayState extends MusicBeatState
 						}
 					}
 				} else {
-					//noteTypeStr = 
+					noteTypeStr = shaggyMattNotes[Math.floor(songNotes[1] / mania.dataJump)];
 				}
 				if (!SONG.usedNoteTypes.contains(noteTypeStr))
 					SONG.usedNoteTypes.push(noteTypeStr);
@@ -1427,7 +1431,7 @@ class PlayState extends MusicBeatState
 			var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote, false, null, noteType, layer < 0 ? layer : (layer == 0 ? (gottaHitNote ? 1 : 0) : layer + 1));
 			swagNote.sustainLength = songNotes[2];
 			swagNote.scrollFactor.set(0, 0);
-			if (mania.keys != 1 && ((swagNote.getNoteTypeData().confused) || (allowGameplayChanges && Options.instance.playstate_confusion && Math.random() <= 0.3))) {
+			if (mania.keys != 1 && ((swagNote.getNoteTypeDataNoCheck().confused) || (allowGameplayChanges && Options.instance.playstate_confusion && Math.random() <= 0.3))) {
 				//swagNote.strumNoteNum = Math.floor(Math.random() * strumLines.members[swagNote.strumLineNum].thisManiaInfo.keys);
 				while (swagNote.strumNoteNum == swagNote.noteData) {
 					swagNote.strumNoteNum = Math.floor(Math.random() * mania.keys);
@@ -1450,7 +1454,7 @@ class PlayState extends MusicBeatState
 				sustainNote.mustPress = gottaHitNote;
 			}
 
-			if (swagNote.getNoteTypeData().hasReleaseNote) {
+			if (swagNote.getNoteTypeDataNoCheck().hasReleaseNote) {
 				addTo[addTo.length - 1].makeReleaseNote();
 			}
 		}
@@ -1851,7 +1855,7 @@ class PlayState extends MusicBeatState
 				}
 
 				//todo: sometimes the opponent misses notes. why is this
-				if (isComputer && isPass && daNote.getNoteTypeData().shouldBotHit) {
+				if (isComputer && isPass && daNote.getNoteTypeDataNoCheck().shouldBotHit) {
 					//if (daNote.mustPress) {
 						goodNoteHit(daNote);
 					//} else {
@@ -2387,12 +2391,12 @@ class PlayState extends MusicBeatState
 			//Guitar Notes
 			if (Options.uiControls.get("gtstrum").contains(evnt.keyCode)) {
 				var possibleNotes = filterNotesInRange(false, false, function(note) {
-					return note.getNoteTypeData().guitar;
+					return note.getNoteTypeDataNoCheck().guitar;
 				});
 				if (possibleNotes.length == 0)
 					return;
 				//Hit an open note
-				if (possibleNotes[0].getNoteTypeData().guitarOpen) {
+				if (possibleNotes[0].getNoteTypeDataNoCheck().guitarOpen) {
 					if (!FlxG.keys.anyPressed(curManiaInfo.control_any))
 						goodNoteHit(possibleNotes[0]);
 					return;
@@ -2407,7 +2411,7 @@ class PlayState extends MusicBeatState
 			return;
 		}
 		var possibleNotes = filterNotesInRange(false, false, function(note) {
-			var ntd = note.getNoteTypeData();
+			var ntd = note.getNoteTypeDataNoCheck();
 			return !ntd.guitar || (ntd.guitarHopo && !ntd.guitarOpen && combo != 0);
 		});
 		if (possibleNotes.length == 0) {
@@ -2456,14 +2460,14 @@ class PlayState extends MusicBeatState
 				var possibleNotes = getNotesInRange(false, true);
 				if (possibleNotes.length == 0)
 					return;
-				var ntd = possibleNotes[0].getNoteTypeData();
+				var ntd = possibleNotes[0].getNoteTypeDataNoCheck();
 				if (ntd.guitar && ntd.guitarOpen)
 					goodNoteHit(possibleNotes[0]);
 			}
 			return;
 		}
 		var possibleNotes = filterNotesInRange(false, true, function(note) {
-			var ntd = note.getNoteTypeData();
+			var ntd = note.getNoteTypeDataNoCheck();
 			return (!ntd.guitarHopo && !ntd.guitarOpen);
 		});
 		//Finally hit a note
@@ -2481,7 +2485,7 @@ class PlayState extends MusicBeatState
 		//Hit open hopo note
 		if (yeezys && openHopoStuff.releaseNotes.length == 0) {
 			goodExistsNoteHit(filterNotesInRange(false, false, function(note) {
-				var ntd = note.getNoteTypeData();
+				var ntd = note.getNoteTypeDataNoCheck();
 				return (ntd.guitarHopo && ntd.guitarOpen && combo != 0);
 			})[0]); //this statement looks funny
 		}
@@ -2501,7 +2505,7 @@ class PlayState extends MusicBeatState
 			keyHolding.push(FlxG.keys.anyPressed(i));
 		}
 		for (note in possibleNotes) {
-			if (note.getNoteTypeData().guitarOpen) {
+			if (note.getNoteTypeDataNoCheck().guitarOpen) {
 				if (gtHold)
 					goodNoteHit(note);
 			} else if (keyHolding[note.noteData]) {
@@ -2539,7 +2543,7 @@ class PlayState extends MusicBeatState
 				//var ignoreList:Array<Int> = [];
 
 				notes.forEachAlive(function(daNote:Note) {
-					var noteTypeData = daNote.getNoteTypeData();
+					var noteTypeData = daNote.getNoteTypeDataNoCheck();
 					if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && (!noteTypeData.guitar || (noteTypeData.guitarHopo && combo > 0)) && !daNote.isReleaseNote) {
 						possibleNotes.push(daNote);
 
@@ -2571,7 +2575,7 @@ class PlayState extends MusicBeatState
 					var possibleNoteDatas:Array<Bool> = [];
 
 					notes.forEachAlive(function(daNote:Note) {
-						if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && ((Options.instance.playstate_guitar && allowGameplayChanges) || daNote.getNoteTypeData().guitar) && !daNote.isReleaseNote) {
+						if (daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && ((Options.instance.playstate_guitar && allowGameplayChanges) || daNote.getNoteTypeDataNoCheck().guitar) && !daNote.isReleaseNote) {
 							possibleNotes.push(daNote);
 							possibleNoteDatas[daNote.noteData] = true;
 						}
@@ -2596,7 +2600,7 @@ class PlayState extends MusicBeatState
 					var possibleNote:Null<Note> = null;
 
 					notes.forEachAlive(function(daNote:Note) {
-						if ((possibleNote == null || (daNote.strumTime < possibleNote.strumTime)) && daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && ((Options.instance.playstate_guitar && allowGameplayChanges) || daNote.getNoteTypeData().guitarOpen) && !daNote.isReleaseNote) {
+						if ((possibleNote == null || (daNote.strumTime < possibleNote.strumTime)) && daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit && ((Options.instance.playstate_guitar && allowGameplayChanges) || daNote.getNoteTypeDataNoCheck().guitarOpen) && !daNote.isReleaseNote) {
 							possibleNote = daNote;
 						}
 					});
@@ -2641,7 +2645,7 @@ class PlayState extends MusicBeatState
 			if (FlxG.keys.anyPressed(curManiaInfo.control_any)) {
 				notes.forEachAlive(function(daNote:Note) {
 					if (daNote.canBeHit && daNote.mustPress && daNote.isSustainNote) {
-						if (daNote.getNoteTypeData().guitarOpen) {
+						if (daNote.getNoteTypeDataNoCheck().guitarOpen) {
 							if (FlxG.keys.anyPressed(Options.uiControls.get("gtstrum")))
 								goodNoteHit(daNote);
 						} else if (keyHolding[daNote.noteData]) {
@@ -2681,7 +2685,7 @@ class PlayState extends MusicBeatState
 					FlxG.sound.play(Paths.soundRandom('badnoise', 1, 3), FlxG.random.float(0.15, 0.25));
 			}
 			var validNote = note != null;
-			var noteTypeData = validNote ? note.getNoteTypeData() : Note.SwagNoteType.loadNoteType(Note.SwagNoteType.normalNote, PlayState.modName);
+			var noteTypeData = validNote ? note.getNoteTypeDataNoCheck() : Note.SwagNoteType.loadNoteType(Note.SwagNoteType.normalNote, PlayState.modName);
 
 			if ((validNote && !noteTypeData.ignoreMiss) || !validNote) {
 				health += noteTypeData.healthMiss;
@@ -2845,13 +2849,24 @@ class PlayState extends MusicBeatState
 					isBoyfriend = !isBoyfriend;
 			}
 		}
-		var noteTypeData = validNote ? note.getNoteTypeData() : Note.SwagNoteType.loadNoteType("Normal Note", modName);
+		var noteTypeData = validNote ? note.getNoteTypeDataNoCheck() : Note.SwagNoteType.loadNoteType("Normal Note", modName);
 		if (noteTypeData.noAnim)
 			return;
-		var char:Character = (validNote && note.charNum != -1) ? Character.activeArray[note.charNum] : (noteTypeData.charNums != null ? Character.activeArray[noteTypeData.charNums[0]] : (isBoyfriend ? boyfriend : dad));
+		if (validNote && note.charNum != -1)
+			animateCharForNote(note, noteTypeData, Character.activeArray[note.charNum], noteData, isMiss, isBoyfriend, validNote);
+		if (noteTypeData.charNums != null) {
+			for (n in noteTypeData.charNums) {
+				animateCharForNote(note, noteTypeData, Character.activeArray[n], noteData, isMiss, isBoyfriend, validNote);
+			}
+			return;
+		}
+		animateCharForNote(note, noteTypeData, isBoyfriend ? boyfriend : dad, noteData, isMiss, isBoyfriend, validNote);
+	}
+
+	public function animateCharForNote(?note:Note, noteTypeData:SwagNoteType, char:Character, ?noteData:Int = 0, ?isMiss:Bool = false, isBoyfriend:Bool, validNote:Bool) {
 		if (char == null)
 			return;
-		var color = validNote ? ((note.strumLineNum < 0 ? funnyManias[-2 - note.strumLineNum] : curManiaInfo).arrows[note.noteData]) : curManiaInfo.arrows[noteData];
+		var color = validNote ? ((note.strumLineNum < 0 ? funnyManias[-2 - note.strumLineNum] : curManiaInfo).arrows[noteData]) : curManiaInfo.arrows[noteData];
 		var colorNote = "sing" + color.toUpperCase();
 		if (isMiss)
 			return char.playAvailableAnim(['${colorNote}miss', 'sing${ManiaInfo.Dir[color]}miss'], true);

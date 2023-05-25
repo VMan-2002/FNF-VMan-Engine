@@ -622,6 +622,10 @@ class Note extends FlxSprite
 		return SwagNoteType.loadNoteType(getNoteType(), PlayState.modName);
 	}
 
+	public inline function getNoteTypeDataNoCheck():SwagNoteType {
+		return Note.loadedNoteTypes.get('${PlayState.modName}:${getNoteType()}');
+	}
+
 	public function makeReleaseNote() {
 		if (!isSustainNote) {
 			return;

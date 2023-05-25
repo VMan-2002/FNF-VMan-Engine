@@ -4,6 +4,7 @@ Added improvements to Animation Debug, such as a save button
 Compress some more image assets
 Added "baseNoteType" var for note types
 Added "Miss Animation" note type
+Multiple charNums in note types now works
 Unhardcode characters that were hardcoded
 Add Practice Tools
 Disallow changing Practice Tools or Gameplay Changes when paused in Story Mode

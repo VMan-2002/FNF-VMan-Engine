@@ -13,7 +13,7 @@ class Boyfriend extends Character {
 	}
 
 	override function update(elapsed:Float) {
-		if (animation.curAnim.name.startsWith('sing')) {
+		if (animStartsWith('sing')) {
 			holdTimer += elapsed;
 		} else
 			holdTimer = 0;
@@ -22,8 +22,8 @@ class Boyfriend extends Character {
 			playAnim('idle', true, false, 10);
 		}
 
-		if (animation.curAnim.name == 'firstDeath' && animation.curAnim.finished) {
-			playAnim('deathLoop');
+		if (animStartsWith('firstDeath') && animation.curAnim.finished) {
+			playAvailableAnim(["deathLoop" + animation.curAnim.name.substr(10), "deathLoop"]);
 		}
 
 		super.update(elapsed);

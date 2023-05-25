@@ -400,3 +400,38 @@ modifier_endless::Endless
 modifier_seperator::
 
 playstate_hud_combo::Combo:#0
+
+//idk if im using this categorization thing anymore
+
+hud edit_song::Song Name
+hud edit_song_desc::Name of the current song
+hud edit_difficulty::Difficulty
+hud edit_difficulty_desc::Current difficulty of the song
+hud edit_score::Score
+hud edit_score_desc::Score gained
+hud edit_misses::Misses
+hud edit_misses_desc::How many notes you failed to hit in time
+hud edit_accrating::Accuracy (Rating)
+hud edit_accrating_desc::How accurate you hit notes (depending on rating)
+hud edit_accsimple::Accuracy (Simple)
+hud edit_accsimple_desc::How accurate you hit notes (only accounts hits vs misses)
+hud edit_fc::Full Combo rank
+hud edit_fc_desc::Rank symbol for your accuracy for hitting notes
+hud edit_combo::Combo
+hud edit_combo_desc::How many notes you've hit in a row without missing
+hud edit_maxcombo::Max Combo
+hud edit_maxcombo_desc::The highest combo you've reached in the current song
+hud edit_sicks::Sicks
+hud edit_sicks_desc::Amount of times you hit "Sick!!" rating
+hud edit_goods::Goods
+hud edit_goods_desc::Amount of times you hit "Good!" rating
+hud edit_bads::Bads
+hud edit_bads_desc::Amount of times you hit "Bad" rating
+hud edit_shits::Shits
+hud edit_shits_desc::Amount of times you hit "Shit" rating
+hud edit_imperfects::Imperfects
+hud edit_imperfects_desc::Amount of times you hit ratings other than "Sick!!"
+hud edit_hits::Hits
+hud edit_hits_desc::How many notes you successfully hit
+hud edit_totalnotes::Total Notes
+hud edit_totalnotes_desc::How many notes you hit or missed

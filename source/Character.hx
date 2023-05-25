@@ -729,7 +729,7 @@ class Character extends SpriteVMan
 
 				healthBarColor.setRGB(255, 170, 111);
 
-				cameraOffset[0] = -100;
+				cameraOffset[0] = -300;
 				cameraOffset[1] = -430;
 			case 'senpai-angry':
 				frames = Paths.getSparrowAtlas('characters/senpai');
@@ -757,7 +757,7 @@ class Character extends SpriteVMan
 
 				healthBarColor.setRGB(255, 170, 111);
 
-				cameraOffset[0] = -100;
+				cameraOffset[0] = -300;
 				cameraOffset[1] = -430;
 			case 'spirit':
 				frames = Paths.getSparrowAtlas('characters/spirit');
@@ -871,8 +871,8 @@ class Character extends SpriteVMan
 					trace('loaded custom char for ' + curCharacter);
 					
 					//Char stuff is load. now set up
-					frames = Paths.getSparrowAtlas(loadedStuff.image);
-					AnimationDebug.imageFile = loadedStuff.image;
+					AnimationDebug.imageFile = loadedStuff.image == null ? curCharacter : loadedStuff.image;
+					frames = Paths.getSparrowAtlas(AnimationDebug.imageFile);
 					for (anim in loadedStuff.animations) {
 						loadAnimation(this, anim);
 						var flippedPlayer:Bool = (loadedStuff.isPlayer != flipX);
@@ -887,9 +887,13 @@ class Character extends SpriteVMan
 								//IS FLIP	0,1,n	2,1,0
 								/*var xNormal = anim.offset.length > 2 ? (anim.offset[!flippedPlayer ? 0 : 2]) : (!flippedPlayer ? anim.offset[0] : null);
 								var xFlip = anim.offset.length > 2 ? (anim.offset[flippedPlayer ? 0 : 2]) : (flippedPlayer ? anim.offset[0] : null);*/
-								var xNormal = anim.offset.length > 2 ? (anim.offset[!flippedPlayer ? 0 : 2]) : (!flippedPlayer ? anim.offset[0] : null);
-								var xFlip = anim.offset.length > 2 ? (anim.offset[flippedPlayer ? 0 : 2]) : (flippedPlayer ? anim.offset[0] : null);
-								addOffset(anim.name, xNormal, anim.offset[1], xFlip);
+								//var xNormal = anim.offset.length > 2 ? (anim.offset[!flippedPlayer ? 0 : 2]) : (!flippedPlayer ? anim.offset[0] : null);
+								//var xFlip = anim.offset.length > 2 ? (anim.offset[flippedPlayer ? 0 : 2]) : (flippedPlayer ? anim.offset[0] : null);
+								//addOffset(anim.name, xNormal, anim.offset[1], xFlip);
+								
+								//yet another possibly breaking change
+								//i hate this
+								addOffset(anim.name, anim.offset[0], anim.offset[1], anim.offset[0]);
 							}
 						} else {
 							addOffset(anim.name);
