@@ -2780,7 +2780,7 @@ class PlayState extends MusicBeatState
 					});
 			}
 			
-			animateForNote(note);
+			animateForNote(note, true, note.noteData);
 
 			playerStrums.members[note.noteData].playAnim('confirm', true);
 
@@ -2800,7 +2800,7 @@ class PlayState extends MusicBeatState
 			if (SONG.song != 'Tutorial')
 				camZooming = true;
 
-			animateForNote(note);
+			animateForNote(note, false, note.noteData);
 
 			if (health > SONG.healthDrainMin) {
 				health = Math.max(health - SONG.healthDrain, SONG.healthDrainMin);
