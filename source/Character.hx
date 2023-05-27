@@ -26,6 +26,7 @@ import sys.io.File;
 
 typedef SwagCharacter = {
 	public var image:String;
+	//public var imageFormat:String;
 	public var healthIcon:String;
 	public var deathChar:String;
 	public var deathSound:String;

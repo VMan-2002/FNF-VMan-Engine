@@ -8,15 +8,13 @@ import flixel.math.FlxMatrix;
 import flixel.math.FlxPoint;
 import openfl.geom.Matrix;
 
-class FlxSymbol extends FlxSprite
-{
+class FlxSymbol extends FlxSprite {
 	public var coolParse:Parsed;
 	public var oldMatrix:Array<Float> = [];
 
 	private var hasFrameByPass:Bool = false;
 
-	public function new(x:Float, y:Float, coolParsed:Parsed)
-	{
+	public function new(x:Float, y:Float, coolParsed:Parsed) {
 		super(x, y);
 
 		this.coolParse = coolParsed;
@@ -29,8 +27,7 @@ class FlxSymbol extends FlxSprite
 
 	var symbolAtlasShit:Map<String, String> = new Map();
 
-	override function draw()
-	{
+	override function draw() {
 		super.draw();
 	}
 
@@ -45,23 +42,17 @@ class FlxSymbol extends FlxSprite
 
 	public var transformMatrix:Matrix = new Matrix();
 
-	function renderFrame(TL:Timeline, coolParsed:Parsed, ?isMainLoop:Bool = false)
-	{
+	function renderFrame(TL:Timeline, coolParsed:Parsed, ?isMainLoop:Bool = false) {
 		drawQueue = [];
 
-		for (layer in TL.L)
-		{
+		for (layer in TL.L) {
 			// layer.FR.reverse();
 			// var frame = layer.FR[0]
 
-			for (frame in layer.FR)
-			{
-				if (daFrame >= frame.I && daFrame < frame.I + frame.DU)
-				{
-					for (element in frame.E)
-					{
-						if (Reflect.hasField(element, 'ASI'))
-						{
+			for (frame in layer.FR) {
+				if (daFrame >= frame.I && daFrame < frame.I + frame.DU) {
+					for (element in frame.E) {
+						if (Reflect.hasField(element, 'ASI')) {
 							var m3d = element.ASI.M3D;
 							var dumbassMatrix:Matrix = new Matrix(m3d[0], m3d[1], m3d[4], m3d[5], m3d[12], m3d[13]);
 
@@ -83,9 +74,7 @@ class FlxSymbol extends FlxSprite
 
 							spr.antialiasing = true;
 							spr.draw();
-						}
-						else
-						{
+						} else {
 							var nestedSymbol = symbolMap.get(element.SI.SN);
 							var nestedShit:FlxSymbol = new FlxSymbol(0, 0, coolParse);
 							nestedShit.frames = frames;
@@ -128,35 +117,27 @@ class FlxSymbol extends FlxSprite
 		// thing.draw();
 	}
 
-	function setDaMap(spr:FlxSymbol):Void
-	{
+	function setDaMap(spr:FlxSymbol):Void {
 		if (!nestedShit.exists(nestDepth))
 			nestedShit.set(nestDepth, [spr]);
 		else
 			nestedShit.get(nestDepth).push(spr);
 	}
 
-	function changeFrame(frameChange:Int = 0):Void
-	{
+	function changeFrame(frameChange:Int = 0):Void {
 		daFrame += frameChange;
 	}
 
-	function parseSymbolDictionary(coolParsed:Parsed):Map<String, String>
-	{
+	function parseSymbolDictionary(coolParsed:Parsed):Map<String, String> {
 		var awesomeMap:Map<String, String> = new Map();
-		for (symbol in coolParsed.SD.S)
-		{
+		for (symbol in coolParsed.SD.S) {
 			symbolMap.set(symbol.SN, symbol);
 
 			var symbolName = symbol.SN;
-			for (layer in symbol.TL.L)
-			{
-				for (frame in layer.FR)
-				{
-					for (element in frame.E)
-					{
-						if (Reflect.hasField(element, 'ASI'))
-						{
+			for (layer in symbol.TL.L) {
+				for (frame in layer.FR) {
+					for (element in frame.E) {
+						if (Reflect.hasField(element, 'ASI')) {
 							awesomeMap.set(symbolName, element.ASI.N);
 						}
 					}
@@ -167,20 +148,15 @@ class FlxSymbol extends FlxSprite
 		return awesomeMap;
 	}
 
-	override function drawComplex(camera:FlxCamera):Void
-	{
+	override function drawComplex(camera:FlxCamera):Void {
 		_frame.prepareMatrix(_matrix, FlxFrameAngle.ANGLE_0, checkFlipX(), checkFlipY());
 		_matrix.translate(-origin.x, -origin.y);
 		_matrix.scale(scale.x, scale.y);
 
-		if (matrixExposed)
-		{
+		if (matrixExposed) {
 			_matrix.concat(transformMatrix);
-		}
-		else
-		{
-			if (bakedRotationAngle <= 0)
-			{
+		} else {
+			if (bakedRotationAngle <= 0) {
 				updateTrig();
 
 				if (angle != 0)
@@ -211,12 +187,10 @@ class FlxSymbol extends FlxSprite
 
 	public var skew(default, null):FlxPoint = FlxPoint.get();
 
-	function updateSkewMatrix():Void
-	{
+	function updateSkewMatrix():Void {
 		_skewMatrix.identity();
 
-		if (skew.x != 0 || skew.y != 0)
-		{
+		if (skew.x != 0 || skew.y != 0) {
 			_skewMatrix.b = Math.tan(skew.y * FlxAngle.TO_RAD);
 			_skewMatrix.c = Math.tan(skew.x * FlxAngle.TO_RAD);
 		}
@@ -225,22 +199,19 @@ class FlxSymbol extends FlxSprite
 
 // TYPEDEFS FOR ANIMATION.JSON PARSING
 
-typedef Parsed =
-{
+typedef Parsed = {
 	var MD:Metadata;
 	var AN:Animation;
 	var SD:SymbolDictionary; // Doesn't always have symbol dictionary!!
 }
 
-typedef Metadata =
-{
+typedef Metadata = {
 	/** Framerate */
 	var FRT:Int;
 }
 
 /** Basically treated like one big symbol*/
-typedef Animation =
-{
+typedef Animation = {
 	/** symbolName */
 	var SN:String;
 
@@ -254,34 +225,29 @@ typedef Animation =
 
 /** DISCLAIMER, MAY NOT ACTUALLY BE CALLED
 	SYMBOL TYPE ISNTANCE, IM JUST MAKING ASSUMPTION!! */
-typedef SymbolTypeInstance =
-{
+typedef SymbolTypeInstance = {
 	// var TL:Timeline;
 	// var SN:String;
 }
 
-typedef SymbolDictionary =
-{
+typedef SymbolDictionary = {
 	var S:Array<Animation>;
 }
 
-typedef Timeline =
-{
+typedef Timeline = {
 	/** Layers */
 	var L:Array<Layer>;
 }
 
 // Singular layer, not to be confused with LAYERS
-typedef Layer =
-{
+typedef Layer = {
 	var LN:String;
 
 	/** Frames */
 	var FR:Array<Frame>;
 }
 
-typedef Frame =
-{
+typedef Frame = {
 	var I:Int;
 
 	/** Duration, in frames*/
@@ -291,8 +257,7 @@ typedef Frame =
 	var E:Array<Element>;
 }
 
-typedef Element =
-{
+typedef Element = {
 	var SI:SymbolInstance;
 	var ASI:AtlasSymbolInstance;
 }
@@ -300,8 +265,7 @@ typedef Element =
 /**
 	Symbol instance, for SYMBOLS and refers to SYMBOLS    
  */
-typedef SymbolInstance =
-{
+typedef SymbolInstance = {
 	var SN:String;
 
 	/** SymbolType (Graphic, Movieclip, Button)*/
@@ -311,14 +275,12 @@ typedef SymbolInstance =
 	var M3D:Array<Float>;
 }
 
-typedef AtlasSymbolInstance =
-{
+typedef AtlasSymbolInstance = {
 	var N:String;
 	var M3D:Array<Float>;
 }
 
-typedef TransformationPoint =
-{
+typedef TransformationPoint = {
 	var x:Float;
 	var y:Float;
 }

@@ -15,8 +15,7 @@ import openfl.Assets;
 import openfl.display.BitmapData;
 import openfl.geom.Rectangle;
 
-class FlxAnimate extends FlxSymbol
-{
+class FlxAnimate extends FlxSymbol {
 	// var myAnim:Animation;
 	// var animBitmap:BitmapData;
 	var loadedQueue:Bool = false;
@@ -28,22 +27,18 @@ class FlxAnimate extends FlxSymbol
 		coolParse.AN.TL.L.reverse();
 		super(x, y, coolParse);
 
-		frames = FlxAnimate.fromAnimate(Paths.file('images/' + folder + '/spritemap1.png'), Paths.file('images/' + folder + '/spritemap1.json'));
+		frames = FlxAnimate.fromAnimate(Paths.image(folder + '/spritemap1'), Paths.file('images/' + folder + '/spritemap1.json'));
 		// frames
 	}
 
-	override function draw()
-	{
+	override function draw() {
 		super.draw();
 
 		renderFrame(coolParse.AN.TL, coolParse, true);
 
-		if (FlxG.keys.justPressed.E)
-		{
-			for (shit in FlxSymbol.nestedShit.keys())
-			{
-				for (spr in FlxSymbol.nestedShit.get(shit))
-				{
+		if (FlxG.keys.justPressed.E) {
+			for (shit in FlxSymbol.nestedShit.keys()) {
+				for (spr in FlxSymbol.nestedShit.get(shit)) {
 					spr.draw();
 				}
 			}
@@ -56,38 +51,34 @@ class FlxAnimate extends FlxSymbol
 
 	// notes to self
 	// account for different layers
-	var playingAnim:Bool = false;
-	var frameTickTypeShit:Float = 0;
-	var animFrameRate:Int = 24;
+	public var playingAnim:Bool = false;
+	public var frameTickTypeShit:Float = 0;
+	public var animFrameRate:Int = 24;
 
-	override function update(elapsed:Float)
-	{
+	override function update(elapsed:Float) {
 		super.update(elapsed);
 
-		if (FlxG.keys.justPressed.SPACE)
-			playingAnim = !playingAnim;
+		/*if (FlxG.keys.justPressed.SPACE)
+			playingAnim = !playingAnim;*/
 
-		if (playingAnim)
-		{
+		if (playingAnim) {
 			frameTickTypeShit += elapsed;
 
 			// prob fix this framerate thing for higher framerates?
-			if (frameTickTypeShit >= 1 / 24)
-			{
+			if (frameTickTypeShit >= 1 / animFrameRate) {
 				changeFrame(1);
-				frameTickTypeShit = 0;
+				frameTickTypeShit -= 1 / animFrameRate;
 			}
 		}
 
-		if (FlxG.keys.justPressed.RIGHT)
+		/*if (FlxG.keys.justPressed.RIGHT)
 			changeFrame(1);
 		if (FlxG.keys.justPressed.LEFT)
-			changeFrame(-1);
+			changeFrame(-1);*/
 	}
 
 	// This stuff is u
-	public static function fromAnimate(Source:FlxGraphicAsset, Description:String):FlxAtlasFrames
-	{
+	public static function fromAnimate(Source:FlxGraphicAsset, Description:String):FlxAtlasFrames {
 		var graphic:FlxGraphic = FlxG.bitmap.add(Source);
 		if (graphic == null)
 			return null;
@@ -112,8 +103,7 @@ class FlxAnimate extends FlxSymbol
 
 		data = cast Json.parse(json).ATLAS;
 
-		for (sprite in data.SPRITES)
-		{
+		for (sprite in data.SPRITES) {
 			// probably nicer way to do this? Oh well
 			var swagSprite:AnimateSprite = sprite.SPRITE;
 
@@ -131,13 +121,11 @@ class FlxAnimate extends FlxSymbol
 	}
 }
 
-typedef AnimateObject =
-{
+typedef AnimateObject = {
 	SPRITES:Array<Dynamic>
 }
 
-typedef AnimateSprite =
-{
+typedef AnimateSprite = {
 	var name:String;
 	var x:Int;
 	var y:Int;

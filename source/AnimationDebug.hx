@@ -275,95 +275,96 @@ class AnimationDebug extends MusicBeatState
 
 	override function update(elapsed:Float) {
 		textAnim.text = char.animation.curAnim.name;
-		if (!nameTxtBox.hasFocus) {
-			var holdShift = FlxG.keys.pressed.SHIFT;
-			var multiplier = holdShift ? 10 : 1;
-				
-			if (FlxG.keys.justPressed.E)
-				FlxG.camera.zoom += 0.25;
-			if (FlxG.keys.justPressed.Q)
-				FlxG.camera.zoom -= 0.25;
-
-			if (FlxG.keys.pressed.I || FlxG.keys.pressed.J || FlxG.keys.pressed.K || FlxG.keys.pressed.L) {
-				if (FlxG.keys.pressed.I)
-					camFollow.velocity.y = -90 * multiplier;
-				else if (FlxG.keys.pressed.K)
-					camFollow.velocity.y = 90 * multiplier;
-				else
-					camFollow.velocity.y = 0;
-
-				if (FlxG.keys.pressed.J)
-					camFollow.velocity.x = -90 * multiplier;
-				else if (FlxG.keys.pressed.L)
-					camFollow.velocity.x = 90 * multiplier;
-				else
-					camFollow.velocity.x = 0;
-			} else {
-				camFollow.velocity.set();
-			}
+		if (nameTxtBox.hasFocus)
+			return super.update(elapsed);
+		
+		var holdShift = FlxG.keys.pressed.SHIFT;
+		var multiplier = holdShift ? 10 : 1;
 			
-			if (FlxG.keys.justPressed.W || FlxG.keys.justPressed.S) {
-				if (FlxG.keys.justPressed.W)
-					curAnim -= 1;
+		if (FlxG.keys.justPressed.E)
+			FlxG.camera.zoom += 0.25;
+		if (FlxG.keys.justPressed.Q)
+			FlxG.camera.zoom -= 0.25;
 
-				if (FlxG.keys.justPressed.S)
-					curAnim += 1;
-				
-				offsetTextCol();
-			}
+		if (FlxG.keys.pressed.I || FlxG.keys.pressed.J || FlxG.keys.pressed.K || FlxG.keys.pressed.L) {
+			if (FlxG.keys.pressed.I)
+				camFollow.velocity.y = -90 * multiplier;
+			else if (FlxG.keys.pressed.K)
+				camFollow.velocity.y = 90 * multiplier;
+			else
+				camFollow.velocity.y = 0;
 
-			if (FlxG.keys.justPressed.Z) {
-				charGhost.playAnim(char.animation.curAnim.name, true);
-				charGhost.offset.x = char.offset.x;
-				charGhost.offset.y = char.offset.y;
-				charGhost.x = char.x;
-				charGhost.y = char.y;
-				charGhost.visible = true;
-				charGhost.flipX = char.flipX;
-			}
+			if (FlxG.keys.pressed.J)
+				camFollow.velocity.x = -90 * multiplier;
+			else if (FlxG.keys.pressed.L)
+				camFollow.velocity.x = 90 * multiplier;
+			else
+				camFollow.velocity.x = 0;
+		} else {
+			camFollow.velocity.set();
+		}
+		
+		if (FlxG.keys.justPressed.W != FlxG.keys.justPressed.S) {
+			if (FlxG.keys.justPressed.W)
+				curAnim -= 1;
 
-			if (FlxG.keys.justPressed.X)
-				charGhost.visible = false;
-
-			if (FlxG.keys.justPressed.C)
-				char.flipX = !char.flipX;
+			if (FlxG.keys.justPressed.S)
+				curAnim += 1;
 
 			if (curAnim < 0)
 				curAnim = animList.length - 1;
-
+	
 			if (curAnim >= animList.length)
 				curAnim = 0;
-
-			if (FlxG.keys.justPressed.S || FlxG.keys.justPressed.W || FlxG.keys.justPressed.SPACE) {
-				char.playAnim(animList[curAnim], true);
-
-				updateTexts();
-			}
-			var upP = FlxG.keys.anyJustPressed([UP]);
-			var rightP = FlxG.keys.anyJustPressed([RIGHT]);
-			var downP = FlxG.keys.anyJustPressed([DOWN]);
-			var leftP = FlxG.keys.anyJustPressed([LEFT]);
-
-			if (upP || rightP || downP || leftP) {
-				if (upP)
-					char.animOffsets.get(animList[curAnim])[1] += multiplier;
-				if (downP)
-					char.animOffsets.get(animList[curAnim])[1] -= multiplier;
-				if (leftP)
-					char.animOffsets.get(animList[curAnim])[char.flipX ? 2 : 0] += multiplier;
-				if (rightP)
-					char.animOffsets.get(animList[curAnim])[char.flipX ? 2 : 0] -= multiplier;
-
-				updateTexts();
-				char.playAnim(animList[curAnim]);
-				offsetTextCol();
-			}
 			
-			if (controls.BACK) {
-				FlxG.mouse.visible = false;
+			offsetTextCol();
+		}
 
-				FlxG.switchState(new MainMenuState());
-			}
+		if (FlxG.keys.justPressed.Z) {
+			charGhost.playAnim(char.animation.curAnim.name, true);
+			charGhost.offset.x = char.offset.x;
+			charGhost.offset.y = char.offset.y;
+			charGhost.x = char.x;
+			charGhost.y = char.y;
+			charGhost.visible = true;
+			charGhost.flipX = char.flipX;
+		}
+
+		if (FlxG.keys.justPressed.X)
+			charGhost.visible = false;
+
+		if (FlxG.keys.justPressed.C)
+			char.flipX = !char.flipX;
+
+		if (FlxG.keys.justPressed.S || FlxG.keys.justPressed.W || FlxG.keys.justPressed.SPACE) {
+			char.playAnim(animList[curAnim], true);
+
+			updateTexts();
+		}
+		var upP = FlxG.keys.anyJustPressed([UP]);
+		var rightP = FlxG.keys.anyJustPressed([RIGHT]);
+		var downP = FlxG.keys.anyJustPressed([DOWN]);
+		var leftP = FlxG.keys.anyJustPressed([LEFT]);
+
+		if (upP || rightP || downP || leftP) {
+			if (upP)
+				char.animOffsets.get(animList[curAnim])[1] += multiplier;
+			if (downP)
+				char.animOffsets.get(animList[curAnim])[1] -= multiplier;
+			if (leftP)
+				char.animOffsets.get(animList[curAnim])[char.flipX ? 2 : 0] += multiplier;
+			if (rightP)
+				char.animOffsets.get(animList[curAnim])[char.flipX ? 2 : 0] -= multiplier;
+
+			updateTexts();
+			char.playAnim(animList[curAnim]);
+			offsetTextCol();
+		}
+		
+		if (controls.BACK) {
+			FlxG.mouse.visible = false;
+
+			FlxG.switchState(new MainMenuState());
 		}
 
 		super.update(elapsed);

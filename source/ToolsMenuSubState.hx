@@ -1,5 +1,8 @@
 package;
 
+import atlas.AtlasTest;
+import atlas.AtlasTestState;
+import new_editors.StageEditorState;
 #if !html5
 import Section.SwagSection;
 import Section;
@@ -20,6 +23,10 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			'Chart Editor',
 			"Strip File Data",
 			"Animation Debug",
+			#if debug
+			"Cutscene Anim Test",
+			"Texture Atlas Test",
+			#end
 			//"Week Editor",
 			//"Folder Editor",
 			//"Menu Character Editor",
@@ -27,7 +34,7 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			#if debug
 			"Title Intro Test",
 			#end
-			//"Stage Editor",
+			"Stage Editor",
 			//"Dialogue Editor",
 			//"Spritesheet Tool",
 			//"Noteskin Creator",
@@ -59,6 +66,12 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 				return ["Edit song charting."];
 			case "animation debug":
 				return ["Look at animations n stuff."];
+			#if debug
+			case "cutscene anim test":
+				return ["Cutscene anim test", "", "animation debug"];
+			case "texture atlas test":
+				return ["Texture atlast text", "", "animation debug"];
+			#end
 			case "week editor":
 				return ["Edit in-game weeks for Story Mode."];
 			case "folder editor":
@@ -110,6 +123,17 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 				return true;
 			case "documentation":
 				FlxG.openURL("https://vman-2002.github.io/vmanengine_doc/index.html");
+			#if debug
+			case "cutscene anim test":
+				FlxG.state.closeSubState();
+				FlxG.switchState(new CutsceneAnimTestState());
+			case "texture atlas test":
+				FlxG.state.closeSubState();
+				FlxG.switchState(new AtlasTestState());
+			#end
+			case "stage editor":
+				FlxG.state.closeSubState();
+				FlxG.switchState(new StageEditorState());
 		}
 		return false;
 	}

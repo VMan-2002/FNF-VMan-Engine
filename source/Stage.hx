@@ -6,12 +6,12 @@ import Paths;
 import ThingThatSucks.ErrorReportSubstate;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
+// import io.newgrounds.NGLite;
 import lime.utils.Assets;
 #if !html5
 import sys.FileSystem;
 import sys.io.File;
 #end
-//import io.newgrounds.NGLite;
 
 typedef StageElement =
 {
@@ -30,7 +30,6 @@ typedef StageElement =
 	var startVisible:Bool;
 	var blendMode:Null<String>;
 	var alpha:Null<Float>;
-	var wobble:Null<Bool>;
 }
 
 typedef SwagStage =
@@ -46,6 +45,7 @@ typedef SwagStage =
 	var cameraOffset:Null<Array<Array<Float>>>;
 	var extraCamPos:Array<Array<Float>>;
 	var charFacing:Null<Array<Int>>;
+	var charBetween:Null<Array<Int>>;
 }
 
 class Stage
@@ -68,6 +68,7 @@ class Stage
 	public var cameraOffset:Array<Array<Float>> = [[0, 0, 0]];
 	public var extraCamPos:Array<Array<Float>> = [[0, 0, 0]];
 	public var charZoom:Array<Null<Float>>;
+	public var charBetween:Null<Array<Int>>;
 
 	public static function getStage(name:String, ?mod:Null<String>):Null<SwagStage> {
 		if (mod == null) {
@@ -118,7 +119,8 @@ class Stage
 			cameraOffset: null,
 			charFacing: [0],
 			charZoom: null,
-			extraCamPos: new Array<Array<Float>>()
+			extraCamPos: new Array<Array<Float>>(),
+			charBetween: [2]
 		};
 	}
 
@@ -204,9 +206,10 @@ class Stage
 				target.animFollowup.set(thing[0], thing[1]);
 			}
 		}
-		if (target.charZoom == null) {
+		if (target.charZoom == null)
 			target.charZoom = new Array<Null<Float>>();
-		}
+		if (target.charBetween == null)
+			target.charBetween = [2];
 		return target;
 	}
 	

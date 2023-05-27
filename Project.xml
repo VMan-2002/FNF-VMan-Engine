@@ -137,6 +137,7 @@
 	<!--<haxelib name="nape-haxe4" />-->
 	
 	<haxelib name="hxcpp-debugger" if="debug"/>
+	<haxelib name="flxanimate"/>
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 

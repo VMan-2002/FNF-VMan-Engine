@@ -1,8 +1,6 @@
 package;
 import ModsMenuState.ModInfo;
-import flixel.input.keyboard.FlxKey;
 import flixel.util.FlxSave;
-import lime.ui.ScanCode;
 
 class Achievements
 {
