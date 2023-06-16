@@ -38,7 +38,6 @@ class StageEditorState extends MusicBeatState
 	var dumbTexts:FlxTypedGroup<FlxText>;
 	var animList:Array<String> = [];
 	var curAnim:Int = 0;
-	var isDad:Bool = true;
 	var daAnim:String = 'stage';
 	var camFollow:FlxObject;
 

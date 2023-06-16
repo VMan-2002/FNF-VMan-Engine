@@ -45,12 +45,14 @@ class OptionsSubState extends OptionsSubStateBasic
 			#if MODS
 			"Song Restart Reloads UI",
 			#end
-			"Save Data Management",
-			"Exit Without Saving",
-			"Gameplay Changes",
 			#if debug
-			"Options Warning Test",
-			"HudThing Editor"
+			"Save Data Management",
+			#end
+			"Customize HUD",
+			"Gameplay Changes",
+			"Exit Without Saving",
+			#if debug
+			"Options Warning Test"
 			#end
 		];
 	}
@@ -129,7 +131,7 @@ class OptionsSubState extends OptionsSubStateBasic
 				return ["Test the options warning"];
 			case "save data management":
 				return ["Look at your save data, and if necessary, kill it to death."];
-			case "hudthing editor":
+			case "customize hud":
 				return ["Modify hud meters"];
 		}
 		return ["Unknown option.", name, 'unknownOption'];
@@ -242,9 +244,9 @@ class OptionsSubState extends OptionsSubStateBasic
 			#if debug
 			case "options warning test":
 				FlxG.switchState(new OptionsWarningState());
-			case "hudthing editor":
-				FlxG.switchState(new HudThingMenu());
 			#end
+			case "customize hud":
+				FlxG.switchState(new HudThingMenu());
 			default:
 				trace("Tried to accept unknown option: " + name);
 		}

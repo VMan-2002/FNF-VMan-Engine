@@ -1,4 +1,4 @@
-Removed ThatAzazelFire (He still thinks social anxiety is easy to ignore after 9 months)
+Removed ThatAzazelFire (More info will be available later)
 Improved unused animations for Girlfriend (Christmas variant)
 Added improvements to Animation Debug, such as a save button
 Compress some more image assets
@@ -9,4 +9,5 @@ Unhardcode characters that were hardcoded
 Add Practice Tools
 Disallow changing Practice Tools or Gameplay Changes when paused in Story Mode
 Carry over usedBotplay flag between songs in Story Mode
+Add HUD Customizer, allowing you to customize meters on the HUD (including new meters!)
 <Hopefully update the JP translation... It was outdated in 1.1 because Regular Guitar Song and i was rushing.>

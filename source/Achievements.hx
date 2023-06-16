@@ -104,12 +104,14 @@ class Achievements
 		}
 	}
 	
-	public static function SaveOptions() {
-		if (!achievementsChanged) {
+	public static function SaveOptions(?seen:Array<String>, ?force:Bool = false) {
+		if (!achievementsChanged && !force) {
 			return false;
 		}
 		var svd = GetSaveObj();
 		svd.data.achievements = achievements;
+		if (seen != null)
+			svd.data.seen = seen;
 
 		svd.flush();
 		achievementsChanged = false;
@@ -120,8 +122,17 @@ class Achievements
 		var svd = GetSaveObj();
 		achievements = ifNotNull(svd.data.achievements, achievements);
 		achievementsChanged = false;
+		var seen:Null<Array<String>> = svd.data.achievementsSeen;
 
 		svd.destroy();
+		return ["" => seen];
+	}
+
+	public static function getUnseenCount() {
+		var seen = LoadOptions();
+		if (seen[""] == null)
+			return achievements.length;
+		return (vanillaAchievements.length - achievements.length) - seen[""].length;
 	}
 	
 	static inline function ifNotNull(a:Any, b:Any):Null<Any> {

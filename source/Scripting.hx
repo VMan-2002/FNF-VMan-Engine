@@ -10,11 +10,16 @@ import lime.utils.Assets;
 using StringTools;
 
 class Scripting {
+    public static var scripts:Map<String, Scripting>;
     var validFuncs:Map<String, Bool>;
     var interp:Interp;
 
-    public function new() {
+    public static function clearScripts() {
         
+    }
+
+    public function new(name:String, ?modName:String) {
+        scripts.set('${modName}:${name}', this);
     }
     
     public function checkValidFuncs(funcNames:Array<String>) {

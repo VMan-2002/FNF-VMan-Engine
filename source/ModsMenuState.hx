@@ -132,6 +132,7 @@ class ModsMenuState extends MusicBeatState {
 			if (FileSystem.exists(descTranslationPath)) {
 				creditsFile.description = File.getContent(descTranslationPath);
 			}
+			creditsFile.id = mod;
 			return creditsFile;
 		} else {
 			var exists = FileSystem.exists(path + "/");
@@ -151,7 +152,7 @@ class ModsMenuState extends MusicBeatState {
 	}
 
 	public static inline function quickModJsonData(mod:String) {
-		return getModJsonData(mod+"/mod.json", mod, false);
+		return getModJsonData(mod, mod, false);
 	}
 
 	public inline function loadCreditsJson(path:String, mod:String) {

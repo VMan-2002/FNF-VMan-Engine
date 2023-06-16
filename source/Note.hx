@@ -475,7 +475,7 @@ class Note extends FlxSprite
 			maniaFract = 0.5;
 			myArrow = "opennote";
 		} else {
-			maniaFract = noteData / mania.keys;
+			maniaFract = noteData / mania.fractor;
 		}
 
 		var skin = (PlayState.SONG.noteSkin == "" || PlayState.SONG.noteSkin == null) ? "normal" : PlayState.SONG.noteSkin;

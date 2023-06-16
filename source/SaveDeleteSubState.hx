@@ -9,6 +9,7 @@ import flixel.util.FlxColor;
 
 class SaveDeleteSubState extends OptionsSubStateBasic {
 	public var warnText:FlxText;
+	public var warnTime:Bool = false;
 
 	override function optionList() {
 		return [
@@ -49,6 +50,7 @@ class SaveDeleteSubState extends OptionsSubStateBasic {
 	override function optionAccept(name:String) {
 		if (!warnText.visible) {
 			warnText.visible = true;
+			warnTime = false;
 			return false;
 		}
 		//todo: this

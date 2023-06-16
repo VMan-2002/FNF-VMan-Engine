@@ -125,8 +125,9 @@ class ControlsSubState extends OptionsSubStateBasic
 				scale: null,
 				spacing: null,
 				dataJump: controlKeyNames.length,
+				fractor: 0
 			};
-			ManiaName = "UI controls";
+			ManiaName = "UI controls"; //todo: I really should make this translatable lol
 			//i do it in the most badass way possible
 		} else {
 			ManiaName = ManiaInfo.GetManiaName(maniastuff);

@@ -4,6 +4,7 @@ import Character;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.graphics.frames.FlxFrame;
 import haxe.Json;
 import openfl.Assets;
 import openfl.display.BitmapData;
@@ -26,6 +27,7 @@ typedef SwagHealthIcon = {
 	public var position_freeplay:Null<Array<Float>>;
 	public var tileWidth:Null<Int>;
 	public var tileHeight:Null<Int>;
+	public var healthStates:Array<Float>;
 }
 
 typedef SwagHealthIconItem = {
@@ -37,12 +39,6 @@ typedef SwagHealthIconItem = {
 
 typedef SwagMultiHealthIcon = {
 	public var items:Array<SwagHealthIconItem>;
-}
-
-//todo: implememt
-typedef HealthState = {
-	public var amount:Float;
-	public var name:String;
 }
 
 class HealthIcon extends SpriteVMan
@@ -93,6 +89,9 @@ class HealthIcon extends SpriteVMan
 	];
 
 	public var iconOffsets:Array<Float> = [0, 0];
+	public var healthStates = new Array<Float>();
+	
+	//todo: finish making animated health icons
 
 	public function new(char:String = 'bf', isPlayer:Bool = false, ?myMod:String = "")
 	{
@@ -108,14 +107,6 @@ class HealthIcon extends SpriteVMan
 			loadFunc(this, anim, flip);
 			if (anim.offset != null && anim.offset.length >= 2)
 				addOffset(anim.name, anim.offset[flip && anim.offset.length >= 3 ? 2 : 0], anim.offset[1], 0);
-			if (animation.getByName(anim.name).frames.length != 0) {
-				switch(anim.name) {
-					case "winning":
-						hasWinning = true;
-					case "losing":
-						hasLosing = true;
-				}
-			}
 		}
 	}
 
@@ -123,9 +114,6 @@ class HealthIcon extends SpriteVMan
 		if (myMod == this.myMod && char == this.curCharacter) {
 			return;
 		}
-
-		hasWinning = true;
-		hasLosing = true;
 
 		this.myMod = myMod;
 		this.curCharacter = char;
@@ -197,28 +185,18 @@ class HealthIcon extends SpriteVMan
 				#else
 				frames = FlxAtlasFrames.fromSparrow(bitmap, Assets.getText('${path}.xml'));
 				#end
-				hasWinning = false;
-				hasLosing = false;
-				loadAnimsForIcon(jsonData != null && jsonData.animations != null ? jsonData.animations : [
-					cast {
-						name: "neutral",
-						anim: "neutral",
-						framerate: 24,
-						loop: true
-					},
-					cast {
-						name: "winning",
-						anim: "winning",
-						framerate: 24,
-						loop: true
-					},
-					cast {
-						name: "losing",
-						anim: "losing",
-						framerate: 24,
-						loop: true
-					}
-				], Character.loadAnimation, isPlayer);
+				if (jsonData == null || jsonData.animations == null) {
+					var hasLosing = prefixFrameExists("losing");
+					var hasWinning = prefixFrameExists("winning");
+					var s:Int = hasLosing ? 0 : -1;
+					var aList:Array<Dynamic> = [{name: "idle" + (1 + s), anim: "neutral", framerate: 24, loop:true}];
+						aList.push({name: "idle0", anim: "losing", framerate: 24, loop:true});
+					if (hasWinning)
+						aList.push({name: "idle" + (2 + s), anim: "winning", framerate: 24, loop:true});
+					loadAnimsForIcon(cast aList, Character.loadAnimation, isPlayer);
+				} else {
+					loadAnimsForIcon(jsonData.animations, Character.loadAnimation, isPlayer);
+				}
 			} else {
 				loadGraphic(bitmap);
 				var ratio = width / height;
@@ -227,24 +205,24 @@ class HealthIcon extends SpriteVMan
 					//todo: load anims
 					loadGraphic(bitmap, true, jsonData.tileWidth, jsonData.tileHeight == null ? intHeight : jsonData.tileHeight);
 					loadAnimsForIcon(jsonData.animations, Character.loadAnimationNameless, isPlayer);
-				} else if (ratio > 2.5) {
-					loadGraphic(bitmap, true, Math.floor(width / 3), intHeight);
-					animation.add('winning', [2], 0, false, isPlayer);
-					animation.add('neutral', [0], 0, false, isPlayer);
-					animation.add('losing', [1], 0, false, isPlayer);
-				} else if (ratio > 1.5) {
-					loadGraphic(bitmap, true, Math.floor(width / 2), intHeight);
-					animation.add('winning', [0], 0, false, isPlayer);
-					animation.add('neutral', [0], 0, false, isPlayer);
-					animation.add('losing', [1], 0, false, isPlayer);
-					hasWinning = false;
-				} else {
-					loadGraphic(bitmap, true, Math.floor(width), intHeight);
-					animation.add('winning', [0], 0, false, isPlayer);
-					animation.add('neutral', [0], 0, false, isPlayer);
-					animation.add('losing', [0], 0, false, isPlayer);
-					hasWinning = false;
-					hasLosing = false;
+				} else { 
+					if (ratio > 2.5) {
+						loadGraphic(bitmap, true, Math.floor(width / 3), intHeight);
+						animation.add('idle2', [2], 0, false, isPlayer);
+						animation.add('idle1', [0], 0, false, isPlayer);
+						animation.add('idle0', [1], 0, false, isPlayer);
+						if (healthStates.length == 0)
+							healthStates = [20, 80];
+					} else if (ratio > 1.5) {
+						loadGraphic(bitmap, true, Math.floor(width / 2), intHeight);
+						animation.add('idle1', [0], 0, false, isPlayer);
+						animation.add('idle0', [1], 0, false, isPlayer);
+						if (healthStates.length == 0)
+							healthStates = [20];
+					} else {
+						loadGraphic(bitmap, true, Math.floor(width), intHeight);
+						animation.add('idle0', [0], 0, false, isPlayer);
+					}
 				}
 				iconOffsets[0] = (width - 150) * 0.5;
 				iconOffsets[1] = 0;
@@ -262,10 +240,17 @@ class HealthIcon extends SpriteVMan
 				antialiasing = true;
 				folderType = "";
 			}
-			animation.play("neutral");
+			healthAmount = 0.5;
 			updateHitbox();
-			if (Std.isOfType(FlxG.state, FreeplayState) && isJson && jsonData != null && jsonData.position_freeplay != null && jsonData.position_freeplay.length > 0) {
-				offset.add(jsonData.position_freeplay[0], jsonData.position_freeplay[1]);
+			if (Std.isOfType(FlxG.state, FreeplayState) && isJson && jsonData != null) {
+				if (jsonData.position_freeplay != null && jsonData.position_freeplay.length != 0)
+					offset.add(jsonData.position_freeplay[0], jsonData.position_freeplay[1]);
+				if (jsonData.initAnim != "")
+					playAnim(jsonData.initAnim, true);
+				else
+					setState(50);
+			} else {
+				setState(50);
 			}
 			return;
 		} else {
@@ -279,18 +264,33 @@ class HealthIcon extends SpriteVMan
 		folderType = isPixel ? "pixel" : "";
 		
 		var thing:Array<Int> = defaultStuff.get(defaultStuff.exists(char) ? char : "face");
-		animation.add('winning', [thing[2]], 0, false, isPlayer);
-		animation.add('neutral', [thing[0]], 0, false, isPlayer);
-		animation.add('losing', [thing[1]], 0, false, isPlayer);
+		animation.add('idle2', [thing[2]], 0, false, isPlayer);
+		animation.add('idle1', [thing[0]], 0, false, isPlayer);
+		animation.add('idle0', [thing[1]], 0, false, isPlayer);
+		healthStates = [20, 80];
 		
-		animation.play("neutral");
+		animation.play("idle1");
+	}
+
+	public var healthAmount(default, set):Float = 50;
+
+	public function set_healthAmount(a:Float) {
+		if (healthAmount == a)
+			return a;
+		healthAmount = a;
+		return setState(a);
+	}
+
+	public function setState(a:Float) {
+		var i = 0;
+		while (healthStates.length != i && healthStates[i] < a) {
+			i++;
+		}
+		playAnim("idle" + i);
+		return a;
 	}
 	
-	private final states:Array<String> = ["neutral", "losing", "winning"];
-	public var hasWinning = true;
-	public var hasLosing = true;
-	
-	public function setState(a:Int) {
+	/*public function setState(a:Int) {
 		if (isMultiIcon) {
 			for (thing in children) {
 				thing.setState(a);
@@ -308,7 +308,7 @@ class HealthIcon extends SpriteVMan
 			}
 		}
 		animation.play(states[a]);
-	}
+	}*/
 
 	public function addChild(name:String, x:Float, y:Float, scale:Float) {
 		if (children == null) {

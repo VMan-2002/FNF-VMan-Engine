@@ -23,6 +23,7 @@ typedef SwagMania = {
 	var splashName:Map<String, String>;
 	var image:String;
 	var dataJump:Int;
+	var fractor:Int;
 	// for unhardcoded
 	var scale:Null<Float>;
 	var spacing:Null<Float>;
@@ -504,8 +505,9 @@ class ManiaInfo {
 			splashName: splashName,
 			scale: 0.0,
 			spacing: 0.0,
-			image: image == null || image == "" ? "NOTE_assets" : image
-		}
+			image: image == null || image == "" ? "NOTE_assets" : image,
+			fractor: keys + 1
+		};
 		mi.scale = GetNoteScale(mi);
 		mi.spacing = GetNoteSpacing(mi);
 		if (Options.saved.middleScroll && Options.saved.middleLarge) {

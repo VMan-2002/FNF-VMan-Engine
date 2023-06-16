@@ -111,6 +111,8 @@ class PlayState extends MusicBeatState
 	
 	private var generatedMusic:Bool = false;
 	public var startingSong:Bool = false;
+	
+	public var loopingSong:Bool = false; //todo: this needs to be finished and tested etc.
 
 	#if desktop
 	// Discord RPC variables
@@ -327,6 +329,10 @@ class PlayState extends MusicBeatState
 		if (SONG.attributes != null) {
 			for (thing in SONG.attributes) {
 				songAttributes.set(Std.string(thing[0]), thing[1]);
+				switch(Std.string(thing[0])) {
+					case "loopPoint":
+						loopingSong = true;
+				}
 			}
 			trace("Added "+SONG.attributes.length+" song attributes");
 		}
@@ -941,7 +947,7 @@ class PlayState extends MusicBeatState
 				["hits", "sicks", "goods", "bads", "shits", "misses", "totalnotes"]
 			];
 			var hudThingAdds = Options.instance.hudThingInfo.split("\n");
-			if (hudThingAdds.length == 3) {
+			if (hudThingAdds.length >= 3) {
 				hudThingLists = [hudThingAdds[0].split(","), hudThingAdds[2].split(","), hudThingAdds[1].split(",")];
 			}
 		}
@@ -1256,9 +1262,12 @@ class PlayState extends MusicBeatState
 		lastReportedPlayheadPosition = 0;
 
 		if (!paused)
-			FlxG.sound.playMusic(Paths.getSongPathThing(PlayState.SONG.song, instName), 1, false);
+			FlxG.sound.playMusic(Paths.getSongPathThing(PlayState.SONG.song, instName), 1, loopingSong);
 		FlxG.sound.music.onComplete = preEndSong;
 		vocals.play();
+		
+		if (loopingSong)
+			FlxG.sound.music.loopTime = Std.parseFloat(songAttributes.get("loopPoint"));
 
 		songLength = FlxG.sound.music.length;
 		// Song duration in a float, useful for the time left feature
@@ -1286,9 +1295,12 @@ class PlayState extends MusicBeatState
 		curSong = songData.song.toLowerCase();
 
 		if (SONG.needsVoices)
-			vocals = new FlxSound().loadEmbedded(Paths.getSongPathThing(PlayState.SONG.song, voicesName));
+			vocals = new FlxSound().loadEmbedded(Paths.getSongPathThing(PlayState.SONG.song, voicesName), 1, loopingSong);
 		else
 			vocals = new FlxSound();
+		
+		if (loopingSong)
+			vocals.loopTime = Std.parseFloat(songAttributes.get("loopPoint"));
 
 		FlxG.sound.list.add(vocals);
 
@@ -1651,12 +1663,13 @@ class PlayState extends MusicBeatState
 			iconP2.scale.set(FlxMath.lerp(iconP2.scale.x, 1, iconScaleMove2), FlxMath.lerp(iconP2.scale.y, 1, iconScaleMove2));
 		}
 
-		var iconOffset:Int = 26;
-		var healthSub = healthBar.flipX ? healthBar.percent : 100 - healthBar.percent;
+		final iconOffset:Float = 26;
+		final iconOffset2:Float = 150 - iconOffset;
+		var healthSub:Float = healthBar.flipX ? healthBar.percent : 100 - healthBar.percent;
 		iconP1.x = healthBar.x + (healthBar.width * (healthSub * 0.01) - iconOffset);
-		iconP2.x = healthBar.x + (healthBar.width * (healthSub * 0.01)) - (150 - iconOffset);
+		iconP2.x = healthBar.x + (healthBar.width * (healthSub * 0.01) - iconOffset2);
 
-		if (healthSub > 80) { //enemy winning
+		/*if (healthSub > 80) { //enemy winning
 			iconP1.setState(1);
 			iconP2.setState(2);
 		} else if (healthSub < 20) { //player winning
@@ -1665,7 +1678,9 @@ class PlayState extends MusicBeatState
 		} else {
 			iconP1.setState(0);
 			iconP2.setState(0);
-		}
+		}*/
+		iconP1.healthAmount = 100 - healthSub;
+		iconP2.healthAmount = healthSub;
 
 		#if debug
 		if (FlxG.keys.justPressed.EIGHT)
@@ -2025,6 +2040,10 @@ class PlayState extends MusicBeatState
 	}
 
 	function endSong():Void {
+		if (loopingSong) {
+			//todo: this
+			return;
+		}
 		canPause = false;
 		FlxG.sound.music.volume = 0;
 		vocals.volume = 0;

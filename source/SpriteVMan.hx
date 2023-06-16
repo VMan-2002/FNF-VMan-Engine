@@ -86,8 +86,16 @@ class SpriteVMan extends FlxSprite {
 		animOffsets[from] = animOffsets[to];
 		animOffsets[to] = oldOffset;
 	}
+
+	public function prefixFrameExists(name:String) {
+		for (f in frames.frames) {
+			if (frame.name.startsWith(name))
+				return true;
+		}
+		return false;
+	}
 	
-	var wiggleShit:WiggleEffect;
+	//var wiggleShit:WiggleEffect;
 	
 	/*public function makeWobbly(?amp:Float = 0.01, ?freq:Float = 60, ?speed:Float = 0.8, ?waveType:String = "dreamy") {
 		//idk what do :shrug:

@@ -86,6 +86,11 @@ class MenuCharacter extends SpriteVMan {
 					
 					antialiasing = input.antialias != false;
 					flipX = (input.isPlayer == true) == flipped;
+					if (input.position == null) {
+						input.position = [0, 0];
+					} else while (input.position.length < 2) {
+						input.position.push(0);
+					}
 					for (thing in input.animations) {
 						if (thing.indicies != null && thing.indicies.length > 0) {
 							animation.addByIndices(thing.name, thing.anim, thing.indicies, "", thing.framerate, thing.loop);

@@ -24,7 +24,7 @@ class HudThing extends FlxGroup
 	public var autoUpdate:Bool = false;
 
 	public static var hudThingDispTypes:Array<String> = [
-		"song", "difficulty", //Song info
+		"song", "difficulty", "modName", //Song info
 		"score", "hits", "misses", "accSimple", "accRating", "fc", "combo", "maxCombo", //performance
 		"sicks", "goods", "bads", "shits", "imperfects", "totalnotes" //ratings
 	];
@@ -37,12 +37,16 @@ class HudThing extends FlxGroup
 	{
 		super();
 		
-		items = list.filter(function(item) {
-			return !Options.instance.botplay || botplayExclude.indexOf(item) == -1;
-		});
-		if (PlayState.SONG.actions.contains("hideDifficulty")) {
-			while (items.contains("difficulty"))
-				items.remove("difficulty");
+		if (list != null) {
+			items = list.filter(function(item) {
+				return !Options.instance.botplay || botplayExclude.indexOf(item) == -1;
+			});
+			if (PlayState.SONG.actions.contains("hideDifficulty")) {
+				while (items.contains("difficulty"))
+					items.remove("difficulty");
+			}
+		} else {
+			list = new Array<String>();
 		}
 		this.vertical = vertical;
 		textThing = new FlxText(x, y, 0, "", 20);
@@ -104,7 +108,7 @@ class HudThing extends FlxGroup
 				case "engine":
 					//this one should always show on the hud thing in the corner
 					text += Translation.getTranslation(Options.instance.botplay ? "hud_engine botplay" : "hud_engine", "playstate");
-				//For input offset calibrate
+				//For input offset calibrate ONLY (these won't work in normal PlayState right now. //todo: fix this)
 				case "offset_min":
 					text += "MinOffset: "+offsetMilliseconds(getPlayState().hitOffsetMin);
 				case "offset_max":
@@ -113,12 +117,15 @@ class HudThing extends FlxGroup
 					text += "AvgOffset: "+offsetMilliseconds(getPlayState().hitOffsetAvg);
 				case "offset_range":
 					text += "RngOffset: "+offsetMilliseconds(getPlayState().hitOffsetMin - getPlayState().hitOffsetMax);
+				//and finally
 				case "timer_up":
 					text += "TimerUp: "+formatTime(Conductor.songPosition);
 				case "timer_down":
 					text += "TimerDown: "+formatTime(PlayState.instance.songLength - Conductor.songPosition);
 				case "timer_down_notitle":
 					text += formatTime(PlayState.instance.songLength - Conductor.songPosition);
+				case "modName":
+					text += ModLoad.primaryMod.name;
 				default:
 					text += "Unknown: "+items[i];
 			}
