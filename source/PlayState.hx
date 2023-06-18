@@ -1884,7 +1884,7 @@ class PlayState extends MusicBeatState
 
 				//if (daNote.y < -daNote.height) {
 					if (daNote.tooLate) {
-						if (daNote.mustPress && !daNote.wasGoodHit) {
+						if (daNote.mustPress && !daNote.wasGoodHit && !daNote.getNoteTypeDataNoCheck().ignoreMiss) {
 							noteMiss(daNote.noteData, daNote);
 							if (Options.noteMissAction_Vocals[Options.instance.noteMissAction])
 								vocals.volume = 0;

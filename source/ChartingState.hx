@@ -534,16 +534,33 @@ class ChartingState extends MusicBeatState {
 				if (thing[1] < PlayState.curManiaInfo.keys)
 					thing[3] = curNoteType;
 			}
+			updateGrid();
 		});
 		Translation.setUIObjectFont(allLeftType);
 
-		var allRightType:FlxUIButton = new FlxUIButton(100, 70, Translation.getTranslation("Set All Type Right", "charteditor"), function() {
+		var allRightType:FlxUIButton = new FlxUIButton(100, 90, Translation.getTranslation("Set All Type Right", "charteditor"), function() {
 			for (thing in getSectionNotes()) {
 				if (thing[1] >= PlayState.curManiaInfo.keys)
 					thing[3] = curNoteType;
 			}
+			updateGrid();
 		});
 		Translation.setUIObjectFont(allRightType);
+
+		var doubleSection:FlxUIButton = new FlxUIButton(100, 110, Translation.getTranslation("Double Section", "charteditor"), function() {
+			var section = getSectionNotes();
+			if (section.length == 0)
+				return;
+			var toAdd = new Array<Dynamic>();
+			for (thing in section)
+				toAdd.push(thing.copy());
+			for (thing in toAdd) {
+				thing[1] += thing[1] >= PlayState.curManiaInfo.keys ? -PlayState.curManiaInfo.keys : PlayState.curManiaInfo.keys;
+				section.push(thing);
+			}
+			updateGrid();
+		});
+		Translation.setUIObjectFont(doubleSection);
 		
 		Translation.setUIDropDownFont(noteTypeSelect);
 
@@ -552,6 +569,7 @@ class ChartingState extends MusicBeatState {
 		//tab_group_note.add(applyLength); //this button doesn't do anything?!?!?!??/
 		tab_group_note.add(allLeftType);
 		tab_group_note.add(allRightType);
+		tab_group_note.add(doubleSection);
 
 		UI_box.addGroup(tab_group_note);
 	}
