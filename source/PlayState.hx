@@ -1249,6 +1249,7 @@ class PlayState extends MusicBeatState
 		ready.visible = path != "";
 		if (!Options.instance.silentCountdown)
 			FlxG.sound.play(Paths.sound(sound), 0.6);
+		return ready;
 	}
 
 	var previousFrameTime:Int = 0;
@@ -1295,7 +1296,7 @@ class PlayState extends MusicBeatState
 		curSong = songData.song.toLowerCase();
 
 		if (SONG.needsVoices)
-			vocals = new FlxSound().loadEmbedded(Paths.getSongPathThing(PlayState.SONG.song, voicesName), 1, loopingSong);
+			vocals = new FlxSound().loadEmbedded(Paths.getSongPathThing(PlayState.SONG.song, voicesName), loopingSong);
 		else
 			vocals = new FlxSound();
 		

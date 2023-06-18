@@ -478,7 +478,7 @@ class Note extends FlxSprite
 			maniaFract = noteData / mania.fractor;
 		}
 
-		var skin = (PlayState.SONG.noteSkin == "" || PlayState.SONG.noteSkin == null) ? "normal" : PlayState.SONG.noteSkin;
+		var skin = typedata.noteSkinPrefix + ((PlayState.SONG.noteSkin == "" || PlayState.SONG.noteSkin == null) ? "normal" : PlayState.SONG.noteSkin);
 		
 		switch (skin) {
 			/*case 'pixel':

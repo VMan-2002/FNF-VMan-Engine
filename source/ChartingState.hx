@@ -528,12 +528,30 @@ class ChartingState extends MusicBeatState {
 		});
 		//noteTypeSelect.resize(200, 20);
 		noteTypeSelect.selectedLabel = noteTypes[0];
+
+		var allLeftType:FlxUIButton = new FlxUIButton(100, 70, Translation.getTranslation("Set All Type Left", "charteditor"), function() {
+			for (thing in getSectionNotes()) {
+				if (thing[1] < PlayState.curManiaInfo.keys)
+					thing[3] = curNoteType;
+			}
+		});
+		Translation.setUIObjectFont(allLeftType);
+
+		var allRightType:FlxUIButton = new FlxUIButton(100, 70, Translation.getTranslation("Set All Type Right", "charteditor"), function() {
+			for (thing in getSectionNotes()) {
+				if (thing[1] >= PlayState.curManiaInfo.keys)
+					thing[3] = curNoteType;
+			}
+		});
+		Translation.setUIObjectFont(allRightType);
 		
 		Translation.setUIDropDownFont(noteTypeSelect);
 
 		tab_group_note.add(noteTypeSelect);
 		tab_group_note.add(stepperSusLength);
-		tab_group_note.add(applyLength);
+		//tab_group_note.add(applyLength); //this button doesn't do anything?!?!?!??/
+		tab_group_note.add(allLeftType);
+		tab_group_note.add(allRightType);
 
 		UI_box.addGroup(tab_group_note);
 	}
