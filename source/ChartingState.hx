@@ -1283,9 +1283,9 @@ class ChartingState extends MusicBeatState {
 
 		if (curNotesLayer > 0) {
 			if (thisSection.notesMoreLayers == null)
-				thisSection.notesMoreLayers = new Array<Array<Dynamic>>();
+				thisSection.notesMoreLayers = new Array<Array<Array<Dynamic>>>();
 			if (thisSection.notesMoreLayers[curNotesLayer-1] == null)
-				thisSection.notesMoreLayers[curNotesLayer-1] = new Array<Dynamic>();
+				thisSection.notesMoreLayers[curNotesLayer-1] = new Array<Array<Dynamic>>();
 			sectionInfo = thisSection.notesMoreLayers[curNotesLayer-1];
 		}
 
@@ -1447,7 +1447,7 @@ class ChartingState extends MusicBeatState {
 		}
 		var noteSus = 0;
 
-		if (curNoteTypeArr.indexOf(curNoteType) <= -1) {
+		if (!curNoteTypeArr.contains(curNoteType)) {
 			curNoteTypeArr.push(curNoteType);
 			PlayState.SONG.usedNoteTypes = curNoteTypeArr;
 		}
@@ -1485,7 +1485,7 @@ class ChartingState extends MusicBeatState {
 		return FlxMath.remapToRange(strumTime, 0, 4 * currentTimeSignature * Conductor.stepCrochet, gridBG.y, gridBG.y + gridBG.height);
 	}
 
-	function setSectionNotes(thing:Array<Dynamic>) {
+	function setSectionNotes(thing:Array<Array<Dynamic>>) {
 		if (curNotesLayer > 0) {
 			_song.notes[curSection].notesMoreLayers[curNotesLayer - 1] = thing;
 		} else {
@@ -1493,7 +1493,7 @@ class ChartingState extends MusicBeatState {
 		}
 	}
 
-	function getSectionNotes():Array<Dynamic> {
+	function getSectionNotes():Array<Array<Dynamic>> {
 		if (curNotesLayer > 0) {
 			return _song.notes[curSection].notesMoreLayers[curNotesLayer - 1];
 		} else {
@@ -1523,7 +1523,7 @@ class ChartingState extends MusicBeatState {
 
 		return daLength;
 	}*/
-	private var daSpacing:Float = 0.3;
+	//private var daSpacing:Float = 0.3;
 
 	function loadLevel():Void
 	{
@@ -1576,6 +1576,15 @@ class ChartingState extends MusicBeatState {
 					shrunkNoteTypeArr.push(curNoteTypeArr[i]);
 			}
 
+			inline function deleteDefaultNoteType(arr:Array<Array<Dynamic>>) {
+				/*for (note in arr) {
+					if (note.length == 4 && note[3] == 0.0 || note[3] == 0)
+						note.pop();
+					if (note.length == 3 && note[2] == 0.0 || note[2] == 0)
+						note.pop();
+				}*/
+			}
+
 			var curTimeSig:Int = json.song.timeSignature;
 			//var remapNoteTypes = new Map<Float, Float>();
 			//var neededNoteTypes = new Array<String>();
@@ -1584,6 +1593,9 @@ class ChartingState extends MusicBeatState {
 				if (thing.notesMoreLayers != null) {
 					while (thing.notesMoreLayers.length > 0 && thing.notesMoreLayers[thing.notesMoreLayers.length - 1].length == 0) {
 						thing.notesMoreLayers.pop();
+					}
+					for (layer in thing.notesMoreLayers) {
+						deleteDefaultNoteType(layer);
 					}
 				}
 				if (thing.notesMoreLayers == null || thing.notesMoreLayers.length == 0) {
@@ -1627,6 +1639,7 @@ class ChartingState extends MusicBeatState {
 						i[3] = shrunkNoteTypeArr.indexOf(curNoteTypeArr[i[3]]);
 					}
 				}
+				deleteDefaultNoteType(thing.sectionNotes);
 			}
 			if (json.song.maniaStr == "4k") {
 				Reflect.deleteField(json.song, "maniaStr");
@@ -1664,6 +1677,15 @@ class ChartingState extends MusicBeatState {
 					Reflect.deleteField(json.song, "picocharts");
 			} else {
 				Reflect.deleteField(json.song, "picocharts");
+			}
+			if (json.song.vmanEventOrder == null || json.song.vmanEventOrder.length == 0) {
+				Reflect.deleteField(json.song, "vmanEventOrder");
+			}
+			if (json.song.actions == null || json.song.actions.length == 0) {
+				Reflect.deleteField(json.song, "actions");
+			}
+			if (json.song.usedNoteTypes == null || json.song.usedNoteTypes.length == 0 || (json.song.usedNoteTypes.length == 1 && json.song.usedNoteTypes[0] == "Normal Note")) {
+				Reflect.deleteField(json.song, "usedNoteTypes");
 			}
 			_song.usedNoteTypes = shrunkNoteTypeArr;
 		}

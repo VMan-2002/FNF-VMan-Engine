@@ -16,8 +16,8 @@ class MenuItem extends FlxSpriteGroup
 	public var redFlash:Int = 0;
 	public var flashColor:Int = 0xFF33ffff;
 
-	public function new(x:Float, y:Float, weekNum:String = "week0", ?modName:String = "")
-	{
+	public function new(x:Float, y:Float, weekNum:String = "week0", ?modName:String = "") {
+		moves = false;
 		super(x, y);
 		week = new FlxSprite().loadGraphic(Paths.image('storymenu/' + weekNum));
 		var assetsPath = 'assets/shared/images/storymenu/${weekNum}.png';

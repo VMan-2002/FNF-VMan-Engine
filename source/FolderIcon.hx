@@ -10,9 +10,9 @@ class FolderIcon extends FlxTypedSpriteGroup<FlxSprite>
 	 */
 	public var sprTracker:FlxSprite;
 
-	public function new()
-	{
+	public function new() {
 		super();
+		moves = false;
 		add(new FlxSprite().loadGraphic(Paths.image('menu/folder')));
 		members[0].antialiasing = true;
 	}

@@ -130,6 +130,7 @@ class Stage
 		var result:FlxTypedGroup<SpriteVMan> = new FlxTypedGroup<SpriteVMan>();
 		for (element in elementsList) {
 			var sprite = new SpriteVMan(element.x == null ? 0 : element.x, element.y == null ? 0 : element.y);
+			sprite.moves = false;
 			sprite.antialiasing = element.antialias != false;
 			if (element.animated == true) {
 				sprite.frames = Paths.getSparrowAtlas(element.image);
@@ -192,9 +193,9 @@ class Stage
 		target.charFacing = data.charFacing == null ? [0] : data.charFacing;
 		target.defaultCamZoom = data.defaultCamZoom == null ? 1.05 : data.defaultCamZoom;
 		target.elementsNamed = new Map<String, SpriteVMan>();
-		target.elementsFront = makeElements(data.elementsFront);
-		target.elementsBack = makeElements(data.elementsBack);
-		target.elementsBetween = makeElements(data.elementsBetween);
+		target.elementsFront = makeElements(data.elementsFront, target);
+		target.elementsBack = makeElements(data.elementsBack, target);
+		target.elementsBetween = makeElements(data.elementsBetween, target);
 		trace("elementsFront: "+(target.elementsFront.length)+", elementsBetween: "+(target.elementsBetween.length)+", elementsBack: "+(target.elementsBack.length));
 		target.elementsAll = target.elementsBack.members.concat(target.elementsFront.members).concat(target.elementsBetween.members);
 		target.hide_girlfriend = data.hide_girlfriend == true;

@@ -169,7 +169,7 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 		var instrumentOpponent = diff+"DoubleGuitar";
 		CoolUtil.difficultyArray = [diff];
 		PlayState.storyDifficulty = 0;
-		var isGHL:Bool = instrument.indexOf("GHL") != -1;
+		var isGHL:Bool = instrument.contains("GHL");
 		var lines = content.split("\n");
 		
 		var song = Song.songFunc();
@@ -209,7 +209,7 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 				curSection = linetrim.substring(1, linetrim.length - 1);
 				continue;
 			}
-			if (linetrim.indexOf("=") == -1) continue;
+			if (!linetrim.contains("=")) continue;
 			var splitted:Array<String> = linetrim.split("=");
 			var name:String = splitted[0].trim();
 			var value:Array<String> = splitted[1].split(" ").map(function(s:String) { return s.trim(); }).filter(function(s:String) { return s.length > 0; });

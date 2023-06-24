@@ -108,15 +108,17 @@ class Character extends SpriteVMan
 	public var curDances:Int = 0;
 	public var moduloDances:Int = 1;
 
-	public var cameraOffset:Array<Float> = [0, 0];
 	public var animNoSustain:Bool = false;
 	public var hasMissAnims:Bool = false;
-
 	public var misscolored:Bool = false;
 	public var realcolor(default, set):FlxColor = FlxColor.WHITE;
 
 	public var isGirlfriend = false;
+	
+	public var cameraOffset:Array<Float> = [0, 0];
 	public var noteCameraOffset:Map<String, FlxPoint> = new Map<String, FlxPoint>();
+
+	public var hitNoteByPlayer = false;
 
 	public function set_realcolor(a:FlxColor) {
 		if (!misscolored) {
@@ -127,6 +129,7 @@ class Character extends SpriteVMan
 
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false, ?myMod:String = "") {
 		super(x, y);
+		moves = false;
 
 		curCharacter = character.trim();
 		this.isPlayer = isPlayer;
@@ -1048,8 +1051,8 @@ class Character extends SpriteVMan
 	public static var lastHealthColorIsValid:Bool = false;
 
 	public static function loadCharacterJson(name:String, mod:String) {
-		lastHealthColorIsValid = false;
 		#if !html5
+		lastHealthColorIsValid = false;
 		var thing:String = 'assets/objects/characters/${name}.json';
 		var thingMy:String = 'mods/${mod}/objects/characters/${name}.json';
 		var isMyMod = mod != "" && FileSystem.exists(thingMy);
@@ -1080,10 +1083,8 @@ class Character extends SpriteVMan
 
 		var notes = swagshit.notes;
 
-		for (section in notes)
-		{
-			for (idk in section.sectionNotes)
-			{
+		for (section in notes) {
+			for (idk in section.sectionNotes) {
 				animationNotes.push(idk);
 			}
 		}
@@ -1094,8 +1095,7 @@ class Character extends SpriteVMan
 		animationNotes.sort(sortAnims);
 	}
 
-	function sortAnims(val1:Array<Dynamic>, val2:Array<Dynamic>):Int
-	{
+	function sortAnims(val1:Array<Dynamic>, val2:Array<Dynamic>):Int {
 		return FlxSort.byValues(FlxSort.ASCENDING, val1[0], val2[0]);
 	}
 
@@ -1104,8 +1104,7 @@ class Character extends SpriteVMan
 	}
 
 	@:deprecated("Don't use this, it causes crashes right now and also is basically obsolete in vman engine :)")
-	private function loadOffsetFile(offsetCharacter:String)
-	{
+	private function loadOffsetFile(offsetCharacter:String) {
 		//this doesnt work don't use this :>
 		var daFile:Array<String> = CoolUtil.coolTextFile(Paths.file("images/characters/" + offsetCharacter + "Offsets.txt"));
 
@@ -1157,12 +1156,7 @@ class Character extends SpriteVMan
 			if (Conductor.songPosition > animationNotes[0][0]) {
 				trace('played shoot anim' + animationNotes[0][1]);
 
-				var shootAnim:Int = 1;
-
-				if (animationNotes[0][1] >= 2)
-					shootAnim = 3;
-
-				shootAnim += FlxG.random.int(0, 1);
+				var shootAnim:Int = (animationNotes[0][1] >= 2 ? 3 : 1) + (Math.random() >= 0.5 ? 1 : 0);
 
 				playAnim('shoot' + shootAnim, true);
 				animationNotes.shift();

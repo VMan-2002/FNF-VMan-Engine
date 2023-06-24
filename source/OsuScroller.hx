@@ -60,10 +60,12 @@ class OsuScroller extends FlxTypedGroup<FlxSprite> {
         this.state = state;
         super();
         bg = new FlxSprite().makeGraphic(135, FlxG.height - 10, FlxColor.GRAY, true);
+        bg.moves = false;
         bg.y = 5;
         add(bg);
         bg.updateHitbox();
         dragbar = new FlxSprite().makeGraphic(135, 2, FlxColor.WHITE);
+        dragbar.moves = false;
         add(dragbar);
 
         bg.x = x;

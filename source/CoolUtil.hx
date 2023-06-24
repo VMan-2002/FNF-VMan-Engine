@@ -7,6 +7,7 @@ import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup;
+import flixel.math.FlxMath;
 import flixel.util.FlxArrayUtil;
 import flixel.util.FlxArrayUtil;
 import flixel.util.FlxTimer;
@@ -456,5 +457,75 @@ class CoolUtil
 	public static inline function playSongState(songName:String, modName:Null<String>, week:Null<String>) {
 		setupPlayState(songName, modName, week);
 		return LoadingState.loadAndSwitchState(new PlayState());
+	}
+
+	/**
+		Rounding stuff that makes numbers cool
+	**/
+	public static function roundingStuff(num:Float) {
+		final numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+		inline function addNumberS(a, b) {
+			//return numbers[(numbers.indexOf(a) + b) % 10];
+			return Std.string(Std.parseInt(a) + b);
+		}
+		var base:Int = num < 0 ? Math.ceil(num) : Math.floor(num);
+		var decimal:Int = Math.floor(Math.abs(num - base) * 100000);
+		var sDecimal = Std.string(decimal).split("");
+		var i:Int = 3;
+		while (i > 1) {
+			switch(i) {
+				case 3:
+					if (numbers.indexOf(sDecimal[3]) >= 8) {
+						sDecimal[2] = addNumberS(sDecimal[2], 1);
+						sDecimal[3] = "0";
+					}
+				default:
+					if (numbers.indexOf(sDecimal[i]) <= 2) {
+						sDecimal[i] = "0";
+					} else if (numbers.indexOf(sDecimal[i]) >= 7) {
+						sDecimal[i - 1] = addNumberS(sDecimal[i], 1);
+						sDecimal[i] = "0";
+					}
+			}
+			i -= 1;
+		}
+		return Std.parseFloat(base + "." + sDecimal.join(""));
+	}
+
+	/**
+		Rounding stuff that makes numbers cool (version 2)
+	**/
+	public static function roundingStuff2(num:Float) {
+		var base:Int = num < 0 ? Math.ceil(num) : Math.floor(num);
+		var decimal = Std.string(Math.floor(Math.abs(num - base))).split("");
+		var resultDecimal:Int = 0;
+		var i = decimal.length - 1;
+		while (i > 1) {
+			var n = Std.parseInt(decimal[i]);
+			if (n <= 1)
+				continue;
+			if (n >= 9)
+				n = 10;
+			resultDecimal += n * (10 ^ (i + 1));
+			i -= 1;
+		}
+		return Std.parseFloat(base + "." + decimal.join(""));
+	}
+
+	/**
+		Rounding stuff that makes numbers cool (version 3)
+	**/
+	public static function roundingStuff3(num:Float) {
+		var base:Int = num < 0 ? Math.ceil(num) : Math.floor(num);
+		var decimal = Std.string(Math.floor(Math.abs(num - base))).split("");
+		var i = decimal.length > 3 ? 3 : decimal.length - 1;
+		while (i > 0) {
+			var l = i <= 1;
+			var n = Std.parseInt(decimal[i]);
+			if (n > (l ? 1 : 2) && n < (l ? 8 : 9))
+				return FlxMath.roundDecimal(num, i);
+			i -= 1;
+		}
+		return base;
 	}
 }

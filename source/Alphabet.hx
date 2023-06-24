@@ -178,7 +178,7 @@ class Alphabet extends FlxSpriteGroup
 			var isSymbol:Bool = AlphaCharacter.symbols.indexOf(splitWords[loopNum]) != -1;
 			#end
 
-			if (AlphaCharacter.alphabet.indexOf(splitWords[loopNum].toLowerCase()) != -1 || isNumber || isSymbol)
+			if (!AlphaCharacter.alphabet.contains(splitWords[loopNum].toLowerCase()) || isNumber || isSymbol)
 				// if (AlphaCharacter.alphabet.contains(splitWords[loopNum].toLowerCase()) || isNumber || isSymbol)
 
 			{
@@ -262,6 +262,7 @@ class AlphaCharacter extends FlxSprite
 		super(x, y);
 		var tex = Paths.getSparrowAtlas('alphabet');
 		frames = tex;
+		moves = false;
 
 		antialiasing = true;
 	}

@@ -93,9 +93,9 @@ class HealthIcon extends SpriteVMan
 	
 	//todo: finish making animated health icons
 
-	public function new(char:String = 'bf', isPlayer:Bool = false, ?myMod:String = "")
-	{
+	public function new(char:String = 'bf', isPlayer:Bool = false, ?myMod:String = "") {
 		super();
+		moves = false;
 		scrollFactor.set();
 		this.isPlayer = isPlayer;
 

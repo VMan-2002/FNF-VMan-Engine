@@ -16,7 +16,7 @@ class HudThing extends FlxGroup
 		"misses", "fc", "accSimple", "accRating"
 	];
 	static var spoopyExclude:Array<String> = [
-		"hits", "totalnotes", "difficulty", "engine", "accSimple", "health", "fc", "offset_min", "offset_max", "offset_avg"
+		"hits", "totalnotes", "difficulty", "engine", "accSimple", "health", "fc", "offset_min", "offset_max", "offset_avg", "overTaps", "overStrums"
 	];
 	static var showoffOnly:Array<String> = [
 		"song", "engine"
@@ -25,7 +25,7 @@ class HudThing extends FlxGroup
 
 	public static var hudThingDispTypes:Array<String> = [
 		"song", "difficulty", "modName", //Song info
-		"score", "hits", "misses", "accSimple", "accRating", "fc", "combo", "maxCombo", //performance
+		"score", "hits", "misses", "accSimple", "accRating", "fc", "combo", "maxCombo", "overTaps", "overStrums", //performance
 		"sicks", "goods", "bads", "shits", "imperfects", "totalnotes" //ratings
 	];
 
@@ -39,7 +39,7 @@ class HudThing extends FlxGroup
 		
 		if (list != null) {
 			items = list.filter(function(item) {
-				return !Options.instance.botplay || botplayExclude.indexOf(item) == -1;
+				return !Options.instance.botplay || !botplayExclude.contains(item);
 			});
 			if (PlayState.SONG.actions.contains("hideDifficulty")) {
 				while (items.contains("difficulty"))
@@ -50,6 +50,7 @@ class HudThing extends FlxGroup
 		}
 		this.vertical = vertical;
 		textThing = new FlxText(x, y, 0, "", 20);
+		textThing.moves = false;
 		textThing.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT);
 		textThing.setBorderStyle(FlxTextBorderStyle.OUTLINE, 0xFF000000, 1, 1);
 		Translation.setObjectFont(textThing, "vcr font");
@@ -126,6 +127,10 @@ class HudThing extends FlxGroup
 					text += formatTime(PlayState.instance.songLength - Conductor.songPosition);
 				case "modName":
 					text += ModLoad.primaryMod.name;
+				case "overTaps":
+					text += Translation.getTranslation("hud_overTaps", "playstate", [Std.string(PlayState.instance.overTaps)]);
+				case "overStrums":
+					text += Translation.getTranslation("hud_overStrums", "playstate", [Std.string(PlayState.instance.overStrums)]);
 				default:
 					text += "Unknown: "+items[i];
 			}
@@ -164,7 +169,7 @@ class HudThing extends FlxGroup
 
 	public function doSpoop() {
 		items = items.filter(function(item:String):Bool {
-			return spoopyExclude.indexOf(item) < 0;
+			return spoopyExclude.contains(item);
 		});
 		var a:FlxText = cast members[0];
 		a.font = Paths.font("NotoSansJP-Medium.otf");

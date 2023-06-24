@@ -376,7 +376,7 @@ class FreeplayState extends MusicBeatState
 
 			trace(md);
 		 */
-		if (Options.freeplayFolders && cornflowerMenus.indexOf(inFolder[1]) > -1) {
+		if (Options.freeplayFolders && cornflowerMenus.contains(inFolder[1])) {
 			isCornflower = true;
 		}
 		
@@ -522,7 +522,7 @@ class FreeplayState extends MusicBeatState
 
 		if (controls.BACK) {
 			if (inFolder.length > 1) {
-				if (cornflowerMenus.indexOf(inFolder[inFolder.length-1]) > -1) {
+				if (cornflowerMenus.contains(inFolder[inFolder.length-1])) {
 					isCornflower = false; //you are no longer Corn flower
 					updateIsCornflower();
 				}
@@ -547,7 +547,7 @@ class FreeplayState extends MusicBeatState
 		if (accepted) {
 			if (songs[curSelected].type == 1) {
 				//a folder
-				if (cornflowerMenus.indexOf(songs[curSelected].week) > -1) {
+				if (cornflowerMenus.contains(songs[curSelected].week)) {
 					isCornflower = true; //This is corn flower
 					updateIsCornflower();
 				}

@@ -41,7 +41,7 @@ class PauseSubState extends MusicBeatSubstate
 		//Dont use CoolUtil.playMusic here
 		pauseMusic = new FlxSound().loadEmbedded(Paths.music(pauseMusicName), true, true);
 		pauseMusic.volume = 0;
-		pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
+		pauseMusic.play(false, Math.random() * pauseMusic.length / 2);
 
 		FlxG.sound.list.add(pauseMusic);
 

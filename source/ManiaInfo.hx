@@ -529,7 +529,7 @@ class ManiaInfo {
 				var newThing = new Array<Int>();
 				var v = mi.control_set[k];
 				for (i in 0...v.length) {
-					if (checks.indexOf(v[i]) < 0 && v[i] > 0) {
+					if (!checks.contains(v[i]) && v[i] > 0) {
 						checks.push(v[i]);
 						newThing.push(v[i]);
 					}
@@ -584,7 +584,7 @@ class ManiaInfo {
 		if (maniaInfo.special) {
 			switch(maniaInfo.specialTag) {
 				case "piano": {
-					var pos:Array<Int> = [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 26, 28];
+					final pos:Array<Int> = [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 26, 28];
 					spr.x += 12.5 * (pos[num % maniaInfo.keys] - 14);
 				}
 			}
@@ -594,13 +594,9 @@ class ManiaInfo {
 	//i also put my funny helper funcs here
 
 	public static function ArrayRepeat(max:Int, val:Any):Any {
-		var dumbArray:Array<Int> = [];
+		var dumbArray:Array<Any> = [];
 		for (i in 0...max)
-		{
 			dumbArray.push(val);
-		}
 		return dumbArray;
 	}
-	
-	public static var JudgeNames:Array<String> = ["Sicks", "Goods", "Bads", "Shits", "Misses"];
 }

@@ -2,8 +2,8 @@ package;
 
 typedef SwagSection =
 {
-	var sectionNotes:Array<Dynamic>;
-	var notesMoreLayers:Array<Array<Dynamic>>;
+	var sectionNotes:Array<Array<Dynamic>>;
+	var notesMoreLayers:Array<Array<Array<Dynamic>>>;
 	var lengthInSteps:Int;
 	var typeOfSection:Int;
 	var mustHitSection:Bool;
@@ -40,7 +40,7 @@ class Section
 
 	public static inline function sectionFunc():SwagSection {
 		return {
-			sectionNotes: new Array<Dynamic>(),
+			sectionNotes: new Array<Array<Dynamic>>(),
 			lengthInSteps: 16,
 			typeOfSection: 0,
 			mustHitSection: true,

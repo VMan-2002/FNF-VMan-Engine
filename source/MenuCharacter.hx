@@ -25,6 +25,7 @@ class MenuCharacter extends SpriteVMan {
 
 	public function new(x:Float, character:String = 'bf', ?flipped:Bool = false) {
 		super(x);
+		moves = false;
 
 		this.flipped = flipped;
 		setCharacter(character, "friday_night_funkin");

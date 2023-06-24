@@ -42,6 +42,7 @@ class StrumNote extends FlxSprite
 
 	public function new(x:Float, y:Float, noteData:Int, style:String, parent:StrumLine) {
 		super(x, y);
+		moves = false;
 		this.noteData = noteData;
 		this.parent = parent;
 		downScroll = Options.instance.downScroll;
@@ -142,7 +143,7 @@ class StrumNote extends FlxSprite
 	public function playAppearAnim(?delay:Float = 0) {
 		alpha = 0;
 		new FlxTimer().start(delay, function(timer) {
-			if (animation.getNameList().indexOf("appear") != -1) {
+			if (animation.getNameList().contains("appear")) {
 				playAnim("appear");
 				alpha = 1;
 			} else {

@@ -441,9 +441,9 @@ class Note extends FlxSprite
 
 	public static var swagWidth:Float = 160 * 0.7;
 
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?mania:SwagMania, ?noteType:Int = 0, ?strumLineNum:Int = 0)
-	{
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?mania:SwagMania, ?noteType:Int = 0, ?strumLineNum:Int = 0) {
 		super();
+		moves = false;
 
 		if (prevNote == null)
 			prevNote = this;
@@ -523,7 +523,7 @@ class Note extends FlxSprite
 					animation.addByPrefix('${myArrow}holdstart', '${noteAnimPrefix}${myArrow} hold start', 24);
 				} else {
 					for (anim in noteSkin.arrows[myArrow]) {
-						if (noteAnimExclude.indexOf(anim.name) > -1) {
+						if (noteAnimExclude.contains(anim.name)) {
 							continue;
 						}
 						animation.addByPrefix(

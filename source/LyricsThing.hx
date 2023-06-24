@@ -83,6 +83,7 @@ class LyricsThing extends FlxGroup {
 		
 		lyrText = new FlxText(FlxG.width * 0.1, FlxG.height * 0.75, FlxG.width * 0.9, "")
 			.setFormat("VCR OSD Mono", 10, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		lyrText.moves = false;
 		add(lyrText);
 	}
 

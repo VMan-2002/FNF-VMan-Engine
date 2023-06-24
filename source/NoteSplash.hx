@@ -39,6 +39,7 @@ class NoteSplash extends FlxSprite
 	public function playNoteSplash(thing:StrumNote, daNote:Note) {
 		x = thing.x;
 		y = thing.y;
+		moves = false;
 		var skinColor = Note.loadedNoteSkins.exists(thing.curStyle) ? Note.loadedNoteSkins.get(thing.curStyle).arrowColors.get(thing.parent.thisManiaInfo.arrows[daNote.noteData]) : null;
 		if (skinColor != null) {
 			color.setRGB(skinColor[0], skinColor[1], skinColor[2]);

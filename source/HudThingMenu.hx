@@ -141,6 +141,7 @@ class HudThingMenu extends MusicBeatState {
 				var shifty = (curRow == i1 && curSel <= i2 && dragging);
 				var yp = 20 + ((curRow != 0 && shifty ? i2 + 1 : i2) * 16);
 				var textObj = new FlxText(xp, yp, w, hudThingArrays[i1][i2], 16);
+				textObj.moves = false;
 				if (!dragging && curRow == i1 && curSel == i2) {
 					textObj.color = FlxColor.YELLOW;
 					textGrabPos = textThings.length;

@@ -34,7 +34,7 @@ class PlayStateChangesSubState extends OptionsSubStateBasic
 			case "confusion":
 				return ["Notes may sometimes appear visually in wrong lanes.", Options.saved.playstate_confusion ? "Enabled" : "Disabled"];
 			case "clear gameplay changes":
-				var any = [Options.saved.playstate_bothside, Options.saved.playstate_opponentmode, Options.saved.playstate_endless, Options.saved.playstate_guitar, Options.saved.playstate_confusion].indexOf(true) != -1;
+				var any = [Options.saved.playstate_bothside, Options.saved.playstate_opponentmode, Options.saved.playstate_endless, Options.saved.playstate_guitar, Options.saved.playstate_confusion].contains(true);
 				return ["Disable all currently enabled changes.", any ? "Not cleared" : "Cleared"];
 		}
 		return ["Unknown option.", name, 'unknownOption'];
