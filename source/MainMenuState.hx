@@ -16,10 +16,10 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
+// import io.newgrounds.NG;
 import lime.app.Application;
 
 using StringTools;
-//import io.newgrounds.NG;
 #if desktop
 import Discord.DiscordClient;
 #end
@@ -71,6 +71,9 @@ class MainMenuState extends MusicBeatState
 		SwagUIStyle.clearLoadedUIStyles();
 
 		persistentUpdate = persistentDraw = true;
+
+		Scripting.clearScriptsByContext("MainMenuState");
+		Scripting.initScriptsByContext("MainMenuState");
 
 		var bg:FlxSprite = CoolUtil.makeMenuBackground('', -80);
 		bg.setGraphicSize(Std.int(bg.width * 1.1));
@@ -133,6 +136,7 @@ class MainMenuState extends MusicBeatState
 		OptionsMenu.wasInPlayState = false;
 
 		super.create();
+		Scripting.runOnScripts("statePostInit", ["MainMenuState"]);
 	}
 	
 	public inline static function returnToMenuFocusOn(item:String) {

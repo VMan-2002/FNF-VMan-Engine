@@ -475,6 +475,11 @@ class PlayState extends MusicBeatState
 		
 		var customStageCharPos:Array<Array<Float>> = null;
 
+		//Script inits
+		Scripting.clearScriptsByContext("PlayStateSong");
+		Scripting.initScriptsByContext("PlayState");
+		new Scripting('data/${curSong}/script', modName, "PlayStateSong");
+
 		switch (curStage) {
 		    case 'philly':  {
 				Paths.setCurrentLevel("week3");
@@ -1026,10 +1031,6 @@ class PlayState extends MusicBeatState
 			#end
 		}*/
 
-		Scripting.clearScriptsByContext("PlayStateSong");
-
-		new Scripting('data/${curSong}/script.hx', modName, "PlayStateSong");
-
 		if (isStoryMode) {
 			if (SONG.actions.contains("winterHorrorlandIntro")) {
 				var blackScreen:FlxSprite = new FlxSprite(0, 0).makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2), FlxColor.BLACK);
@@ -1086,6 +1087,8 @@ class PlayState extends MusicBeatState
 		super.create();
 
 		ErrorReportSubstate.displayReport();
+
+		Scripting.runOnScripts("statePostInit", ["PlayState"]);
 	}
 
 	function schoolIntro(?dialogueBox:DialogueBoxVMan):Void {

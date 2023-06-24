@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxG;
 import flixel.math.FlxMath;
+import flixel.util.FlxTimer;
 import hscript.Interp;
 import hscript.Parser;
 import sys.FileSystem;
@@ -22,7 +23,8 @@ class Scripting {
         "CoolUtil" => CoolUtil,
         "Paths" => Paths,
         "Math" => Math,
-        "FlxMath" => FlxMath
+        "FlxMath" => FlxMath,
+        "FlxTimer" => FlxTimer
     ];
 
     var validFuncs:Map<String, Bool>;
@@ -31,9 +33,7 @@ class Scripting {
     var context:String;
 
     public static function clearScripts() {
-        for (thing in scripts) {
-            thing.runFunction("destroy", new Array<Dynamic>());
-        }
+        runOnScripts("destroy", new Array<Dynamic>());
         namedScripts.clear();
         scripts.resize(0);
     }
@@ -58,6 +58,13 @@ class Scripting {
         }
     }
 
+    public static function runOnScriptsNoWhitelist(funcName:String, args:Array<Dynamic>) {
+        for (script in scripts) {
+            if (Reflect.isFunction(script.interp.variables.get(funcName)))
+                Reflect.callMethod(script, script.interp.variables.get(funcName), args);
+        }
+    }
+
     public static function runModchartUpdateOnScripts() {
         if (!Options.instance.modchartEnabled)
             return;
@@ -66,23 +73,35 @@ class Scripting {
         }
     }
 
+    public static function initScriptsByContext(context:String) {
+        for (mod in ModLoad.enabledMods) {
+            new Scripting("scripts/context/"+context, mod, context);
+        }
+    }
+
     public function new(name:String, ?modName:String, ?context:String = "") {
         id = '${modName}:${name}';
-        this.context = context;
-        var filepath = 'mods/${modName}/${name}';
+        var filepath = modName == "" ? 'assets/${name}.hx' : 'mods/${modName}/${name}.hx';
         if (!namedScripts.exists(id) && FileSystem.exists(filepath)) {
-            namedScripts.set(id, this);
-            scripts.push(this);
+            this.context = context;
             interp = new Interp();
             interp.variables.set("vmanScriptID", id);
+            interp.variables.set("vmanScriptName", name);
+            interp.variables.set("vmanScriptMod", modName);
+            interp.variables.set("vmanIsPrimaryMod", modName == ModLoad.primaryMod.id);
+            parser.line = 1;
             for (thing in classThings.keys())
                 interp.variables.set(thing, classThings.get(thing));
             try {
                 interp.execute(parser.parseString(File.getContent(filepath)));
             } catch (err) {
-                trace("Error \""+err.message+"\" while loading loading script "+id+". details: "+err.details);
+                trace('Error while loading loading script ${id}: ${err.message}');
+                return;
             }
-            checkValidFuncs(["init", "update", "updateModchart", "destroy"]);
+            scripts.push(this);
+            namedScripts.set(id, this);
+            checkValidFuncs(["postStateInit", "update", "updateModchart", "destroy", "beatHit", "stageInit"]);
+            trace("Success Load script: "+id);
         }
     }
 

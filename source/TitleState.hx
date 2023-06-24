@@ -86,11 +86,13 @@ class TitleState extends MusicBeatState {
 		this.toPlayState = toPlayState;
 
 		if (reloadingMods) {
+			Scripting.clearScripts();
 			SwagNoteType.clearLoadedNoteTypes();
 			SwagNoteSkin.clearLoadedNoteSkins();
 			SwagUIStyle.clearLoadedUIStyles();
 			Character.charHealthIcons.clear();
 		}
+		Scripting.initScriptsByContext("Global");
 
 		super();
 	}

@@ -46,6 +46,7 @@ typedef SwagStage =
 	var extraCamPos:Array<Array<Float>>;
 	var charFacing:Null<Array<Int>>;
 	var charBetween:Null<Array<Int>>;
+	var library:Null<String>;
 }
 
 class Stage
@@ -120,7 +121,8 @@ class Stage
 			charFacing: [0],
 			charZoom: null,
 			extraCamPos: new Array<Array<Float>>(),
-			charBetween: [2]
+			charBetween: [2],
+			library: null
 		};
 	}
 
@@ -179,16 +181,18 @@ class Stage
 		if (mod == null) {
 			mod = PlayState.modName;
 		}
-		createStage(getStage(name, mod), this);
+		new Scripting("objects/stages/"+name, mod, "Stage");
+		new Scripting("objects/stages/"+name, "", "Stage"); //let basegame scripts exist :)
+		Scripting.runOnScripts("stageInit", [name, mod, createStage(getStage(name, mod), this)]);
 	}
 
 	public static function createStage(data:Null<SwagStage>, ?target:Stage):Stage {
-		if (data == null) {
+		if (data == null)
 			return new Stage();
-		}
-		if (target == null) {
+		if (target == null)
 			target = new Stage();
-		}
+		if (data.library != null && data.library != "")
+			Paths.setCurrentLevel(data.library);
 		target.charPosition = data.charPosition == null ? [[770,100],[100,100],[400,130]] : data.charPosition;
 		target.charFacing = data.charFacing == null ? [0] : data.charFacing;
 		target.defaultCamZoom = data.defaultCamZoom == null ? 1.05 : data.defaultCamZoom;

@@ -77,8 +77,8 @@ class MusicBeatState extends FlxUIState
 			beatHit();
 	}
 
-	public function beatHit():Void
-	{
+	public function beatHit():Void {
+		Scripting.runOnScripts("beatHit", [curBeat]);
 		//do literally nothing dumbass
 	}
 

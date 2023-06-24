@@ -181,6 +181,7 @@ class CoolUtil
 	public static function makeMenuBackground(type:String = "", x:Float = 0, y:Float = 0):FlxSprite {
 		var bg:FlxSprite = new FlxSprite(x, y).loadGraphic(Paths.image('menuBG${type}'));
 		bg.antialiasing = true;
+		bg.moves = false;
 		return bg;
 	}
 	
