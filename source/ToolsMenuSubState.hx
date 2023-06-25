@@ -39,6 +39,7 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			//"Spritesheet Tool",
 			//"Noteskin Creator",
 			"Clone Hero Import",
+			"Unload Scripts",
 			"Documentation"
 		];
 	}
@@ -98,6 +99,21 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 				return ["Strip unneeded data from saved files such as charts, drastically reducing the file size.", Options.dataStrip ? "Enabled" : "Disabled", "confusion"];
 			case "documentation":
 				return ["Learn a few things about developing stuff in VMan Engine.", "", "activate new mods"];
+			case "unload scripts":
+				var list = "Currently loaded:\n";
+				if (Scripting.scripts.length == 0) {
+					list = "No scripts loaded";
+				} else {
+					var counts = new Map<String, Int>();
+					for (thing in Scripting.scripts) {
+						var modFrom = thing.id.substring(0, thing.id.indexOf(":"));
+						counts[modFrom] = counts.exists(modFrom) ? (counts[modFrom] + 1) : 1;
+					}
+					for (name in counts.keys()) {
+						list += counts[name] + " from " + name + "\n";
+					}
+				}
+				return ["Unload all currently loaded scripts.", list, "unknownOption"];
 		}
 		return ["Unknown option.", '', 'unknownOption'];
 	}
@@ -134,6 +150,9 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			case "stage editor":
 				FlxG.state.closeSubState();
 				FlxG.switchState(new StageEditorState());
+			case "unload scripts":
+				Scripting.clearScripts();
+				return true;
 		}
 		return false;
 	}

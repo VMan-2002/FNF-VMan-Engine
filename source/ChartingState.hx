@@ -119,8 +119,7 @@ class ChartingState extends MusicBeatState {
 
 	var osuScroller:OsuScroller;
 
-	override function create()
-	{
+	override function create() {
 		if (snapMults.length == 0) {
 			//read from data/charting_snapMults.txt
 			var snapMultsStr:String = Assets.getText(Paths.txt("charting_snapMults"));
@@ -133,8 +132,11 @@ class ChartingState extends MusicBeatState {
 			}
 			if (snapMults.length == 0) {
 				snapMults.push(1);
+				snapMultNames.push("16/16");
 			}
-			if (snapMults.length == 1) {
+			if (snapMults.contains(1)) {
+				curSnapMult = snapMults.indexOf(1);
+			} else if (snapMults.length == 1) {
 				curSnapMult = 0;
 			}
 		}
@@ -1496,9 +1498,8 @@ class ChartingState extends MusicBeatState {
 	function getSectionNotes():Array<Array<Dynamic>> {
 		if (curNotesLayer > 0) {
 			return _song.notes[curSection].notesMoreLayers[curNotesLayer - 1];
-		} else {
-			return _song.notes[curSection].sectionNotes;
 		}
+		return _song.notes[curSection].sectionNotes;
 	}
 
 	/*function calculateSectionLengths(?sec:SwagSection):Int

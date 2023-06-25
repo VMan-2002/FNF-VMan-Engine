@@ -86,6 +86,8 @@ class Achievements
 			//hmm should i do this
 			case "modFunkboxPlay":
 				return ["Beepy on a Friday Night", "Complete a Story Mode week from `Friday Night Funkbox`."];
+			case "modRegGuitPlay":
+				return ["Very regular indeed", "Complete a song from `Regular Guitar Song`."];
 		}
 		return ["Unknown Achievement: "+name, "This is likely a bug, tell VMan about this."];
 	}

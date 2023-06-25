@@ -180,6 +180,8 @@ class MainMenuState extends MusicBeatState
 		} else {
 			resetControlsTimer = 0;
 		}
+
+		Scripting.runOnScripts("update", [FlxG.elapsed]);
 		
 		if (FlxG.sound.music.volume < 0.8) {
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
@@ -249,15 +251,12 @@ class MainMenuState extends MusicBeatState
 								switch (optionShit[curSelected]) {
 									case 'story mode':
 										FlxG.switchState(new StoryMenuState());
-										trace("Story Menu Selected");
 									case 'freeplay':
 										FlxG.switchState(new FreeplayState());
-										trace("Freeplay Menu Selected");
 									case 'options':
 										FlxG.switchState(new OptionsMenu());
 									case 'mods':
 										FlxG.switchState(new ModsMenuState());
-										trace("Mods Menu Selected");
 									case 'credits':
 										FlxG.switchState(new CreditsState());
 								}

@@ -24,13 +24,22 @@ class Scripting {
         "Paths" => Paths,
         "Math" => Math,
         "FlxMath" => FlxMath,
-        "FlxTimer" => FlxTimer
+        "FlxTimer" => FlxTimer,
+        "Scripting" => Scripting,
+        "ScriptingCustomState" => ScriptingCustomState
     ];
 
-    var validFuncs:Map<String, Bool>;
-    var interp:Interp;
-    var id:String;
-    var context:String;
+    public var validFuncs:Map<String, Bool>;
+    public var interp:Interp;
+    public var id:String;
+    public var modName:String;
+    public var name:String;
+    public var context:String;
+    //public var exitStateDelete:Bool = false;
+
+    public static function getScript(name:String, modName:String, ?context:String = "") {
+        return namedScripts.exists('${modName}:${name}') ? namedScripts['${modName}:${name}'] : new Scripting(name, modName, context);
+    }
 
     public static function clearScripts() {
         runOnScripts("destroy", new Array<Dynamic>());
@@ -73,6 +82,13 @@ class Scripting {
         }
     }
 
+    //todo: do i need this
+    /*public static function runStatePostInitOnScripts(arr:Array<String>) {
+        for (script in scripts) {
+            script.runStatePostInit(arr);
+        }
+    }*/
+
     public static function initScriptsByContext(context:String) {
         for (mod in ModLoad.enabledMods) {
             new Scripting("scripts/context/"+context, mod, context);
@@ -81,14 +97,13 @@ class Scripting {
 
     public function new(name:String, ?modName:String, ?context:String = "") {
         id = '${modName}:${name}';
-        var filepath = modName == "" ? 'assets/${name}.hx' : 'mods/${modName}/${name}.hx';
+        var filepath = modName == "" ? 'assets/${name}.hxs' : 'mods/${modName}/${name}.hxs';
         if (!namedScripts.exists(id) && FileSystem.exists(filepath)) {
             this.context = context;
             interp = new Interp();
-            interp.variables.set("vmanScriptID", id);
-            interp.variables.set("vmanScriptName", name);
-            interp.variables.set("vmanScriptMod", modName);
+            interp.variables.set("vmanScript", this);
             interp.variables.set("vmanIsPrimaryMod", modName == ModLoad.primaryMod.id);
+            interp.variables.set("killScript", killScript);
             parser.line = 1;
             for (thing in classThings.keys())
                 interp.variables.set(thing, classThings.get(thing));
@@ -100,7 +115,7 @@ class Scripting {
             }
             scripts.push(this);
             namedScripts.set(id, this);
-            checkValidFuncs(["postStateInit", "update", "updateModchart", "destroy", "beatHit", "stageInit"]);
+            checkValidFuncs(["statePostInit", "update", "modchartUpdate", "destroy", "beatHit", "stageInit", "onAccept", "onBack"]);
             trace("Success Load script: "+id);
         }
     }
@@ -120,13 +135,19 @@ class Scripting {
         }
     }
 
-    public function runFunction(funcName:String, args:Array<Dynamic>) {
-        if (validFuncs.exists(funcName))
-            Reflect.callMethod(this, interp.variables.get(funcName), args);
+    public function runFunction(funcName:String, args:Array<Dynamic>):Dynamic {
+        return validFuncs.exists(funcName) ? Reflect.callMethod(this, interp.variables.get(funcName), args) : null;
     }
 
     public inline function runModchartUpdate() {
         if (Options.instance.modchartEnabled)
             runFunction("modchartUpdate", [FlxG.elapsed]);
     }
+
+    /*public inline function runStatePostInit(arr:Array<String>) {
+        if (exitStateDelete && arr[0] != context)
+            killScript();
+        else
+            runFunction("statePostInit", arr);
+    }*/
 }

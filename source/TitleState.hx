@@ -286,6 +286,7 @@ class TitleState extends MusicBeatState {
 	}
 
 	function startIntro() {
+		Scripting.initScriptsByContext("TitleState");
 		
 		if (!initialized || replayTitle) {
 			if (FlxG.sound.music != null) {
@@ -353,6 +354,8 @@ class TitleState extends MusicBeatState {
 			initialized = true;
 
 		// credGroup.add(credTextShit);
+
+		Scripting.runOnScripts("statePostInit", ["TitleState"]);
 	}
 
 	function getIntroTextShit():Array<Array<String>> {
@@ -374,6 +377,8 @@ class TitleState extends MusicBeatState {
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
 		// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);
+
+		Scripting.runOnScripts("update", [elapsed]);
 
 		if (FlxG.keys.justPressed.F) {
 			FlxG.fullscreen = !FlxG.fullscreen;

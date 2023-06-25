@@ -61,11 +61,11 @@ class FreeplayState extends MusicBeatState
 	public var intendedScore:Int = 0;
 	public var folderDirText:FlxText;
 
-	private var grpSongs:FlxTypedGroup<Alphabet>;
-	private var curPlaying:Bool = false;
+	public var grpSongs:FlxTypedGroup<Alphabet>;
+	public var curPlaying:Bool = false;
 
-	private var iconArray:Array<HealthIcon> = [];
-	private var icon2Array:Array<FolderIcon> = [];
+	public var iconArray:Array<HealthIcon> = [];
+	public var icon2Array:Array<FolderIcon> = [];
 	
 	var categories:Map<Int, Array<SongMetadata>>;
 	public static var inFolder:Array<Int> = [0];
@@ -83,6 +83,7 @@ class FreeplayState extends MusicBeatState
 	public var highscoreNotif:HighscoreNotification;
 
 	//too lazy to implement scripting right now, so it's hardcoded :^)
+	//But now I have implemented scripting so I can start to remove this
 	var isCornflower:Bool = false;
 	var cornflowerMenus:Array<Int> = new Array<Int>();
 	var cornflowerClass:CornflowerFreeplay;
@@ -395,9 +396,7 @@ class FreeplayState extends MusicBeatState
 	public function makeSonglist(list:Array<SongMetadata>) {
 		songs = list;
 		
-		remove(grpSongs);
-		grpSongs = new FlxTypedGroup<Alphabet>();
-		add(grpSongs);
+		CoolUtil.clearMembers(grpSongs);
 		
 		while (iconArray.length != 0)
 			remove(iconArray.pop());

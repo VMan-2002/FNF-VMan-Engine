@@ -65,4 +65,8 @@ class MusicBeatSubstate extends FlxSubState
 	{
 		//do literally nothing dumbass
 	}
+
+	public function switchToThis() {
+		FlxG.state.switchTo(this);
+	}
 }
