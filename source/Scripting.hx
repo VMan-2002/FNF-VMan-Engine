@@ -152,6 +152,10 @@ class Scripting {
             runFunction("statePostInit", arr);
     }*/
 
+    public static function path(name:String, mod:String) {
+        return 'scripts/${mod}/${name}';
+    }
+
     //Epic Shared vars !!
     public static var sharedVars = new Map<String, Dynamic>();
 

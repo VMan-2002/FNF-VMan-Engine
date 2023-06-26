@@ -18,6 +18,10 @@ class ScriptingCustomState extends MusicBeatSubstate {
 	public var modName:String;
 	public var path:String;
 
+	public static function cat(name:String, modName:String) {
+		return new ScriptingCustomState(Scripting.path(name, modName), modName);
+	}
+
 	public function new(path:String, modName:String) {
 		super();
 		id = '${modName}:${path}';
