@@ -396,7 +396,12 @@ class FreeplayState extends MusicBeatState
 	public function makeSonglist(list:Array<SongMetadata>) {
 		songs = list;
 		
-		CoolUtil.clearMembers(grpSongs);
+		if (grpSongs == null) {
+			grpSongs = new FlxTypedGroup<Alphabet>();
+			add(grpSongs);
+		} else {
+			CoolUtil.clearMembers(grpSongs);
+		}
 		
 		while (iconArray.length != 0)
 			remove(iconArray.pop());

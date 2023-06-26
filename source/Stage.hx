@@ -70,6 +70,8 @@ class Stage
 	public var extraCamPos:Array<Array<Float>> = [[0, 0, 0]];
 	public var charZoom:Array<Null<Float>>;
 	public var charBetween:Null<Array<Int>>;
+	public var library:String;
+
 
 	public static function getStage(name:String, ?mod:Null<String>):Null<SwagStage> {
 		if (mod == null) {
@@ -169,7 +171,7 @@ class Stage
 	}
 
 	//constructor
-	public function new(?name:Null<String>, ?mod:Null<String>):Void {
+	public function new(?name:Null<String>, ?mod:Null<String>, ?loadLibNow:Bool = false):Void {
 		if (name == null) {
 			elementsFront = new FlxTypedGroup<SpriteVMan>();
 			elementsBack = new FlxTypedGroup<SpriteVMan>();
@@ -183,7 +185,10 @@ class Stage
 		}
 		new Scripting("objects/stages/"+name, mod, "Stage");
 		new Scripting("objects/stages/"+name, "", "Stage"); //let basegame scripts exist :)
-		Scripting.runOnScripts("stageInit", [name, mod, createStage(getStage(name, mod), this)]);
+		var stageDat = getStage(name, mod);
+		if (loadLibNow)
+			Paths.setCurrentLevel(stageDat.library);
+		Scripting.runOnScripts("stageInit", [name, mod, createStage(stageDat, this)]);
 	}
 
 	public static function createStage(data:Null<SwagStage>, ?target:Stage):Stage {
@@ -191,8 +196,7 @@ class Stage
 			return new Stage();
 		if (target == null)
 			target = new Stage();
-		if (data.library != null && data.library != "")
-			Paths.setCurrentLevel(data.library);
+		target.library = data.library;
 		target.charPosition = data.charPosition == null ? [[770,100],[100,100],[400,130]] : data.charPosition;
 		target.charFacing = data.charFacing == null ? [0] : data.charFacing;
 		target.defaultCamZoom = data.defaultCamZoom == null ? 1.05 : data.defaultCamZoom;

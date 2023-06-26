@@ -127,7 +127,7 @@ class Character extends SpriteVMan
 		return a;
 	}
 
-	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false, ?myMod:String = "") {
+	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false, ?myMod:String = "", ?addToArray:Bool = true) {
 		super(x, y);
 		moves = false;
 
@@ -135,7 +135,9 @@ class Character extends SpriteVMan
 		this.isPlayer = isPlayer;
 		healthIcon = curCharacter;
 		
-		if (activeArray != null) {
+		if (addToArray) {
+			if (activeArray == null)
+				activeArray = new Array<Character>();
 			thisId = nextId;
 			activeArray[thisId] = this;
 			nextId += 1;
@@ -1044,6 +1046,19 @@ class Character extends SpriteVMan
 		
 		danceType = hasAnim("danceLeft");
 		dance();
+	}
+
+	function initCharacter(name:String, modName:String) {
+		//todo: put the character loading code here
+	}
+
+	public function changeCharacter(name:String, modName:String) {
+		x -= positionOffset[0];
+		y -= positionOffset[1];
+		animation.destroyAnimations();
+		animOffsets.clear();
+		initCharacter(name, modName);
+		applyPositionOffset();
 	}
 
 	public static var charHealthIcons:Map<String, String> = new Map<String, String>();

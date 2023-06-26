@@ -102,7 +102,7 @@ class StageEditorState extends MusicBeatState
 		}
 		PlayState.modName = modStageIsFrom;
 
-		stageObj = new Stage(daAnim, modStageIsFrom);
+		stageObj = new Stage(daAnim, modStageIsFrom, true);
 
 		objectGroups.push(new FlxTypedGroup<FlxTypedGroup<FlxSprite>>());
 		objectGroups.push(stageObj.elementsBack);

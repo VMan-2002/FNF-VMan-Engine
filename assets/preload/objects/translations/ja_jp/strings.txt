@@ -233,6 +233,8 @@ playstate_hud_bads::Bads:#0
 playstate_hud_shits::Shits:#0
 playstate_hud_misses::Misses:#0
 playstate_hud_totalnotes::TotalNotes:#0
+playstate_hud_overtaps::OverTaps:#0
+playstate_hud_overstrums::OverStrums:#0
 playstate_hud_engine::VMan Engine
 playstate_hud_engine botplay::VMan Engine (Botplay)
 playstate_pause_resume::続ける

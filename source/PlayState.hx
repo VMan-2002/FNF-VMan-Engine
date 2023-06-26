@@ -690,7 +690,7 @@ class PlayState extends MusicBeatState
 			}
 			default: { //load custom stage
 				trace('loading custom stage '+curStage);
-				currentStage = new Stage(curStage);
+				currentStage = new Stage(curStage, modName, true);
 				currentStageBack = currentStage.elementsBack;
 				currentStageFront = currentStage.elementsFront;
 				currentStageBetween = currentStage.elementsBetween;
@@ -774,7 +774,7 @@ class PlayState extends MusicBeatState
 			gf.moduloDances *= 2; //fix dances
 		}
 
-		if (SONG.picospeaker != null && SONG.picospeaker.length > 0)
+		if (SONG.picospeaker != null && SONG.picospeaker.length != 0)
 			gf.loadMappedAnims(Highscore.formatSong(SONG.song), SONG.picospeaker);
 
 		// REPOSITIONING PER STAGE

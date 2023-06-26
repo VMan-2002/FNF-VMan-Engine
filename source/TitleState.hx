@@ -91,6 +91,7 @@ class TitleState extends MusicBeatState {
 			SwagNoteSkin.clearLoadedNoteSkins();
 			SwagUIStyle.clearLoadedUIStyles();
 			Character.charHealthIcons.clear();
+			Scripting.sharedVars.clear();
 		}
 		Scripting.initScriptsByContext("Global");
 
@@ -160,7 +161,7 @@ class TitleState extends MusicBeatState {
 
 		Highscore.load();
 		
-		stageObject = new Stage("_FnfTitle");
+		stageObject = new Stage("_FnfTitle", null, true);
 
 		if (FlxG.save.data.weekUnlocked != null) {
 			//We don't need this anymore

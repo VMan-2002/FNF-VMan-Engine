@@ -150,4 +150,26 @@ class Scripting {
         else
             runFunction("statePostInit", arr);
     }*/
+
+    //Epic Shared vars !!
+    public static var sharedVars = new Map<String, Dynamic>();
+
+    public static function listSharedVarsByNamespace(namespace:String, ?arr:Array<String>) {
+        if (arr == null)
+            arr = new Array<String>();
+        for (n in sharedVars.keys()) {
+            if (n.startsWith(namespace + ":")) {
+                arr.push(n);
+            }
+        }
+        return arr;
+    }
+
+    public static function clearSharedVarsByNamespace(namespace:String) {
+        for (n in sharedVars.keys()) {
+            if (n.startsWith(namespace + ":")) {
+                sharedVars.remove(n);
+            }
+        }
+    }
 }

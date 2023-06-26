@@ -17,8 +17,7 @@ class Paths
 
 	static var currentLevel:String;
 
-	static public function setCurrentLevel(name:String)
-	{
+	static public function setCurrentLevel(name:Null<String>) {
 		currentLevel = name.toLowerCase();
 	}
 
