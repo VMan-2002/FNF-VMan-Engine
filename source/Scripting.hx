@@ -10,12 +10,15 @@ import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
+import haxe.Constraints.IMap;
 import hscript.Interp;
 import hscript.Parser;
 import sys.FileSystem;
 import sys.io.File;
 
 using StringTools;
+
+//class MyFlxColor extends FlxColor {}
 
 class Scripting {
     public static var parser:Parser = new Parser();
@@ -40,7 +43,7 @@ class Scripting {
         "FlxBackdrop" => FlxBackdrop,
         "SpriteVMan" => SpriteVMan,
         "FlxTween" => FlxTween,
-        "FlxColor" => FlxColor,
+        //"FlxColor" => MyFlxColor, //why cant i put FlxColor here ????????? wtf!!!!!!!!!
         "FlxCamera" => FlxCamera
     ];
 
