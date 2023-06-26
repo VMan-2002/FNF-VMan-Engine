@@ -421,7 +421,7 @@ class CoolUtil
 		
 		Doesn't set `PlayState.storyDifficulty` or `PlayState.isStoryMode` variables, you should do those before calling this function!
 	**/
-	public static function setupPlayState(songName:String, modName:Null<String>, week:Null<String>) {
+	public static function setupPlayState(songName:String, ?modName:Null<String>, ?week:Null<String>, ?difficulty:Null<String>) {
 		if (modName == null)
 			PlayState.modName = modName;
 		
@@ -435,6 +435,12 @@ class CoolUtil
 			}
 		}
 
+		if (difficulty != null) {
+			if (!CoolUtil.difficultyArray.contains(difficulty))
+				difficulty = "Normal";
+			PlayState.storyDifficulty = CoolUtil.difficultyArray.contains(difficulty) ? CoolUtil.difficultyArray.indexOf(difficulty) : 0;
+		}
+
 		var poop:String = Highscore.formatSong(songName, PlayState.storyDifficulty);
 
 		trace(poop);
@@ -445,7 +451,7 @@ class CoolUtil
 		PlayState.usedBotplay = false;
 
 		//PlayState.storyWeek = songs[curSelected].week;
-		PlayState.storyWeek = week == null ? "week1" : week;
+		PlayState.storyWeek = week == null ? "" : week;
 		trace('CUR WEEK' + PlayState.storyWeek);
 		CoolUtil.resetMenuMusic();
 	}
@@ -455,8 +461,8 @@ class CoolUtil
 		
 		Doesn't set `PlayState.storyDifficulty` or `PlayState.isStoryMode` variables, you should do those before calling this function!
 	**/
-	public static inline function playSongState(songName:String, modName:Null<String>, week:Null<String>) {
-		setupPlayState(songName, modName, week);
+	public static inline function playSongState(songName:String, ?modName:Null<String>, ?week:Null<String>, ?difficulty:Null<String>) {
+		setupPlayState(songName, modName, week, difficulty);
 		return LoadingState.loadAndSwitchState(new PlayState());
 	}
 

@@ -8,6 +8,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
+import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
@@ -48,7 +49,12 @@ class Scripting {
         //"FlxColor" => MyFlxColor, //why cant i put FlxColor here ????????? wtf!!!!!!!!!
         "FlxCamera" => FlxCamera,
         "FlxSpriteGroup" => FlxSpriteGroup,
-        "FlxTypedGroup" => FlxTypedGroup
+        "FlxTypedGroup" => FlxTypedGroup,
+        "FlxEase" => FlxEase,
+        "Highscore" => Highscore,
+        "ModsMenuState" => ModsMenuState,
+        "ScriptUtil" => ScriptUtil,
+        "LoadingState" => LoadingState
     ];
 
     public var validFuncs:Map<String, Bool>;
