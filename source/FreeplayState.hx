@@ -112,14 +112,12 @@ class FreeplayState extends MusicBeatState
 			}
 		}*/
 		
-		
 		var categoryList = new Array<SongMetadata>();
-		
 		categories = new Map<Int, Array<SongMetadata>>();
-		
 		var noFolders = new Array<SongMetadata>();
-		
 		nextCategoryInt = 1;
+
+		Scripting.initScriptsByContext("FreeplayState");
 		
 		#if !html5
 		for (iathing in ModLoad.enabledMods) {
@@ -225,6 +223,7 @@ class FreeplayState extends MusicBeatState
 				}
 			}
 		} else {
+			//I don't think i'm bringing this back ever (because it makes scripting harder)
 			/*//if (StoryMenuState.weekUnlocked[6] || isDebug)
 			if (inFolder.length > 1) {
 				//todo: put an achievement here? when i implement achievemnets anyway
@@ -391,6 +390,8 @@ class FreeplayState extends MusicBeatState
 		}
 
 		super.create();
+
+		Scripting.runOnScripts("statePostInit", ["FreeplayState", null, this]);
 	}
 	
 	public function makeSonglist(list:Array<SongMetadata>) {
@@ -408,6 +409,8 @@ class FreeplayState extends MusicBeatState
 		
 		while (icon2Array.length != 0)
 			remove(icon2Array.pop());
+
+		Scripting.runOnScripts("modifySonglist", [songs, folderNames]);
 
 		for (i in 0...songs.length) {
 			var songText:Alphabet = new Alphabet(0, (70 * i) + 30, songs[i].songName, true, false);

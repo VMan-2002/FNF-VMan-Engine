@@ -136,7 +136,7 @@ class MainMenuState extends MusicBeatState
 		OptionsMenu.wasInPlayState = false;
 
 		super.create();
-		Scripting.runOnScripts("statePostInit", ["MainMenuState"]);
+		Scripting.runOnScripts("statePostInit", ["MainMenuState", null, this]);
 	}
 	
 	public inline static function returnToMenuFocusOn(item:String) {

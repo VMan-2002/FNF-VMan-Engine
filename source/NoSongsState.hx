@@ -10,15 +10,17 @@ import flixel.util.FlxColor;
 class NoSongsState extends MusicBeatState {
 	var goBack:String;
 	var context:String;
-	public override function new(goBack:String, context:String) {
+	var extra:String;
+	public override function new(goBack:String, context:String, ?ext:String = "") {
 		this.goBack = goBack;
 		this.context = context;
+		extra = ext;
 		super();
 	}
 
 	override function create() {
 		var txt:FlxText = new FlxText(0, 0, FlxG.width,
-			Translation.getTranslation("no songs", context, null, "You have no songs!\nYou need to enable a mod first."),
+			context == "customstate" ? Translation.getTranslation("invalid custom state", "engine", [extra], "Invalid custom state script!\nTried to load from script ID:\n" + extra) : Translation.getTranslation("no songs", context, null, "You have no songs!\nYou need to enable a mod first."),
 		32).setFormat("VCR OSD Mono", 32, FlxColor.WHITE, CENTER);
 		txt.screenCenter();
 		add(txt);
@@ -32,8 +34,8 @@ class NoSongsState extends MusicBeatState {
 			MainMenuState.returnToMenuFocusOn(goBack);
 	}
 
-	public static function doThing(goBack:String, context:String) {
+	public static function doThing(goBack:String, context:String, ?ext:String = "") {
 		FlxTransitionableState.skipNextTransIn = true;
-		FlxG.state.switchTo(new NoSongsState(goBack, context));
+		FlxG.state.switchTo(new NoSongsState(goBack, context, ext));
 	}
 }

@@ -294,6 +294,8 @@ class StoryMenuState extends MusicBeatState
 			ModLoad.primaryMod = ModsMenuState.quickModJsonData(weeks[curWeek].modName);
 
 			PlayState.modName = weeks[curWeek].modName;
+
+			Scripting.runOnScripts("onAccept", ["StoryMode", curWeekName, weeks[curWeek].modName]);
 			if (weeks[curWeek].songs.length > 0) {
 				PlayState.storyPlaylist = weeks[curWeek].songs;
 				PlayState.SONG = Song.loadFromJson(Highscore.formatSong(PlayState.storyPlaylist[0], PlayState.storyDifficulty), PlayState.storyPlaylist[0]);

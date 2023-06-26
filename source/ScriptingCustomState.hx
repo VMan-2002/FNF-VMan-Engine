@@ -28,8 +28,13 @@ class ScriptingCustomState extends MusicBeatSubstate {
 
 	public override function create() {
 		super.create();
-		new Scripting(path, modName, "ScriptingCustomState").interp.variables.set("vmanCustomStateInstance", this);
-		thing("statePostInit", ["ScriptingCustomState", id]);
+		var script = new Scripting(path, modName, "ScriptingCustomState");
+		if (script.interp == null) {
+			NoSongsState.doThing("story mode", "custom state", script.id);
+		} else{
+			script.interp.variables.set("vmanCustomStateInstance", this);
+			thing("statePostInit", ["ScriptingCustomState", id, this]);
+		}
 	}
 
 	inline function thing(name:String, arg:Array<Dynamic>) {
@@ -43,7 +48,7 @@ class ScriptingCustomState extends MusicBeatSubstate {
 			thing("onAccept", []);
 		}
 		if (controls.BACK) {
-			thing("onCancel", []);
+			thing("onBack", []);
 		}
 	}
 }

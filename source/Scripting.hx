@@ -133,6 +133,7 @@ class Scripting {
                 validFuncs.set(n, true);
             }
         }
+        return validFuncs;
     }
 
     public function runFunction(funcName:String, args:Array<Dynamic>):Dynamic {

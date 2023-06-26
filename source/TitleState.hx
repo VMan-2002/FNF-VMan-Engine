@@ -356,7 +356,7 @@ class TitleState extends MusicBeatState {
 
 		// credGroup.add(credTextShit);
 
-		Scripting.runOnScripts("statePostInit", ["TitleState"]);
+		Scripting.runOnScripts("statePostInit", ["TitleState", null, this]);
 	}
 
 	function getIntroTextShit():Array<Array<String>> {
