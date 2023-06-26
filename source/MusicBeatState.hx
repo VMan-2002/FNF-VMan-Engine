@@ -103,6 +103,10 @@ class MusicBeatState extends FlxUIState
 		}
 		return add(put);
 	}
+
+	public function switchToThis() {
+		FlxG.state.switchTo(this);
+	}
 	
 	//Script Stuff
 	#if !html5

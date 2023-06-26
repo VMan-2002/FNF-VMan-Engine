@@ -55,18 +55,12 @@ class MusicBeatSubstate extends FlxSubState
 		curStep = lastChange.stepTime + Math.floor((Conductor.songPosition - lastChange.songTime) / Conductor.stepCrochet);
 	}
 
-	public function stepHit():Void
-	{
+	public function stepHit():Void {
 		if (curStep % 4 == 0)
 			beatHit();
 	}
 
-	public function beatHit():Void
-	{
+	public function beatHit():Void {
 		//do literally nothing dumbass
-	}
-
-	public function switchToThis() {
-		FlxG.state.switchTo(this);
 	}
 }
