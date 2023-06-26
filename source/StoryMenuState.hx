@@ -80,6 +80,9 @@ class StoryMenuState extends MusicBeatState
 			}
 		}
 
+		Scripting.initScriptsByContext("StoryMenuState");
+		//todo: using a script to switch to a different state from StoryMenuState softlocks on a black screen, why is that?
+
 		scoreText = new FlxText(10, 10, 0, "SCORE: 49324858", 36);
 		scoreText.setFormat("VCR OSD Mono", 32);
 		Translation.setObjectFont(scoreText, "vcr font");
@@ -267,22 +270,21 @@ class StoryMenuState extends MusicBeatState
 		}
 
 		super.update(elapsed);
+		Scripting.runOnScripts("update", [elapsed]);
 	}
 
 	var movedBack:Bool = false;
 	var selectedWeek:Bool = false;
-	var stopspamming:Bool = false;
 
 	function selectWeek() {
 		if (weeks[curWeek].weekUnlocked) {
-			if (stopspamming) {
+			if (selectedWeek) {
 				return;
 			}
 			FlxG.sound.play(Paths.sound('confirmMenu'));
 
 			grpWeekText.members[curWeek].startFlashing();
 			grpWeekCharacters.members[1].playAvailableAnim(['confirm']);
-			stopspamming = true;
 
 			PlayState.isStoryMode = true;
 			selectedWeek = true;

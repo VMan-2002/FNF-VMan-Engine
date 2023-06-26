@@ -7,6 +7,7 @@ import flixel.addons.display.FlxBackdrop;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
+import flixel.math.FlxPoint;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -54,7 +55,8 @@ class Scripting {
         "Highscore" => Highscore,
         "ModsMenuState" => ModsMenuState,
         "ScriptUtil" => ScriptUtil,
-        "LoadingState" => LoadingState
+        "LoadingState" => LoadingState,
+        "FlxPoint" => FlxPoint
     ];
 
     public var validFuncs:Map<String, Bool>;
@@ -121,9 +123,10 @@ class Scripting {
         for (mod in ModLoad.enabledMods) {
             new Scripting("scripts/context/"+context, mod, context);
         }
+        trace("Loaded scripts for context "+context+", now "+scripts.length+" scripts are loaded");
     }
 
-    public function new(name:String, ?modName:String, ?context:String = "") {
+    public function new(name:String, ?modName:String, ?context:String = "", ?loadError:Null<Void->Void>) {
         id = '${modName}:${name}';
         var filepath = modName == "" ? 'assets/${name}.hxs' : 'mods/${modName}/${name}.hxs';
         if (!namedScripts.exists(id) && FileSystem.exists(filepath)) {
@@ -139,6 +142,8 @@ class Scripting {
                 interp.execute(parser.parseString(File.getContent(filepath)));
             } catch (err) {
                 trace('Error while loading loading script ${id}: ${err.message}');
+                if (loadError != null)
+                    loadError();
                 return;
             }
             scripts.push(this);

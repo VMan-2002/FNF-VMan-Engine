@@ -33,9 +33,11 @@ class ScriptingCustomState extends MusicBeatState {
 
 	public override function create() {
 		super.create();
-		var script = new Scripting(path, modName, "ScriptingCustomState");
+		var script = new Scripting(path, modName, "ScriptingCustomState", function() {
+			NoSongsState.doThing("story mode", "customstate error", '${modName}:${path}');
+		});
 		if (script.interp == null) {
-			NoSongsState.doThing("story mode", "custom state", script.id);
+			NoSongsState.doThing("story mode", "customstate", script.id);
 		} else{
 			super.update(FlxG.elapsed);
 			script.interp.variables.set("vmanCustomStateInstance", this);

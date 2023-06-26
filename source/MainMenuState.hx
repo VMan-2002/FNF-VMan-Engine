@@ -72,7 +72,7 @@ class MainMenuState extends MusicBeatState
 
 		persistentUpdate = persistentDraw = true;
 
-		Scripting.clearScriptsByContext("MainMenuState");
+		//Scripting.clearScriptsByContext("MainMenuState");
 		Scripting.initScriptsByContext("MainMenuState");
 
 		var bg:FlxSprite = CoolUtil.makeMenuBackground('', -80);
