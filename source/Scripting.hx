@@ -4,6 +4,8 @@ import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxBackdrop;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
@@ -44,7 +46,9 @@ class Scripting {
         "SpriteVMan" => SpriteVMan,
         "FlxTween" => FlxTween,
         //"FlxColor" => MyFlxColor, //why cant i put FlxColor here ????????? wtf!!!!!!!!!
-        "FlxCamera" => FlxCamera
+        "FlxCamera" => FlxCamera,
+        "FlxSpriteGroup" => FlxSpriteGroup,
+        "FlxTypedGroup" => FlxTypedGroup
     ];
 
     public var validFuncs:Map<String, Bool>;
