@@ -12,14 +12,15 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 
-class ScriptingCustomState extends MusicBeatSubstate {
+class ScriptingCustomState extends MusicBeatState {
 	public static var instance:ScriptingCustomState;
 	public var id:String;
 	public var modName:String;
 	public var path:String;
+	public var init:Bool = false;
 
 	public static function cat(name:String, modName:String) {
-		return new ScriptingCustomState(Scripting.path(name, modName), modName);
+		return new ScriptingCustomState('scripts/${modName}/${name}', modName);
 	}
 
 	public function new(path:String, modName:String) {
@@ -36,6 +37,7 @@ class ScriptingCustomState extends MusicBeatSubstate {
 		if (script.interp == null) {
 			NoSongsState.doThing("story mode", "custom state", script.id);
 		} else{
+			super.update(FlxG.elapsed);
 			script.interp.variables.set("vmanCustomStateInstance", this);
 			thing("statePostInit", ["ScriptingCustomState", id, this]);
 		}

@@ -17,8 +17,8 @@ import Sys;
 #end
 
 class Main extends Sprite {
-	public static var gameVersionInt(default, never) = 6;
-	public static var gameVersionStr(default, never) = "v1.1.4 I'm Guitarin' (& fix the misses)";
+	public static var gameVersionInt(default, never) = 7;
+	public static var gameVersionStr(default, never) = "v1.2.0 The Scripting Update";
 	public static var gameVersionNoSubtitle(default, never) = gameVersionStr.substring(0, gameVersionStr.indexOf(" "));
 
 	public static var gamePlatform(default, never) =

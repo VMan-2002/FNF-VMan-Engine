@@ -8,6 +8,7 @@ import flixel.util.FlxTimer;
 using StringTools;
 
 class Boyfriend extends Character {
+	@:deprecated("Boyfriend will be removed eventually and replaced with Character")
 	public function new(x:Float, y:Float, ?char:String = 'bf', ?modName:String, ?isPlayer:Bool = true) {
 		super(x, y, char, isPlayer, modName);
 	}

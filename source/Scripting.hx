@@ -1,7 +1,14 @@
 package;
 
+import flixel.FlxCamera;
 import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.addons.display.FlxBackdrop;
 import flixel.math.FlxMath;
+import flixel.text.FlxText;
+import flixel.tweens.FlxTween;
+import flixel.ui.FlxBar;
+import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import hscript.Interp;
 import hscript.Parser;
@@ -26,7 +33,15 @@ class Scripting {
         "FlxMath" => FlxMath,
         "FlxTimer" => FlxTimer,
         "Scripting" => Scripting,
-        "ScriptingCustomState" => ScriptingCustomState
+        "ScriptingCustomState" => ScriptingCustomState,
+        "FlxText" => FlxText,
+        "FlxSprite" => FlxSprite,
+        "FlxBar" => FlxBar,
+        "FlxBackdrop" => FlxBackdrop,
+        "SpriteVMan" => SpriteVMan,
+        "FlxTween" => FlxTween,
+        "FlxColor" => FlxColor,
+        "FlxCamera" => FlxCamera
     ];
 
     public var validFuncs:Map<String, Bool>;
