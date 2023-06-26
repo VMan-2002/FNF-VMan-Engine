@@ -51,7 +51,7 @@ class Scripting {
         var toRemove = new Array<String>();
         for (thing in scripts) {
             if (thing.context == context) {
-                thing.runFunction("destroy", new Array<Dynamic>());
+                thing.runValidFunction("destroy", new Array<Dynamic>());
                 toRemove.push(thing.id);
             }
         }
@@ -63,7 +63,7 @@ class Scripting {
 
     public static function runOnScripts(funcName:String, args:Array<Dynamic>) {
         for (script in scripts) {
-            script.runFunction(funcName, args);
+            script.runValidFunction(funcName, args);
         }
     }
 
@@ -78,7 +78,7 @@ class Scripting {
         if (!Options.instance.modchartEnabled)
             return;
         for (script in scripts) {
-            script.runFunction("modchartUpdate", [FlxG.elapsed]);
+            script.runValidFunction("modchartUpdate", [FlxG.elapsed]);
         }
     }
 
@@ -121,7 +121,7 @@ class Scripting {
     }
 
     public function killScript() {
-        runFunction("destroy", new Array<Dynamic>());
+        runValidFunction("destroy", new Array<Dynamic>());
         namedScripts.remove(id);
         scripts.remove(this);
     }
@@ -136,20 +136,24 @@ class Scripting {
         return validFuncs;
     }
 
-    public function runFunction(funcName:String, args:Array<Dynamic>):Dynamic {
+    public function runValidFunction(funcName:String, args:Array<Dynamic>):Dynamic {
         return validFuncs.exists(funcName) ? Reflect.callMethod(this, interp.variables.get(funcName), args) : null;
+    }
+
+    public function runFunction(funcName:String, args:Array<Dynamic>):Dynamic {
+        return Reflect.isFunction(interp.variables.get(funcName)) ? Reflect.callMethod(this, interp.variables.get(funcName), args) : null;
     }
 
     public inline function runModchartUpdate() {
         if (Options.instance.modchartEnabled)
-            runFunction("modchartUpdate", [FlxG.elapsed]);
+            runValidFunction("modchartUpdate", [FlxG.elapsed]);
     }
 
     /*public inline function runStatePostInit(arr:Array<String>) {
         if (exitStateDelete && arr[0] != context)
             killScript();
         else
-            runFunction("statePostInit", arr);
+            runValidFunction("statePostInit", arr);
     }*/
 
     public static function path(name:String, mod:String) {
