@@ -55,6 +55,18 @@ class MyFlxColor {
     public static function fromString(s) {
         return FlxColor.fromString(s);
     }
+    public static function getRed(n:FlxColor) {
+        return n.red;
+    }
+    public static function getGreen(n:FlxColor) {
+        return n.green;
+    }
+    public static function getBlue(n:FlxColor) {
+        return n.blue;
+    }
+    public static function getAlpha(n:FlxColor) {
+        return n.alpha;
+    }
 }
 
 class Scripting {
