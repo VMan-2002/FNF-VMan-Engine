@@ -425,6 +425,8 @@ class CoolUtil
 		if (modName == null)
 			PlayState.modName = modName;
 		
+		ModLoad.primaryMod = ModsMenuState.quickModJsonData(PlayState.modName);
+		
 		var songStuffPath = 'mods/${PlayState.modName}/data/${Highscore.formatSong(songName)}/song.txt';
 		if (FileSystem.exists(songStuffPath)) {
 			var thing = File.getContent(songStuffPath).split("\n");
@@ -444,8 +446,6 @@ class CoolUtil
 		var poop:String = Highscore.formatSong(songName, PlayState.storyDifficulty);
 
 		trace(poop);
-		
-		ModLoad.primaryMod = ModsMenuState.quickModJsonData(PlayState.modName);
 
 		PlayState.SONG = Song.loadFromJson(poop, songName);
 		PlayState.usedBotplay = false;

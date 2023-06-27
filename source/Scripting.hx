@@ -12,6 +12,7 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
+import flixel.util.FlxCollision;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import haxe.Constraints.IMap;
@@ -22,7 +23,39 @@ import sys.io.File;
 
 using StringTools;
 
-//class MyFlxColor extends FlxColor {}
+class MyFlxColor {
+    //exists because i cant fucking put FlxColor in the thing
+    //i do indeed seethe :')
+    public static var d = [
+        "BLACK" => FlxColor.BLACK,
+        "BLUE" => FlxColor.BLUE,
+        "BROWN" => FlxColor.BROWN,
+        "CYAN" => FlxColor.BROWN,
+        "GRAY" => FlxColor.GRAY,
+        "GREEN" => FlxColor.GREEN,
+        "LIME" => FlxColor.LIME,
+        "MAGENTA" => FlxColor.MAGENTA,
+        "ORANGE" => FlxColor.ORANGE,
+        "PINK" => FlxColor.PINK,
+        "PURPLE" => FlxColor.PURPLE,
+        "RED" => FlxColor.RED,
+        "TRANSPARENT" => FlxColor.TRANSPARENT,
+        "WHITE" => FlxColor.WHITE,
+        "YELLOW" => FlxColor.YELLOW
+    ];
+    public static function fromInt(n) {
+        return FlxColor.fromInt(n);
+    }
+    public static function fromRGB(r, g, b, a) {
+        return FlxColor.fromRGB(r, g, b, a);
+    }
+    public static function fromRGBFloat(r, g, b, a) {
+        return FlxColor.fromRGBFloat(r, g, b, a);
+    }
+    public static function fromString(s) {
+        return FlxColor.fromString(s);
+    }
+}
 
 class Scripting {
     public static var parser:Parser = new Parser();
@@ -47,7 +80,7 @@ class Scripting {
         "FlxBackdrop" => FlxBackdrop,
         "SpriteVMan" => SpriteVMan,
         "FlxTween" => FlxTween,
-        //"FlxColor" => MyFlxColor, //why cant i put FlxColor here ????????? wtf!!!!!!!!!
+        "MyFlxColor" => MyFlxColor, //why cant i put FlxColor here ????????? wtf!!!!!!!!!
         "FlxCamera" => FlxCamera,
         "FlxSpriteGroup" => FlxSpriteGroup,
         "FlxTypedGroup" => FlxTypedGroup,
@@ -56,7 +89,8 @@ class Scripting {
         "ModsMenuState" => ModsMenuState,
         "ScriptUtil" => ScriptUtil,
         "LoadingState" => LoadingState,
-        "FlxPoint" => FlxPoint
+        "FlxPoint" => FlxPoint,
+        "FlxCollision" => FlxCollision
     ];
 
     public var validFuncs:Map<String, Bool>;
