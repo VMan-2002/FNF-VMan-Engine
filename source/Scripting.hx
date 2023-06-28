@@ -9,6 +9,8 @@ import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.text.FlxText;
+import flixel.tile.FlxTile;
+import flixel.tile.FlxTilemap;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
@@ -102,7 +104,8 @@ class Scripting {
         "ScriptUtil" => ScriptUtil,
         "LoadingState" => LoadingState,
         "FlxPoint" => FlxPoint,
-        "FlxCollision" => FlxCollision
+        "FlxCollision" => FlxCollision,
+        "FlxTilemap" => FlxTilemap
     ];
 
     public var validFuncs:Map<String, Bool>;
@@ -198,7 +201,7 @@ class Scripting {
                 checkValidFuncs(["statePostInit", "update", "modchartUpdate", "destroy", "beatHit", "stageInit", "onAccept", "onBack", "scriptRun"]);
                 trace("Success Load script: "+id);
             }
-            namedScripts[id].runFunction("scriptRun");
+            namedScripts[id].runFunction("scriptRun", []);
         }
     }
 
