@@ -119,6 +119,7 @@ class Character extends SpriteVMan
 	public var noteCameraOffset:Map<String, FlxPoint> = new Map<String, FlxPoint>();
 
 	public var hitNoteByPlayer = false;
+	public var idleAlt:String = "";
 
 	public function set_realcolor(a:FlxColor) {
 		if (!misscolored) {
@@ -1220,10 +1221,10 @@ class Character extends SpriteVMan
 		if (danceType) {
 			danced = !danced;
 			if (danced)
-				return playAnim('danceRight');
-			return playAnim('danceLeft');
+				return playAnim('danceRight' + idleAlt);
+			return playAnim('danceLeft' + idleAlt);
 		}
-		playAnim('idle');
+		playAnim('idle' + idleAlt);
 	}
 	
 	public function applyPositionOffset() {

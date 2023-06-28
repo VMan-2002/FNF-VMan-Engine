@@ -175,27 +175,30 @@ class Scripting {
     public function new(name:String, ?modName:String, ?context:String = "", ?loadError:Null<Void->Void>) {
         id = '${modName}:${name}';
         var filepath = modName == "" ? 'assets/${name}.hxs' : 'mods/${modName}/${name}.hxs';
-        if (!namedScripts.exists(id) && FileSystem.exists(filepath)) {
-            this.context = context;
-            interp = new Interp();
-            interp.variables.set("vmanScript", this);
-            interp.variables.set("vmanIsPrimaryMod", modName == ModLoad.primaryMod.id);
-            interp.variables.set("killScript", killScript);
-            parser.line = 1;
-            for (thing in classThings.keys())
-                interp.variables.set(thing, classThings.get(thing));
-            try {
-                interp.execute(parser.parseString(File.getContent(filepath)));
-            } catch (err) {
-                trace('Error while loading loading script ${id}: ${err.message}');
-                if (loadError != null)
-                    loadError();
-                return;
+        if (FileSystem.exists(filepath)) {
+            if (!namedScripts.exists(id)) {
+                this.context = context;
+                interp = new Interp();
+                interp.variables.set("vmanScript", this);
+                interp.variables.set("vmanIsPrimaryMod", modName == ModLoad.primaryMod.id);
+                interp.variables.set("killScript", killScript);
+                parser.line = 1;
+                for (thing in classThings.keys())
+                    interp.variables.set(thing, classThings.get(thing));
+                try {
+                    interp.execute(parser.parseString(File.getContent(filepath)));
+                } catch (err) {
+                    trace('Error while loading loading script ${id}: ${err.message}');
+                    if (loadError != null)
+                        loadError();
+                    return;
+                }
+                scripts.push(this);
+                namedScripts.set(id, this);
+                checkValidFuncs(["statePostInit", "update", "modchartUpdate", "destroy", "beatHit", "stageInit", "onAccept", "onBack", "scriptRun"]);
+                trace("Success Load script: "+id);
             }
-            scripts.push(this);
-            namedScripts.set(id, this);
-            checkValidFuncs(["statePostInit", "update", "modchartUpdate", "destroy", "beatHit", "stageInit", "onAccept", "onBack"]);
-            trace("Success Load script: "+id);
+            namedScripts[id].runFunction("scriptRun");
         }
     }
 
