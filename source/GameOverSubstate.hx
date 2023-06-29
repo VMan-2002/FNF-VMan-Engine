@@ -10,12 +10,9 @@ import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 
-class GameOverSubstate extends MusicBeatSubstate
-{
+class GameOverSubstate extends MusicBeatSubstate {
 	var bf:Boyfriend;
 	var camFollow:FlxObject;
-
-	var stageSuffix:String = "";
 
 	public var gameOverMusicName:String = "gameOver";
 	public var gameOverMusicEndName:String = "gameOverEnd";
@@ -23,6 +20,7 @@ class GameOverSubstate extends MusicBeatSubstate
 	public function new(x:Float, y:Float) {
 		var daStage = PlayState.curStage;
 		var daBf:String = '';
+		var stageSuffix:String = "";
 		switch (daStage) {
 			case 'school' | 'schoolEvil':
 				stageSuffix = '-pixel';

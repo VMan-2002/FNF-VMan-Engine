@@ -105,7 +105,8 @@ class Scripting {
         "LoadingState" => LoadingState,
         "FlxPoint" => FlxPoint,
         "FlxCollision" => FlxCollision,
-        "FlxTilemap" => FlxTilemap
+        "FlxTilemap" => FlxTilemap,
+        "FlxTextBorderStyle" => FlxTextBorderStyle
     ];
 
     public var validFuncs:Map<String, Bool>;
