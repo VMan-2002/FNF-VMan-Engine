@@ -240,4 +240,12 @@ class Stage
 			}
 		}
 	}
+
+	public function destroy() {
+		elementsFront.destroy();
+		elementsBetween.destroy();
+		elementsBack.destroy();
+		elementsNamed.clear();
+		elementsAll.resize(0);
+	}
 }

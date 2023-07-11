@@ -199,7 +199,18 @@ class Scripting {
                 }
                 scripts.push(this);
                 namedScripts.set(id, this);
-                checkValidFuncs(["statePostInit", "update", "modchartUpdate", "destroy", "beatHit", "stageInit", "onAccept", "onBack", "scriptRun"]);
+                checkValidFuncs([
+                    "statePostInit",
+                    "update",
+                    "modchartUpdate",
+                    "destroy",
+                    "beatHit",
+                    "stageInit",
+                    "stageChange",
+                    "onAccept",
+                    "onBack",
+                    "scriptRun"
+                ]);
                 trace("Success Load script: "+id);
             }
             namedScripts[id].runFunction("scriptRun", []);

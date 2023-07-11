@@ -156,6 +156,9 @@ class PlayState extends MusicBeatState
 	public var strumLines:FlxTypedGroup<StrumLine>;
 	public var playerStrums = new StrumLine();
 	public var opponentStrums = new StrumLine();
+	//Not the same as playerStrums and opponentStrums respectively (except when opponent mode is disabled)
+	public var bfStrums:StrumLine;
+	public var dadStrums:StrumLine;
 	
 	public var strumLine:FlxPoint;
 	
@@ -1172,6 +1175,9 @@ class PlayState extends MusicBeatState
 			generateStaticArrows(2 + i);
 			i++;
 		}
+		var strumSwapThing = Options.instance.playstate_opponentmode;
+		bfStrums = strumSwapThing ? opponentStrums : playerStrums;
+		dadStrums = strumSwapThing ? playerStrums : opponentStrums;
 
 		//talking = false;
 		startedCountdown = true;
@@ -3098,10 +3104,20 @@ class PlayState extends MusicBeatState
 			lightningStrikeShit();
 	}
 
-	public function setStage(stage:String):Void {
+	public function setStage(stage:String, ?allowReInit:Bool = false, ?loadLibNow:Bool = true):Void {
 		//todo: this isnt finished yet
+		if (curStage == stage && !allowReInit)
+			return; //no change
+		var old = curStage;
 		curStage = stage;
 		FlxG.log.add('SET STAGE TO ' + stage);
+		var newStage = new Stage(stage, modName, loadLibNow);
+		replace(currentStageBack, newStage.elementsBack);
+		replace(currentStageBetween, newStage.elementsBetween);
+		replace(currentStageFront, newStage.elementsFront);
+		currentStage.destroy();
+		currentStage = newStage;
+		Scripting.runOnScripts("stageChange", [stage, old]);
 	}
 
 	public function runEvent(event:Array<Dynamic>) {
