@@ -11,7 +11,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 
 class GameOverSubstate extends MusicBeatSubstate {
-	var bf:Boyfriend;
+	var bf:Character;
 	var camFollow:FlxObject;
 
 	public var gameOverMusicName:String = "gameOver";
@@ -57,7 +57,7 @@ class GameOverSubstate extends MusicBeatSubstate {
 
 		Conductor.songPosition = 0;
 
-		bf = new Boyfriend(x, y, daBf);
+		bf = new Character(x, y, daBf, daChar.isPlayer, daChar.myMod, true, true);
 		add(bf);
 
 		camFollow = new FlxObject(daChar.getGraphicMidpoint().x + daChar.cameraOffset[0], daChar.getGraphicMidpoint().y + daChar.cameraOffset[1], 1, 1);
@@ -83,23 +83,18 @@ class GameOverSubstate extends MusicBeatSubstate {
 		}
 	}
 
-	override function update(elapsed:Float)
-	{
+	override function update(elapsed:Float) {
 		super.update(elapsed);
 
 		if (controls.ACCEPT)
-		{
 			endBullshit();
-		}
 
-		if (controls.BACK)
-		{
+		if (controls.BACK) {
 			FlxG.sound.music.stop();
 
 			if (Std.isOfType(FlxG.state, PlayStateOffsetCalibrate)) {
-				if (Std.isOfType(FlxG.state, PlayStateOffsetCalibrate)) {
+				if (Std.isOfType(FlxG.state, PlayStateOffsetCalibrate))
 					CoolUtil.playMenuMusic();
-				}
 				FlxG.state.closeSubState();
 				OptionsMenu.wasInPlayState = !Std.isOfType(FlxG.state, PlayStateOffsetCalibrate);
 				FlxG.switchState(new OptionsMenu());
@@ -121,8 +116,7 @@ class GameOverSubstate extends MusicBeatSubstate {
 			Conductor.songPosition = FlxG.sound.music.time;
 	}
 
-	override function beatHit()
-	{
+	override function beatHit() {
 		super.beatHit();
 
 		FlxG.log.add('beat');

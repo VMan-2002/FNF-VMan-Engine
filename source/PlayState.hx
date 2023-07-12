@@ -138,7 +138,7 @@ class PlayState extends MusicBeatState
 	//Characters
 	public var dad:Character;
 	public var gf:Character;
-	public var boyfriend:Boyfriend;
+	public var boyfriend:Character;
 	//public var stageCharacters:Array<Character>;
 	
 	public var gfSpeed:Int = 1;
@@ -734,7 +734,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 		
-		boyfriend = new Boyfriend(770, 100, SONG.player1, modName, currentStage.charFacing.contains(0));
+		boyfriend = new Character(770, 100, SONG.player1, currentStage.charFacing.contains(0), modName, true, true);
 		dad = new Character(100, 100, SONG.player2, currentStage.charFacing.contains(1), modName);
 		gf = new Character(400, 130, gfVersion, currentStage.charFacing.contains(2), modName);
 		

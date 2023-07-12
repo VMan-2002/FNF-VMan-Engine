@@ -50,14 +50,13 @@ class SpriteVMan extends FlxSprite {
 		}
 	}
 
-	public function hasAnim(animname:String) {
+	public inline function hasAnim(animname:String) {
 		return animation.exists(animname);
 	}
-
 	public function playAvailableAnim(animname:Array<String>, ?force = false) {
 		for (anim in animname) {
 			if (hasAnim(anim)) {
-				return playAnim(anim, force);
+				playAnim(anim, force);
 			}
 		}
 	}
@@ -78,10 +77,10 @@ class SpriteVMan extends FlxSprite {
 	public function swapAnimations(from:String, to:String) {
 		var oldRight = animation.getByName(from).clone(animation);
 		
-		@:privateAccess(FlxAnimationController._animations) //private variables suck sometimes
-		animation._animations.set(from, animation.getByName(to));
-		@:privateAccess(FlxAnimationController._animations) //WHY do i have to do this twice
-		animation._animations.set(to, oldRight);
+		@:privateAccess(FlxAnimationController._animations) { //private variables suck sometimes
+			animation._animations.set(from, animation.getByName(to));
+			animation._animations.set(to, oldRight);
+		}
 		var oldOffset = animOffsets[from].copy();
 		animOffsets[from] = animOffsets[to];
 		animOffsets[to] = oldOffset;
@@ -94,52 +93,4 @@ class SpriteVMan extends FlxSprite {
 		}
 		return false;
 	}
-	
-	//var wiggleShit:WiggleEffect;
-	
-	/*public function makeWobbly(?amp:Float = 0.01, ?freq:Float = 60, ?speed:Float = 0.8, ?waveType:String = "dreamy") {
-		//idk what do :shrug:
-		//currently this is just stuff copied from unused evilSchool stage code
-		var bg:FlxSprite = new FlxSprite(posX, posY).loadGraphic(Paths.image('weeb/evilSchoolBG'));
-		bg.scale.set(6, 6);
-		// bg.setGraphicSize(Std.int(bg.width * 6));
-		// bg.updateHitbox();
-		add(bg);
-
-		wiggleShit = new WiggleEffect();
-		switch(waveType.toLowerCase()) {
-			case "wavy":
-				wiggleShit.effectType = WiggleEffectType.WAVY;
-				break;
-			case "horizontal":
-				wiggleShit.effectType = WiggleEffectType.HEAT_WAVE_HORIZONTAL;
-				break;
-			case "vertical":
-				wiggleShit.effectType = WiggleEffectType.HEAT_WAVE_VERTICAL
-				break;
-			case "flag":
-				wiggleShit.effectType = WiggleEffectType.FLAG;
-				break;
-			default:
-				wiggleShit.effectType = WiggleEffectType.DREAMY;
-		}
-		wiggleShit.waveAmplitude = amp;
-		wiggleShit.waveFrequency = freq;
-		wiggleShit.waveSpeed = speed;
-
-		// bg.shader = wiggleShit.shader;
-
-		var waveSprite = new FlxEffectSprite(bg, [waveEffectBG]);
-
-		// Using scale since setGraphicSize() doesnt work???
-		waveSprite.scale.set(6, 6);
-		waveSprite.setPosition(posX, posY);
-
-		waveSprite.scrollFactor.set(0.7, 0.8);
-
-		// waveSprite.setGraphicSize(Std.int(waveSprite.width * 6));
-		// waveSprite.updateHitbox();
-
-		add(waveSprite);
-	}*/
 }

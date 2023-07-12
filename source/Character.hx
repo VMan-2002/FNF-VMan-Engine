@@ -114,6 +114,7 @@ class Character extends SpriteVMan
 	public var realcolor(default, set):FlxColor = FlxColor.WHITE;
 
 	public var isGirlfriend = false;
+	public var isBoyfriend = false;
 	
 	public var cameraOffset:Array<Float> = [0, 0];
 	public var noteCameraOffset:Map<String, FlxPoint> = new Map<String, FlxPoint>();
@@ -128,9 +129,10 @@ class Character extends SpriteVMan
 		return a;
 	}
 
-	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false, ?myMod:String = "", ?addToArray:Bool = true) {
+	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false, ?myMod:String = "", ?addToArray:Bool = true, ?boyfriend:Bool = false) {
 		super(x, y);
 		moves = false;
+		this.isBoyfriend = boyfriend;
 
 		curCharacter = character.trim();
 		this.isPlayer = isPlayer;
@@ -1155,10 +1157,11 @@ class Character extends SpriteVMan
 	}
 
 	override function update(elapsed:Float) {
-		if (!Std.isOfType(this, Boyfriend)) {
-			if (animStartsWith('sing')) {
+		if (isBoyfriend) {
+			boyfriendUpdate(elapsed);
+		} else {
+			if (animStartsWith('sing'))
 				holdTimer += elapsed;
-			}
 
 			var dadVar:Float = (curCharacter == 'dad') ? 6.1 : 4;
 			
@@ -1168,7 +1171,7 @@ class Character extends SpriteVMan
 			}
 		}
 
-		if (animationNotes.length > 0) {
+		if (animationNotes.length != 0) {
 			if (Conductor.songPosition > animationNotes[0][0]) {
 				trace('played shoot anim' + animationNotes[0][1]);
 
@@ -1201,12 +1204,27 @@ class Character extends SpriteVMan
 		super.update(elapsed);
 	}
 
+	public function boyfriendUpdate(elapsed:Float) {
+		if (animStartsWith('sing')) {
+			holdTimer += elapsed;
+			return;
+		} else {
+			holdTimer = 0;
+		}
+
+		if (animation.curAnim.name.endsWith('miss') && animation.curAnim.finished)
+			return dance(true, true, false, 10);
+
+		if (animStartsWith('firstDeath') && animation.curAnim.finished)
+			playAvailableAnim(["deathLoop" + animation.curAnim.name.substr(10), "deathLoop"]);
+	}
+
 	public var danced:Bool = false;
 
 	/**
 	 * FOR GF DANCING SHIT
 	 */
-	public function dance(?anyway:Bool = false) {
+	public function dance(?anyway:Bool = false, ?force:Bool = false, ?reverse:Bool = false, ?frame:Int = 0) {
 		if (debugMode || moduloDances == 0 || (animation.curAnim != null && (animation.curAnim.name == 'hairBlow' || (animation.curAnim.name.startsWith('sing') && !animation.curAnim.name.endsWith("-loop") && !animation.curAnim.finished)))) {
 			return;
 		}
@@ -1221,10 +1239,10 @@ class Character extends SpriteVMan
 		if (danceType) {
 			danced = !danced;
 			if (danced)
-				return playAnim('danceRight' + idleAlt);
-			return playAnim('danceLeft' + idleAlt);
+				return playAnim('danceRight' + idleAlt, force, reverse, frame);
+			return playAnim('danceLeft' + idleAlt, force, reverse, frame);
 		}
-		playAnim('idle' + idleAlt);
+		playAnim('idle' + idleAlt, force, reverse, frame);
 	}
 	
 	public function applyPositionOffset() {
