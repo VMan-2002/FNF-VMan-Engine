@@ -338,11 +338,19 @@ class PlayState extends MusicBeatState
 			trace("Added "+SONG.attributes.length+" song attributes");
 		}
 
+		super.create();
+
 		if (SONG.actions == null) {
 			SONG.actions = new Array<String>();
 		}
 		
 		curManiaInfo = ManiaInfo.GetManiaInfo(SONG.maniaStr);
+		if (isStoryMode)
+			Options.instance.playstate_endless = false;
+		if (SONG.actions.contains("noBothSide"))
+			Options.instance.playstate_bothside = false;
+		if (SONG.actions.contains("noOpponentMode"))
+			Options.instance.playstate_opponentmode = false;
 		if (allowGameplayChanges && Options.instance.playstate_bothside) {
 			var newKeys = curManiaInfo.keys * 2;
 			var newMania = ManiaInfo.GetManiaInfo(newKeys + "k");
@@ -354,12 +362,6 @@ class PlayState extends MusicBeatState
 				isMiddlescroll = true;
 			}
 		}
-		if (isStoryMode)
-			Options.instance.playstate_endless = false;
-		if (SONG.actions.contains("noBothSide"))
-			Options.instance.playstate_bothside = false;
-		if (SONG.actions.contains("noOpponentMode"))
-			Options.instance.playstate_opponentmode = false;
 		
 		if (SONG.instName != null)
 			instName = SONG.instName;
@@ -1089,8 +1091,6 @@ class PlayState extends MusicBeatState
 		}
 		
 		//stageCharacters = Character.activeArray;
-
-		super.create();
 
 		ErrorReportSubstate.displayReport();
 
