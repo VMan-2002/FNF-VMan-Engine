@@ -156,6 +156,8 @@ class ChartingState extends MusicBeatState {
 			_song = PlayState.SONG;
 		else
 			_song = Song.songFunc();
+		if (_song.actions == null)
+			_song.actions = new Array<String>();
 		curNoteTypeArr = _song.usedNoteTypes != null ? _song.usedNoteTypes : curNoteTypeArr;
 
 		leftIcon = new HealthIcon("bf", false, PlayState.modName);
@@ -1578,15 +1580,17 @@ class ChartingState extends MusicBeatState {
 			}
 
 			inline function deleteDefaultNoteType(arr:Array<Array<Dynamic>>) {
-				/*for (note in arr) {
-					if (note.length == 4 && note[3] == 0.0 || note[3] == 0)
+				for (note in arr) {
+					if (note.length == 4 && (note[3] == 0.0 || note[3] == 0))
 						note.pop();
-					if (note.length == 3 && note[2] == 0.0 || note[2] == 0)
+					if (note.length == 3 && (note[2] == 0.0 || note[2] == 0))
 						note.pop();
-				}*/
+				}
 			}
 
 			var curTimeSig:Int = json.song.timeSignature;
+			var curBpm:Float = json.song.bpm;
+			var curMania:String = json.song.maniaStr;
 			//var remapNoteTypes = new Map<Float, Float>();
 			//var neededNoteTypes = new Array<String>();
 			for (thing in json.song.notes) {
@@ -1603,11 +1607,13 @@ class ChartingState extends MusicBeatState {
 					Reflect.deleteField(thing, "notesMoreLayers");
 				}
 				//strip out a bunch more shit to lower the filesize
-				if (thing.changeBPM != true) {
+				if (thing.changeBPM != true || thing.bpm == curBpm) {
 					Reflect.deleteField(thing, "bpm");
 					Reflect.deleteField(thing, "changeBPM");
+				} else {
+					curBpm = thing.bpm;
 				}
-				if (thing.changeTimeSignature != true) {
+				if (thing.changeTimeSignature != true || thing.timeSignature == curTimeSig) {
 					Reflect.deleteField(thing, "timeSignature");
 					Reflect.deleteField(thing, "changeTimeSignature");
 				} else {
@@ -1625,9 +1631,11 @@ class ChartingState extends MusicBeatState {
 				if (thing.gfSection != true) {
 					Reflect.deleteField(thing, "gfSection");
 				}
-				if (thing.changeMania != true) {
+				if (thing.changeMania != true || thing.maniaStr == curMania) {
 					Reflect.deleteField(thing, "changeMania");
 					Reflect.deleteField(thing, "maniaStr");
+				} else {
+					curMania = thing.maniaStr;
 				}
 				if (thing.focusCharacter == null) {
 					Reflect.deleteField(thing, "focusCharacter");

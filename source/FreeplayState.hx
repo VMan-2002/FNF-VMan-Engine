@@ -44,8 +44,8 @@ class SwagFreeplayFolders {
 	public var color:Null<String>;
 }
 
-class FreeplayState extends MusicBeatState
-{
+class FreeplayState extends MusicBeatState {
+	public static var instance:FreeplayState;
 	public var songs:Array<SongMetadata> = [];
 
 	var selector:FlxText;
@@ -99,6 +99,7 @@ class FreeplayState extends MusicBeatState
 
 	override function create()
 	{
+		instance = this;
 		var uncategorized:Array<SongMetadata> = [];
 		var initSonglist = CoolUtil.coolTextFile("data/freeplaySonglist");
 
@@ -166,9 +167,7 @@ class FreeplayState extends MusicBeatState
 					var resultItems = new Array<SongMetadata>();
 					for (thing in items) {
 						switch(thing[1]) {
-							case "folder":
-								resultItems.push(new SongMetadata(thing[0], folderIds[thing[0]], Character.getHealthIcon(folderStructure.folderIcons.get(thing[0]), iathing), 1, iathing, null, parseColor(thing[2])));
-							default:
+							case "song":
 								var icon = "face";
 								var songStuffPath = 'mods/${iathing}/data/${Highscore.formatSong(thing[0])}/song.txt';
 								var diffAdd = "";
@@ -183,6 +182,8 @@ class FreeplayState extends MusicBeatState
 								var justAdd = new SongMetadata(thing[0], 0, icon, 0, iathing, diffAdd, parseColor(thing[2]));
 								resultItems.push(justAdd);
 								noFolders.push(justAdd);
+							default:
+								resultItems.push(new SongMetadata(thing[0], folderIds[thing[0]], Character.getHealthIcon(folderStructure.folderIcons.get(thing[0]), iathing), thing[1] == "folder" ? 1 : 2, iathing, null, parseColor(thing[2])));
 						}
 					}
 					categories.set(folderIds[cat], resultItems);
@@ -277,7 +278,7 @@ class FreeplayState extends MusicBeatState
 		bg.color = 0x00000000;
 		add(bg);
 
-		folderDirText = new FlxText(2, 2, FlxG.width - 4, "hi :)", 12);
+		folderDirText = new FlxText(2, 2, FlxG.width - 4, "hi :D", 12);
 		if (Options.freeplayFolders) {
 			add(folderDirText);
 		}
@@ -286,6 +287,9 @@ class FreeplayState extends MusicBeatState
 		}
 		
 		makeSonglist(Options.freeplayFolders ? categories.get(inFolder[inFolder.length-1]) : noFolders);
+		var flist = folderNames;
+		flist.shift();
+		Scripting.runOnScripts("enterFolder", [inFolder.length == 1 ? "" : songs[0].mod, flist]);
 		
 		nothingIncluded = songs.length <= 0;
 		
@@ -454,8 +458,7 @@ class FreeplayState extends MusicBeatState
 		}
 	}
 
-	public function addSong(songName:String, weekNum:Int, songCharacter:String)
-	{
+	public function addSong(songName:String, weekNum:Int, songCharacter:String) {
 		songs.push(new SongMetadata(songName, weekNum, songCharacter));
 	}
 
@@ -543,6 +546,7 @@ class FreeplayState extends MusicBeatState
 					}
 				}
 				changeSelection();
+				Scripting.runOnScripts("enterFolder", [inFolder.length == 1 ? "" : songs[0].mod, null]); //todo: what
 			} else {
 				if (cornflowerClass != null) {
 					cornflowerClass.destroy();
@@ -560,10 +564,14 @@ class FreeplayState extends MusicBeatState
 				}
 
 				inFolder.push(songs[curSelected].week);
+				var flist = folderNames;
+				flist.shift();
+				var modName = songs[curSelected].mod;
 				makeSonglist(categories.get(songs[curSelected].week));
 				curSelected = 0;
 				changeSelection();
-			} else {
+				Scripting.runOnScripts("enterFolder", [modName, flist]);
+			} else if (songs[curSelected].type == 0) {
 				//a song
 				var poop:String = Highscore.formatSong(songs[curSelected].songName, curDifficulty);
 
@@ -591,6 +599,8 @@ class FreeplayState extends MusicBeatState
 			if (songs[curSelected].type == 0)
 				songPreview(songs[curSelected].songName, songs[curSelected].mod);
 		}
+
+		Scripting.runOnScripts("updatePost", [elapsed]);
 	}
 
 	function updateIsCornflower() {
@@ -756,18 +766,16 @@ class FreeplayState extends MusicBeatState
 	}
 }
 
-class SongMetadata
-{
+class SongMetadata {
 	public var songName:String = "";
 	public var week:Int = 0;
 	public var songCharacter:String = "";
-	public var type:Int = 0; //0: song, 1: folder
+	public var type:Int = 0; //0: song, 1: folder, 2: nothing
 	public var mod:String;
 	public var difficulties:Array<String> = new Array<String>();
 	public var color:Null<Int>;
 
-	public function new(song:String, week:Int, songCharacter:String, ?type:Int = 0, ?mod:String = "", ?diffInput:String = "", ?color:Int)
-	{
+	public function new(song:String, week:Int, songCharacter:String, ?type:Int = 0, ?mod:String = "", ?diffInput:String = "", ?color:Int) {
 		this.songName = song;
 		this.week = week;
 		this.songCharacter = songCharacter;

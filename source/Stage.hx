@@ -30,6 +30,7 @@ typedef StageElement =
 	var startVisible:Bool;
 	var blendMode:Null<String>;
 	var alpha:Null<Float>;
+	var showInFast:Null<Bool>; //todo: i should add this into the options menu!!!!!!!!!!!!!!!
 }
 
 typedef SwagStage =
@@ -133,6 +134,14 @@ class Stage
 			return new FlxTypedGroup<SpriteVMan>();
 		var result:FlxTypedGroup<SpriteVMan> = new FlxTypedGroup<SpriteVMan>();
 		for (element in elementsList) {
+			if (element.showInFast == true) //null: always show
+				continue;
+			//todo: Makes stage elems appear depending on fast/fancy graphics
+			
+			/*
+			if (((element.showInFast == true) == Options.fastGraphics) || ((element.showInFast == false) == !Options.fastGraphics))
+				continue;
+			*/
 			var sprite = new SpriteVMan(element.x == null ? 0 : element.x, element.y == null ? 0 : element.y);
 			sprite.moves = false;
 			sprite.antialiasing = element.antialias != false;

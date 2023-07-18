@@ -53,7 +53,7 @@ class HudThing extends FlxGroup
 		textThing.moves = false;
 		textThing.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT);
 		textThing.setBorderStyle(FlxTextBorderStyle.OUTLINE, 0xFF000000, 1, 1);
-		Translation.setObjectFont(textThing, "vcr font");
+		Translation.setObjectFont(textThing, PlayState.instance.currentUIStyle.font, "vcr font");
 		add(textThing);
 	}
 

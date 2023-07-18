@@ -90,12 +90,12 @@ class Translation
 		return txt;
 	}
 	
-	public static function setObjectFont(a:FlxText, ?type:String = "font") {
+	public static function setObjectFont(a:FlxText, ?type:String = "font", ?defaulttype:String = "font") {
 		if (usesFont && active) {
 			a.font = Paths.font(
 				translation["font"].exists(type) ?
 				translation["font"].get(type) :
-				translation["font"].get("font")
+				translation["font"].get(defaulttype)
 			);
 		}
 	}

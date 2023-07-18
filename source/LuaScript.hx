@@ -23,6 +23,7 @@ import llua.State;
 
 using StringTools;
 
+//todo: remove this
 class LuaScript {
 	//todo: linc_luajit is so unintuitive why is it crashing what am i doing wrong why is there no error message why is there no documentation
 	var state:MusicBeatState;
@@ -302,8 +303,8 @@ class LuaScript {
 
 	//Other
 
-	public function luaBroadcast(value:Dynamic, ?includeSelf:Null<Bool>):Null<Dynamic> {
-		var result:Dynamic = null;
+	//public function luaBroadcast(value:Dynamic, ?includeSelf:Null<Bool>):Null<Dynamic> {
+		/*var result:Dynamic = null;
 		for (luaThing in state.luaScripts) {
 			if (includeSelf == true || luaThing != this) {
 				var possible:Dynamic = luaThing.runFunction("onLuaBroadcast", [value, myMod, myPath]);
@@ -312,8 +313,8 @@ class LuaScript {
 				}
 			}
 		}
-		return result;
-	}
+		return result;*/
+	//}
 
 	public function switchToCustomState(name:String, ?skipTransIn:Null<Bool>, ?skipTransOut:Null<Bool>) {
 		if (skipTransIn == true) {

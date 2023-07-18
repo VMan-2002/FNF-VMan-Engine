@@ -1,5 +1,6 @@
 package;
 
+import Alphabet.AlphaCharacter;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -106,7 +107,11 @@ class Scripting {
         "FlxPoint" => FlxPoint,
         "FlxCollision" => FlxCollision,
         "FlxTilemap" => FlxTilemap,
-        "FlxTextBorderStyle" => FlxTextBorderStyle
+        "FlxTextBorderStyle" => FlxTextBorderStyle,
+        "Alphabet" => Alphabet,
+        "AlphaCharacter" => AlphaCharacter,
+        "Std" => Std,
+        "FreeplayState" => FreeplayState
     ];
 
     public var validFuncs:Map<String, Bool>;
@@ -202,6 +207,7 @@ class Scripting {
                 checkValidFuncs([
                     "statePostInit",
                     "update",
+                    "updatePost",
                     "modchartUpdate",
                     "destroy",
                     "beatHit",
@@ -209,11 +215,14 @@ class Scripting {
                     "stageChange",
                     "onAccept",
                     "onBack",
-                    "scriptRun"
+                    "scriptRun",
+                    "enterFolder"
                 ]);
                 trace("Success Load script: "+id);
             }
             namedScripts[id].runFunction("scriptRun", []);
+        } else {
+            //trace('Didnt find script ${filepath}');
         }
     }
 

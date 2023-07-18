@@ -24,6 +24,8 @@ class MusicBeatState extends FlxUIState
 		return PlayerSettings.player1.controls;
 
 	override function create() {
+		Scripting.clearScriptsByContext("PlayStateSong");
+		
 		if (transIn != null)
 			trace('reg ' + transIn.region);
 
@@ -109,11 +111,12 @@ class MusicBeatState extends FlxUIState
 	}
 	
 	//Script Stuff
+	//We dont need this anymore because hscript
 	#if !html5
-	public var luaScripts = new Array<LuaScript>();
+	/*public var luaScripts = new Array<LuaScript>();
 	public var luaSprites = new Array<FlxSprite>();
 	
-	public function initLua():Void {
+	public function initLua():Void {*/
 		//todo: get lua shit working first and THEN do this
 		/*var scriptType = Type.getClassName(Type.getClass(this));
 		trace('starting lua for ${scriptType}');
@@ -130,7 +133,7 @@ class MusicBeatState extends FlxUIState
 			luaScripts.push(new LuaScript('mods/${ModLoad.primaryMod}/objects/stages/${PlayState.curStage}'));
 		}*/
 		//addKeyboardCallbacks();
-	}
+	/*}
 
 	inline function addKeyboardCallbacks() {
 		FlxG.stage.addEventListener("onKeyDown", luaPressKey);
@@ -155,6 +158,6 @@ class MusicBeatState extends FlxUIState
 		FlxG.stage.removeEventListener("onKeyDown", luaPressKey);
 		FlxG.stage.removeEventListener("onKeyUp", luaReleaseKey);
 		super.destroy();
-	}
+	}*/
 	#end
 }

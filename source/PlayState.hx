@@ -337,6 +337,10 @@ class PlayState extends MusicBeatState
 			}
 			trace("Added "+SONG.attributes.length+" song attributes");
 		}
+
+		if (SONG.actions == null) {
+			SONG.actions = new Array<String>();
+		}
 		
 		curManiaInfo = ManiaInfo.GetManiaInfo(SONG.maniaStr);
 		if (allowGameplayChanges && Options.instance.playstate_bothside) {
@@ -479,9 +483,8 @@ class PlayState extends MusicBeatState
 		var customStageCharPos:Array<Array<Float>> = null;
 
 		//Script inits
-		Scripting.clearScriptsByContext("PlayStateSong");
 		Scripting.initScriptsByContext("PlayState");
-		new Scripting('data/${curSong}/script', modName, "PlayStateSong");
+		new Scripting('data/${sn}/script', modName, "PlayStateSong");
 
 		switch (curStage) {
 		    case 'philly':  {
@@ -1958,6 +1961,8 @@ class PlayState extends MusicBeatState
 		if (FlxG.keys.justPressed.ONE)
 			endSong();
 		#end
+
+		Scripting.runOnScripts("updatePost", [elapsed]);
 	}
 	
 	public function onSpawnNote(dunceNote:Note) {
@@ -1989,6 +1994,8 @@ class PlayState extends MusicBeatState
 		if (useStageCharZooms && currentStage.charZoom != null && currentStage.charZoom.length > guyId && currentStage.charZoom[guyId] != null) {
 			defaultCamZoom = currentStage.charZoom[guyId];
 		}
+
+		Scripting.runOnScripts("cameraSetOnCharacter", [char]);
 	}
 
 	public function getCharacterCamFollow(char:Character):FlxPoint {
@@ -2893,20 +2900,23 @@ class PlayState extends MusicBeatState
 		if (noteTypeData.animReplace == null) {
 			var anim = defaultAnim + postfix;
 			var colorAnim = colorNote + postfix;
-			return char.playAvailableAnim(note.isSustainNote ? 
+			char.playAvailableAnim(note.isSustainNote ? 
 				//Hold notes
 				['${colorAnim}-hold', colorAnim, anim+'-hold', anim, defaultAnim+'-hold', defaultAnim] :
 				//Non holds
 				[colorAnim, anim, colorNote, defaultAnim],
 			true);
+			Scripting.runOnScripts("charNoteHit", [Character.activeArray[note.charNum], note]);
+			return;
 		}
 		var anim = noteTypeData.animReplace + postfix;
-		return char.playAvailableAnim(note.isSustainNote ? 
+		char.playAvailableAnim(note.isSustainNote ? 
 			//Hold notes
 			[anim+'-hold', anim, defaultAnim+'-hold', defaultAnim] :
 			//Non holds
 			[colorNote, defaultAnim],
 		true);
+		Scripting.runOnScripts("charNoteHit", [Character.activeArray[note.charNum], note]);
 	}
 
 	//inline function getFastCar():SpriteVMan {
