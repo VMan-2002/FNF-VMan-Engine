@@ -367,21 +367,45 @@ class ChartingState extends MusicBeatState {
 		maniaSelect.selectedLabel = arrMania[ManiaInfo.AvailableMania.indexOf(_song.maniaStr)];
 
 		
-		var clearNotesButton:FlxUIButton = new FlxUIButton(10, 280, Translation.getTranslation("Clear All Notes", "charteditor"), function()
-		{
+		var clearNotesButton:FlxUIButton = new FlxUIButton(10, 280, Translation.getTranslation("Clear All Notes", "charteditor"), function() {
 			var i:Int = _song.notes.length;
 			while (i > 0) {
 				i -= 1;
-				if (_song.notes[i].sectionNotes != null && _song.notes[i].sectionNotes.length > 0) {
-					_song.notes[i].sectionNotes = [];
-				}
-				if (_song.notes[i].notesMoreLayers != null && _song.notes[i].notesMoreLayers.length > 0) {
+				if (_song.notes[i].sectionNotes != null && _song.notes[i].sectionNotes.length > 0)
+					_song.notes[i].sectionNotes.resize(0);
+				if (_song.notes[i].notesMoreLayers != null)
 					_song.notes[i].notesMoreLayers = null;
-				}
 			}
 			updateGrid();
 		});
 		Translation.setUIObjectFont(clearNotesButton);
+
+		var unstackNotesButton:FlxUIButton = new FlxUIButton(10, 280, Translation.getTranslation("Fix Stacked Notes", "charteditor"), function() {
+			var i:Int = _song.notes.length;
+			function fixSection(thing:Array<Array<Dynamic>>) {
+				if (thing == null || thing.length == 0) {
+					return;
+				}
+				var rows = new Array<Array<Dynamic>>();
+				for (note in thing) {
+					if (rows[note[1]] == null)
+						rows[note[1]] = new Array<Dynamic>();
+					rows[note[1]].push(note);
+				}
+			}
+			while (i > 0) {
+				i -= 1;
+				if (_song.notes[i].sectionNotes != null && _song.notes[i].sectionNotes.length > 0)
+					fixSection(_song.notes[i].sectionNotes);
+				if (_song.notes[i].notesMoreLayers != null && _song.notes[i].notesMoreLayers.length > 0) {
+					for (lol in _song.notes[i].notesMoreLayers) {
+						fixSection(lol);
+					}
+				}
+			}
+			updateGrid();
+		});
+		Translation.setUIObjectFont(unstackNotesButton);
 
 		var tab_group_song = new FlxUI(null, UI_box);
 		tab_group_song.name = "Song";

@@ -14,7 +14,8 @@ class SpriteVMan extends FlxSprite {
 
 		if (animOffsets.exists(AnimName)) {
 			var daOffset = animOffsets.get(AnimName);
-			offset.set(daOffset[flipX ? 2 : 0], daOffset[1]);
+			offset.x = daOffset[flipX ? 2 : 0];
+			offset.y = daOffset[1];
 			/*if (flipX) {
 				//todo: this needs work
 				var framewidth = frames.frames[animation.curAnim.curFrame].sourceSize.x;

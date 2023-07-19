@@ -173,7 +173,7 @@ class PlayState extends MusicBeatState
 
 	////::..
 	//Health / Health Bar
-	public var health:Float = 1;
+	public var health(default, set):Float = 1;
 	public var maxHealth:Float = 2;
 	public var bobBleeds = new Array<BobBleed>();
 
@@ -182,6 +182,11 @@ class PlayState extends MusicBeatState
 
 	public var iconP1:HealthIcon;
 	public var iconP2:HealthIcon;
+
+	public function set_health(n:Float) {
+		updateHudThingDatas();
+		return health = n;
+	}
 
 	////::..
 	//Statistics
@@ -973,6 +978,8 @@ class PlayState extends MusicBeatState
 		timerThingText.alignment = CENTER;
 		timerThingText.fieldWidth = FlxG.width;
 		timerThing.cameras = [camHUD];
+		
+		updateHudThingDatas();
 
 		CoolUtil.mapPositionObjectWithin(cast hudThings.members[0].members[0], currentUIStyle.hudThingPos, Options.instance.downScroll ? "textHealthDown" : "textHealthUp");
 		CoolUtil.mapPositionObjectWithin(cast hudThings.members[1].members[0], currentUIStyle.hudThingPos, Options.instance.downScroll ? "textSideDown" : "textSideUp");
@@ -1354,23 +1361,25 @@ class PlayState extends MusicBeatState
 			daBeats += 1;
 		}
 
-		for (thing in 0...songData.vmanEventOrder.length) {
-			if (songData.vmanEventTime[thing] == -999) {
-				//-999 means event is run at the start
-				runEvent(songData.vmanEventData[songData.vmanEventOrder[thing]]);
-			} else {
-				events[thing] = {
-					time: songData.vmanEventTime[thing],
-					values: songData.vmanEventData[songData.vmanEventOrder[thing]]
-				};
+		if (songData.vmanEventOrder != null && songData.vmanEventOrder.length != 0) {
+			for (thing in 0...songData.vmanEventOrder.length) {
+				if (songData.vmanEventTime[thing] == -999) {
+					//-999 means event is run at the start
+					runEvent(songData.vmanEventData[songData.vmanEventOrder[thing]]);
+				} else {
+					events[thing] = {
+						time: songData.vmanEventTime[thing],
+						values: songData.vmanEventData[songData.vmanEventOrder[thing]]
+					};
+				}
 			}
+			ArraySort.sort(events, function(a:SwagEvent, b:SwagEvent):Int {
+				var d = Math.floor(a.time) - Math.floor(b.time);
+				if (d == 0)
+					return a.time > b.time ? 1 : -1;
+				return d;
+			});
 		}
-		ArraySort.sort(events, function(a:SwagEvent, b:SwagEvent):Int {
-			var d = Math.floor(a.time) - Math.floor(b.time);
-			if (d == 0)
-				return a.time > b.time ? 1 : -1;
-			return d;
-		});
 
 		if (SONG.picocharts != null) {
 			for (i in 0...SONG.picocharts.length) {
@@ -2701,7 +2710,7 @@ class PlayState extends MusicBeatState
 				songScore -= 5000;
 
 				if (Options.noteMissAction_MissSound[Options.instance.noteMissAction])
-					FlxG.sound.play(Paths.soundRandom('badnoise', 1, 3), FlxG.random.float(0.15, 0.25));
+					FlxG.sound.play(Paths.soundRandom('badnoise', 1, 3), FlxG.random.float(0.35, 0.4));
 			}
 			var validNote = note != null;
 			var noteTypeData = validNote ? note.getNoteTypeDataNoCheck() : Note.SwagNoteType.loadNoteType(Note.SwagNoteType.normalNote, PlayState.modName);
@@ -2745,6 +2754,8 @@ class PlayState extends MusicBeatState
 			});*/
 			
 			animateForNote(note, true, direction, true);
+
+			Scripting.runOnScripts("noteMiss", [direction, note]);
 		}
 	}
 
@@ -2797,6 +2808,8 @@ class PlayState extends MusicBeatState
 						mult: noteTypeData.bob * 1.5,
 						maxHealth: 2 * noteTypeData.healthMaxMult
 					});
+			} else {
+				updateHudThingDatas(); //changing the health updates this automatically so we do it manually if the health isn't changed
 			}
 			
 			animateForNote(note, true, note.noteData);
@@ -2812,6 +2825,12 @@ class PlayState extends MusicBeatState
 				note.destroy();
 			}
 		}
+	}
+
+	public inline function updateHudThingDatas() {
+		hudThings.forEach(function(a) {
+			a.updateDatas();
+		});
 	}
 
 	public function opponentNoteHit(note:Note):Void {

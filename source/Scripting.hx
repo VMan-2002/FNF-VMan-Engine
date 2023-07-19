@@ -217,7 +217,8 @@ class Scripting {
                     "onBack",
                     "scriptRun",
                     "enterFolder",
-                    "cameraSetOnCharacter"
+                    "cameraSetOnCharacter",
+                    "noteMiss"
                 ]);
                 trace("Success Load script: "+id);
             }
