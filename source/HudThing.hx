@@ -71,6 +71,20 @@ class HudThing extends FlxGroup {
 		} else {
 			list = new Array<String>();
 		}
+		if (list.length > 1) {
+			var i = 0;
+			while (true) {
+				if (list[i] == "song" && list[i + 1] == "difficulty") {
+					list[i] = "songAndDifficulty";
+					list.splice(i + 1, 1);
+					if (i == list.length)
+						break;
+				}
+				if (i + 1 == list.length)
+					break;
+				i += 1;
+			}
+		}
 		this.vertical = vertical;
 		textThing = new FlxText(x, y, 0, "", 20);
 		textThing.moves = false;
@@ -106,8 +120,8 @@ class HudThing extends FlxGroup {
 					itemDatas[i] = Std.string(PlayState.instance.songMisses);
 				case "health":
 					itemDatas[i] = trimNoPercent(PlayState.instance.health / 2);
-				case "difficulty":
-					itemDatas[i] = Translation.getTranslation(PlayState.instance.storyDifficultyText, "difficulty") + Highscore.getModeString(true, true);
+				//case "difficulty":
+				//	itemDatas[i] = Translation.getTranslation(PlayState.instance.storyDifficultyText, "difficulty") + Highscore.getModeString(true, true);
 				case "accSimple":
 					itemDatas[i] = trimNoPercent(PlayState.instance.songHits / (PlayState.instance.songHits + PlayState.instance.songMisses));
 				case "accRating":
@@ -130,6 +144,10 @@ class HudThing extends FlxGroup {
 					itemDatas[i] = Std.string(PlayState.instance.combo);
 				case "maxCombo":
 					itemDatas[i] = Std.string(PlayState.instance.maxCombo);
+				case "overTaps":
+					itemDatas[i] = Std.string(PlayState.instance.overTaps);
+				case "overStrums":
+					itemDatas[i] = Std.string(PlayState.instance.overStrums);
 				case "rankWord":
 					itemDatas[i] = getRank(accuracy(), ranks);
 			}
@@ -145,7 +163,7 @@ class HudThing extends FlxGroup {
 				text += vertical ? "\n" : " | ";
 			}
 			switch(items[i]) {
-				case "score" | "misses" | "health" | "accSimple" | "accRating" | "sicks" | "goods" | "bads" | "shits" | "imperfects" | "hits" | "totalnotes" | "combo" | "maxCombo":
+				case "score" | "misses" | "health" | "accSimple" | "accRating" | "sicks" | "goods" | "bads" | "shits" | "imperfects" | "hits" | "totalnotes" | "combo" | "maxCombo" | "overTaps" | "overStrums":
 					text += Translation.getTranslation("hud_" + items[i], "playstate", [itemDatas[i]]);
 				//case "score":
 				//	text += Translation.getTranslation("hud_score", "playstate", [Std.string(PlayState.instance.songScore)]);
@@ -157,6 +175,8 @@ class HudThing extends FlxGroup {
 					text += PlayState.instance.songTitle;
 				case "difficulty":
 					text += Translation.getTranslation(PlayState.instance.storyDifficultyText, "difficulty") + Highscore.getModeString(true, true);
+				case "songAndDifficulty":
+					text += PlayState.instance.songTitle + " " + Translation.getTranslation(PlayState.instance.storyDifficultyText, "difficulty") + Highscore.getModeString(true, true);
 				//case "accSimple":
 				//	text += Translation.getTranslation("hud_accsimple", "playstate", [trimNoPercent(PlayState.instance.songHits / (PlayState.instance.songHits + PlayState.instance.songMisses))]);
 				//case "accRating":
@@ -204,10 +224,10 @@ class HudThing extends FlxGroup {
 					text += formatTime(Conductor.songPosition);
 				case "modName":
 					text += ModLoad.primaryMod.name;
-				case "overTaps":
+				/*case "overTaps":
 					text += Translation.getTranslation("hud_overTaps", "playstate", [Std.string(PlayState.instance.overTaps)]);
 				case "overStrums":
-					text += Translation.getTranslation("hud_overStrums", "playstate", [Std.string(PlayState.instance.overStrums)]);
+					text += Translation.getTranslation("hud_overStrums", "playstate", [Std.string(PlayState.instance.overStrums)]);*/
 				//case "rankWord": //todo: translate this or something
 				//	text += getRank(accuracy(), ranks);
 				case "rankWord":

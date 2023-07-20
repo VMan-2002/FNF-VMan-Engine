@@ -218,14 +218,16 @@ class Scripting {
                     "scriptRun",
                     "enterFolder",
                     "cameraSetOnCharacter",
-                    "noteMiss"
+                    "noteMiss",
+                    "goodNoteHit",
+                    "charNoteHit"
                 ]);
                 trace("Success Load script: "+id);
             }
             namedScripts[id].runFunction("scriptRun", []);
-        } else {
-            //trace('Didnt find script ${filepath}');
-        }
+        }/* else {
+            trace('Didnt find script ${filepath}');
+        }*/
     }
 
     public function killScript() {

@@ -2592,6 +2592,8 @@ class PlayState extends MusicBeatState
 						overTaps += 1;
 						if ((!(Options.instance.ghostTapping) || (((hitNotes + possibleNotes.length > 0) || (songHits > 0 && Math.abs(Conductor.songPosition - lastHitNoteTime) <= Conductor.horizontalThing)) && Options.instance.tappingHorizontal)))
 							noteMiss(k);
+						else
+							updateHudThingDatas();
 					}
 				}
 			}
@@ -2622,6 +2624,8 @@ class PlayState extends MusicBeatState
 							overStrums += 1;
 							if (!(Options.instance.ghostTapping) || (((hitNotes + possibleNotes.length > 0) || (songHits > 0 && Math.abs(Conductor.songPosition - lastHitNoteTime) <= Conductor.horizontalThing)) && Options.instance.tappingHorizontal))
 								noteMiss(k);
+							else
+								updateHudThingDatas();
 						}
 					}
 				} else { //Open notes
@@ -2818,6 +2822,8 @@ class PlayState extends MusicBeatState
 
 			note.wasGoodHit = true;
 			vocals.volume = 1;
+
+			Scripting.runOnScripts("goodNoteHit", [note]);
 
 			if (!note.isSustainNote) {
 				note.kill();
