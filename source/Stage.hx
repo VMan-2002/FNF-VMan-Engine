@@ -156,8 +156,12 @@ class Stage
 			} else {
 				sprite.loadGraphic(Paths.image(element.image));
 			}
-			sprite.scale.x = element.scaleX == null ? 1 : element.scaleX;
-			sprite.scale.y = element.scaleY == null ? 1 : element.scaleY;
+			sprite.scale.x = element.scaleX == null ? 1 : Math.abs(element.scaleX);
+			sprite.scale.y = element.scaleY == null ? 1 : Math.abs(element.scaleY);
+			if (element.scaleX != null && element.scaleX < 0)
+				sprite.flipX = true;
+			if (element.scaleY != null && element.scaleY < 0)
+				sprite.flipY = true;
 			sprite.scrollFactor.x = element.scrollX == null ? 1 : element.scrollX;
 			sprite.scrollFactor.y = element.scrollY == null ? 1 : element.scrollY;
 			if (element.animated) {
