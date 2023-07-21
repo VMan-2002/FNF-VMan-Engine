@@ -134,9 +134,7 @@ class Character extends SpriteVMan
 		moves = false;
 		this.isBoyfriend = boyfriend;
 
-		curCharacter = character.trim();
 		this.isPlayer = isPlayer;
-		healthIcon = curCharacter;
 		
 		if (addToArray) {
 			if (activeArray == null)
@@ -145,8 +143,15 @@ class Character extends SpriteVMan
 			activeArray[thisId] = this;
 			nextId += 1;
 		}
+
+		initCharacter(character, myMod);
+	}
+
+	function initCharacter(name:String, modName:String) {
+		curCharacter = name.trim();
+		healthIcon = curCharacter;
 		
-		this.myMod = myMod;
+		myMod = modName;
 
 		var tex:FlxAtlasFrames;
 		antialiasing = true;
@@ -1051,10 +1056,6 @@ class Character extends SpriteVMan
 		dance();
 	}
 
-	function initCharacter(name:String, modName:String) {
-		//todo: put the character loading code here
-	}
-
 	public function changeCharacter(name:String, modName:String) {
 		x -= positionOffset[0];
 		y -= positionOffset[1];
@@ -1062,6 +1063,14 @@ class Character extends SpriteVMan
 		animOffsets.clear();
 		initCharacter(name, modName);
 		applyPositionOffset();
+	}
+
+	public function changeCharacterKeepAnim(name:String, modName:String) {
+		var oldAnim = animation.curAnim.name;
+		var oldFrame = animation.curAnim.curFrame;
+		var oldReverse = animation.curAnim.reversed;
+		changeCharacter(name, modName);
+		playAnim(oldAnim, true, oldReverse, oldFrame);
 	}
 
 	public static var charHealthIcons:Map<String, String> = new Map<String, String>();
