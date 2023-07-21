@@ -5,6 +5,7 @@ import WiggleEffect.WiggleEffectType;
 import flixel.FlxSprite;
 import flixel.addons.effects.chainable.FlxEffectSprite;
 import flixel.addons.effects.chainable.FlxWaveEffect;
+import flixel.system.FlxAssets.FlxGraphicAsset;
 
 using StringTools;
 
@@ -16,8 +17,13 @@ enum SpriteVManExtraRenderType {
 
 class SpriteVManExtra extends SpriteVMan {
 	public var renderType:SpriteVManExtraRenderType = unset;
-	public function setRenderType(type:String, info:Dynamic) {
+	public function setRenderType(type:String, ?info:Dynamic) {
 		switch(type) {
+			case "wobbly":
+				renderType = wobbly;
+				waveSprite = new FlxEffectSprite(this);
+				waveSprite.scale = scale;
+				waveSprite.offset = offset;
 			default:
 				renderType = unset;
 		}
@@ -70,20 +76,16 @@ class SpriteVManExtra extends SpriteVMan {
 
 		add(waveSprite);
 	}*/
-}
-
-class SpriteVManWobbly extends SpriteVMan {
+	
 	//what am i doing does this work
 	var waveSprite:FlxEffectSprite;
 
-	public override function new(?x, ?y, ?g) {
-		super(x, y, g);
-		waveSprite = new FlxEffectSprite(this);
-		waveSprite.scale = scale;
-		waveSprite.offset = offset;
+	public override function new(?x:Null<Float>, ?y:Null<Float>, ?graphic:Null<FlxGraphicAsset>, ?renderType:String = "unset") {
+		super(x, y, graphic);
+		setRenderType(renderType);
 	}
 	
-	public function wobbleInit(?amp:Float = 0.01, ?freq:Float = 60, ?speed:Float = 0.8, ?waveType:String = "dreamy") {
+	public function setWobble(?amp:Float = 0.01, ?freq:Float = 60, ?speed:Float = 0.8, ?waveType:String = "dreamy") {
 		var waveEffectBG:FlxWaveEffect = new FlxWaveEffect(FlxWaveMode.ALL, 2, -1, 3, 2);
 		//idk what do :shrug:
 		//currently this is just stuff copied from unused evilSchool stage code
@@ -119,17 +121,28 @@ class SpriteVManWobbly extends SpriteVMan {
 
 		// waveSprite.setGraphicSize(Std.int(waveSprite.width * 6));
 		// waveSprite.updateHitbox();
+		return this;
 	}
 
 	public override function update(elapsed:Float) {
-		waveSprite.update(elapsed);
+		switch(renderType) {
+			case wobbly:
+				waveSprite.update(elapsed);
+			default:
+				//do nothing
+		}
 		super.update(elapsed);
 	}
 
 	public override function draw() {
-		waveSprite.x = x;
-		waveSprite.y = y;
-		waveSprite.angle = angle;
-		waveSprite.draw();
+		switch(renderType) {
+			case wobbly:
+				waveSprite.x = x;
+				waveSprite.y = y;
+				waveSprite.angle = angle;
+				waveSprite.draw();
+			default:
+				super.draw();
+		}
 	}
 }

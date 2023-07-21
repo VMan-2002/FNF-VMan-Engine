@@ -29,6 +29,7 @@ import flixel.addons.transition.Transition;
 import flixel.graphics.atlas.FlxAtlas;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.input.keyboard.FlxKey;
 import flixel.input.keyboard.FlxKeyboard;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
@@ -164,6 +165,8 @@ class PlayState extends MusicBeatState
 	public var strumLine:FlxPoint;
 	
 	public static var curManiaInfo:SwagMania;
+	public var mania_preventSeven:Bool = false;
+	public var mania_preventReset:Bool = false;
 	
 	//public var notesCanBeHit = true;
 	public static var usedBotplay = false;
@@ -272,7 +275,6 @@ class PlayState extends MusicBeatState
 	
 	public var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
 	
-	public var timerThing:HudThing;
 	public var timerThingText:FlxText;
 
 	public var lyricsThing:LyricsThing;
@@ -359,6 +361,8 @@ class PlayState extends MusicBeatState
 			Options.instance.playstate_bothside = false;
 		if (SONG.actions.contains("noOpponentMode"))
 			Options.instance.playstate_opponentmode = false;
+		if (SONG.actions.contains("noGuitarMode"))
+			Options.instance.playstate_guitar = false;
 		if (allowGameplayChanges && Options.instance.playstate_bothside) {
 			var newKeys = curManiaInfo.keys * 2;
 			var newMania = ManiaInfo.GetManiaInfo(newKeys + "k");
@@ -370,6 +374,9 @@ class PlayState extends MusicBeatState
 				isMiddlescroll = true;
 			}
 		}
+
+		mania_preventReset = curManiaInfo.control_any.contains(Options.uiControls["reset"][0]) || curManiaInfo.control_any.contains(Options.uiControls["reset"][1]);
+		mania_preventSeven = curManiaInfo.control_any.contains(FlxKey.SEVEN);
 		
 		if (SONG.instName != null)
 			instName = SONG.instName;
@@ -969,19 +976,17 @@ class PlayState extends MusicBeatState
 		hudThings.add(new HudThing(2, FlxG.height - 24, hudThingLists[1]));
 		hudThings.add(new HudThing(2, (FlxG.height / 2) - 100, hudThingLists[2], true));
 		
-		timerThing = cast add(new HudThing(0, !Options.instance.downScroll ? 10 : FlxG.height - 34, ["timer_down_notitle"]));
-		timerThing.autoUpdate = true;
-		timerThingText = cast timerThing.members[0];
+		timerThingText = hudThings.add(new HudThing(0, !Options.instance.downScroll ? 10 : FlxG.height - 34, ["timer_down_notitle"])).textThing;
 		timerThingText.alignment = CENTER;
 		timerThingText.fieldWidth = FlxG.width;
-		timerThing.cameras = [camHUD];
+		hudThings.members[3].autoUpdate = true;
 		
 		updateHudThingDatas();
 
 		CoolUtil.mapPositionObjectWithin(cast hudThings.members[0].members[0], currentUIStyle.hudThingPos, Options.instance.downScroll ? "textHealthDown" : "textHealthUp");
 		CoolUtil.mapPositionObjectWithin(cast hudThings.members[1].members[0], currentUIStyle.hudThingPos, Options.instance.downScroll ? "textSideDown" : "textSideUp");
 		CoolUtil.mapPositionObjectWithin(cast hudThings.members[2].members[0], currentUIStyle.hudThingPos, Options.instance.downScroll ? "textCornerDown" : "textCornerUp");
-		CoolUtil.mapPositionObjectWithin(cast timerThing.members[0], currentUIStyle.hudThingPos, Options.instance.downScroll ? "textTimerDown" : "textTimerUp");
+		CoolUtil.mapPositionObjectWithin(cast hudThings.members[3].members[0], currentUIStyle.hudThingPos, Options.instance.downScroll ? "textTimerDown" : "textTimerUp");
 
 		iconP1 = new HealthIcon(daIconPuts[0], true, modName);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
@@ -1019,9 +1024,10 @@ class PlayState extends MusicBeatState
 
 		if (((sn == "monster" || sn == "winter-horrorland") && modName == "friday_night_funkin") || SONG.actions.contains("alternateHud")) {
 			for (thing in hudThings) {
-				thing.doSpoop(); //limited information is spoopy!!!!
+				if (thing.textThing != timerThingText)
+					thing.doSpoop(); //limited information is spoopy!!!!
 			}
-			var topThing:FlxText = cast hudThings.members[0].members[0];
+			var topThing:FlxText = hudThings.members[0].textThing;
 			topThing.x = 0;
 			topThing.fieldWidth = FlxG.width;
 			topThing.alignment = FlxTextAlign.CENTER;
@@ -1669,7 +1675,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		if (FlxG.keys.justPressed.SEVEN && !isSubStateActive) {
+		if (!mania_preventSeven && FlxG.keys.justPressed.SEVEN && !isSubStateActive) {
 			FlxG.switchState(new ChartingState());
 
 			#if desktop
@@ -1801,7 +1807,7 @@ class PlayState extends MusicBeatState
 		// better streaming of shit
 
 		// RESET = Quick Game Over Screen
-		if (controls.RESET && Options.instance.resetButton) {
+		if (!mania_preventReset && controls.RESET && Options.instance.resetButton) {
 			health = 0;
 			trace("RESET = True");
 		}
@@ -3165,26 +3171,22 @@ class PlayState extends MusicBeatState
 	}
 
 	public function runEvent(event:Array<Dynamic>) {
+		Scripting.runOnScripts("songEvent", event);
 		switch(event[0]) {
 			case "Hey":
-				if (event[1] == true) {
+				if (event[1] == true)
 					boyfriend.playAnim('hey', true);
-				}
-				if (event[2] == true) {
+				if (event[2] == true)
 					gf.playAnim('cheer', true);
-				}
 			case "Scared":
-				if (event[1] == true) {
+				if (event[1] == true)
 					boyfriend.playAnim('scared', true);
-				}
-				if (event[2] == true) {
+				if (event[2] == true)
 					gf.playAnim('scared', true);
-				}
 			case "Play Animation":
 				var charNum = Std.parseInt(event[1]);
-				if (charNum == null) {
+				if (charNum == null)
 					charNum = Character.findSuitableCharacterNum(event[1], 1);
-				}
 				Character.activeArray[charNum].playAnim(event[2], true);
 			case "Zoom Hit":
 				FlxG.camera.zoom += event[1];
@@ -3193,6 +3195,8 @@ class PlayState extends MusicBeatState
 				gfSpeed = event[1];
 			case "Voices Volume 0":
 				vocals.volume = 0;
+			case "Voices Volume":
+				vocals.volume = event.length >= 2 ? event[1] : 0;
 			case "Set Zoom Beats":
 				zoomBeats = event[1];
 			case "Camera Shake":
@@ -3209,6 +3213,11 @@ class PlayState extends MusicBeatState
 						defaultCamZoom = event[1];
 					else
 						defaultCamZoom += event[1];
+				} else {
+					if (event[3] == true)
+						FlxG.camera.zoom = event[1];
+					else
+						FlxG.camera.zoom += event[1];
 				}
 			case "Cinematic Bars":
 				var halfy = FlxG.height / 2;
@@ -3231,11 +3240,12 @@ class PlayState extends MusicBeatState
 				starActive = event[1];
 			case "Change Character":
 				var oldCharNum = Std.parseInt(event[1]);
-				var oldChar:Character = Character.activeArray[oldCharNum];
+				/*var oldChar:Character = Character.activeArray[oldCharNum];
 				var newChar:Character = new Character(oldChar.x - oldChar.positionOffset[0], oldChar.y - oldChar.positionOffset[1], event[2]);
 				insert(members.indexOf(oldChar), newChar);
 				remove(oldChar);
-				Character.activeArray[oldCharNum] = newChar;
+				Character.activeArray[oldCharNum] = newChar;*/
+				Character.activeArray[oldCharNum].changeCharacter(event[1], event.length >= 3 ? event[2] : PlayState.modName);
 			case "Psych Engine Event": //event from an imported chart from Psych Engine
 				switch(event[1]) {
 					//case "Dadbattle Spotlight" | "Philly Glow" | "Kill Henchmen" | "Trigger BG Ghouls":
@@ -3243,7 +3253,7 @@ class PlayState extends MusicBeatState
 					case "Hey!":
 						var bf:Bool = true;
 						var gf:Bool = true;
-						switch(event[2].toLowerCase().trim()) {
+						switch(event[2].trim().toLowerCase()) {
 							case "bf" | "boyfriend" | "0":
 								gf = false;
 							case "gf" | "girlfriend" | "1":
@@ -3263,10 +3273,10 @@ class PlayState extends MusicBeatState
 						}
 					case "Play Animation":
 						var char:Int = 1;
-						switch(event[2].toLowerCase().trim()) {
-							case "bf" | "boyfriend":
+						switch(event[2].trim().toLowerCase()) {
+							case "bf" | "boyfriend" | "0":
 								char = 0;
-							case "gf" | "girlfriend":
+							case "gf" | "girlfriend" | "2":
 								char = 2;
 							default:
 								var numThing = Std.parseInt(event[2]);

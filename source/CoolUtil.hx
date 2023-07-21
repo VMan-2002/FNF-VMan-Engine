@@ -466,6 +466,7 @@ class CoolUtil
 		return LoadingState.loadAndSwitchState(new PlayState());
 	}
 
+	//todo: Which one of these is fastest (and also works properly)
 	/**
 		Rounding stuff that makes numbers cool
 	**/
@@ -534,5 +535,12 @@ class CoolUtil
 			i -= 1;
 		}
 		return base;
+	}
+
+	/**
+		Interpret string as bool
+	**/
+	public static function stringToBool(n:String) {
+		return !(n == null || n.toLowerCase() == "false" || n == "" || n == "0");
 	}
 }
