@@ -877,7 +877,7 @@ class Character extends SpriteVMan
 					ErrorReportSubstate.addError("Error loading character json "+curCharacter+": " + e.message);
 				}
 				if (loadedStuff != null) {
-					trace('loaded custom char for ' + curCharacter);
+					trace('loaded custom char for ' + curCharacter + " from " + myMod);
 					
 					//Char stuff is load. now set up
 					AnimationDebug.imageFile = loadedStuff.image == null ? curCharacter : loadedStuff.image;
@@ -974,7 +974,7 @@ class Character extends SpriteVMan
 				#end
 				//otherwise, use da guy
 				if (!successLoad) {
-					trace('using default character');
+					trace('using default character because couldn\'t find ${curCharacter} from ${myMod}');
 					curCharacter = "mr_placeholder_guy";
 					
 					frames = Paths.getSparrowAtlas('characters/placeholderguy/dood');
