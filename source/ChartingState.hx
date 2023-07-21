@@ -425,6 +425,7 @@ class ChartingState extends MusicBeatState {
 		tab_group_song.add(reloadSongJson);
 		tab_group_song.add(loadAutosaveBtn);
 		tab_group_song.add(clearNotesButton);
+		tab_group_song.add(unstackNotesButton);
 		tab_group_song.add(stepperBPM);
 		tab_group_song.add(stepperSpeed);
 		tab_group_song.add(stepperTimeSig);
