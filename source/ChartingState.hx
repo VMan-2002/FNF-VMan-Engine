@@ -383,14 +383,21 @@ class ChartingState extends MusicBeatState {
 		var unstackNotesButton:FlxUIButton = new FlxUIButton(10, 280, Translation.getTranslation("Fix Stacked Notes", "charteditor"), function() {
 			var i:Int = _song.notes.length;
 			function fixSection(thing:Array<Array<Dynamic>>) {
-				if (thing == null || thing.length == 0) {
+				if (thing == null || thing.length == 0)
 					return;
-				}
 				var rows = new Array<Array<Dynamic>>();
 				for (note in thing) {
 					if (rows[note[1]] == null)
 						rows[note[1]] = new Array<Dynamic>();
 					rows[note[1]].push(note);
+				}
+				for (thing in rows) {
+					var i = thing.length - 2;
+					do {
+						if (Math.abs(thing[i][0] - thing[i - 1][0]) < 5)
+							thing.pop();
+						i -= 1;
+					} while (i >= 0);
 				}
 			}
 			while (i > 0) {
