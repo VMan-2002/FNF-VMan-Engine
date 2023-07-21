@@ -9,6 +9,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
+import flixel.system.FlxSound;
 import flixel.text.FlxText;
 import flixel.tile.FlxTile;
 import flixel.tile.FlxTilemap;
@@ -111,7 +112,8 @@ class Scripting {
         "Alphabet" => Alphabet,
         "AlphaCharacter" => AlphaCharacter,
         "Std" => Std,
-        "FreeplayState" => FreeplayState
+        "FreeplayState" => FreeplayState,
+        "FlxSound" => FlxSound
     ];
 
     public var validFuncs:Map<String, Bool>;
