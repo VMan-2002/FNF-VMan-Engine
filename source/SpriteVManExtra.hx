@@ -116,7 +116,9 @@ class SpriteVManExtra extends SpriteVMan {
 		// Using scale since setGraphicSize() doesnt work???
 		waveSprite.setPosition(x, y);
 
-		waveSprite.scrollFactor.set(0.7, 0.8);
+		waveSprite.scrollFactor = scrollFactor;
+		waveSprite.origin = origin;
+		waveSprite.offset = offset;
 		waveSprite.effects.push(waveEffectBG);
 
 		// waveSprite.setGraphicSize(Std.int(waveSprite.width * 6));

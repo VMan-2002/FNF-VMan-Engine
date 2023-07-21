@@ -161,6 +161,9 @@ class PlayState extends MusicBeatState
 	//Not the same as playerStrums and opponentStrums respectively (except when opponent mode is disabled)
 	public var bfStrums:StrumLine;
 	public var dadStrums:StrumLine;
+	//Yeah
+	public var leftStrums:StrumLine;
+	public var rightStrums:StrumLine;
 	
 	public var strumLine:FlxPoint;
 	
@@ -1191,6 +1194,9 @@ class PlayState extends MusicBeatState
 		var strumSwapThing = Options.instance.playstate_opponentmode;
 		bfStrums = strumSwapThing ? opponentStrums : playerStrums;
 		dadStrums = strumSwapThing ? playerStrums : opponentStrums;
+		//todo: something when I implement an option that makes strums swap position based on opponent mode
+		leftStrums = opponentStrums;
+		rightStrums = playerStrums;
 
 		//talking = false;
 		startedCountdown = true;
