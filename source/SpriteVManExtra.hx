@@ -119,6 +119,7 @@ class SpriteVManExtra extends SpriteVMan {
 		waveSprite.scrollFactor = scrollFactor;
 		waveSprite.origin = origin;
 		waveSprite.offset = offset;
+		waveSprite.scale = scale;
 		waveSprite.effects.push(waveEffectBG);
 
 		// waveSprite.setGraphicSize(Std.int(waveSprite.width * 6));
