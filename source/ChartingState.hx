@@ -380,7 +380,7 @@ class ChartingState extends MusicBeatState {
 		});
 		Translation.setUIObjectFont(clearNotesButton);
 
-		var unstackNotesButton:FlxUIButton = new FlxUIButton(10, 280, Translation.getTranslation("Fix Stacked Notes", "charteditor"), function() {
+		var unstackNotesButton:FlxUIButton = new FlxUIButton(10, 320, Translation.getTranslation("Fix Stacked Notes", "charteditor"), function() {
 			var i:Int = _song.notes.length;
 			function fixSection(thing:Array<Array<Dynamic>>) {
 				if (thing == null || thing.length == 0)
