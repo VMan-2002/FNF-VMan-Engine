@@ -25,6 +25,7 @@ import flixel.addons.effects.FlxTrailArea;
 import flixel.addons.effects.chainable.FlxEffectSprite;
 import flixel.addons.effects.chainable.FlxWaveEffect;
 import flixel.addons.transition.FlxTransitionableState;
+import flixel.addons.transition.Transition;
 import flixel.graphics.atlas.FlxAtlas;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -170,6 +171,8 @@ class PlayState extends MusicBeatState
 	//var currentManiaPart:Int = 0;
 	//var currentManiaPartName:Array<String> = [];
 	//var maniaPartArr:Array<Array<String>> = [];
+	//var noteRemainder:Array<Note>; //For hitting notes before your current mania change
+	//var maniaRemainder:SwagMania;
 
 	////::..
 	//Health / Health Bar
@@ -240,9 +243,9 @@ class PlayState extends MusicBeatState
 	//Camera / Zoom
 	public var camGame:FlxCamera;
 	
-	public var camFollow:FlxObject;
+	public var camFollow:FlxPoint;
 	public var camFollowPos:FlxObject;
-	public var camFollowOffset:FlxObject;
+	public var camFollowOffset:FlxPoint;
 	public var camFollowSpeed:Float = 1;
 	public var camZoomSpeed:Float = 0.95;
 	public var hudZoomSpeed:Float = 0.95;
@@ -253,7 +256,7 @@ class PlayState extends MusicBeatState
 	public var zoomBeats:Int = 4;
 	public var camShakes:Array<CamShake> = new Array<CamShake>();
 
-	public static var prevCamFollow:FlxObject;
+	public static var prevCamFollow:FlxPoint;
 	var defaultCamZoom:Float = 1.05;
 	public var useStageCharZooms:Bool = true;
 	public var focusCharacter:Character;
@@ -494,7 +497,7 @@ class PlayState extends MusicBeatState
 		new Scripting('data/${sn}/script', modName, "PlayStateSong");
 
 		switch (curStage) {
-		    case 'philly':  {
+		    case 'philly': {
 				Paths.setCurrentLevel("week3");
 				var bg:FlxSprite = new FlxSprite(-100).loadGraphic(Paths.image('philly/sky'));
 				bg.scrollFactor.set(0.1, 0.1);
@@ -643,8 +646,8 @@ class PlayState extends MusicBeatState
 			}
 			case 'schoolEvil': {
 				Paths.setCurrentLevel("week6");
-				var waveEffectBG = new FlxWaveEffect(FlxWaveMode.ALL, 2, -1, 3, 2);
-				var waveEffectFG = new FlxWaveEffect(FlxWaveMode.ALL, 2, -1, 5, 2);
+				//var waveEffectBG = new FlxWaveEffect(FlxWaveMode.ALL, 2, -1, 3, 2);
+				//var waveEffectFG = new FlxWaveEffect(FlxWaveMode.ALL, 2, -1, 5, 2);
 
 				var posX = 400;
 				var posY = 200;
@@ -723,9 +726,6 @@ class PlayState extends MusicBeatState
 
 		if (SONG.actions.contains("mustBeMiddlescroll"))
 			isMiddlescroll = true;
-
-		if (currentStage == null)
-			currentStage = new Stage();
 
 		var gfVersion:String = 'gf';
 		
@@ -885,24 +885,21 @@ class PlayState extends MusicBeatState
 
 		// add(strumLine);
 
-		camFollow = new FlxObject(0, 0, 1, 1);
+		camFollow = new FlxPoint(camPos.x, camPos.y);
 		camFollowPos = new FlxObject(0, 0, 1, 1);
-		camFollowOffset = new FlxObject(0, 0, 1, 1);
-
-		camFollow.setPosition(camPos.x, camPos.y);
+		camFollowPos.moves = false;
+		camFollowOffset = new FlxPoint(0, 0);
 
 		if (prevCamFollow != null) {
-			camFollow.setPosition(prevCamFollow.x, prevCamFollow.y);
+			camFollow.copyFrom(prevCamFollow);
 			camFollowPos.setPosition(prevCamFollow.x, prevCamFollow.y);
 			prevCamFollow = null;
 		}
 
-		add(camFollow);
-
 		FlxG.camera.follow(camFollowPos, LOCKON, 1);
 		// FlxG.camera.setScrollBounds(0, FlxG.width, 0, FlxG.height);
 		FlxG.camera.zoom = defaultCamZoom;
-		FlxG.camera.focusOn(camFollow.getPosition());
+		FlxG.camera.focusOn(camFollow);
 
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 
@@ -1058,7 +1055,7 @@ class PlayState extends MusicBeatState
 					FlxG.sound.play(Paths.sound('Lights_Turn_On'));
 					camFollow.y = -2050;
 					camFollow.x += 200;
-					FlxG.camera.focusOn(camFollow.getPosition());
+					FlxG.camera.focusOn(camFollow);
 					FlxG.camera.zoom = 1.5;
 
 					new FlxTimer().start(0.8, function(tmr:FlxTimer)
@@ -1632,17 +1629,16 @@ class PlayState extends MusicBeatState
 				bobBleeds.remove(thing);
 		}
 
-		switch (curStage) {
-			case 'philly':
-				if (trainMoving) {
-					trainFrameTiming += elapsed;
+		if (curStage == "philly") { //todo: unhardcode
+			if (trainMoving) {
+				trainFrameTiming += elapsed;
 
-					if (trainFrameTiming >= 1 / 24) {
-						updateTrainPos();
-						trainFrameTiming = 0;
-					}
+				if (trainFrameTiming >= 1 / 24) {
+					updateTrainPos();
+					trainFrameTiming = 0;
 				}
-				// phillyCityLights.members[curLight].alpha -= (Conductor.crochet / 1000) * FlxG.elapsed;
+			}
+			// phillyCityLights.members[curLight].alpha -= (Conductor.crochet / 1000) * FlxG.elapsed;
 		}
 
 		super.update(elapsed);
@@ -1651,16 +1647,26 @@ class PlayState extends MusicBeatState
 			i.updateInfo();
 		}
 
-		if (FlxG.keys.justPressed.ENTER && startedCountdown && canPause && !isSubStateActive) {
-			persistentUpdate = false;
-			persistentDraw = true;
-			paused = true;
+		if (FlxG.keys.justPressed.ENTER && startedCountdown && canPause) {
+			var lol = true;
+			if (isSubStateActive) {
+				if (Std.downcast(FlxG.state.subState, Transition) != null) { //does this even work
+					FlxG.state.subState.close(); //is this good to do?
+				} else {
+					lol = false;
+				}
+			}
+			if (lol) {
+				persistentUpdate = false;
+				persistentDraw = true;
+				paused = true;
 
-			openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
-		
-			#if desktop
-			DiscordClient.changePresenceSimple("paused");
-			#end
+				openSubState(new PauseSubState(/*boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y*/));
+			
+				#if desktop
+				DiscordClient.changePresenceSimple("paused");
+				#end
+			}
 		}
 
 		if (FlxG.keys.justPressed.SEVEN && !isSubStateActive) {
@@ -1753,10 +1759,8 @@ class PlayState extends MusicBeatState
 					newFocus = Character.activeArray[focusNum - 1];
 				}
 
-				if (focusCharacter != newFocus) {
-					camFollowSetOnCharacter(newFocus);
-					focusCharacter = newFocus;
-				}
+				camFollowSetOnCharacter(newFocus, focusCharacter != newFocus);
+				focusCharacter = newFocus;
 			}
 		}
 
@@ -1765,33 +1769,34 @@ class PlayState extends MusicBeatState
 			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, hudZoomSpeed);
 		}
 
+		#if debug
 		FlxG.watch.addQuick("beatShit", curBeat);
 		FlxG.watch.addQuick("stepShit", curStep);
+		#end
 
-		if (curSong == 'fresh') {
-			switch (curBeat) {
-				case 16:
-					camZooming = true;
-					gfSpeed = 2;
-				case 48:
-					gfSpeed = 1;
-				case 80:
-					gfSpeed = 2;
-				case 112:
-					gfSpeed = 1;
-				case 163:
-					// FlxG.sound.music.stop();
-					// FlxG.switchState(new TitleState());
-			}
-		}
-
-		if (curSong == 'bopeebo') {
-			switch (curBeat) {
-				case 128, 129, 130:
-					vocals.volume = 0;
-					// FlxG.sound.music.stop();
-					// FlxG.switchState(new PlayState());
-			}
+		switch (curSong) {
+			case "fresh": //todo: use the event system (but it has to work so.....)
+				switch (curBeat) {
+					case 16:
+						camZooming = true;
+						gfSpeed = 2;
+					case 48:
+						gfSpeed = 1;
+					case 80:
+						gfSpeed = 2;
+					case 112:
+						gfSpeed = 1;
+					case 163:
+						// FlxG.sound.music.stop();
+						// FlxG.switchState(new TitleState());
+				}
+			case "bopeebo": //todo: also use the event system
+				switch (curBeat) {
+					case 128, 129, 130:
+						vocals.volume = 0;
+						// FlxG.sound.music.stop();
+						// FlxG.switchState(new PlayState());
+				}
 		}
 		// better streaming of shit
 
@@ -1801,11 +1806,13 @@ class PlayState extends MusicBeatState
 			trace("RESET = True");
 		}
 
+		/*
 		// CHEAT = brandon's a pussy
 		if (controls.CHEAT) {
 			health += 1;
 			trace("User is cheating!");
 		}
+		*/
 
 		if (health <= 0 && !Options.instance.practice_disable_death) {
 			boyfriend.stunned = true;
@@ -1978,33 +1985,35 @@ class PlayState extends MusicBeatState
 		
 	}
 
-	public function camFollowSetOnCharacter(char:Character) {
+	public function camFollowSetOnCharacter(char:Character, ?isAChange:Bool) {
 		focusCharacter = char;
 		
-		if (SONG.song.toLowerCase() == 'tutorial') {
-			if (char == dad) {
-				tweenCamIn();
-			} else if (char == boyfriend) {
-				FlxTween.tween(FlxG.camera, {zoom: 1}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut});
+		if (isAChange) {
+			if (SONG.song.toLowerCase() == 'tutorial') {
+				if (char == dad) {
+					tweenCamIn();
+				} else if (char == boyfriend) {
+					FlxTween.tween(FlxG.camera, {zoom: 1}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut});
+				}
+			}
+
+			switch (char.curCharacter) {
+				case 'mom':
+					vocals.volume = 1;
+			}
+
+			var point = getCharacterCamFollow(char);
+			camFollow.set(point.x, point.y);
+			point.putWeak();
+
+			var guyId = Math.floor(Math.min(Character.activeArray.indexOf(char), currentStage.cameraOffset.length - 1));
+			
+			if (useStageCharZooms && currentStage.charZoom != null && currentStage.charZoom.length > guyId && currentStage.charZoom[guyId] != null) {
+				defaultCamZoom = currentStage.charZoom[guyId];
 			}
 		}
 
-		switch (char.curCharacter) {
-			case 'mom':
-				vocals.volume = 1;
-		}
-
-		var point = getCharacterCamFollow(char);
-		camFollow.setPosition(point.x, point.y);
-		point.putWeak();
-
-		var guyId = Math.floor(Math.min(Character.activeArray.indexOf(char), currentStage.cameraOffset.length - 1));
-		
-		if (useStageCharZooms && currentStage.charZoom != null && currentStage.charZoom.length > guyId && currentStage.charZoom[guyId] != null) {
-			defaultCamZoom = currentStage.charZoom[guyId];
-		}
-
-		Scripting.runOnScripts("cameraSetOnCharacter", [char]);
+		Scripting.runOnScripts("cameraSetOnCharacter", [char, isAChange]);
 	}
 
 	public function getCharacterCamFollow(char:Character):FlxPoint {
