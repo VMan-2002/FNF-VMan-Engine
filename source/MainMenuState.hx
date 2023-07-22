@@ -250,8 +250,9 @@ class MainMenuState extends MusicBeatState
 						} else {
 							spr.scale.set(1.2, 1.2);
 							FlxTween.cancelTweensOf(spr.scale);
-							FlxTween.tween(spr.scale, {x: 1.0, y:1.0}, 0.8, {ease: FlxEase.cubeOut, startDelay: 0.11});
+							FlxTween.tween(spr.scale, {x: 1.0, y:1.0}, 0.81, {ease: FlxEase.cubeOut, startDelay: 0.1});
 							FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker) {
+								Scripting.runOnScripts("onAccept", [optionShit[curSelected]]);
 								switch (optionShit[curSelected]) {
 									case 'story mode':
 										FlxG.switchState(new StoryMenuState());
