@@ -166,8 +166,9 @@ class StrumNote extends FlxSprite
 	
 	public function showKeybindReminder() {
 		destroyKeybindReminder();
-		keybindReminder = new FlxText(x, y, 0, ControlsSubState.ConvertKey(parent.thisManiaInfo.control_set[noteData][0]), 10);
-		FlxG.state.insert(FlxG.state.members.indexOf(this), keybindReminder);
+		keybindReminder = new FlxText(x - 80, y, 160, ControlsSubState.ConvertKey(parent.thisManiaInfo.control_set[noteData][0]), 10);
+		keybindReminder.alignment = CENTER;
+		parent.add(keybindReminder);
 		FlxTween.tween(keybindReminder, {alpha: 0, "scale.x": 0}, 1, {startDelay: 2, onComplete: function(tw) {
 			destroyKeybindReminder();
 		}, ease: FlxEase.circOut});
@@ -176,8 +177,7 @@ class StrumNote extends FlxSprite
 	public inline function destroyKeybindReminder() {
 		if (keybindReminder != null) {
 			FlxTween.cancelTweensOf(keybindReminder);
-			FlxG.state.remove(keybindReminder);
-			keybindReminder.destroy();
+			parent.remove(keybindReminder, true).destroy();
 			keybindReminder = null;
 		}
 	}

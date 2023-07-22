@@ -11,8 +11,7 @@ import flixel.util.FlxTimer;
 
 using StringTools;
 
-class StrumLine extends FlxTypedGroup<StrumNote>
-{
+class StrumLine extends FlxTypedGroup<FlxSprite> {
 	public var thisManiaInfo:SwagMania;
 	//todo: should this be used
 	//var notes:Array<Note>;
@@ -50,6 +49,7 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 			oldArrows = new Array<String>();
 			for (i in 0...oldStrumNotes.length) {
 				oldArrows[i] = thisManiaInfo.arrows[oldStrumNotes[i].noteData];
+				oldStrumNotes[i].destroyKeybindReminder();
 			}
 		}
 		members.resize(0);
@@ -88,7 +88,7 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 					i += 1;
 				}
 				if (inManiaChange)
-					new FlxTimer().start(0.5, function(a) {
+					new FlxTimer().start(0.501, function(a) {
 						inManiaChange = false;
 						a.destroy();
 					});
@@ -111,7 +111,7 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 
 	public function playAppearAnim(?makeVisible:Bool = false) {
 		for (i in 0...length) {
-			var babyArrow = members[i];
+			var babyArrow = strumNotes[i];
 			babyArrow.y -= 10;
 			babyArrow.alpha = 0;
 			var delay = 0.5 + (1.6 * i / Math.max(thisManiaInfo.keys, 8));
@@ -135,19 +135,19 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 	
 	public inline function updateSpan(?hitNum:Int = 0) {
 		if (hitNum == 0 || hitNum + 1 == members.length) {
-			spanX = strumNotes[members.length - 1].x - strumNotes[0].x;
-			spanY = strumNotes[members.length - 1].y - strumNotes[0].y;
+			spanX = strumNotes[strumNotes.length - 1].x - strumNotes[0].x;
+			spanY = strumNotes[strumNotes.length - 1].y - strumNotes[0].y;
 		}
 	}
 
 	public function setSpeedMult(num:Float) {
-		for (i in members) {
+		for (i in strumNotes) {
 			i.speedMult = num;
 		}
 	}
 
 	public function setDownscroll(num:Bool) {
-		for (i in members) {
+		for (i in strumNotes) {
 			i.downScroll = num;
 		}
 	}
@@ -157,7 +157,7 @@ class StrumLine extends FlxTypedGroup<StrumNote>
 	}
 	
 	public function showKeybindReminder() {
-		for (i in members) {
+		for (i in strumNotes) {
 			i.showKeybindReminder();
 		}
 	}

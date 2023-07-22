@@ -155,6 +155,7 @@ class Character extends SpriteVMan
 
 		var tex:FlxAtlasFrames;
 		antialiasing = true;
+		flipX = false;
 
 		noteCameraOffset.set("singLEFT", new FlxPoint(-45, 0));
 		noteCameraOffset.set("singRIGHT", new FlxPoint(45, 0));
@@ -824,6 +825,11 @@ class Character extends SpriteVMan
 				addOffset("singLEFT-alt", -30, 15);
 				addOffset("singDOWN-alt", -30, -27);
 
+				noteCameraOffset.set("singLEFT-alt", new FlxPoint(-45, 0));
+				noteCameraOffset.set("singRIGHT-alt", new FlxPoint(45, 0));
+				noteCameraOffset.set("singUP-alt", new FlxPoint(0, -45));
+				noteCameraOffset.set("singDOWN-alt", new FlxPoint(0, 45));
+
 				playAnim('idle');
 
 				positionOffset[0] = -500;
@@ -1034,7 +1040,11 @@ class Character extends SpriteVMan
 		generateFlipOffsets();
 
 		if (!hasMissAnims) {
-			var things = ["singUP", "singDOWN", "singLEFT", "singRIGHT"];
+			var things = new Array<String>();
+			for (n in animation.getNameList()) {
+				if (n.startsWith("sing") && !n.endsWith("miss"))
+					things.push(n);
+			}
 			for (a in things) {
 				copyAnimation(a, a + "miss");
 			}
@@ -1061,6 +1071,7 @@ class Character extends SpriteVMan
 		y -= positionOffset[1];
 		animation.destroyAnimations();
 		animOffsets.clear();
+		noteCameraOffset.clear();
 		initCharacter(name, modName);
 		applyPositionOffset();
 	}
@@ -1070,7 +1081,8 @@ class Character extends SpriteVMan
 		var oldFrame = animation.curAnim.curFrame;
 		var oldReverse = animation.curAnim.reversed;
 		changeCharacter(name, modName);
-		playAnim(oldAnim, true, oldReverse, oldFrame);
+		if (hasAnim(oldAnim))
+			playAnim(oldAnim, true, oldReverse, oldFrame);
 	}
 
 	public static var charHealthIcons:Map<String, String> = new Map<String, String>();

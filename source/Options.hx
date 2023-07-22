@@ -15,12 +15,12 @@ class Options {
 	public var ghostTapping:Bool = false;
 	public var instantRespawn:Bool = false;
 	public var botplay:Bool = false;
-	public var playstyle:String = "default";
+	//public var playstyle:String = "default";
 	public static var offset:Int = 0;
 	public static var antialias:Bool = true;
 	public var invisibleNotes:Bool = false;
 	public var invisibleNotesType:Int = 0;
-	public static var freeplayFolders:Bool = true;
+	//public static var freeplayFolders:Bool = true;
 	public static var newModsActive:Bool = true;
 	public var tappingHorizontal:Bool = false;
 	public static var skipTitle:Bool = false;
@@ -151,12 +151,12 @@ class Options {
 		svd.data.ghostTapping = ghostTapping;
 		svd.data.instantRespawn = instantRespawn;
 		svd.data.botplay = botplay;
-		svd.data.playstyle = playstyle;
+		//svd.data.playstyle = playstyle;
 		svd.data.offset = offset;
 		svd.data.antialias = antialias;
-		#if debug
+		/*#if debug
 		svd.data.freeplayFolders = freeplayFolders;
-		#end
+		#end*/
 		svd.data.newModsActive = newModsActive;
 		svd.data.tappingHorizontal = tappingHorizontal;
 		svd.data.skipTitle = skipTitle;
@@ -201,10 +201,10 @@ class Options {
 		saved.ghostTapping = ifNotNull(svd.data.ghostTapping, saved.ghostTapping);
 		saved.instantRespawn = ifNotNull(svd.data.instantRespawn, saved.instantRespawn);
 		saved.botplay = ifNotNull(svd.data.botplay, saved.botplay);
-		saved.playstyle = ifNotNull(svd.data.playstyle, saved.playstyle);
+		//saved.playstyle = ifNotNull(svd.data.playstyle, saved.playstyle);
 		offset = Std.int(CoolUtil.clamp(ifNotNull(svd.data.offset, offset), -500, 500));
 		antialias = ifNotNull(svd.data.antialias, antialias);
-		freeplayFolders = ifNotNull(svd.data.freeplayFolders, freeplayFolders);
+		//freeplayFolders = ifNotNull(svd.data.freeplayFolders, freeplayFolders);
 		newModsActive = ifNotNull(svd.data.newModsActive, newModsActive);
 		saved.tappingHorizontal = ifNotNull(svd.data.tappingHorizontal, saved.tappingHorizontal);
 		skipTitle = ifNotNull(svd.data.skipTitle, skipTitle);

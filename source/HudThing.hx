@@ -95,9 +95,9 @@ class HudThing extends FlxGroup {
 	}
 
 	override function update(elapsed:Float) {
-		super.update(elapsed);
 		if (autoUpdate)
 			updateInfo();
+		super.update(elapsed);
 	}
 
 	public inline function accuracy():Float {

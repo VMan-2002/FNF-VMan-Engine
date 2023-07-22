@@ -1539,7 +1539,7 @@ class PlayState extends MusicBeatState
 			strumLines.add(thing);
 		}
 		for (i in 0 ... curManiaInfo.keys) {
-			if (thing.members[i] == null) {
+			if (thing.strumNotes[i] == null) {
 				trace('Null member of strumline ${player} at ${i}. This is really bad.');
 			}
 		}
@@ -1771,7 +1771,8 @@ class PlayState extends MusicBeatState
 					newFocus = Character.activeArray[focusNum - 1];
 				}
 
-				camFollowSetOnCharacter(newFocus, focusCharacter != newFocus);
+				var yeah = focusCharacter != newFocus;
+				camFollowSetOnCharacter(newFocus, yeah, yeah, true);
 				focusCharacter = newFocus;
 			}
 		}
@@ -1886,7 +1887,7 @@ class PlayState extends MusicBeatState
 				if (strumLines.members[strumNumber] != null) { //Do nothing if strumline not found
 					//todo: i guess. It's fine if you disallow both side mode when a song has mania changes
 					var isInManiaChange:Bool = false; //currentManiaPartName[strumNumber] == maniaPartArr[daNote.maniaPart][strumNumber];
-					var daStrum:StrumNote = strumLines.members[strumNumber].members[(isInManiaChange || daNote.center) ? 0 : daNote.strumNoteNum];
+					var daStrum:StrumNote = strumLines.members[strumNumber].strumNotes[(isInManiaChange || daNote.center) ? 0 : daNote.strumNoteNum];
 					daNote.y = (daStrum.y - (Conductor.songPosition - daNote.strumTime) * speed * daStrum.speedMult * daNote.getNoteTypeData().scrollSpeedMult);
 					daNote.x = daStrum.x;
 					if (isInManiaChange || daNote.center) {
@@ -1997,9 +1998,8 @@ class PlayState extends MusicBeatState
 		
 	}
 
-	public function camFollowSetOnCharacter(char:Character, ?isAChange:Bool) {
+	public function camFollowSetOnCharacter(char:Character, ?isAChange:Bool = true, ?positionMove:Bool = true, ?runScript:Bool = true) {
 		focusCharacter = char;
-		
 		if (isAChange) {
 			if (SONG.song.toLowerCase() == 'tutorial') {
 				if (char == dad) {
@@ -2014,18 +2014,19 @@ class PlayState extends MusicBeatState
 					vocals.volume = 1;
 			}
 
-			var point = getCharacterCamFollow(char);
-			camFollow.set(point.x, point.y);
-			point.putWeak();
-
 			var guyId = Math.floor(Math.min(Character.activeArray.indexOf(char), currentStage.cameraOffset.length - 1));
 			
 			if (useStageCharZooms && currentStage.charZoom != null && currentStage.charZoom.length > guyId && currentStage.charZoom[guyId] != null) {
 				defaultCamZoom = currentStage.charZoom[guyId];
 			}
 		}
-
-		Scripting.runOnScripts("cameraSetOnCharacter", [char, isAChange]);
+		if (positionMove) {
+			var point = getCharacterCamFollow(char);
+			camFollow.set(point.x, point.y);
+			point.putWeak();
+		}
+		if (runScript)
+			Scripting.runOnScripts("cameraSetOnCharacter", [char, isAChange]);
 	}
 
 	public function getCharacterCamFollow(char:Character):FlxPoint {
@@ -2258,7 +2259,7 @@ class PlayState extends MusicBeatState
 			sicks += 1;
 			//todo: sometimes notesplashes are the wrong color
 			//todo: sometimes notesplashes crash.
-			//grpNoteSplashes.recycle(NoteSplash, NoteSplash.new).playNoteSplash(playerStrums.members[daNote.strumNoteNum], daNote);
+			//grpNoteSplashes.recycle(NoteSplash, NoteSplash.new).playNoteSplash(playerStrums.strumNotes[daNote.strumNoteNum], daNote);
 		}
 		if (daRating != "sick" && songFC < 2) {
 			if (daRating == "good") {
@@ -2715,8 +2716,8 @@ class PlayState extends MusicBeatState
 			}
 		}
 		
-		for (i in 0...playerStrums.members.length) {
-			var spr = playerStrums.members[i];
+		for (i in 0...playerStrums.strumNotes.length) {
+			var spr = playerStrums.strumNotes[i];
 			var press = FlxG.keys.anyJustPressed(curManiaInfo.control_set[i]);
 			var rel = FlxG.keys.anyJustReleased(curManiaInfo.control_set[i]);
 			
@@ -2839,7 +2840,7 @@ class PlayState extends MusicBeatState
 			
 			animateForNote(note, true, note.noteData);
 
-			playerStrums.members[note.noteData].playAnim('confirm', true);
+			playerStrums.strumNotes[note.noteData].playAnim('confirm', true);
 
 			note.wasGoodHit = true;
 			vocals.volume = 1;
@@ -2872,7 +2873,7 @@ class PlayState extends MusicBeatState
 			}
 
 			if (note.strumLineNum >= 0) {
-				var spr = strumLines.members[note.strumLineNum].members[note.noteData];
+				var spr = strumLines.members[note.strumLineNum].strumNotes[note.noteData];
 				if (spr != null) {
 					spr.playAnim('confirm', true);
 					spr.returnTime = (Conductor.crochet / 3750) + 0.1;

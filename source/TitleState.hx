@@ -197,9 +197,9 @@ class TitleState extends MusicBeatState {
 				}
 				for (i in Main.launchArgumentsParsed.keys()) {
 					trace('arg ${i} = ${Main.launchArgumentsParsed.get(i)}');
-					if (i == "multiWindowType") {
+					/*if (i == "multiWindowType") {
 						MultiWindow.thisWindowId = Main.launchArgumentsParsed.get(i);
-					}
+					}*/
 				}
 			} else {
 				trace('no launch args');

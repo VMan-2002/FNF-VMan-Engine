@@ -203,11 +203,11 @@ class MainMenuState extends MusicBeatState
 			}
 
 			#if !html5
-			#if debug
+			/*#if debug
 			if (FlxG.keys.justPressed.U) {
 				hillarious = new MultiWindow(1, true);
 			}
-			#end
+			#end*/
 
 			if (FlxG.keys.justPressed.SEVEN) {
 				FlxG.switchState(new OptionsMenu(new ToolsMenuSubState()));

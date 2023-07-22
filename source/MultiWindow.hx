@@ -18,11 +18,12 @@ class MultiWindow extends FlxBasic
 	//changing the stage size dynamically would be cool but it's READ ONYL fuck
 	//oh wait there's https://api.haxeflixel.com/flixel/system/scaleModes/
 
-	//todo: This can probably (and should) be replaced with https://github.com/duckiewhy/Transparent-and-MultiWindow-FNF or one of it's potentially awesome forks. scripting should be added first
+	//todo: This can probably (and should) be replaced with https://github.com/duckiewhy/Transparent-and-MultiWindow-FNF or one of it's potentially awesome forks. make sure it's controllable via scripting :)
 	
+	public static var supported:Bool = true;
 	public var thisWindow:Process;
 	public var isLoaded(default, null):Bool = false;
-	public static var thisWindowId = 0;
+	public var thisWindowId = 0;
 	
 	/**
 	 * id must be greater or equal to 1!

@@ -27,7 +27,7 @@ class OptionsSubState extends OptionsSubStateBasic
 			"Instant Respawn",
 			"Botplay",
 			#if debug
-			"Freeplay Folders",
+			//"Freeplay Folders",
 			#end
 			#if MODS
 			"Activate New Mods",
@@ -88,8 +88,8 @@ class OptionsSubState extends OptionsSubStateBasic
 			//case "input offset":
 				//text = "More = you have to hit notes later, in milliseconds.";
 				//value = Std.string(Options.offset);
-			case "freeplay folders":
-				return ["Categorize the songs in the Freeplay menu.\nContent Warning: may scare some players.", Options.freeplayFolders ? "Enabled" : "Disabled"];
+			//case "freeplay folders":
+			//	return ["Categorize the songs in the Freeplay menu.\nContent Warning: may scare some players.", Options.freeplayFolders ? "Enabled" : "Disabled"];
 			case "activate new mods":
 				return ["The state that any new mods in the mods folder have if they hadn't been added before.", Options.newModsActive ? "Enabled" : "Disabled"];
 			case "skip title":
@@ -177,12 +177,12 @@ class OptionsSubState extends OptionsSubStateBasic
 				}
 			case "instant respawn":
 				Options.saved.instantRespawn = !Options.saved.instantRespawn;
-			case "playstyle preset":
-				Options.saved.playstyle = Options.saved.playstyle != "kade" ? "kade" : "default";
+			//case "playstyle preset":
+			//	Options.saved.playstyle = Options.saved.playstyle != "kade" ? "kade" : "default";
 			case "botplay":
 				Options.saved.botplay = !Options.saved.botplay;
-			case "freeplay folders":
-				Options.freeplayFolders = !Options.freeplayFolders;
+			//case "freeplay folders":
+			//	Options.freeplayFolders = !Options.freeplayFolders;
 			case "skip title":
 				Options.skipTitle = !Options.skipTitle;
 			case "invisi-notes":
