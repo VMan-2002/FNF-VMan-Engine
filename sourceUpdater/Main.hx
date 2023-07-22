@@ -2,13 +2,11 @@ package;
 
 import Reflect;
 import Sys;
-import flixel.math.FlxMath;
 import haxe.Http;
 import haxe.Json;
 import haxe.Timer;
 import lime.system.System;
 import openfl.Lib;
-import openfl.display.FPS;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.events.ProgressEvent;
@@ -30,8 +28,7 @@ typedef GamebananaFileResult = {
 	_bContainsExe:Bool
 }
 
-class Main extends Sprite
-{
+class Main extends Sprite {
 	#if (debug && !html5)
 	public static var debug:debugger.Local;
 	#end
@@ -230,6 +227,11 @@ class Main extends Sprite
 			FileSystem.createDirectory(getPath("mods"));
 		}
 	}
+
+	public function roundDecimal(n:Float):Float {
+		//So that we dont have to import FlxMath
+		return Math.floor(n * 10000) / 100;
+	}
 	
 	function downloadFile(url:String, result:String, contentType:String, ?finishText:Null<String>) {
 		trace("Attempting download of "+url);
@@ -316,10 +318,10 @@ class Main extends Sprite
 			}
 			reader.addEventListener(ProgressEvent.PROGRESS, function(ev) {
 				downProg();
-				textThing.text = "Download progress: "+FlxMath.roundDecimal((ev.bytesLoaded / ev.bytesTotal) * 100, 2)+"%";
+				textThing.text = "Download progress: "+roundDecimal(ev.bytesLoaded / ev.bytesTotal)+"%";
 				stage.invalidate();
 				if (ev.bytesTotal > 0) {
-					trace("Download progress: "+FlxMath.roundDecimal((ev.bytesLoaded / ev.bytesTotal) * 100, 2)+"%");
+					trace("Download progress: "+roundDecimal(ev.bytesLoaded / ev.bytesTotal)+"%");
 				} else {
 					trace("Download progress");
 				}
