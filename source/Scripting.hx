@@ -222,7 +222,8 @@ class Scripting {
                     "cameraSetOnCharacter",
                     "noteMiss",
                     "goodNoteHit",
-                    "charNoteHit"
+                    "charNoteHit",
+                    "preCreateMenuButtons"
                 ]);
                 trace("Success Load script: "+id);
             }

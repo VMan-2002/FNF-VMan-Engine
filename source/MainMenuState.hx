@@ -45,9 +45,11 @@ class MainMenuState extends MusicBeatState
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
 	
-	#if !html5
+	/*#if !html5
 	var hillarious:MultiWindow;
-	#end
+	#end*/
+
+	var menuButtonTextures:Map<String, String> = new Map<String, String>();
 
 	static var possiblyForgotControls:Bool = true;
 	var possiblyForgotControlsTimer:Float = 8;
@@ -98,11 +100,13 @@ class MainMenuState extends MusicBeatState
 		menuItems = new FlxTypedGroup<FlxSprite>();
 		add(menuItems);
 
+		Scripting.runOnScripts("preCreateMenuButtons", []);
+
 		var tex = Paths.getSparrowAtlas('menu/FNF_main_menu_assets');
 
 		for (i in 0...optionShit.length) {
 			var menuItem:FlxSprite = new FlxSprite(0, ((FlxG.height / 2) - (optionShit.length * 80)) + (i * 160));
-			menuItem.frames = tex;
+			menuItem.frames = menuButtonTextures.exists(optionShit[i]) ? Paths.getSparrowAtlas(menuButtonTextures.get(optionShit[i])) : tex;
 			menuItem.animation.addByPrefix('idle', optionShit[i] + " basic", 24);
 			menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
 			menuItem.animation.play('idle');

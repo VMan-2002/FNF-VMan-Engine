@@ -235,7 +235,7 @@ class Main extends Sprite {
 	
 	function downloadFile(url:String, result:String, contentType:String, ?finishText:Null<String>) {
 		trace("Attempting download of "+url);
-		var uncompress:Void->Void = function() {
+		function uncompress() {
 			textThing.text = "Download Finished, extracting now...";
 			stage.invalidate();
 			Timer.delay(function() {
