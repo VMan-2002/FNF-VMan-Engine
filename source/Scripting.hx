@@ -116,6 +116,21 @@ class Scripting {
         "FlxSound" => FlxSound
     ];
 
+	public static var gamePlatform(default, never) =
+	#if windows 
+		"windows";
+	#elseif html5
+		"html5";
+	#elseif android
+		"android";
+	#elseif ios
+		"ios";
+	#elseif linux
+		"linux";
+	#else
+		"unknown";
+	#end
+
     public var validFuncs:Map<String, Bool>;
     public var interp:Interp;
     public var id:String;
@@ -134,10 +149,27 @@ class Scripting {
         scripts.resize(0);
     }
 
-    public static function clearScriptsByContext(context:String) {
-        var toRemove = new Array<String>();
+    public static inline function clearScriptsByContext(context:String) {
+        /*var toRemove = new Array<String>();
         for (thing in scripts) {
             if (thing.context == context) {
+                thing.runValidFunction("destroy", new Array<Dynamic>());
+                toRemove.push(thing.id);
+            }
+        }
+        for (thing in toRemove) {
+            scripts.remove(namedScripts.get(thing));
+            namedScripts.remove(thing);
+        }*/
+        clearScriptsByCritera(function(script) {
+            return script.context == context;
+        });
+    }
+
+    public static function clearScriptsByCritera(context:Scripting->Bool) {
+        var toRemove = new Array<String>();
+        for (thing in scripts) {
+            if (context(thing)) {
                 thing.runValidFunction("destroy", new Array<Dynamic>());
                 toRemove.push(thing.id);
             }

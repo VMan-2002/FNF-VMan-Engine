@@ -29,7 +29,10 @@ typedef GamebananaFileResult = {
 }
 
 class Main extends Sprite {
-	#if (debug && !html5)
+	//todo: make this work for other platforms. The engine itself hell i dunno if it works, but the updater currently uses a lot of Windows-specific code lol
+	//Mac and Linux are i guess the big ones to really focus on, but yknow I can't do that without having access to those lool
+	//But the engine is only releasing on Windows right now. Which isn't entirely a bad thing but it would be cool to be multiplatform
+	#if debug
 	public static var debug:debugger.Local;
 	#end
 	var textThing = new TextField();

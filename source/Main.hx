@@ -21,21 +21,6 @@ class Main extends Sprite {
 	public static var gameVersionStr(default, never) = "v1.2.0 The Scripting Update Part 1";
 	public static var gameVersionNoSubtitle(default, never) = gameVersionStr.substring(0, gameVersionStr.indexOf(" "));
 
-	public static var gamePlatform(default, never) =
-	#if windows 
-		"windows";
-	#elseif html5
-		"html5";
-	#elseif android
-		"android";
-	#elseif ios
-		"ios";
-	#elseif linux
-		"linux";
-	#else
-		"unknown";
-	#end
-
 	var gameWidth:Int = 1280; // Width of the game in pixels (might be less / more in actual pixels depending on your zoom).
 	var gameHeight:Int = 720; // Height of the game in pixels (might be less / more in actual pixels depending on your zoom).
 	var initialState:Class<FlxState> = TitleState; // The FlxState the game starts with.
@@ -117,11 +102,19 @@ class Main extends Sprite {
 		var stupid:String = Browser.location.href;
 		//trace(stupid);
 		if (false) {
+			#if (flixel >= "5.0.0")
+			addChild(new FlxGame(gameWidth, gameHeight, RedirectState, framerate, framerate, skipSplash, startFullscreen));
+			#else
 			addChild(new FlxGame(gameWidth, gameHeight, RedirectState, zoom, framerate, framerate, skipSplash, startFullscreen));
+			#end
 		} else
 		#end
 		{
+			#if (flixel >= "5.0.0")
+			addChild(new FlxGame(gameWidth, gameHeight, initialState, framerate, framerate, skipSplash, startFullscreen));
+			#else
 			addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
+			#end
 		}
 		addChild(fps);
 	}
