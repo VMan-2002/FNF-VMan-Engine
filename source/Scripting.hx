@@ -115,7 +115,8 @@ class Scripting {
         "FreeplayState" => FreeplayState,
         "FlxSound" => FlxSound,
         "Reflect" => Reflect,
-        "Translation" => Translation
+        "Translation" => Translation,
+        "EReg" => EReg //Regular Expression (RegEx) (RegExp) <---- Remember that this is RegEx because the usual syntax ~/(RegEx)/g doesn't work for some reason
     ];
 
 	public static var gamePlatform(default, never) =
