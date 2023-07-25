@@ -265,7 +265,7 @@ class HudThing extends FlxGroup {
 		var min:Int = Math.floor(tNum / 60) % 60;
 		var sec:Int = Math.floor((tNum >= 0 ? tNum : -tNum) % 60);
 		if (hour > 0)
-			return hour + ":" + min + (sec >= 9 ? ":" : ":0") + sec;
+			return hour + ":" + min + (sec > 9 ? ":" : ":0") + sec;
 		return min + (sec >= 9 ? ":" : ":0") + sec;
 	}
 

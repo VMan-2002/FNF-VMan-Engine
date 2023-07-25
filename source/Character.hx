@@ -975,7 +975,9 @@ class Character extends SpriteVMan
 					}
 					this.isGirlfriend = loadedStuff.isGirlfriend == true;
 					playAvailableAnim([loadedStuff.initAnim, "danceLeft", "idle", "firstDeath"]);
-					if (loadedStuff.initAnim != animation.curAnim.name) {
+					if (animation.curAnim == null) {
+						trace("Null Animation");
+					} else if (loadedStuff.initAnim != animation.curAnim.name) {
 						trace("The set initAnim wasn't found, but an idle anim was found");
 					}
 					antialiasing = loadedStuff.antialias != false;

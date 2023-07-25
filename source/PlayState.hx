@@ -1917,7 +1917,7 @@ class PlayState extends MusicBeatState
 				
 				var strumNumber = daNote.strumLineNum;
 
-				var isComputer = Options.instance.botplay;
+				var isComputer = Options.instance.botplay && daNote.mustPress;
 				var isPass = daNote.strumTime <= Conductor.songPosition;
 				
 				if (strumLines.members[strumNumber] != null) { //Do nothing if strumline not found
