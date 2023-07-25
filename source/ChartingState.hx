@@ -158,6 +158,8 @@ class ChartingState extends MusicBeatState {
 			_song = Song.songFunc();
 		if (_song.actions == null)
 			_song.actions = new Array<String>();
+		if (_song.vmanEventOrder == null)
+			_song.vmanEventOrder = new Array<Int>();
 		curNoteTypeArr = _song.usedNoteTypes != null ? _song.usedNoteTypes : curNoteTypeArr;
 
 		leftIcon = new HealthIcon("bf", false, PlayState.modName);
