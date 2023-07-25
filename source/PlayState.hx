@@ -1899,6 +1899,7 @@ class PlayState extends MusicBeatState
 		}
 
 		if (generatedMusic) {
+			Scripting.runModchartUpdateOnScripts();
 			var speed = (0.45 * FlxMath.roundDecimal(scrollSpeed, 3));
 			if (Options.instance.downScroll)
 				speed = 0 - speed;
@@ -2028,7 +2029,6 @@ class PlayState extends MusicBeatState
 		#end
 
 		Scripting.runOnScripts("updatePost", [elapsed]);
-		Scripting.runModchartUpdateOnScripts();
 	}
 	
 	public function onSpawnNote(dunceNote:Note) {
