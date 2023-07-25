@@ -143,19 +143,9 @@ class HealthIcon extends SpriteVMan
 			path = '${pathPrefix}${char}';
 		}
 		isMultiIcon = false;
-		if (
-			#if !html5
-			FileSystem.exists('${path}.png')
-			#else
-			Assets.exists('${path}.png')
-			#end
-		) { //todo: this
+		if (Paths.exists('${path}.png')) {
 			trace('found health icon ${char}');
-			#if !html5
-			var isJson = FileSystem.exists('${path}.json');
-			#else
-			var isJson = Assets.exists('${path}.json');
-			#end
+			var isJson = Paths.exists('${path}.json');
 			var jsonData:Null<SwagHealthIcon> = null;
 			//is there accompanying json
 			if (isJson) {
@@ -173,11 +163,7 @@ class HealthIcon extends SpriteVMan
 				}
 			}
 			//is there accompanying xml
-			#if !html5
-			var isSheet = FileSystem.exists('${path}.xml');
-			#else
-			var isSheet = Assets.exists('${path}.xml');
-			#end
+			var isSheet = Paths.exists('${path}.xml');
 			var bitmap = BitmapData.fromFile('${path}.png');
 			if (isSheet) {
 				#if !html5

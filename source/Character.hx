@@ -120,12 +120,11 @@ class Character extends SpriteVMan
 	public var noteCameraOffset:Map<String, FlxPoint> = new Map<String, FlxPoint>();
 
 	public var hitNoteByPlayer = false;
-	public var idleAlt:String = "";
+	public var idleAlt(default, set):String = "";
 
 	public function set_realcolor(a:FlxColor) {
-		if (!misscolored) {
+		if (!misscolored)
 			color = a;
-		}
 		return a;
 	}
 
@@ -1287,5 +1286,10 @@ class Character extends SpriteVMan
 			misscolored = true;
 			color = 0x999aff;
 		}
+	}
+
+	public function set_idleAlt(value:String):String {
+		danceType = hasAnim("danceLeft" + value);
+		return idleAlt = value;
 	}
 }

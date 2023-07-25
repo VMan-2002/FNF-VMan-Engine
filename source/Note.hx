@@ -11,7 +11,10 @@ import flixel.util.FlxArrayUtil;
 import flixel.util.FlxColor;
 import flixel.util.typeLimit.OneOfThree;
 import json2object.JsonParser;
+import lime.math.Vector2;
 import lime.utils.Assets;
+import openfl.Vector;
+import openfl.geom.Point;
 import openfl.utils.Assets;
 
 using StringTools;
@@ -430,6 +433,10 @@ class Note extends FlxSprite
 		"appear"
 	];
 
+	//Cache lmao
+	public static var cacheString:String = ""; //XD
+	public static var cacheGraphic:FlxAtlasFrames;
+
 	//public var scrollDirection(default, set):Float = 0;
 
 	/*function set_scrollDirection(n:Float) {
@@ -511,7 +518,12 @@ class Note extends FlxSprite
 				var noteSkin:SwagNoteSkin = SwagNoteSkin.loadNoteSkin(skin, PlayState.modName);
 				var stuff = ((noteSkin.imageDownscroll != "" && noteSkin.imageDownscroll != null && Options.instance.downScroll) ? noteSkin.imageDownscroll : noteSkin.image).replace("\\", "/").split("/");
 				stuff[stuff.length - 1] = typedata.imagePrefix + stuff[stuff.length - 1];
-				frames = Paths.getSparrowAtlas(stuff.join("/"));
+				var l = stuff.join("/");
+				if (l != cacheString) {
+					cacheString = l;
+					cacheGraphic = Paths.getSparrowAtlas(l);
+				}
+				frames = cacheGraphic;
 				var noteAnimPrefix = strumLineNum < 0 ? "" : typedata.noteAnimPrefix;
 				//trace('Images [normal: ${noteSkin.image}] [downscroll: ${noteSkin.imageDownscroll}] Stuff is ${stuff.join("/")}');
 				

@@ -113,7 +113,9 @@ class Scripting {
         "AlphaCharacter" => AlphaCharacter,
         "Std" => Std,
         "FreeplayState" => FreeplayState,
-        "FlxSound" => FlxSound
+        "FlxSound" => FlxSound,
+        "Reflect" => Reflect,
+        "Translation" => Translation
     ];
 
 	public static var gamePlatform(default, never) =

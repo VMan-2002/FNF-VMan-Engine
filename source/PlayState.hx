@@ -253,6 +253,7 @@ class PlayState extends MusicBeatState
 	public var camFollowPos:FlxObject;
 	public var camFollowOffset:FlxPoint;
 	public var camFollowSpeed:Float = 1;
+	public var camFocuses:Bool = true;
 	public var camZoomSpeed:Float = 0.95;
 	public var hudZoomSpeed:Float = 0.95;
 	public var camOffset:FlxPoint = new FlxPoint(0, 0);
@@ -312,6 +313,7 @@ class PlayState extends MusicBeatState
 
 	override public function create() {	
 		Options.instance = Options.saved.copy();
+		Note.cacheString = "";
 		ErrorReportSubstate.initReport();
 
 		instance = this;
@@ -421,13 +423,7 @@ class PlayState extends MusicBeatState
 		}*/
 
 		var dialoguePath:String = Paths.getModOrGamePath('data/${sn}/dialogue/start.json', modName, null);
-		if (
-			#if !html5
-			FileSystem.exists(dialoguePath)
-			#else
-			Assets.exists(dialoguePath)
-			#end
-		) {
+		if (Paths.exists(dialoguePath)) {
 			trace('found start dialogue');
 			dialogueVMan = new DialogueBoxVMan(dialoguePath);
 			dialogueVMan.finishThing = startCountdown;
@@ -1204,46 +1200,64 @@ class PlayState extends MusicBeatState
 
 		var swagCounter:Int = 0;
 
-		startTimer = new FlxTimer().start(Conductor.crochet / 1000, function(tmr:FlxTimer) {
-			dad.dance();
-			gf.dance();
-			boyfriend.playAnim('idle');
+		if (SONG.actions.contains("skipCountdown")) {
+			Conductor.songPosition = 0;
+			startTimer = new FlxTimer();
+		} else {
+			startTimer = new FlxTimer().start(Conductor.crochet / 1000, function(tmr:FlxTimer) {
+				dad.dance();
+				gf.dance();
+				boyfriend.playAnim('idle');
 
-			/*var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
-			introAssets.set('default', ['', 'normal/ready', "normal/set", "normal/go"]);
-			introAssets.set('school', ['', 'pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
-			introAssets.set('schoolEvil', ['', 'pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
+				/*var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
+				introAssets.set('default', ['', 'normal/ready', "normal/set", "normal/go"]);
+				introAssets.set('school', ['', 'pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
+				introAssets.set('schoolEvil', ['', 'pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
 
-			var introAlts:Array<String> = introAssets.get('default');*/
-			var introAlts:Array<String> = ['', 'normal/ready', "normal/set", "normal/go"];
-			var introAltsSounds:Array<String> = ["intro3", "intro2", "intro1", "introGo"];
-			var altSuffix:String = "";
-			var scale:Float = 1;
+				var introAlts:Array<String> = introAssets.get('default');*/
+				var introAlts:Array<String> = ['', 'normal/ready', "normal/set", "normal/go"];
+				var introAltsSounds:Array<String> = ["intro3", "intro2", "intro1", "introGo"];
+				var altSuffix:String = "";
+				var scale:Float = 1;
 
-			if (currentUIStyle != null) {
-				introAlts = [currentUIStyle.three, currentUIStyle.two, currentUIStyle.one, currentUIStyle.go];
-				introAltsSounds = [currentUIStyle.threeSound, currentUIStyle.twoSound, currentUIStyle.oneSound, currentUIStyle.goSound];
-				scale = currentUIStyle.countdownScale;
-			} /* else {
-				for (value in introAssets.keys()) {
-					if (value == curStage) {
-						introAlts = introAssets.get(value);
-						introAltsSounds = ["intro3-pixel", "intro2-pixel", "intro1-pixel", "introGo-pixel"];
-						scale = daPixelZoom;
+				if (currentUIStyle != null) {
+					introAlts = [currentUIStyle.three, currentUIStyle.two, currentUIStyle.one, currentUIStyle.go];
+					introAltsSounds = [currentUIStyle.threeSound, currentUIStyle.twoSound, currentUIStyle.oneSound, currentUIStyle.goSound];
+					scale = currentUIStyle.countdownScale;
+				} /* else {
+					for (value in introAssets.keys()) {
+						if (value == curStage) {
+							introAlts = introAssets.get(value);
+							introAltsSounds = ["intro3-pixel", "intro2-pixel", "intro1-pixel", "introGo-pixel"];
+							scale = daPixelZoom;
+						}
 					}
+				} */
+
+				if (swagCounter <= 3) {
+					playCountdownSprite(introAlts[swagCounter], scale, introAltsSounds[swagCounter]);
 				}
-			} */
 
-			if (swagCounter <= 3) {
-				playCountdownSprite(introAlts[swagCounter], scale, introAltsSounds[swagCounter]);
-			}
-
-			swagCounter += 1;
-			// generateSong('fresh');
-		}, 5);
+				swagCounter += 1;
+				// generateSong('fresh');
+			}, 5);
+		}
 		
 		if (SONG.actions.contains("showSongCredit")) {
-			var creditText = new FlxText(0, FlxG.height, FlxG.width, Assets.getText('data/${Highscore.formatSong(SONG.song)}/songCredit.txt').replace("\r\n", "\n"));
+			var creditString:String = "Song credit not found";
+			var thingPath = 'data/${Highscore.formatSong(SONG.song)}/songCredit.txt';
+			if (Assets.exists(thingPath)) {
+				creditString = Assets.getText(thingPath).replace("\r\n", "\n");
+			} else {
+				var songStuffPath = 'mods/${modName}/data/${curSong}/song.txt';
+				if (FileSystem.exists(songStuffPath)) {
+					var thing = File.getContent(songStuffPath).split("\n");
+					creditString = thing[0];
+					if (thing[3] != "")
+						creditString += "\n" + thing[3];
+				}
+			}
+			var creditText = new FlxText(0, FlxG.height, FlxG.width, Assets.getText(thingPath).replace("\r\n", "\n"));
 			creditText.setFormat("vcr.ttf", 24, 0xFFFFFFFF, FlxTextAlign.CENTER);
 			creditText.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 1);
 			creditText.y -= ((creditText.textField.height * 2) + 4);
@@ -1258,7 +1272,29 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	public function playCountdownSprite(path:String, scale:Float, sound:String) {
+	/**
+		`0`: Three
+
+		`1`: Two
+
+		`2`: One
+
+		`3`: Go
+	**/
+	public inline function playNumCountdownSprite(n:Int) {
+		switch(n) {
+			case 0:
+				playCountdownSprite(currentUIStyle.three, currentUIStyle.countdownScale, currentUIStyle.threeSound);
+			case 1:
+				playCountdownSprite(currentUIStyle.two, currentUIStyle.countdownScale, currentUIStyle.twoSound);
+			case 2:
+				playCountdownSprite(currentUIStyle.one, currentUIStyle.countdownScale, currentUIStyle.oneSound);
+			case 3:
+				playCountdownSprite(currentUIStyle.go, currentUIStyle.countdownScale, currentUIStyle.goSound);
+		}
+	}
+
+	public function playCountdownSprite(path:String, scale:Float, ?sound:Null<String>) {
 		var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image(path));
 		ready.moves = false;
 		ready.scrollFactor.set();
@@ -1276,8 +1312,8 @@ class PlayState extends MusicBeatState
 			}
 		});
 		ready.visible = path != "";
-		if (!Options.instance.silentCountdown)
-			FlxG.sound.play(Paths.sound(sound), 0.6);
+		if (!Options.instance.silentCountdown && sound != null)
+			FlxG.sound.list.add(FlxG.sound.play(Paths.sound(sound), 0.6));
 		return ready;
 	}
 
@@ -2000,33 +2036,38 @@ class PlayState extends MusicBeatState
 
 	public function camFollowSetOnCharacter(char:Character, ?isAChange:Bool = true, ?positionMove:Bool = true, ?runScript:Bool = true) {
 		focusCharacter = char;
-		if (isAChange) {
-			if (SONG.song.toLowerCase() == 'tutorial') {
-				if (char == dad) {
-					tweenCamIn();
-				} else if (char == boyfriend) {
-					FlxTween.tween(FlxG.camera, {zoom: 1}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut});
+		if (camFocuses) {
+			if (isAChange) {
+				if (SONG.song.toLowerCase() == 'tutorial') {
+					if (char == dad) {
+						tweenCamIn();
+					} else if (char == boyfriend) {
+						FlxTween.tween(FlxG.camera, {zoom: 1}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut});
+					}
+				}
+
+				switch (char.curCharacter) {
+					case 'mom':
+						vocals.volume = 1;
+				}
+
+				var guyId = Math.floor(Math.min(Character.activeArray.indexOf(char), currentStage.cameraOffset.length - 1));
+				
+				if (useStageCharZooms && currentStage.charZoom != null && currentStage.charZoom.length > guyId && currentStage.charZoom[guyId] != null) {
+					defaultCamZoom = currentStage.charZoom[guyId];
 				}
 			}
-
-			switch (char.curCharacter) {
-				case 'mom':
-					vocals.volume = 1;
-			}
-
-			var guyId = Math.floor(Math.min(Character.activeArray.indexOf(char), currentStage.cameraOffset.length - 1));
-			
-			if (useStageCharZooms && currentStage.charZoom != null && currentStage.charZoom.length > guyId && currentStage.charZoom[guyId] != null) {
-				defaultCamZoom = currentStage.charZoom[guyId];
-			}
-		}
-		if (positionMove) {
-			var point = getCharacterCamFollow(char);
-			camFollow.set(point.x, point.y);
-			point.putWeak();
+			if (positionMove) 
+				camContinue();
 		}
 		if (runScript)
 			Scripting.runOnScripts("cameraSetOnCharacter", [char, isAChange]);
+	}
+
+	public function camContinue() {
+		var point = getCharacterCamFollow(focusCharacter);
+		camFollow.set(point.x, point.y);
+		point.putWeak();
 	}
 
 	public function getCharacterCamFollow(char:Character):FlxPoint {

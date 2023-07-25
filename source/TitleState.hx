@@ -92,6 +92,8 @@ class TitleState extends MusicBeatState {
 			SwagUIStyle.clearLoadedUIStyles();
 			Character.charHealthIcons.clear();
 			Scripting.sharedVars.clear();
+			Note.cacheString = "";
+			Note.cacheGraphic = null;
 		}
 		Scripting.initScriptsByContext("Global");
 

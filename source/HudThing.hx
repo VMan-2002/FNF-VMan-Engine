@@ -259,13 +259,14 @@ class HudThing extends FlxGroup {
 		return Std.string(FlxMath.roundDecimal(num, 2))+"ms";
 	}
 
-	public static function formatTime(num:Float) {
+	public static function formatTime(num:Float):String {
 		var tNum:Int = Math.floor(num / 1000);
-		var min:String = Std.string(Math.floor(tNum / 60));
-		var sec:String = Std.string(Math.abs(tNum % 60));
-		if (sec.length == 1)
-			sec = "0" + sec;
-		return min + ":" + sec;
+		var hour:Int = Math.floor(tNum / 3600);
+		var min:Int = Math.floor(tNum / 60) % 60;
+		var sec:Int = Math.floor((tNum >= 0 ? tNum : -tNum) % 60);
+		if (hour > 0)
+			return hour + ":" + min + (sec >= 9 ? ":" : ":0") + sec;
+		return min + (sec >= 9 ? ":" : ":0") + sec;
 	}
 
 	public function doSpoop() {

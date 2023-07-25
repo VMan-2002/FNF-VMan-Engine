@@ -30,7 +30,7 @@ class FolderIcon extends FlxTypedSpriteGroup<FlxSprite>
 		super.update(elapsed);
 
 		if (sprTracker != null) {
-			setPosition(sprTracker.x + sprTracker.width - 5, sprTracker.y - 45);
+			setPosition(sprTracker.x + sprTracker.width + 5, sprTracker.y - 45);
 			alpha = sprTracker.alpha;
 		}
 	}

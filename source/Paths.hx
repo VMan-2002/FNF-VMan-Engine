@@ -143,4 +143,12 @@ class Paths
 	inline static public function getPackerAtlasManual(key:String, txt:String, ?library:String) {
 		return FlxAtlasFrames.fromSpriteSheetPacker(image(key, library), file('images/$txt.txt', library));
 	}
+
+	public static inline function exists(key:String) {
+		#if !html5
+		return FileSystem.exists(key);
+		#else
+		return Assets.exists(key);
+		#end
+	}
 }

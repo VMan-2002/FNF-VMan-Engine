@@ -58,9 +58,11 @@ class MusicBeatSubstate extends FlxSubState
 	public function stepHit():Void {
 		if (curStep % 4 == 0)
 			beatHit();
+		Scripting.runOnScripts("stepHit", [curStep]);
 	}
 
 	public function beatHit():Void {
 		//do literally nothing dumbass
+		Scripting.runOnScripts("beatHit", [curBeat]);
 	}
 }
