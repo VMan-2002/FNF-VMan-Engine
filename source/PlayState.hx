@@ -2028,6 +2028,7 @@ class PlayState extends MusicBeatState
 		#end
 
 		Scripting.runOnScripts("updatePost", [elapsed]);
+		Scripting.runModchartUpdateOnScripts();
 	}
 	
 	public function onSpawnNote(dunceNote:Note) {

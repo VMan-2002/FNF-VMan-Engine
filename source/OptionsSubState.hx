@@ -322,7 +322,7 @@ class OptionsSubState extends OptionsSubStateBasic
 
 	override function optionUpcoming(name:String) {
 		switch (name) {
-			case "master volume" | "sound volume" | "instrumental volume" | "vocals volume" | "enable modcharts" | "flashing lights" | "input offset calibrate" | "self awareness" | "save data management":
+			case "master volume" | "sound volume" | "instrumental volume" | "vocals volume" | "flashing lights" | "input offset calibrate" | "self awareness" | "save data management":
 				return true;
 		}
 		return false;
