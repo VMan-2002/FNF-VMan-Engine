@@ -2941,6 +2941,8 @@ class PlayState extends MusicBeatState
 				camHUD.shake(0.01 * intensity, crochetThing);
 			}
 			#end
+
+			Scripting.runOnScripts("opponentNoteHit", [note]);
 		}
 	}
 
@@ -2981,9 +2983,9 @@ class PlayState extends MusicBeatState
 		char.hitNoteByPlayer = isBoyfriend;
 		if (note.isSustainNote && char.animNoSustain)
 			return;
-		var postfix = (noteTypeData.animPostfix != "-alt" && (!isBoyfriend && SONG.notes[currentSection] != null && SONG.notes[currentSection].altAnim)) ? '-alt' : "";
-		if (noteTypeData.animPostfix != null)
-			postfix += noteTypeData.animPostfix;
+		var postfix:String = noteTypeData.animPostfix != null ?
+			(noteTypeData.animPostfix) :
+			((noteTypeData.animPostfix != "-alt" && (!isBoyfriend && SONG.notes[currentSection] != null && SONG.notes[currentSection].altAnim)) ? '-alt' : "");
 		var defaultAnim = 'sing${ManiaInfo.Dir[color]}';
 		if (noteTypeData.animReplace == null) {
 			var anim = defaultAnim + postfix;

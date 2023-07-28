@@ -125,7 +125,7 @@ class StrumNote extends FlxSprite
 							anim.framerate,
 							anim.loop
 						);
-						trace('strum arrow ${myArrow} add animation ${anim.name}');
+						//trace('strum arrow ${myArrow} add animation ${anim.name}');
 					}
 				}
 				antialiasing = noteSkin.antialias != false;
