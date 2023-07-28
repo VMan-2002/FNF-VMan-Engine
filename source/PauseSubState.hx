@@ -59,7 +59,7 @@ class PauseSubState extends MusicBeatSubstate
 		add(levelInfo);
 
 		var levelDifficulty:FlxText = new FlxText(20, 15 + 32, 0, "", 32);
-		levelDifficulty.text += Translation.getTranslation(CoolUtil.difficultyString(), "difficulty");
+		levelDifficulty.text += Translation.getTranslation(CoolUtil.difficultyString(), "difficulty") + Highscore.getModeString(true, true);
 		levelDifficulty.scrollFactor.set();
 		levelDifficulty.setFormat(levelInfo.font, 32);
 		levelDifficulty.updateHitbox();

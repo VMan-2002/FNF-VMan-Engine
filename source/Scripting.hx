@@ -1,6 +1,9 @@
 package;
 
 import Alphabet.AlphaCharacter;
+import Note.SwagNoteSkin;
+import Note.SwagNoteType;
+import Note.SwagUIStyle;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -116,7 +119,10 @@ class Scripting {
         "FlxSound" => FlxSound,
         "Reflect" => Reflect,
         "Translation" => Translation,
-        "EReg" => EReg //Regular Expression (RegEx) (RegExp) <---- Remember that this is RegEx because the usual syntax ~/(RegEx)/g doesn't work for some reason
+        "EReg" => EReg, //Regular Expression (RegEx) (RegExp) <---- Remember that this is RegEx because the usual syntax ~/(RegEx)/g doesn't work for some reason
+        "SwagUIStyle" => SwagUIStyle,
+        "SwagNoteType" => SwagNoteType,
+        "SwagNoteSkin" => SwagNoteSkin
     ];
 
 	public static var gamePlatform(default, never) =
@@ -169,6 +175,11 @@ class Scripting {
         });
     }
 
+    public static function clearScriptByID(id:String) {
+        if (namedScripts.exists(id))
+            namedScripts.get(id).killScript();
+    }
+
     public static function clearScriptsByCritera(context:Scripting->Bool) {
         var toRemove = new Array<String>();
         for (thing in scripts) {
@@ -202,6 +213,28 @@ class Scripting {
         for (script in scripts) {
             script.runValidFunction("modchartUpdate", [FlxG.elapsed]);
         }
+    }
+
+    public static function arrayToNameMap<T>(arr:Array<T>, nameVar:String, ?modNameVar:Null<String>) {
+        var result = new Map<String, T>();
+        for (thing in arr)
+            result[(modNameVar != null ? Reflect.getProperty(thing, modNameVar) + ":" : "") + Reflect.getProperty(thing, nameVar)] = thing;
+        return result;
+    }
+
+    public static function nameMapToArray<T>(map:Map<String, T>) {
+        var result = new Array<T>();
+        for (thing in map) {
+            result.push(thing);
+        }
+        return result;
+    }
+
+    public static function runCheckUnlocksOnScripts<T>(category:String, args:Array<T>, nameVar:String, ?modNameVar:Null<String>) {
+        var inputMap = arrayToNameMap(args, nameVar, modNameVar);
+        for (script in scripts)
+            script.runValidFunction("checkUnlocks", [category, args]);
+        return nameMapToArray(inputMap);
     }
 
     //todo: do i need this
@@ -258,7 +291,9 @@ class Scripting {
                     "noteMiss",
                     "goodNoteHit",
                     "charNoteHit",
-                    "preCreateMenuButtons"
+                    "preCreateMenuButtons",
+                    "checkUnlocks",
+                    "titleText"
                 ]);
                 trace("Success Load script: "+id);
             }

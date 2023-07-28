@@ -633,6 +633,8 @@ class FreeplayState extends MusicBeatState {
 		trace('change diff from ${was} to ${curDifficulty}');
 		
 		diffText.text = Translation.getTranslation(CoolUtil.difficultyString(curDifficulty), "difficulty") + Highscore.getModeString(true, true);
+		if (Options.saved.botplay)
+			diffText.text += " (Botplay)";
 	}
 
 	function updateScoreDisp()

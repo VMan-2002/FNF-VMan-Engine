@@ -7,6 +7,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.animation.FlxBaseAnimation;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.input.keyboard.FlxKeyboard;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
@@ -1229,6 +1230,14 @@ class Character extends SpriteVMan
 	public function boyfriendUpdate(elapsed:Float) {
 		if (animStartsWith('sing')) {
 			holdTimer += elapsed;
+
+			//todo: this
+			/*var dadVar:Float = (curCharacter == 'dad') ? 6.1 : 4;
+			
+			if (holdTimer >= Conductor.stepCrochet * dadVar * 0.001 && !FlxG.keys.anyPressed(PlayState.curManiaInfo.control_any)) {
+				dance(true);
+				holdTimer = 0;
+			}*/
 			return;
 		} else {
 			holdTimer = 0;

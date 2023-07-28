@@ -1207,7 +1207,7 @@ class PlayState extends MusicBeatState
 			startTimer = new FlxTimer().start(Conductor.crochet / 1000, function(tmr:FlxTimer) {
 				dad.dance();
 				gf.dance();
-				boyfriend.playAnim('idle');
+				boyfriend.dance();
 
 				/*var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
 				introAssets.set('default', ['', 'normal/ready', "normal/set", "normal/go"]);
@@ -1215,16 +1215,16 @@ class PlayState extends MusicBeatState
 				introAssets.set('schoolEvil', ['', 'pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
 
 				var introAlts:Array<String> = introAssets.get('default');*/
-				var introAlts:Array<String> = ['', 'normal/ready', "normal/set", "normal/go"];
+				/*var introAlts:Array<String> = ['', 'normal/ready', "normal/set", "normal/go"];
 				var introAltsSounds:Array<String> = ["intro3", "intro2", "intro1", "introGo"];
 				var altSuffix:String = "";
-				var scale:Float = 1;
+				var scale:Float = 1;*/
 
-				if (currentUIStyle != null) {
+				/*if (currentUIStyle != null) {
 					introAlts = [currentUIStyle.three, currentUIStyle.two, currentUIStyle.one, currentUIStyle.go];
 					introAltsSounds = [currentUIStyle.threeSound, currentUIStyle.twoSound, currentUIStyle.oneSound, currentUIStyle.goSound];
 					scale = currentUIStyle.countdownScale;
-				} /* else {
+				}*/ /* else {
 					for (value in introAssets.keys()) {
 						if (value == curStage) {
 							introAlts = introAssets.get(value);
@@ -1234,9 +1234,10 @@ class PlayState extends MusicBeatState
 					}
 				} */
 
-				if (swagCounter <= 3) {
+				playNumCountdownSprite(swagCounter);
+				/*if (swagCounter <= 3) {
 					playCountdownSprite(introAlts[swagCounter], scale, introAltsSounds[swagCounter]);
-				}
+				}*/
 
 				swagCounter += 1;
 				// generateSong('fresh');
@@ -1281,20 +1282,21 @@ class PlayState extends MusicBeatState
 
 		`3`: Go
 	**/
-	public inline function playNumCountdownSprite(n:Int) {
+	public function playNumCountdownSprite(n:Int, ?silent:Bool = false):Null<FlxSprite> {
 		switch(n) {
 			case 0:
-				playCountdownSprite(currentUIStyle.three, currentUIStyle.countdownScale, currentUIStyle.threeSound);
+				return playCountdownSprite(currentUIStyle.three, currentUIStyle.countdownScale, currentUIStyle.threeSound, silent);
 			case 1:
-				playCountdownSprite(currentUIStyle.two, currentUIStyle.countdownScale, currentUIStyle.twoSound);
+				return playCountdownSprite(currentUIStyle.two, currentUIStyle.countdownScale, currentUIStyle.twoSound, silent);
 			case 2:
-				playCountdownSprite(currentUIStyle.one, currentUIStyle.countdownScale, currentUIStyle.oneSound);
+				return playCountdownSprite(currentUIStyle.one, currentUIStyle.countdownScale, currentUIStyle.oneSound, silent);
 			case 3:
-				playCountdownSprite(currentUIStyle.go, currentUIStyle.countdownScale, currentUIStyle.goSound);
+				return playCountdownSprite(currentUIStyle.go, currentUIStyle.countdownScale, currentUIStyle.goSound, silent);
 		}
+		return null;
 	}
 
-	public function playCountdownSprite(path:String, scale:Float, ?sound:Null<String>) {
+	public function playCountdownSprite(path:String, scale:Float, ?sound:Null<String>, ?silent:Bool = false):FlxSprite {
 		var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image(path));
 		ready.moves = false;
 		ready.scrollFactor.set();
@@ -1312,7 +1314,7 @@ class PlayState extends MusicBeatState
 			}
 		});
 		ready.visible = path != "";
-		if (!Options.instance.silentCountdown && sound != null)
+		if (!silent && !Options.instance.silentCountdown && sound != null)
 			FlxG.sound.list.add(FlxG.sound.play(Paths.sound(sound), 0.6));
 		return ready;
 	}
@@ -1361,7 +1363,7 @@ class PlayState extends MusicBeatState
 		curSong = songData.song.toLowerCase().replace(" ", "-");
 
 		if (SONG.needsVoices)
-			vocals = new FlxSound().loadEmbedded(Paths.getSongPathThing(PlayState.SONG.song, voicesName), loopingSong);
+			vocals = new FlxSound().loadEmbedded(Paths.getSongPathThing(PlayState.SONG.song, voicesName), true);
 		else
 			vocals = new FlxSound();
 		
@@ -2750,7 +2752,7 @@ class PlayState extends MusicBeatState
 
 		if (boyfriend.holdTimer > Conductor.stepCrochet * 0.004 && !FlxG.keys.anyPressed(curManiaInfo.control_any)) {
 			if (boyfriend.animStartsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss')) {
-				boyfriend.playAnim('idle');
+				boyfriend.dance();
 			}
 		}
 		

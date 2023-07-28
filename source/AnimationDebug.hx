@@ -333,8 +333,10 @@ class AnimationDebug extends MusicBeatState
 		if (FlxG.keys.justPressed.X)
 			charGhost.visible = false;
 
-		if (FlxG.keys.justPressed.C)
+		if (FlxG.keys.justPressed.C) {
 			char.flipX = !char.flipX;
+			char.playAnim(char.animation.name, true);
+		}
 
 		if (FlxG.keys.justPressed.S || FlxG.keys.justPressed.W || FlxG.keys.justPressed.SPACE) {
 			char.playAnim(animList[curAnim], true);

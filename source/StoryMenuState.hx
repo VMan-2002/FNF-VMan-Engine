@@ -70,6 +70,10 @@ class StoryMenuState extends MusicBeatState
 			nothingAvailable = true;
 			return NoSongsState.doThing("story mode", "storymenu");
 		}
+
+		//todo: using a script to switch to a different state from StoryMenuState softlocks on a black screen, why is that?
+		Scripting.initScriptsByContext("StoryMenuState");
+		weeks = Scripting.runCheckUnlocksOnScripts("storyMode", weeks, "id", "modName");
 		
 		var weekSkip = 0;
 		for (week in weeks) {
@@ -79,9 +83,6 @@ class StoryMenuState extends MusicBeatState
 				break;
 			}
 		}
-
-		Scripting.initScriptsByContext("StoryMenuState");
-		//todo: using a script to switch to a different state from StoryMenuState softlocks on a black screen, why is that?
 
 		scoreText = new FlxText(10, 10, 0, "SCORE: 49324858", 36);
 		scoreText.setFormat("VCR OSD Mono", 32);

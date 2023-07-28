@@ -114,7 +114,14 @@ class Highscore
 		FlxG.save.flush();
 		return true;
 	}
+	
+	/**
+		Returns the thing like: `^OpponentConfusion` that's put on the end of the Difficulty text.
 
+		`translated`: Use translated strings
+
+		`prefixed`: Add `^` on on the start
+	**/
 	public static function getModeString(?translated:Bool = false, ?prefixed:Bool = false):String {
 		var prefix = prefixed ? (translated ? Translation.getTranslation("prefix", "modifier", null, "^") : "^") : "";
 		var result:Array<String> = new Array<String>();

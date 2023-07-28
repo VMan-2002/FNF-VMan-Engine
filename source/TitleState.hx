@@ -387,7 +387,7 @@ class TitleState extends MusicBeatState {
 			FlxG.fullscreen = !FlxG.fullscreen;
 		}
 
-		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER;
+		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER || controls.ACCEPT;
 
 		#if mobile
 		for (touch in FlxG.touches.list) {
@@ -400,57 +400,55 @@ class TitleState extends MusicBeatState {
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 
 		if (gamepad != null) {
-			if (gamepad.justPressed.START)
+			if (gamepad.justPressed.START || gamepad.justPressed.A #if switch || gamepad.justPressed.B #end)
 				pressedEnter = true;
-
-			#if switch
-			if (gamepad.justPressed.B)
-				pressedEnter = true;
-			#end
 		}
 
-		if (pressedEnter && !transitioning && skippedIntro) {
-			#if !switch
-			//NGio.unlockMedal(60960);
-
-			// If it's Friday according to da clock
-			if (Date.now().getDay() == 5) {
-				trace("It's Friday! swag");
-				//NGio.unlockMedal(61034);
-				if (Achievements.giveAchievement("fridayNight")) {
-					Achievements.SaveOptions();
-				};
-			}
-			#end
-
-			//titleText.animation.play('press');
-			stageObject.playAnim("press");
-
-			if (Options.flashingLights)
-				FlxG.camera.flash(FlxColor.WHITE, 1);
-			FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
-
-			transitioning = true;
-			// FlxG.sound.music.stop();
-
-			new FlxTimer().start(2, function(tmr:FlxTimer) {
-				// Check if version is outdated
-
-				if (needsUpdate) {
-					FlxG.switchState(new OutdatedSubState(updateCheck.split("\n")[1]));
-					trace('OLD VERSION detected! make nerd emojis in chat');
-				} else {
-					FlxG.switchState(new MainMenuState());
+		if (pressedEnter) {
+			if (skippedIntro) {
+				if (!transitioning) {
+					#if !switch
+					//NGio.unlockMedal(60960);
+		
+					// If it's Friday according to da clock
+					if (Date.now().getDay() == 5) {
+						trace("It's Friday! swag");
+						//NGio.unlockMedal(61034);
+						if (Achievements.giveAchievement("fridayNight")) {
+							Achievements.SaveOptions();
+						};
+					}
+					#end
+		
+					//titleText.animation.play('press');
+					stageObject.playAnim("press");
+		
+					if (Options.flashingLights)
+						FlxG.camera.flash(FlxColor.WHITE, 1);
+					FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
+		
+					transitioning = true;
+					// FlxG.sound.music.stop();
+		
+					new FlxTimer().start(2, function(tmr:FlxTimer) {
+						// Check if version is outdated
+		
+						if (needsUpdate) {
+							FlxG.switchState(new OutdatedSubState(updateCheck.split("\n")[1]));
+							trace('OLD VERSION detected! make nerd emojis in chat');
+						} else {
+							FlxG.switchState(new MainMenuState());
+						}
+					});
+					// FlxG.sound.play(Paths.music('titleShoot'), 0.7);
 				}
-			});
-			// FlxG.sound.play(Paths.music('titleShoot'), 0.7);
-		}
-
-		if (pressedEnter && !skippedIntro) {
-			skipIntro();
+			} else {
+				skipIntro(true);
+			}
 		}
 
 		super.update(elapsed);
+		Scripting.runOnScripts("updatePost", [elapsed]);
 	}
 
 	function createCoolText(textArray:Array<String>) {
@@ -494,13 +492,14 @@ class TitleState extends MusicBeatState {
 		if (skippedIntro || !doCoolText || reloadingMods)
 			return;
 
-		if (curBeat >= introTexts.length) {
+		if (curBeat >= introTexts.length)
 			return skipIntro();
-		}
+		
 		var rawLine:String = introTexts[curBeat].trim();
 		var splittedColons:Array<String> = rawLine.split("::");
-		for (thing in splittedColons.slice(1)) {
-		switch(thing) {
+		var events = splittedColons.slice(1);
+		for (thing in events) {
+			switch(thing) {
 				case "del":
 					deleteCoolText();
 					ngSpr.visible = false;
@@ -523,67 +522,14 @@ class TitleState extends MusicBeatState {
 		if (splittedColons[0] != "") {
 			createCoolText(splittedColons[0].split("--"));
 		}
-
-		/*switch (curBeat) {
-			case 1:
-				createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
-			// credTextShit.visible = true;
-			case 3:
-				addMoreText('present');
-			// credTextShit.text += '\npresent...';
-			// credTextShit.addText();
-			case 4:
-				deleteCoolText();
-			// credTextShit.visible = false;
-			// credTextShit.text = 'In association \nwith';
-			// credTextShit.screenCenter();
-			case 5:
-				createCoolText(['In association', 'with']);
-			case 7:
-				addMoreText('Newgrounds');
-				ngSpr.visible = true;
-			// credTextShit.text += '\nNewgrounds';
-			case 8:
-				deleteCoolText();
-				ngSpr.visible = false;
-			// credTextShit.visible = false;
-
-			// credTextShit.text = 'Shoutouts Tom Fulp';
-			// credTextShit.screenCenter();
-			case 9:
-				createCoolText([curWacky[0]]);
-			// credTextShit.visible = true;
-			case 10:
-				if (curWacky.length >= 3)
-					addMoreText(curWacky[1]);
-			// credTextShit.text += '\nlmao';
-			case 11:
-				if (curWacky.length >= 2)
-					addMoreText(curWacky[curWacky.length >= 3 ? 2 : 1]);
-			// credTextShit.text += '\nlmao';
-			case 12:
-				deleteCoolText();
-			// credTextShit.visible = false;
-			// credTextShit.text = "Friday";
-			// credTextShit.screenCenter();
-			case 13:
-				addMoreText('Friday');
-			// credTextShit.visible = true;
-			case 14:
-				addMoreText('Night');
-			// credTextShit.text += '\nNight';
-			case 15:
-				addMoreText('Funkin'); // credTextShit.text += '\nFunkin';
-
-			case 16:
-				skipIntro();
-		}*/
+		Scripting.runOnScripts("titleText", [splittedColons[0], events, curBeat]);
 	}
 
 	var skippedIntro:Bool = false;
 
-	function skipIntro():Void {
+	function skipIntro(?manual:Bool = false):Void {
 		if (!skippedIntro) {
+			Scripting.runOnScripts("onAccept", ["skipIntro", manual]);
 			remove(ngSpr);
 
 			FlxG.camera.flash(FlxColor.WHITE, 4);

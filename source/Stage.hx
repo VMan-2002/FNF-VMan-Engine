@@ -72,7 +72,8 @@ class Stage
 	public var charZoom:Array<Null<Float>>;
 	public var charBetween:Null<Array<Int>>;
 	public var library:String;
-
+	public var myMod:String;
+	public var name:String;
 
 	public static function getStage(name:String, ?mod:Null<String>):Null<SwagStage> {
 		if (mod == null) {
@@ -172,6 +173,8 @@ class Stage
 				switch(element.blendMode.toLowerCase()) {
 					case "add" | "alpha" | "darken" | "difference" | "erase" | "hardlight" | "invert" | "layer" | "lighten" | "multiply" | "normal" | "overlay" | "screen" | "shader" | "subtract":
 						sprite.blend = element.blendMode.toLowerCase();
+					case "additive":
+						sprite.blend = "add";
 				}
 			}
 			sprite.alpha = element.alpha == null ? 1 : element.alpha;
@@ -199,6 +202,8 @@ class Stage
 		new Scripting("objects/stages/"+name, mod, "Stage");
 		new Scripting("objects/stages/"+name, "", "Stage"); //let basegame scripts exist :)
 		var stageDat = getStage(name, mod);
+		myMod = mod;
+		this.name = name;
 		if (loadLibNow)
 			Paths.setCurrentLevel(stageDat.library);
 		Scripting.runOnScripts("stageInit", [name, mod, createStage(stageDat, this)]);
@@ -260,5 +265,6 @@ class Stage
 		elementsBack.destroy();
 		elementsNamed.clear();
 		elementsAll.resize(0);
+		Scripting.clearScriptByID(myMod+":objects/stages/"+name);
 	}
 }
