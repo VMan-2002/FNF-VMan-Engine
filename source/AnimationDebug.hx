@@ -79,6 +79,12 @@ class AnimationDebug extends MusicBeatState
 		char = dad;
 		//
 
+		if (char.isGirlfriend) {
+			floorLine.x += 107;
+			floorLine.y -= 72;
+			floorLine.makeGraphic(386, 10, FlxColor.RED);
+		}
+
 		charGhost = new Character(xPositionThing, 0, daAnim);
 		charGhost.debugMode = true;
 		charGhost.alpha = 0.5;
