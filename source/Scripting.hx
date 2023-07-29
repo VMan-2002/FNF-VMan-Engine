@@ -207,11 +207,11 @@ class Scripting {
         }
     }
 
-    public static function runModchartUpdateOnScripts() {
+    public static function runModchartUpdateOnScripts(name:String) {
         if (!Options.instance.modchartEnabled)
             return;
         for (script in scripts) {
-            script.runValidFunction("modchartUpdate", [FlxG.elapsed]);
+            script.runValidFunction(name, [FlxG.elapsed]);
         }
     }
 
@@ -279,6 +279,7 @@ class Scripting {
                     "update",
                     "updatePost",
                     "modchartUpdate",
+                    "modchartPostUpdate",
                     "destroy",
                     "beatHit",
                     "stageInit",
@@ -291,6 +292,7 @@ class Scripting {
                     "noteMiss",
                     "goodNoteHit",
                     "charNoteHit",
+                    "opponentNoteHit",
                     "preCreateMenuButtons",
                     "checkUnlocks",
                     "titleText",
@@ -328,9 +330,9 @@ class Scripting {
         return Reflect.isFunction(interp.variables.get(funcName)) ? Reflect.callMethod(this, interp.variables.get(funcName), args) : null;
     }
 
-    public inline function runModchartUpdate() {
+    public inline function runModchartUpdate(name:String) {
         if (Options.instance.modchartEnabled)
-            runValidFunction("modchartUpdate", [FlxG.elapsed]);
+            runValidFunction(name, [FlxG.elapsed]);
     }
 
     /*public inline function runStatePostInit(arr:Array<String>) {

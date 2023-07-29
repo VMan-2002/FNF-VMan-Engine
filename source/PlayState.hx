@@ -1901,7 +1901,7 @@ class PlayState extends MusicBeatState
 		}
 
 		if (generatedMusic) {
-			Scripting.runModchartUpdateOnScripts();
+			Scripting.runModchartUpdateOnScripts("modchartUpdate");
 			var speed = (0.45 * FlxMath.roundDecimal(scrollSpeed, 3));
 			if (Options.instance.downScroll)
 				speed = 0 - speed;
@@ -1989,6 +1989,7 @@ class PlayState extends MusicBeatState
 						break;
 				}
 			}
+			Scripting.runModchartUpdateOnScripts("modchartPostUpdate");
 		}
 
 		if (camIsFollowing) {
