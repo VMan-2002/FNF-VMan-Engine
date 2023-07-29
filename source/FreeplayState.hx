@@ -40,6 +40,7 @@ class SwagFreeplayFolders {
 	public var folderIcons:Map<String, String>;
 	public var initFolder:String;
 	public var categories:Map<String, Array<Array<String>>>;
+	//todo: DONT delete this yet, recreate it in hscript first
 	//public var iAmCornflower:Bool;
 	public var color:Null<String>;
 }
@@ -556,6 +557,7 @@ class FreeplayState extends MusicBeatState {
 		}
 
 		if (accepted) {
+			Scripting.runOnScripts("onAccept", [songs[curSelected].songName, songs[curSelected].mod]);
 			if (songs[curSelected].type == 1) {
 				//a folder
 				/*if (cornflowerMenus.contains(songs[curSelected].week)) {
@@ -746,7 +748,7 @@ class FreeplayState extends MusicBeatState {
 			loadedAudios.push(songPlayedId);
 		#end
 		#else
-		var mainthread = Thread.current();
+		//var mainthread = Thread.current();
 		if (!loadedAudios.contains(songPlayedId)) {
 			if (loadingAudio)
 				return;

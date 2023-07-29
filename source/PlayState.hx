@@ -2034,7 +2034,7 @@ class PlayState extends MusicBeatState
 	}
 	
 	public function onSpawnNote(dunceNote:Note) {
-		
+		Scripting.runOnScripts("onSpawnNote", [dunceNote]);
 	}
 
 	public function camFollowSetOnCharacter(char:Character, ?isAChange:Bool = true, ?positionMove:Bool = true, ?runScript:Bool = true) {

@@ -293,7 +293,8 @@ class Scripting {
                     "charNoteHit",
                     "preCreateMenuButtons",
                     "checkUnlocks",
-                    "titleText"
+                    "titleText",
+                    "onSpawnNote"
                 ]);
                 trace("Success Load script: "+id);
             }
