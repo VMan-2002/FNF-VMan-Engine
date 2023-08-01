@@ -1,14 +1,19 @@
-Removed ThatAzazelFire (Feel free to ask me about this)
+Removed ThatAzazelFire
 Improved unused animations for Girlfriend (Christmas variant)
 Added improvements to Animation Debug, such as a save button
 Compress some more image assets
 Added "baseNoteType" var for note types
 Added "Miss Animation" note type
 Multiple charNums in note types now works
-Unhardcode characters that were hardcoded
+Unhardcode some characters that were hardcoded
 Add Practice Tools
 Disallow changing Practice Tools or Gameplay Changes when paused in Story Mode
 Carry over usedBotplay flag between songs in Story Mode
-Add HUD Customizer, allowing you to customize meters on the HUD (including new meters!)
-Some Basic scripting
-<Hopefully update the JP translation... It was outdated in 1.1 because Regular Guitar Song and i was rushing.>
+Add HUD Customizer, allowing you to customize meters on the HUD (including new meters!) (probably buggy)
+Some Basic but cool Scripting
+More things (probably)
+I'll (hopefully) start adding more technical changes to the changelog starting at 2.0.0
+Hopefully update the JP translation soon... It was outdated in 1.1 because Regular Guitar Song and i was rushing.
+I rushed again
+
+Also, check More Mods to add a Bar to the Timer as an example of the new Scripting

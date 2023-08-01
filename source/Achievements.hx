@@ -2,8 +2,8 @@ package;
 import ModsMenuState.ModInfo;
 import flixel.util.FlxSave;
 
-class Achievements
-{
+class Achievements {
+	//todo: Actual custom achievements will come soon
 	public static var achievements:Array<String> = new Array<String>();
 	public static var achievementsChanged:Bool = false;
 	//public static var modAchievements:Map<String, Array<String>> = new Map<String, Array<String>>();
@@ -24,7 +24,8 @@ class Achievements
 		"fridayNight",
 		"calibrateDeath",
 		"modFunkboxPlay",
-		"modRegGuitPlay"
+		"modRegGuitPlay",
+		"modPastTimePlay"
 	];
 
 	public static function giveAchievement(name:String, ?modName:Null<String>) {
@@ -88,6 +89,8 @@ class Achievements
 				return ["Beepy on a Friday Night", "Complete a Story Mode week from `Friday Night Funkbox`."];
 			case "modRegGuitPlay":
 				return ["Very regular indeed", "Complete a song from `Regular Guitar Song`."];
+			case "modPastTimePlay":
+				return ["Time Travel", "Complete story mode from `The Past Time`."];
 		}
 		return ["Unknown Achievement: "+name, "This is likely a bug, tell VMan about this."];
 	}
@@ -101,6 +104,8 @@ class Achievements
 				return category == "storyModeWeek" && giveAchievement("modFunkboxPlay");
 			case [437809, "regular_guitar_song"]:
 				return giveAchievement("modRegGuitPlay");
+			case [459798, "vmans_past_time"]:
+				return category == "storyModeWeek" && giveAchievement("modPastTimePlay");
 			default:
 				return false;
 		}

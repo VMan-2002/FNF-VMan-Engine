@@ -2997,7 +2997,7 @@ class PlayState extends MusicBeatState
 				//Non holds
 				[colorAnim, anim, colorNote, defaultAnim],
 			true);
-			Scripting.runOnScripts("charNoteHit", [Character.activeArray[note.charNum], note]);
+			Scripting.runOnScripts("charNoteHit", [char, note]);
 			return;
 		}
 		var anim = noteTypeData.animReplace + postfix;
@@ -3007,7 +3007,7 @@ class PlayState extends MusicBeatState
 			//Non holds
 			[colorNote, defaultAnim],
 		true);
-		Scripting.runOnScripts("charNoteHit", [Character.activeArray[note.charNum], note]);
+		Scripting.runOnScripts("charNoteHit", [char, note]);
 	}
 
 	//inline function getFastCar():SpriteVMan {

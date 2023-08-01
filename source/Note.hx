@@ -390,8 +390,7 @@ class SwagNoteType {
 	}
 }
 
-class Note extends FlxSprite
-{
+class Note extends FlxSprite {
 	public var strumTime:Float = 0;
 
 	public var mustPress:Bool = false;

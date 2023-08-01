@@ -122,7 +122,8 @@ class Scripting {
         "EReg" => EReg, //Regular Expression (RegEx) (RegExp) <---- Remember that this is RegEx because the usual syntax ~/(RegEx)/g doesn't work for some reason
         "SwagUIStyle" => SwagUIStyle,
         "SwagNoteType" => SwagNoteType,
-        "SwagNoteSkin" => SwagNoteSkin
+        "SwagNoteSkin" => SwagNoteSkin,
+        "ManiaInfo" => ManiaInfo
     ];
 
 	public static var gamePlatform(default, never) =
