@@ -15,7 +15,7 @@ typedef SwagWeek = {
 	var title:String;
 	var name:String;
 	var menuChars:Array<String>;
-	//var visibleStoryMenu:Null<Bool>;
+	var visibleStoryMenu:Null<Bool>;
 	var previous:Null<String>;
 	var requiredToUnlock:Null<Array<String>>;
 	var requirementsNeeded:Null<Int>;
@@ -49,7 +49,7 @@ class Weeks { //we REALYL gettin in the deep stuff!
 		return -SortWeeks(b, a, true);
 	}
 	
-	public static function getAllWeeks():Array<SwagWeek> {
+	public static function getAllWeeks(?includeHidden:Bool = true):Array<SwagWeek> {
 		//for every mod folder, read the weeks folder
 		//add the weeks an array
 		//todo: i think this can be made a little cleaner
@@ -57,7 +57,7 @@ class Weeks { //we REALYL gettin in the deep stuff!
 		var weekPrevs:Map<String, String> = new Map<String, String>();
 		var weeksNamed:Map<String, SwagWeek> = new Map<String, SwagWeek>();
 		var weekLists = new Map<String, Array<SwagWeek>>();
-		var portedOld = false;
+		//var portedOld = false;
 		for (thing in ModLoad.enabledMods) {
 			var path = "mods/" + thing + "/weeks/";
 			//if the folder exists, read it
@@ -65,36 +65,31 @@ class Weeks { //we REALYL gettin in the deep stuff!
 				var files = FileSystem.readDirectory(path);
 				for (file in files) {
 					if (file.endsWith(".json")) {
-						var week = CoolUtil.loadJsonFromString(File.getContent(path + file));
-						week.id = file.substring(0, file.length - 5);
-						week.name = week.name == null ? week.id : week.name;
-						week.title = week.title == null ? week.name : week.title;
-						//week.visibleStoryMenu = week.visibleStoryMenu == true;
-						week.songs = week.songs == null ? new Array<String>() : week.songs;
-						week.modName = thing;
+						var week = getWeek(file.substring(0, file.length - 5), thing);
+						if (!week.visibleStoryMenu && !includeHidden)
+							continue;
 						weekPrevs.set(week.id, week.previous);
 						weeksNamed.set(thing+":"+week.id, week);
-						week.weekUnlocked = isWeekUnlocked(week);
 						if (weekLists.exists(week.modName))
 							weekLists.get(week.modName).push(week);
 						else
 							weekLists.set(week.modName, [week]);
-						if (Highscore.weekScores.exists(week.id)) { //keep my scores :>
+						/*if (Highscore.weekScores.exists(week.id)) { //keep my scores :>
 							trace("Ported old score for "+week.id+" from "+week.modName);
 							Highscore.weekScores.set('${week.modName}:${week.id}', Highscore.weekScores.get(week.id));
 							Highscore.weekScores.remove(week.id);
 							portedOld = true;
-						}
+						}*/
 						weeks.push(week);
 					}
 				}
 			}
 		}
-		if (portedOld) {
+		/*if (portedOld) {
 			trace("Saving ported scores");
 			FlxG.save.data.weekScores = Highscore.weekScores;
 			FlxG.save.flush();
-		}
+		}*/
 
 		//Index the stuff
 		var sortValue = new Map<String, Int>();
@@ -124,17 +119,14 @@ class Weeks { //we REALYL gettin in the deep stuff!
 			a = a.toUpperCase();
 			b = b.toUpperCase();
 
-			if (a < b) {
+			if (a < b)
 				return -1;
-			}
-			else if (a > b) {
-				return 1;
-			} else {
-				return 0;
-			}
+			else
+				return a > b ? 1 : 0;
 		});
 
 		//Then do some Epic Sorting!!!
+		//todo: this epic sorting is not always reliable what should i do about it
 		var finalList = new Array<SwagWeek>();
 		for (thing in ModLoad.enabledMods) {
 			if (weekLists.exists(thing)) {
@@ -142,12 +134,10 @@ class Weeks { //we REALYL gettin in the deep stuff!
 				haxe.ds.ArraySort.sort(weekLists.get(thing), function(a, b) {
 					var fullIdA = '${a.modName}:${a.id}';
 					var fullIdB = '${b.modName}:${b.id}';
-					if (sortRoots.get(fullIdA) != sortRoots.get(fullIdB)) {
+					if (sortRoots.get(fullIdA) != sortRoots.get(fullIdB))
 						return sortRoots.get(fullIdA) > sortRoots.get(fullIdB) ? 999 : -999; //do the bigger numbers even matter :thinking:
-					}
-					if (sortValue.get(fullIdA) != sortValue.get(fullIdB)) {
+					if (sortValue.get(fullIdA) != sortValue.get(fullIdB))
 						return sortValue.get(fullIdA) > sortValue.get(fullIdB) ? 199 : -199; //do the bigger numbers even matter :thinking:
-					}
 					return a.id > b.id ? 1 : -1;
 				});
 				finalList = finalList.concat(weekLists.get(thing));
@@ -160,16 +150,14 @@ class Weeks { //we REALYL gettin in the deep stuff!
 	}
 	
 	public static function isWeekUnlocked(w:SwagWeek) {
-		if (w.requiredToUnlock == null || w.requiredToUnlock.length == 0 || w.requirementsNeeded == 0) {
+		if (w.requiredToUnlock == null || w.requiredToUnlock.length == 0 || w.requirementsNeeded == 0 || w.requirementsNeeded == null)
 			return true; //theres no requirement
-		}
 		var left = w.requirementsNeeded == null ? 0 : w.requiredToUnlock.length - w.requirementsNeeded;
 		for (i in w.requiredToUnlock) {
 			if (!checkWeekCompleted(i, w.modName)) {
 				left--;
-				if (left <= 0) {
+				if (left <= 0)
 					return false;
-				}
 			}
 		}
 		return true;
@@ -231,111 +219,20 @@ class Weeks { //we REALYL gettin in the deep stuff!
 		svd.bind("WeekCompletion");
 		return svd;
 	}
-	
-	/*
-	public function getWeek(name:String) {
-		switch(name) {
-			case "tutorial":
-				return {
-					songs: [["Tutorial", "gf"]],
-					name: "Tutorial",
-					title: "Learn to Funk",
-					menuChars: ["gf", "bf", ""],
-					visibleFreeplay: true,
-					visibleStoryMenu: true,
-					previous: null,
-					requiredToUnlock: null,
-					id: "tutorial"
-				}
-			case "week1":
-				return {
-					songs: [["Bopeebo", "dad"], ["Fresh"], ["Dad Battle"]],
-					name: "Week 1",
-					title: "Daddy Dearest",
-					menuChars: ["gf", "bf", "dad"],
-					visibleFreeplay: true,
-					visibleStoryMenu: true,
-					previous: "tutorial",
-					requiredToUnlock: null,
-					id: "week1"
-				}
-			case "week2":
-				return {
-					songs: [["Spookeez", "spooky"], ["South", "spooky"], ["Monster", "monster"]],
-					name: "Week 2",
-					title: "Spooky Month",
-					menuChars: ["gf", "bf", "spooky"],
-					visibleFreeplay: true,
-					visibleStoryMenu: true,
-					previous: "week1",
-					requiredToUnlock: null,
-					id: "week2"
-				}
-			case "week3":
-				return {
-					songs: [["Pico", "spooky"], ["Philly Nice", "spooky"], ["Blammed", "monster"]],
-					name: "Week 2",
-					title: "Pico",
-					menuChars: ["gf", "bf", "pico"],
-					visibleFreeplay: true,
-					visibleStoryMenu: true,
-					previous: "week2",
-					requiredToUnlock: null,
-					id: "week3"
-				}
-			case "week4":
-				return {
-					songs: [["Satin Panties", "mom"], ["High"], ["Milf"]],
-					name: "Week 2",
-					title: "Mommy Must Murder",
-					menuChars: ["gf", "bf", "mom"],
-					visibleFreeplay: true,
-					visibleStoryMenu: true,
-					previous: "week3",
-					requiredToUnlock: null,
-					id: "week4"
-				}
-			case "week5":
-				return {
-					songs: [["Cocoa", "parents-christmas"], ["Eggnog", "parents-christmas"], ["Winter Horrorland", "monster-christmas"]],
-					name: "Week 5",
-					title: "Red Snow",
-					menuChars: ["gf", "bf", "parents-christmas"],
-					visibleFreeplay: true,
-					visibleStoryMenu: true,
-					previous: "week4",
-					requiredToUnlock: null,
-					id: "week5"
-				}
-			case "week6":
-				return {
-					songs: [["Senpai", "senpai"], ["Roses", "senpai-angry"], ["Thorns", "spirit"]],
-					name: "Week 6",
-					title: "Hating Simulator ft. Moawling",
-					menuChars: ["gf", "bf", "senpai"],
-					visibleFreeplay: true,
-					visibleStoryMenu: true,
-					previous: "week5",
-					requiredToUnlock: null,
-					id: "week6"
-				}
-			default:
-				//check that a week file exists.
-				//load it
-				//run a script or smth
+
+	public static function getWeek(name:String, modName:String) {
+		var file = "mods/" + modName + "/weeks/" + name + ".json";
+		if (file.endsWith(".json")) {
+			var week = CoolUtil.loadJsonFromString(File.getContent(file));
+			week.id = name;
+			week.name = week.name == null ? name : week.name;
+			week.title = week.title == null ? week.name : week.title;
+			week.visibleStoryMenu = week.visibleStoryMenu != false;
+			week.songs = week.songs == null ? new Array<String>() : week.songs;
+			week.modName = modName;
+			week.weekUnlocked = week.weekUnlocked != false && isWeekUnlocked(week);
+			return week;
 		}
-		trace('Week $name is not real');
-		return {
-			songs: [["My Song 1", "dad"], ["My Song 2", "dad"], ["My Song 3", "dad"]],
-			name: "My Week",
-			title: "My New Week",
-			menuChars: ["gf", "bf", "dad"],
-			visibleFreeplay: false,
-			visibleStoryMenu: false,
-			previous: null,
-			requiredToUnlock: null,
-			id: "my_week"
-		}
+		return null;
 	}
-	*/
 }

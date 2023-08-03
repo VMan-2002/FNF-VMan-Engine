@@ -65,7 +65,7 @@ class StoryMenuState extends MusicBeatState
 
 		persistentUpdate = persistentDraw = true;
 
-		weeks = Weeks.getAllWeeks();
+		weeks = Weeks.getAllWeeks(false);
 		if (weeks.length == 0) {
 			nothingAvailable = true;
 			return NoSongsState.doThing("story mode", "storymenu");
