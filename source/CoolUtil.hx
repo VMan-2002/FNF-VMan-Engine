@@ -544,3 +544,53 @@ class CoolUtil
 		return !(n == null || n.toLowerCase() == "false" || n == "" || n == "0");
 	}
 }
+
+class MultiStepResult {
+	public var steps:Array<Bool>;
+	public var then:()->(Void);
+
+	/**
+		Wait until multiple steps are fulfilled (via `.fulfillStep` or `.fulfillNextStep`) and finish by calling a function. For example, this can be used for preloading and displaying assets.
+
+		`steps`: How many steps need to be fulfilled before `then` is called.
+		
+		`then`: Function to run when all steps are fulfilled.
+	**/
+	public function new(steps:Int, then:()->(Void)) {
+		this.steps = new Array<Bool>();
+		while (this.steps.length < steps)
+			this.steps.push(false);
+		this.then = then;
+	}
+
+	/**
+		Fulfill a step of index `num`. Returns `false` if that step or all steps are already fulfilled, `true` otherwise.
+	**/
+	public function fulfillStep(num:Int) {
+		if (steps[num])
+			return false;
+		steps[num] = true;
+		return checkCompleted();
+	}
+
+	/**
+		Fulfill the first available unfulfilled step. Returns `false` if all steps are already fulfilled, `true` otherwise.
+	**/
+	public function fulfillNextStep() {
+		var falseInd = steps.indexOf(false);
+		if (falseInd == -1)
+			return false;
+		steps[falseInd] = true;
+		return checkCompleted();
+	}
+
+	/**
+		If all steps in this `MultiStepResult` are fulfilled, call `.then()` and return `true`, otherwise return `false`.
+	**/
+	public function checkCompleted() {
+		if (steps.contains(false))
+			return false;
+		then();
+		return true;
+	}
+}
