@@ -38,7 +38,7 @@ class ScriptingCustomState extends MusicBeatState {
 		});
 		if (script.interp == null) {
 			NoSongsState.doThing("story mode", "customstate", script.id);
-		} else{
+		} else {
 			super.update(FlxG.elapsed);
 			script.interp.variables.set("vmanCustomStateInstance", this);
 			thing("statePostInit", ["ScriptingCustomState", id, this]);

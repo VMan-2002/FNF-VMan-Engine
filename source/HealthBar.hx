@@ -1,8 +1,8 @@
 package;
 
-import flixel.FlxBasic;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
+import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
 
 using StringTools;
@@ -22,14 +22,22 @@ class HealthBar extends FlxTypedSpriteGroup<FlxSprite> {
 			icon.changeCharacter(name, side);
 		}
 		if (side) {
-			remove(leftIcon);
+			remove(leftIcon, true);
 			leftIcon = icon;
 		} else {
-			remove(rightIcon);
+			remove(rightIcon, true);
 			rightIcon = icon;
 		}
 		if (!members.contains(icon))
 			add(icon);
+	}
+
+	public function removeIcon(side:Bool) {
+		remove(side ? rightIcon : leftIcon, true);
+		if (side)
+			rightIcon = null;
+		else
+			leftIcon = null;
 	}
 
 	public function new(x:Float, y:Float, ?image:String, ?barSides:Array<Float>, ?fillDirection:FlxBarFillDirection = FlxBarFillDirection.LEFT_TO_RIGHT) {
@@ -46,9 +54,14 @@ class HealthBar extends FlxTypedSpriteGroup<FlxSprite> {
 	}
 
 	public function setHealth(num:Float) {
-		amount = num / 2;
+		//amount = num / 2;
+		//we like tweens
+		if (amountTween != null)
+			amountTween.cancel();
+		amountTween = FlxTween.tween(this, {amount: num / 2}, 0.08);
 	}
 
+	public var amountTween:FlxTween;
 	public var amount(default, set):Float = 0.5;
 
 	public function set_amount(value:Float):Float {

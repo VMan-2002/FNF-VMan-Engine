@@ -13,8 +13,6 @@ using StringTools;
 
 class StrumLine extends FlxTypedGroup<FlxSprite> {
 	public var thisManiaInfo:SwagMania;
-	//todo: should this be used
-	//var notes:Array<Note>;
 	
 	public static var nextId:Int;
 	public static var activeArray:Array<StrumLine>;
@@ -109,6 +107,11 @@ class StrumLine extends FlxTypedGroup<FlxSprite> {
 		}
 	}
 
+	public function setStyle(style:String) {
+		for (thing in strumNotes)
+			thing.setStyle(style);
+	}
+
 	public function playAppearAnim(?makeVisible:Bool = false) {
 		for (i in 0...length) {
 			var babyArrow = strumNotes[i];
@@ -117,9 +120,8 @@ class StrumLine extends FlxTypedGroup<FlxSprite> {
 			var delay = 0.5 + (1.6 * i / Math.max(thisManiaInfo.keys, 8));
 			FlxTween.tween(babyArrow, {y: babyArrow.y + 10}, 1, {ease: FlxEase.circOut, startDelay: delay});
 			babyArrow.playAppearAnim(delay);
-			if (!Options.instance.invisibleNotes && makeVisible) {
+			if (!Options.instance.invisibleNotes && makeVisible)
 				babyArrow.visible = true;
-			}
 		}
 	}
 	

@@ -79,37 +79,39 @@ class Stage
 		if (mod == null) {
 			mod = PlayState.modName == "" ? ModLoad.enabledMods[0] : PlayState.modName;
 		}
-		//#if !VMAN_DEMO
-		#if !html5
-		var path:String = 'mods/${mod}/objects/stages/${name}.json';
-		var isJson = FileSystem.exists(path);
-		if (!isJson)
-		#else
-		var path:String;
-		var isJson:Bool;
-		#end
-		{
-			path = 'assets/objects/stages/${name}.json';
+		if (name != "emptyLoad") {
+			//#if !VMAN_DEMO
 			#if !html5
-			isJson = FileSystem.exists(path);
+			var path:String = 'mods/${mod}/objects/stages/${name}.json';
+			var isJson = FileSystem.exists(path);
+			if (!isJson)
 			#else
-			isJson = Assets.exists(path);
+			var path:String;
+			var isJson:Bool;
 			#end
-		}
-		if (isJson) {
-			trace("Found json for custom stage "+name);
-			#if !html5
-			var json:SwagStage = cast CoolUtil.loadJsonFromString(File.getContent(path));
-			#else
-			var json:SwagStage = cast CoolUtil.loadJsonFromString(Assets.getText(path));
-			#end
-			return json;
-		}
-		//#end
-		//your hardcoded stage would go here
-		switch(name) {
-			case "poops":
-				//nothing lol
+			{
+				path = 'assets/objects/stages/${name}.json';
+				#if !html5
+				isJson = FileSystem.exists(path);
+				#else
+				isJson = Assets.exists(path);
+				#end
+			}
+			if (isJson) {
+				trace("Found json for custom stage "+name);
+				#if !html5
+				var json:SwagStage = cast CoolUtil.loadJsonFromString(File.getContent(path));
+				#else
+				var json:SwagStage = cast CoolUtil.loadJsonFromString(Assets.getText(path));
+				#end
+				return json;
+			}
+			//#end
+			//your hardcoded stage would go here
+			switch(name) {
+				case "poops":
+					//nothing lol
+			}
 		}
 		//the void
 		ErrorReportSubstate.addError("No stage found for "+name+", you'll be put in the void");

@@ -30,6 +30,9 @@ import sys.io.File;
 
 using StringTools;
 
+//todo: gotta keep implementing the scripting !!!!!!!!!
+//more states, more callbacks, more a lot of things
+
 class MyFlxColor {
     //exists because i cant fucking put FlxColor in the thing
     //i do indeed seethe :')

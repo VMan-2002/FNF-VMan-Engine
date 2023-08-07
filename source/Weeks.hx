@@ -23,7 +23,7 @@ typedef SwagWeek = {
 	var modName:String;
 	var bgColor:String;
 	var difficulties:Null<Array<String>>;
-	var weekUnlocked:Bool;
+	var weekUnlocked:Null<Bool>;
 }
 
 class Weeks { //we REALYL gettin in the deep stuff!
@@ -34,18 +34,14 @@ class Weeks { //we REALYL gettin in the deep stuff!
 	}
 	
 	static function SortWeeks(a:SwagWeek, b:SwagWeek, ?fail:Bool = false):Int {
-		if (EmptyThing(a.previous) == EmptyThing(b.previous) || a.id == b.id) {
+		if (EmptyThing(a.previous) == EmptyThing(b.previous) || a.id == b.id)
 			return 0;
-		}
-		if (a.id == b.previous) {
+		if (a.id == b.previous)
 			return 1;
-		}
-		if (EmptyThing(a.previous) == null && b.previous != null) {
+		if (EmptyThing(a.previous) == null && b.previous != null)
 			return -1;
-		}
-		if (fail) {
+		if (fail)
 			return 0;
-		}
 		return -SortWeeks(b, a, true);
 	}
 	
@@ -150,6 +146,8 @@ class Weeks { //we REALYL gettin in the deep stuff!
 	}
 	
 	public static function isWeekUnlocked(w:SwagWeek) {
+		if (w.weekUnlocked != null)
+			return w.weekUnlocked; //it's already manually set
 		if (w.requiredToUnlock == null || w.requiredToUnlock.length == 0 || w.requirementsNeeded == 0 || w.requirementsNeeded == null)
 			return true; //theres no requirement
 		var left = w.requirementsNeeded == null ? 0 : w.requiredToUnlock.length - w.requirementsNeeded;
@@ -220,7 +218,7 @@ class Weeks { //we REALYL gettin in the deep stuff!
 		return svd;
 	}
 
-	public static function getWeek(name:String, modName:String) {
+	public static function getWeek(name:String, modName:String, ?mayDetectWeekUnlock:Bool = true) {
 		var file = "mods/" + modName + "/weeks/" + name + ".json";
 		if (file.endsWith(".json")) {
 			var week = CoolUtil.loadJsonFromString(File.getContent(file));
@@ -230,7 +228,8 @@ class Weeks { //we REALYL gettin in the deep stuff!
 			week.visibleStoryMenu = week.visibleStoryMenu != false;
 			week.songs = week.songs == null ? new Array<String>() : week.songs;
 			week.modName = modName;
-			week.weekUnlocked = week.weekUnlocked != false && isWeekUnlocked(week);
+			if (mayDetectWeekUnlock)
+				week.weekUnlocked = week.weekUnlocked != false && (week.weekUnlocked || isWeekUnlocked(week));
 			return week;
 		}
 		return null;

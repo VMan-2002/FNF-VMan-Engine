@@ -253,7 +253,7 @@ class AlphaCharacter extends FlxSprite
 	public static var numbers:String = "1234567890";
 
 	public static var symbols:String = "|~#$%()*+-:;<=>@[]^_.,'\"!?•";
-	//todo: draw these bold symbols: |~#$%*+;<=>@[]^,'!?
+	//todo: draw these bold symbols: |~#$*;<=>@^'
 
 	public var row:Int = 0;
 
@@ -274,16 +274,22 @@ class AlphaCharacter extends FlxSprite
 		switch(letter) {
 			case ".":
 				newOffset.set(0, -38);
+			case ",":
+				animLetter = "comma";
+				newOffset.set(0, -38);
 			case "•":
 				animLetter = ".";
 				newOffset.set(-10, -20);
 				extraWidth = 20;
 			case ":":
 				newOffset.set(0, -12);
-			case "(" | ")":
+			case "(" | ")" | "[" | "]":
 				newOffset.set(0, 10);
 			case "-":
 				newOffset.set(0, -20);
+			case "+":
+				animLetter = "plus";
+				newOffset.set(0, -3);
 			case "_":
 				animLetter = "-";
 				newOffset.set(0, -48);
@@ -291,6 +297,12 @@ class AlphaCharacter extends FlxSprite
 				animLetter = "single quote";
 			case "\"":
 				animLetter = "double quote";
+			case "%":
+				animLetter = "percent";
+			case "!":
+				animLetter = "exclamation";
+			case "?":
+				animLetter = "question";
 			default:
 				animLetter = letter.toUpperCase();
 		}

@@ -94,17 +94,23 @@ class HudThing extends FlxGroup {
 		add(textThing);
 	}
 
+	public function removeItems(nameItems:Array<String>) {
+		items = items.filter(function(item) {
+			return !nameItems.contains(item);
+		});
+	}
+
 	override function update(elapsed:Float) {
 		if (autoUpdate)
 			updateInfo();
 		super.update(elapsed);
 	}
 
-	public inline function accuracy():Float {
+	public static inline function accuracy():Float {
 		return PlayState.instance.songScore / (((PlayState.instance.songHits + PlayState.instance.songMisses) * 350) + PlayState.instance.possibleMoreScore);
 	}
 
-	public inline function getRank(acc:Float, things:Array<SwagRank>) {
+	public static inline function getRank(acc:Float, things:Array<SwagRank>) {
 		var n = things.length - 1;
 		while (n == 0 || things[n].level >= acc)
 			n -= 1;
@@ -276,5 +282,17 @@ class HudThing extends FlxGroup {
 		var a:FlxText = cast members[0];
 		a.font = Paths.font("NotoSansJP-Medium.otf");
 		Translation.setObjectFont(a, "vcr font");
+	}
+}
+
+class HudThingGroup extends FlxTypedGroup<HudThing> {
+	public function removeItems(nameItems:Array<String>) {
+		for (thing in members)
+			thing.removeItems(nameItems);
+	}
+
+	public function updateDatas() {
+		for (thing in members)
+			thing.updateDatas();
 	}
 }

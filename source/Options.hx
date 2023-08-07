@@ -105,6 +105,10 @@ class Options {
 	public var playstate_guitar:Bool = false;
 	public var playstate_confusion:Bool = false;
 	public static var playstate_anychanges:Bool = false;
+	//todo: these things
+	public var playstateparam_healthgain:Float = 1.0;
+	public var playstateparam_healthloss:Float = 1.0;
+	public var playstate_inorder:Bool = false;
 
 	//Practice tools
 	public var practice_enabled:Bool = false;

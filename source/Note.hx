@@ -77,6 +77,13 @@ class SwagNoteSkin {
 		noteSkin.noteSplashImage = noteSkin.noteSplashImage != null ? noteSkin.noteSplashImage : "normal/notesplash";
 		if (noteSkin.arrows != null && !noteSkin.arrows.keys().hasNext()) {
 			noteSkin.arrows = null;
+		} else if (noteSkin.arrows.exists("default")) {
+			var d = noteSkin.arrows.get("default");
+			for (thing in ManiaInfo.Dir.keys()) {
+				if (noteSkin.arrows.exists(thing))
+					continue;
+				noteSkin.arrows.set(thing, d);
+			}
 		}
 		Note.loadedNoteSkins.set('${modName}:${name}', noteSkin);
 		trace('loaded noteskin ${modName}:${name}');
@@ -596,14 +603,14 @@ class Note extends FlxSprite {
 		if (animation.curAnim == null) {
 			trace("Note's animation is null. Fuck! Strum time is: " + strumTime + " And Note type is: "+getNoteType());
 		}
-		switch(getNoteType()) {
+		/*switch(getNoteType()) {
 			case "Guitar Note":
 				color = 0xFF0000; //todo: this is temporary
 			case "Guitar HOPO Note":
 				color = 0xFFFF00; //todo: this is temporary
 			case "Guitar Open HOPO Note":
 				color = 0x00FFFF; //todo: this is temporary
-		}
+		}*/
 		if (typedata.guitar && typedata.guitarOpen && typedata.guitarHopo) {
 			//This is a open hopo note
 			//So it's funy

@@ -1,12 +1,14 @@
 package;
 
-import Boyfriend;
 import CoolUtil;
 import ThingThatSucks.ErrorReportSubstate;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.animation.FlxAnimationController;
 import flixel.animation.FlxBaseAnimation;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.graphics.frames.FlxFramesCollection;
+import flixel.graphics.frames.FlxImageFrame;
 import flixel.input.keyboard.FlxKeyboard;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
@@ -117,7 +119,7 @@ class Character extends SpriteVMan
 	public var isGirlfriend = false;
 	public var isBoyfriend = false;
 	
-	public var cameraOffset:Array<Float> = [0, 0];
+	public var cameraOffset:Array<Float> = [0, 0, 0];
 	public var noteCameraOffset:Map<String, FlxPoint> = new Map<String, FlxPoint>();
 
 	public var hitNoteByPlayer = false;
@@ -162,8 +164,13 @@ class Character extends SpriteVMan
 		noteCameraOffset.set("singUP", new FlxPoint(0, -45));
 		noteCameraOffset.set("singDOWN", new FlxPoint(0, 45));
 
-		switch (curCharacter)
-		{
+		switch (curCharacter) {
+			case "emptyLoad":
+				//load the minimum required stuff
+				frames = null;
+				antialiasing = false;
+				animation.add("idle", [0]);
+				addOffset("idle", 0, 0, 0);
 			case 'gf':
 				// GIRLFRIEND CODE
 				tex = Paths.getSparrowAtlas('characters/GF_assets');
@@ -326,72 +333,6 @@ class Character extends SpriteVMan
 
 				healthBarColor.setRGB(165, 0, 77);
 				isGirlfriend = true;
-			/*case 'dad':
-				// DAD ANIMATION LOADING CODE
-				tex = Paths.getSparrowAtlas('characters/DADDY_DEAREST');
-				AnimationDebug.imageFile = 'characters/DADDY_DEAREST';
-				frames = tex;
-				animation.addByPrefix('idle', 'Dad idle dance', 24, false);
-				animation.addByPrefix('singUP', 'Dad Sing Note UP', 24, false);
-				animation.addByPrefix('singRIGHT', 'Dad Sing Note RIGHT', 24, false);
-				animation.addByPrefix('singDOWN', 'Dad Sing Note DOWN', 24, false);
-				animation.addByPrefix('singLEFT', 'Dad Sing Note LEFT', 24, false);
-
-				addOffset('idle');
-				addOffset("singUP", -6, 50);
-				addOffset("singRIGHT", 0, 27);
-				addOffset("singLEFT", -10, 10);
-				addOffset("singDOWN", 0, -30);
-
-				playAnim('idle');
-
-				healthBarColor.setRGB(170, 99, 200);*/
-			/*case 'spooky':
-				tex = Paths.getSparrowAtlas('characters/spooky_kids_assets');
-				AnimationDebug.imageFile = 'characters/spooky_kids_assets';
-				frames = tex;
-				animation.addByPrefix('singUP', 'spooky UP NOTE', 24, false);
-				animation.addByPrefix('singDOWN', 'spooky DOWN note', 24, false);
-				animation.addByPrefix('singLEFT', 'note sing left', 24, false);
-				animation.addByPrefix('singRIGHT', 'spooky sing right', 24, false);
-				animation.addByIndices('danceLeft', 'spooky dance idle', [0, 2, 6], "", 12, false);
-				animation.addByIndices('danceRight', 'spooky dance idle', [8, 10, 12, 14], "", 12, false);
-
-				addOffset('danceLeft');
-				addOffset('danceRight');
-
-				addOffset("singUP", -20, 26);
-				addOffset("singRIGHT", -130, -14);
-				addOffset("singLEFT", 130, -10);
-				addOffset("singDOWN", -50, -130);
-
-				playAnim('danceRight');
-				
-				positionOffset[1] = 200;
-
-				healthBarColor.setRGB(213, 126, 0);*/
-			/*case 'mom':
-				tex = Paths.getSparrowAtlas('characters/Mom_Assets');
-				AnimationDebug.imageFile = 'characters/Mom_Assets';
-				frames = tex;
-
-				animation.addByPrefix('idle', "Mom Idle", 24, false);
-				animation.addByPrefix('singUP', "Mom Up Pose", 24, false);
-				animation.addByPrefix('singDOWN', "MOM DOWN POSE", 24, false);
-				animation.addByPrefix('singLEFT', 'Mom Left Pose', 24, false);
-				// ANIMATION IS CALLED MOM LEFT POSE BUT ITS FOR THE RIGHT
-				// CUZ DAVE IS DUMB!
-				animation.addByPrefix('singRIGHT', 'Mom Pose Left', 24, false);
-
-				addOffset('idle');
-				addOffset("singUP", 14, 71);
-				addOffset("singRIGHT", 10, -60);
-				addOffset("singLEFT", 250, -23);
-				addOffset("singDOWN", 20, -160);
-
-				playAnim('idle');
-
-				healthBarColor.setRGB(216, 85, 142);*/
 			case 'mom-car':
 				tex = Paths.getSparrowAtlas('characters/momCar');
 				AnimationDebug.imageFile = 'characters/momCar';
@@ -454,40 +395,6 @@ class Character extends SpriteVMan
 				positionOffset[1] = 130;
 
 				healthBarColor.setRGB(243, 255, 110);
-			/*case 'pico':
-				tex = Paths.getSparrowAtlas('characters/Pico_FNF_assetss');
-				AnimationDebug.imageFile = 'characters/Pico_FNF_assetss';
-				frames = tex;
-				animation.addByPrefix('idle', "Pico Idle Dance", 24);
-				animation.addByPrefix('singUP', 'pico Up note0', 24, false);
-				animation.addByPrefix('singRIGHT', 'Pico NOTE LEFT0', 24, false);
-				animation.addByPrefix('singLEFT', 'Pico Note Right0', 24, false);
-				animation.addByPrefix('singDOWN', 'Pico Down Note0', 24, false);
-
-				animation.addByPrefix('singUPmiss', 'pico Up note miss', 24);
-				animation.addByPrefix('singRIGHTmiss', 'Pico NOTE LEFT miss', 24, false);
-				animation.addByPrefix('singLEFTmiss', 'Pico Note Right Miss', 24, false);
-				animation.addByPrefix('singDOWNmiss', 'Pico Down Note MISS', 24);
-
-				addOffset('idle');
-				addOffset("singUP", -29, 27);
-				addOffset("singRIGHT", -68, -7);
-				addOffset("singLEFT", 65, 9);
-				addOffset("singDOWN", 200, -70);
-				
-				addOffset("singUPmiss", -19, 67);
-				addOffset("singRIGHTmiss", -60, 41);
-				addOffset("singLEFTmiss", 62, 64);
-				addOffset("singDOWNmiss", 210, -28);
-
-				playAnim('idle');
-
-				flipX = true;
-				
-				positionOffset[1] = 300;
-
-				healthBarColor.setRGB(183, 216, 85);*/
-
 			case 'pico-speaker':
 				frames = Paths.getSparrowAtlas('characters/picoSpeaker');
 				AnimationDebug.imageFile = 'characters/picoSpeaker';
@@ -1071,6 +978,8 @@ class Character extends SpriteVMan
 	public function changeCharacter(name:String, modName:String) {
 		x -= positionOffset[0];
 		y -= positionOffset[1];
+		positionOffset = [0, 0];
+		cameraOffset = [0, 0, 0];
 		animation.destroyAnimations();
 		animOffsets.clear();
 		noteCameraOffset.clear();
@@ -1136,15 +1045,15 @@ class Character extends SpriteVMan
 		animationNotes.sort(sortAnims);
 	}
 
-	function sortAnims(val1:Array<Dynamic>, val2:Array<Dynamic>):Int {
+	public static inline function sortAnims(val1:Array<Dynamic>, val2:Array<Dynamic>):Int {
 		return FlxSort.byValues(FlxSort.ASCENDING, val1[0], val2[0]);
 	}
 
-	inline function quickAnimAdd(name:String, prefix:String, ?loop:Bool = false) {
+	public inline function quickAnimAdd(name:String, prefix:String, ?loop:Bool = false) {
 		animation.addByPrefix(name, prefix, 24, loop);
 	}
 
-	@:deprecated("Don't use this, it causes crashes right now and also is basically obsolete in vman engine :)")
+	/*@:deprecated("Don't use this, it causes crashes right now and also is basically obsolete in vman engine :)")
 	private function loadOffsetFile(offsetCharacter:String) {
 		//this doesnt work don't use this :>
 		var daFile:Array<String> = CoolUtil.coolTextFile(Paths.file("images/characters/" + offsetCharacter + "Offsets.txt"));
@@ -1153,7 +1062,7 @@ class Character extends SpriteVMan
 			var splitWords:Array<String> = i.split(" ");
 			addOffset(splitWords[0], Std.parseInt(splitWords[1]), Std.parseInt(splitWords[2]));
 		}
-	}
+	}*/
 
 	public static function getHealthIcon(name:String, mod:String, ?force:Bool = false) {
 		if (force || !charHealthIcons.exists('${mod}:${name}')) {

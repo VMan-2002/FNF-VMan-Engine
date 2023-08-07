@@ -1,6 +1,7 @@
 package;
 
 import CoolUtil;
+import HudThing.HudThingGroup;
 import ManiaInfo;
 import Note.SwagNoteType;
 import Note.SwagUIStyle;
@@ -197,6 +198,16 @@ class PlayState extends MusicBeatState
 		return health = n;
 	}
 
+	public function setHealth(amount:Float, max:Float) {
+		if (amount < health || amount < max)
+			return health = amount;
+		if (health > max)
+			return health = health;
+		if (amount > max)
+			return health = max;
+		return health = amount;
+	}
+
 	////::..
 	//Statistics
 	public var combo:Int = 0;
@@ -272,7 +283,7 @@ class PlayState extends MusicBeatState
 	//HUD
 	public var camHUD:FlxCamera;
 
-	public var hudThings = new FlxTypedGroup<HudThing>();
+	public var hudThings = new HudThingGroup();
 	public var ratingsGroup = new RatingPopUpGroup();
 	public var currentUIStyle:SwagUIStyle;
 	public var isMiddlescroll:Bool = Options.instance.middleScroll;
@@ -308,8 +319,8 @@ class PlayState extends MusicBeatState
 	//Scripting funny lol
 	//The only hscript your getting is ~~me porting the basegame update's hscript support~~ hscript.
 	//I have since decided lua (Not the plantoid!!!) support is too hard to be worth it (also inspired by forever engine. thanks u lullaby)
-	//todo: add the scripting
 	//part of this will be handled in MusicBeatState
+	//i think i have started
 
 	override public function create() {	
 		Options.instance = Options.saved.copy();
@@ -329,9 +340,9 @@ class PlayState extends MusicBeatState
 		camHUD.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(camGame);
-		FlxG.cameras.add(camHUD);
+		FlxG.cameras.add(camHUD, false);
 
-		FlxCamera.defaultCameras = [camGame];
+		//FlxCamera.defaultCameras = [camGame];
 		//FlxG.cameras.setDefaultDrawTarget(camGame, false); //this doesn't work correctly.
 
 		persistentUpdate = true;
@@ -398,29 +409,6 @@ class PlayState extends MusicBeatState
 		Conductor.changeBPM(SONG.bpm);
 		
 		var sn:String = Highscore.formatSong(SONG.song);
-		/*switch (sn) {
-			case 'tutorial':
-				dialogue = ["Hey you're pretty cute.", 'Use the arrow keys to keep up\nwith me singing.'];
-			case 'bopeebo':
-				dialogue = [
-					'HEY!',
-					"You think you can just sing\nwith my daughter like that?",
-					"If you want to date her...",
-					"You're going to have to go\nthrough ME first!"
-				];
-			case 'fresh':
-				dialogue = [
-					"Not too shabby boy."
-				];
-			case 'dad-battle':
-				dialogue = [
-					"Gah, you think you're hot stuff?",
-					"If you can beat me here...",
-					"Only then I will even CONSIDER letting you\ndate my daughter!"
-				];
-			//case 'senpai' | "roses" | "thorns":
-			//	dialogue = CoolUtil.coolTextFile('data/${sn}/${sn}Dialogue');
-		}*/
 
 		var dialoguePath:String = Paths.getModOrGamePath('data/${sn}/dialogue/start.json', modName, null);
 		if (Paths.exists(dialoguePath)) {
@@ -1209,38 +1197,9 @@ class PlayState extends MusicBeatState
 				gf.dance();
 				boyfriend.dance();
 
-				/*var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
-				introAssets.set('default', ['', 'normal/ready', "normal/set", "normal/go"]);
-				introAssets.set('school', ['', 'pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
-				introAssets.set('schoolEvil', ['', 'pixelUI/ready-pixel', 'pixelUI/set-pixel', 'pixelUI/date-pixel']);
-
-				var introAlts:Array<String> = introAssets.get('default');*/
-				/*var introAlts:Array<String> = ['', 'normal/ready', "normal/set", "normal/go"];
-				var introAltsSounds:Array<String> = ["intro3", "intro2", "intro1", "introGo"];
-				var altSuffix:String = "";
-				var scale:Float = 1;*/
-
-				/*if (currentUIStyle != null) {
-					introAlts = [currentUIStyle.three, currentUIStyle.two, currentUIStyle.one, currentUIStyle.go];
-					introAltsSounds = [currentUIStyle.threeSound, currentUIStyle.twoSound, currentUIStyle.oneSound, currentUIStyle.goSound];
-					scale = currentUIStyle.countdownScale;
-				}*/ /* else {
-					for (value in introAssets.keys()) {
-						if (value == curStage) {
-							introAlts = introAssets.get(value);
-							introAltsSounds = ["intro3-pixel", "intro2-pixel", "intro1-pixel", "introGo-pixel"];
-							scale = daPixelZoom;
-						}
-					}
-				} */
-
 				playNumCountdownSprite(swagCounter);
-				/*if (swagCounter <= 3) {
-					playCountdownSprite(introAlts[swagCounter], scale, introAltsSounds[swagCounter]);
-				}*/
 
 				swagCounter += 1;
-				// generateSong('fresh');
 			}, 5);
 		}
 		
@@ -1711,7 +1670,7 @@ class PlayState extends MusicBeatState
 				persistentDraw = true;
 				paused = true;
 
-				openSubState(new PauseSubState(/*boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y*/));
+				openSubState(new PauseSubState());
 			
 				#if desktop
 				DiscordClient.changePresenceSimple("paused");
@@ -2479,6 +2438,7 @@ class PlayState extends MusicBeatState
 	}
 
 	//and then the actual key event stuff
+	//todo: implement this
 	public function eventKeyPressed(evnt:KeyboardEvent) {
 		if (inCutscene || boyfriend.stunned || !generatedMusic)
 			return;
@@ -2782,8 +2742,10 @@ class PlayState extends MusicBeatState
 			var validNote = note != null;
 			var noteTypeData = validNote ? note.getNoteTypeDataNoCheck() : Note.SwagNoteType.loadNoteType(Note.SwagNoteType.normalNote, PlayState.modName);
 
+			var newMax = maxHealth * noteTypeData.healthMaxMult;
+			setHealth(health + noteTypeData.healthMiss, newMax);
+
 			if ((validNote && !noteTypeData.ignoreMiss) || !validNote) {
-				health += noteTypeData.healthMiss;
 				if (combo > 5)
 					gf.playAvailableAnim(Options.instance.playstate_opponentmode ? ["sad_opponent", "sad"] : ["sad"]);
 				combo = 0;
@@ -2805,7 +2767,7 @@ class PlayState extends MusicBeatState
 						bobBleeds.push({
 							timeLeft: 3,
 							mult: noteTypeData.bob * 1.5,
-							maxHealth: 2 * noteTypeData.healthMaxMult
+							maxHealth: newMax
 						});
 				}
 			}
@@ -2815,8 +2777,7 @@ class PlayState extends MusicBeatState
 			/*boyfriend.stunned = true;
 
 			// get stunned for 5 seconds
-			new FlxTimer().start(5 / 60, function(tmr:FlxTimer)
-			{
+			new FlxTimer().start(5 / 60, function(tmr:FlxTimer) {
 				boyfriend.stunned = false;
 			});*/
 			
@@ -2855,30 +2816,27 @@ class PlayState extends MusicBeatState
 				});*/
 			}
 			
-			if (health < maxHealth * noteTypeData.healthMaxMult) {
-				if (note.isSustainNote) {
-					health = Math.min(health + noteTypeData.healthHold, maxHealth * noteTypeData.healthMaxMult);
-				} else {
-					health = Math.min(health + switch(rating) {
-						case "sick":
-							noteTypeData.healthHitSick;
-						case "good":
-							noteTypeData.healthHitGood;
-						case "bad":
-							noteTypeData.healthHitBad;
-						default: 
-							noteTypeData.healthHitShit;
-					}, maxHealth * noteTypeData.healthMaxMult); //peculiar Haxe moment
-				}
-				if (noteTypeData.bob != 0 && !noteTypeData.glitch)
-					bobBleeds.push({
-						timeLeft: 3,
-						mult: noteTypeData.bob * 1.5,
-						maxHealth: 2 * noteTypeData.healthMaxMult
-					});
+			var newHealth:Float = 0;
+			var newMax:Float = maxHealth * noteTypeData.healthMaxMult;
+			if (note.isSustainNote) {
+				setHealth(health + noteTypeData.healthHold, newMax);
 			} else {
-				updateHudThingDatas(); //changing the health updates this automatically so we do it manually if the health isn't changed
+				setHealth(health + switch(rating) {
+					case "sick":
+						noteTypeData.healthHitSick;
+					case "good":
+						noteTypeData.healthHitGood;
+					case "bad":
+						noteTypeData.healthHitBad;
+					default: 
+						noteTypeData.healthHitShit;
+				}, newMax); //peculiar Haxe moment, i love this
 			}
+			if (noteTypeData.bob != 0 && !noteTypeData.glitch) bobBleeds.push({
+				timeLeft: 3,
+				mult: noteTypeData.bob * 1.5,
+				maxHealth: newMax
+			});
 			
 			animateForNote(note, true, note.noteData);
 
@@ -2898,9 +2856,7 @@ class PlayState extends MusicBeatState
 	}
 
 	public inline function updateHudThingDatas() {
-		hudThings.forEach(function(a) {
-			a.updateDatas();
-		});
+		hudThings.updateDatas();
 	}
 
 	public function opponentNoteHit(note:Note):Void {
