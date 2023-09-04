@@ -362,7 +362,7 @@ class Scripting {
                 trace("Success Load script: "+id);
             }
             namedScripts[id].runFunction("scriptRun", []);
-        }else {
+        } else if (loadError != null) {
             loadError(false);
         }
     }
