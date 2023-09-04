@@ -1381,6 +1381,9 @@ class ChartingState extends MusicBeatState {
 			}
 		}
 
+		if (_song.vmanEventOrder != null) {
+			_song.vmanEventOrder = new Array<Int>();
+		}
 		for (i in 0..._song.vmanEventOrder.length) {
 			curRenderedEvents.add(new ChartEventSprite(0, getYfromStrum(_song.vmanEventTime[i] - startThing), _song.vmanEventData[_song.vmanEventOrder[i]]));
 		}

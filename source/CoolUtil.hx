@@ -1,23 +1,14 @@
 package;
 
 import Paths;
-import flixel.FlxBasic;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
-import flixel.util.FlxArrayUtil;
-import flixel.util.FlxArrayUtil;
-import flixel.util.FlxTimer;
 import flixel.util.typeLimit.OneOfTwo;
 import haxe.Json;
-import haxe.format.JsonParser;
-import json2object.JsonParser;
 import lime.utils.Assets;
-import openfl.utils.AssetType;
-import openfl.utils.Assets as OpenFlAssets;
 
 using StringTools;
 
@@ -27,7 +18,6 @@ import sys.io.File;
 #end
 
 #if polymod
-import polymod.backends.PolymodAssets;
 #end
 
 typedef TwoStrings = {
@@ -542,6 +532,13 @@ class CoolUtil
 	**/
 	public static function stringToBool(n:String) {
 		return !(n == null || n.toLowerCase() == "false" || n == "" || n == "0");
+	}
+
+	/**
+		Get a map value. If the specified key doesn't exist, use another value.
+	**/
+	public static function getMapKeyWithDefault<T1, T2>(map:Map<T1, T2>, key:T1, ?def:T2 = null):T2 {
+		return map.exists(key) ? map.get(key) : def;
 	}
 }
 

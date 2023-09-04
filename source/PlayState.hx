@@ -3304,6 +3304,12 @@ class PlayState extends MusicBeatState
 					default:
 						trace("Dunno how to handle psych event "+event[1]+". This might be a bad thing, but it isn't always!");
 				}
+			case "multievent":
+				var i = 1;
+				while (i < event.length) {
+					runEvent(SONG.vmanEventData[Std.parseInt(event[i])]);
+					i++;
+				}
 		}
 	}
 

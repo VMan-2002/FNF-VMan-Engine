@@ -1,6 +1,7 @@
 package;
 
 import Alphabet.AlphaCharacter;
+import CoolUtil.MultiStepResult;
 import Note.SwagNoteSkin;
 import Note.SwagNoteType;
 import Note.SwagUIStyle;
@@ -14,7 +15,6 @@ import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.system.FlxSound;
 import flixel.text.FlxText;
-import flixel.tile.FlxTile;
 import flixel.tile.FlxTilemap;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -22,7 +22,6 @@ import flixel.ui.FlxBar;
 import flixel.util.FlxCollision;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
-import haxe.Constraints.IMap;
 import hscript.Interp;
 import hscript.Parser;
 import sys.FileSystem;
@@ -84,49 +83,59 @@ class Scripting {
     public static var namedScripts:Map<String, Scripting> = new Map<String, Scripting>();
     public static var scripts:Array<Scripting> = new Array<Scripting>();
     final classThings:Map<String, Dynamic> = [
-        "PlayState" => PlayState,
+        //Game classes
         "Options" => Options,
         "Conductor" => Conductor,
         "Character" => Character,
-        "FlxG" => FlxG,
         "CoolUtil" => CoolUtil,
+        "Scripting" => Scripting,
+        "SpriteVMan" => SpriteVMan,
+        "MyFlxColor" => MyFlxColor, //why cant i put FlxColor here ????????? wtf!!!!!!!!!
+        "Highscore" => Highscore,
+        "ScriptUtil" => ScriptUtil,
+        "Alphabet" => Alphabet,
+        "AlphaCharacter" => AlphaCharacter,
+        "Translation" => Translation,
         "Paths" => Paths,
+        "SwagUIStyle" => SwagUIStyle,
+        "SwagNoteType" => SwagNoteType,
+        "SwagNoteSkin" => SwagNoteSkin,
+        "ManiaInfo" => ManiaInfo,
+        "VeShader" => VeShader,
+        "MultiStepResult" => MultiStepResult,
+
+        //Game state classes
+        "PlayState" => PlayState,
+        "FreeplayState" => FreeplayState,
+        "LoadingState" => LoadingState,
+        "ModsMenuState" => ModsMenuState,
+        "ScriptingCustomState" => ScriptingCustomState,
+        
+        //Library classes
         "Math" => Math,
+        "Std" => Std,
+        "Reflect" => Reflect,
+        "EReg" => EReg, //Regular Expression (RegEx) (RegExp) <---- Remember that this is RegEx because the usual syntax ~/(RegEx)/g doesn't work for some reason
+        "StringTools" => StringTools,
+
+        //Flixel library classes
+        "FlxG" => FlxG,
         "FlxMath" => FlxMath,
         "FlxTimer" => FlxTimer,
-        "Scripting" => Scripting,
-        "ScriptingCustomState" => ScriptingCustomState,
         "FlxText" => FlxText,
         "FlxSprite" => FlxSprite,
         "FlxBar" => FlxBar,
         "FlxBackdrop" => FlxBackdrop,
-        "SpriteVMan" => SpriteVMan,
         "FlxTween" => FlxTween,
-        "MyFlxColor" => MyFlxColor, //why cant i put FlxColor here ????????? wtf!!!!!!!!!
         "FlxCamera" => FlxCamera,
         "FlxSpriteGroup" => FlxSpriteGroup,
         "FlxTypedGroup" => FlxTypedGroup,
         "FlxEase" => FlxEase,
-        "Highscore" => Highscore,
-        "ModsMenuState" => ModsMenuState,
-        "ScriptUtil" => ScriptUtil,
-        "LoadingState" => LoadingState,
         "FlxPoint" => FlxPoint,
         "FlxCollision" => FlxCollision,
         "FlxTilemap" => FlxTilemap,
         "FlxTextBorderStyle" => FlxTextBorderStyle,
-        "Alphabet" => Alphabet,
-        "AlphaCharacter" => AlphaCharacter,
-        "Std" => Std,
-        "FreeplayState" => FreeplayState,
-        "FlxSound" => FlxSound,
-        "Reflect" => Reflect,
-        "Translation" => Translation,
-        "EReg" => EReg, //Regular Expression (RegEx) (RegExp) <---- Remember that this is RegEx because the usual syntax ~/(RegEx)/g doesn't work for some reason
-        "SwagUIStyle" => SwagUIStyle,
-        "SwagNoteType" => SwagNoteType,
-        "SwagNoteSkin" => SwagNoteSkin,
-        "ManiaInfo" => ManiaInfo
+        "FlxSound" => FlxSound
     ];
 
 	public static var gamePlatform(default, never) =
@@ -152,16 +161,25 @@ class Scripting {
     public var context:String;
     //public var exitStateDelete:Bool = false;
 
+    /**
+        Get a script by id, loading it if it doesn't already exist
+    **/
     public static function getScript(name:String, modName:String, ?context:String = "") {
         return namedScripts.exists('${modName}:${name}') ? namedScripts['${modName}:${name}'] : new Scripting(name, modName, context);
     }
 
+    /**
+        Clear ALL SCRIPTS
+    **/
     public static function clearScripts() {
         runOnScripts("destroy", new Array<Dynamic>());
         namedScripts.clear();
         scripts.resize(0);
     }
 
+    /**
+        Clear ALL SCRIPTS associated with a context
+    **/
     public static inline function clearScriptsByContext(context:String) {
         /*var toRemove = new Array<String>();
         for (thing in scripts) {
@@ -179,11 +197,17 @@ class Scripting {
         });
     }
 
+    /**
+        Clear a script via it's ID
+    **/
     public static function clearScriptByID(id:String) {
         if (namedScripts.exists(id))
             namedScripts.get(id).killScript();
     }
 
+    /**
+        Clear ALL SCRIPTS that match a custom criteria
+    **/
     public static function clearScriptsByCritera(context:Scripting->Bool) {
         var toRemove = new Array<String>();
         for (thing in scripts) {
@@ -198,12 +222,18 @@ class Scripting {
         }
     }
 
+    /**
+        Run a function on all loaded scripts
+    **/
     public static function runOnScripts(funcName:String, args:Array<Dynamic>) {
         for (script in scripts) {
             script.runValidFunction(funcName, args);
         }
     }
 
+    /**
+        Run a function on all loaded scripts, without checking validFuncs
+    **/
     public static function runOnScriptsNoWhitelist(funcName:String, args:Array<Dynamic>) {
         for (script in scripts) {
             if (Reflect.isFunction(script.interp.variables.get(funcName)))
@@ -211,6 +241,9 @@ class Scripting {
         }
     }
 
+    /**
+        Run modchartUpdate on scripts
+    **/
     public static function runModchartUpdateOnScripts(name:String) {
         if (!Options.instance.modchartEnabled)
             return;
@@ -219,6 +252,9 @@ class Scripting {
         }
     }
 
+    /**
+        Create a map from an array, using a variable's value a value's key
+    **/
     public static function arrayToNameMap<T>(arr:Array<T>, nameVar:String, ?modNameVar:Null<String>) {
         var result = new Map<String, T>();
         for (thing in arr)
@@ -226,14 +262,21 @@ class Scripting {
         return result;
     }
 
-    public static function nameMapToArray<T>(map:Map<String, T>) {
-        var result = new Array<T>();
+    /**
+        Push all values of a map to an array
+    **/
+    public static function nameMapToArray<T>(map:Map<String, T>, ?result:Array<T> = null) {
+        if (result == null)
+            result = new Array<T>();
         for (thing in map) {
             result.push(thing);
         }
         return result;
     }
 
+    /**
+        Run checkUnlocks on scripts
+    **/
     public static function runCheckUnlocksOnScripts<T>(category:String, args:Array<T>, nameVar:String, ?modNameVar:Null<String>) {
         var inputMap = arrayToNameMap(args, nameVar, modNameVar);
         for (script in scripts)
@@ -248,6 +291,9 @@ class Scripting {
         }
     }*/
 
+    /**
+        Load scripts by a context
+    **/
     public static function initScriptsByContext(context:String) {
         for (mod in ModLoad.enabledMods) {
             new Scripting("scripts/context/"+context, mod, context);
@@ -255,7 +301,18 @@ class Scripting {
         trace("Loaded scripts for context "+context+", now "+scripts.length+" scripts are loaded");
     }
 
-    public function new(name:String, ?modName:String, ?context:String = "", ?loadError:Null<Void->Void>) {
+    /**
+        New script object
+        
+        `name`: Path of the script relative to the mod name
+
+        `modName`: Mod the script belongs to
+
+        `context`: Context to associate this script with
+
+        `loadError`: Function to run if the script fails to load with 1 `Bool` arg. Called with `true` if the script errored while loading, `false` if the script wasn't found
+    **/
+    public function new(name:String, ?modName:String, ?context:String = "", ?loadError:Null<Bool->Void>) {
         id = '${modName}:${name}';
         var filepath = modName == "" ? 'assets/${name}.hxs' : 'mods/${modName}/${name}.hxs';
         if (FileSystem.exists(filepath)) {
@@ -273,7 +330,7 @@ class Scripting {
                 } catch (err) {
                     trace('Error while loading loading script ${id}: ${err.message}');
                     if (loadError != null)
-                        loadError();
+                        loadError(true);
                     return;
                 }
                 scripts.push(this);
@@ -305,17 +362,23 @@ class Scripting {
                 trace("Success Load script: "+id);
             }
             namedScripts[id].runFunction("scriptRun", []);
-        }/* else {
-            trace('Didnt find script ${filepath}');
-        }*/
+        }else {
+            loadError(false);
+        }
     }
 
+    /**
+        Clears the script.
+    **/
     public function killScript() {
         runValidFunction("destroy", new Array<Dynamic>());
         namedScripts.remove(id);
         scripts.remove(this);
     }
     
+    /**
+        Add function names to `validFuncs` if the functions exist
+    **/
     public function checkValidFuncs(funcNames:Array<String>) {
         validFuncs = new Map<String, Bool>();
         for (n in funcNames) {
@@ -326,14 +389,23 @@ class Scripting {
         return validFuncs;
     }
 
+    /**
+        Runs a function if it is in the `validFuncs` array (if it's not a default function, you should add it using `checkValidFuncs`)
+    **/
     public function runValidFunction(funcName:String, args:Array<Dynamic>):Dynamic {
         return validFuncs.exists(funcName) ? Reflect.callMethod(this, interp.variables.get(funcName), args) : null;
     }
 
+    /**
+        Runs a function if it is a function
+    **/
     public function runFunction(funcName:String, args:Array<Dynamic>):Dynamic {
         return Reflect.isFunction(interp.variables.get(funcName)) ? Reflect.callMethod(this, interp.variables.get(funcName), args) : null;
     }
 
+    /**
+        Runs modchartUpdate
+    **/
     public inline function runModchartUpdate(name:String) {
         if (Options.instance.modchartEnabled)
             runValidFunction(name, [FlxG.elapsed]);
@@ -345,7 +417,6 @@ class Scripting {
         else
             runValidFunction("statePostInit", arr);
     }*/
-
     public static function path(name:String, mod:String) {
         return 'scripts/${mod}/${name}';
     }
