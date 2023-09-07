@@ -1,6 +1,8 @@
 package;
 
 import Alphabet.AlphaCharacter;
+import AsyncLoad.AsyncAudioLoad;
+import AsyncLoad.AsyncImageLoad;
 import CoolUtil.MultiStepResult;
 import Note.SwagNoteSkin;
 import Note.SwagNoteType;
@@ -103,6 +105,8 @@ class Scripting {
         "ManiaInfo" => ManiaInfo,
         "VeShader" => VeShader,
         "MultiStepResult" => MultiStepResult,
+        "AsyncImageLoad" => AsyncImageLoad,
+        "AsyncAudioLoad" => AsyncAudioLoad,
 
         //Game state classes
         "PlayState" => PlayState,

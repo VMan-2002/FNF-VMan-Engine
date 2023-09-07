@@ -11,7 +11,9 @@ class AsyncNullLoad {
 	public var resource:Dynamic = null;
 	public var cancelled = false;
 
-	public function new() {}
+	public function new(?onLoad:Null<Dynamic->Void>) {
+		this.onLoad = onLoad;
+	}
 
 	public function run(name:String) {
 		Thread.create(() -> {

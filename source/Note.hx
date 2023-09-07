@@ -75,14 +75,16 @@ class SwagNoteSkin {
 		noteSkin.noteSplashScale = noteSkin.noteSplashScale != null ? noteSkin.noteSplashScale : 1.0;
 		noteSkin.noteSplashFramerate = noteSkin.noteSplashFramerate != null ? noteSkin.noteSplashFramerate : 24;
 		noteSkin.noteSplashImage = noteSkin.noteSplashImage != null ? noteSkin.noteSplashImage : "normal/notesplash";
-		if (noteSkin.arrows != null && !noteSkin.arrows.keys().hasNext()) {
-			noteSkin.arrows = null;
-		} else if (noteSkin.arrows.exists("default")) {
-			var d = noteSkin.arrows.get("default");
-			for (thing in ManiaInfo.Dir.keys()) {
-				if (noteSkin.arrows.exists(thing))
-					continue;
-				noteSkin.arrows.set(thing, d);
+		if (noteSkin.arrows != null) {
+			if (!noteSkin.arrows.keys().hasNext()) {
+				noteSkin.arrows = null;
+			} else if (noteSkin.arrows.exists("default")) {
+				var d = noteSkin.arrows.get("default");
+				for (thing in ManiaInfo.Dir.keys()) {
+					if (noteSkin.arrows.exists(thing))
+						continue;
+					noteSkin.arrows.set(thing, d);
+				}
 			}
 		}
 		Note.loadedNoteSkins.set('${modName}:${name}', noteSkin);
