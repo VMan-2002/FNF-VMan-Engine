@@ -3,22 +3,23 @@ package;
 import Conductor.BPMChangeEvent;
 import flixel.FlxBasic;
 import flixel.FlxG;
-import flixel.FlxSprite;
 import flixel.FlxSubState;
-import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.ui.FlxUIState;
-import flixel.math.FlxRect;
-import flixel.util.FlxTimer;
-import openfl.events.KeyboardEvent;
+import flixel.group.FlxGroup.FlxTypedGroup;
 
 class MusicBeatState extends FlxUIState
 {
 	private var lastBeat:Float = 0;
 	private var lastStep:Float = 0;
 
-	private var curStep:Int = 0;
-	private var curBeat:Int = 0;
-	private var controls(get, never):Controls;
+	public var curStep:Int = 0;
+	public var curBeat:Int = 0;
+	public var controls(get, never):Controls;
+
+	/**
+		Group that is on top of everything else, unless something is `insert`ed at the end (but not `add`ed)
+	**/
+	public var overlayGroup = new FlxTypedGroup<FlxBasic>();
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
@@ -32,6 +33,7 @@ class MusicBeatState extends FlxUIState
 		Conductor.offset = Options.offset;
 
 		super.create();
+		insert(members.length, overlayGroup);
 	}
 
 	override function update(elapsed:Float)
@@ -108,5 +110,14 @@ class MusicBeatState extends FlxUIState
 
 	public function switchToThis() {
 		FlxG.state.switchTo(this);
+	}
+
+	/**
+		Add an object to state
+	**/
+	public override function add(obj:FlxBasic) {
+		if (members.contains(null) || !members.contains(overlayGroup))
+			return super.add(obj);
+		return super.insert(members.indexOf(overlayGroup), obj);
 	}
 }
