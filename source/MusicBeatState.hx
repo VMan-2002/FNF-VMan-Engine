@@ -19,7 +19,7 @@ class MusicBeatState extends FlxUIState
 	/**
 		Group that is on top of everything else, unless something is `insert`ed at the end (but not `add`ed)
 	**/
-	public var overlayGroup = new FlxTypedGroup<FlxBasic>();
+	public var overlayGroup:FlxTypedGroup<FlxBasic> = null;
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
@@ -33,7 +33,7 @@ class MusicBeatState extends FlxUIState
 		Conductor.offset = Options.offset;
 
 		super.create();
-		insert(members.length, overlayGroup);
+		overlayGroup = insert(members.length, new FlxTypedGroup<FlxBasic>());
 	}
 
 	override function update(elapsed:Float)
@@ -116,7 +116,7 @@ class MusicBeatState extends FlxUIState
 		Add an object to state
 	**/
 	public override function add(obj:FlxBasic) {
-		if (members.contains(null) || !members.contains(overlayGroup))
+		if (members.contains(null) || overlayGroup == null)
 			return super.add(obj);
 		return super.insert(members.indexOf(overlayGroup), obj);
 	}
