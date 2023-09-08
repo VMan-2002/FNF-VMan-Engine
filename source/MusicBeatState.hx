@@ -33,7 +33,7 @@ class MusicBeatState extends FlxUIState
 		Conductor.offset = Options.offset;
 
 		super.create();
-		overlayGroup = insert(members.length, new FlxTypedGroup<FlxBasic>());
+		overlayGroup = cast insert(members.length, new FlxTypedGroup<FlxBasic>());
 	}
 
 	override function update(elapsed:Float)
