@@ -361,7 +361,8 @@ class Scripting {
                     "preCreateMenuButtons",
                     "checkUnlocks",
                     "titleText",
-                    "onSpawnNote"
+                    "onSpawnNote",
+                    "substatePostInit"
                 ]);
                 trace("Success Load script: "+id);
             }
