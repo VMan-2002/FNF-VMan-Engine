@@ -89,6 +89,8 @@ class PauseSubState extends MusicBeatSubstate
 		changeSelection();
 
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+
+		Scripting.runOnScripts("substatePostInit", ["PauseSubState", Std.isOfType(FlxG.state, PlayState) ? PlayState.instance.curSong : "", this]);
 	}
 
 	override function update(elapsed:Float)

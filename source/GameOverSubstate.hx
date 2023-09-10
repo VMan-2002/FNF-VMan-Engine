@@ -81,6 +81,8 @@ class GameOverSubstate extends MusicBeatSubstate {
 			FlxTransitionableState.skipNextTransOut = true;
 			gotoplaystate();
 		}
+
+		Scripting.runOnScripts("substatePostInit", ["GameOverSubstate", Std.isOfType(FlxG.state, PlayState) ? PlayState.instance.curSong : "", this]);
 	}
 
 	override function update(elapsed:Float) {

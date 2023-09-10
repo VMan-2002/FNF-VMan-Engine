@@ -1091,7 +1091,7 @@ class PlayState extends MusicBeatState
 
 		ErrorReportSubstate.displayReport();
 
-		Scripting.runOnScripts("statePostInit", ["PlayState", null, this]);
+		Scripting.runOnScripts("statePostInit", ["PlayState", curSong, this]);
 	}
 
 	function schoolIntro(?dialogueBox:DialogueBoxVMan):Void {
