@@ -1,0 +1,6 @@
+chartHitNew::Click
+chartHit::Biwp
+txtDialogue::Text
+pixelText::Pixel Text
+ANGRY::Angry
+soundTestHit::Sound Test
