@@ -1,14 +1,20 @@
 package render3d;
 
 import away3d.containers.View3D;
+import away3d.entities.Mesh;
+import away3d.events.Asset3DEvent;
+import away3d.library.assets.Asset3DType;
+import away3d.loaders.Loader3D;
 import away3d.loaders.parsers.DAEParser;
 import away3d.loaders.parsers.Max3DSParser;
 import away3d.loaders.parsers.OBJParser;
+import away3d.materials.TextureMaterial;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import openfl.events.Event;
 import openfl.geom.Vector3D;
+import sys.io.File;
 
 using StringTools;
 
@@ -166,17 +172,24 @@ class VeObject3D {
 }
 
 class VeModel3D extends VeObject3D {
-	public function new(path:String, modName:String, type:String) {
+	public var object:Mesh;
+	public var onModelLoad:VeModel3D->Void = null;
+	public var onMaterialLoad:VeModel3D->Void = null;
+
+	public function new() {
 		super();
+		loader.addEventListener(Asset3DEvent.ASSET_COMPLETE, onAssetComplete);
 	}
 
-	public static var parserDae:DAEParser = null;
-	public static var parser3ds:Max3DSParser = null;
-	public static var parserObj:OBJParser = null;
+	//public static var parserDae:DAEParser = null;
+	//public static var parser3ds:Max3DSParser = null;
+	//public static var parserObj:OBJParser = null;
+	public var loader = new Loader3D();
 
-	public function loadModel(path:String, modName:String, type:String) {
+	public function loadModel(path:String, modName:String, type:String, ?onLoaded:VeModel3D->Void = null) {
 		var filepath = 'mods/${modName}/models/${path}';
-		switch(type.toLowerCase()) {
+		onModelLoad = onLoaded;
+		/*switch(type.toLowerCase()) {
 			case "dae" | ".dae":
 				filepath += ".dae";
 				if (parserDae == null)
@@ -189,13 +202,37 @@ class VeModel3D extends VeObject3D {
 				filepath += ".obj";
 				if (parserObj == null)
 					parserObj = new OBJParser();
-		}
+		}*/
+		loader.loadData(File.getBytes(filepath));
+	}
+
+	public function loadTexture(path:String, modName:String, type:String, ?onLoaded:VeModel3D->Void = null) {
+		var filepath = 'mods/${modName}/models/${path}';
+		onMaterialLoad = onLoaded;
+		loader.loadData(File.getBytes(filepath));
 	}
 
 	public static function destroyParsers() {
-		parserDae = null;
-		parser3ds = null;
-		parserObj = null;
+		//parserDae = null;
+		//parser3ds = null;
+		//parserObj = null;
+	}
+
+	public function onAssetComplete(e:Event) {
+		var event:Asset3DEvent = cast(e, Asset3DEvent);
+		if (event.asset.assetType == Asset3DType.MESH) {
+			object = cast(event.asset, Mesh);
+		} else if (event.asset.assetType == Asset3DType.MATERIAL) {
+			var material:TextureMaterial = cast(event.asset, TextureMaterial);
+		}
+	}
+
+	public override function addTo(scene:VeScene3D) {
+		scene.view3d.scene.addChild(loader);
+	}
+
+	public override function removeFrom(scene:VeScene3D) {
+		scene.view3d.scene.removeChild(loader);
 	}
 }
 

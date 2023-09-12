@@ -26,6 +26,10 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import hscript.Interp;
 import hscript.Parser;
+import render3d.Render3D.VeFlxSprite3D;
+import render3d.Render3D.VeModel3D;
+import render3d.Render3D.VeObject3D;
+import render3d.Render3D.VeScene3D;
 import sys.FileSystem;
 import sys.io.File;
 
@@ -139,7 +143,13 @@ class Scripting {
         "FlxCollision" => FlxCollision,
         "FlxTilemap" => FlxTilemap,
         "FlxTextBorderStyle" => FlxTextBorderStyle,
-        "FlxSound" => FlxSound
+        "FlxSound" => FlxSound,
+        
+        //Three Dimensions
+        "VeScene3D" => VeScene3D,
+        "VeObject3D" => VeObject3D,
+        "VeModel3D" => VeModel3D,
+        "VeFlxSprite3D" => VeFlxSprite3D
     ];
 
 	public static var gamePlatform(default, never) =
