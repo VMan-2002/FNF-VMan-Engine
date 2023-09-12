@@ -540,6 +540,40 @@ class CoolUtil
 	public static function getMapKeyWithDefault<T1, T2>(map:Map<T1, T2>, key:T1, ?def:T2 = null):T2 {
 		return map.exists(key) ? map.get(key) : def;
 	}
+
+	public function zag(num:Float) {
+		return num % 2 > 1 ? -1 : 1;
+	}
+
+	public function lerp(a:Float, b:Float, t:Float) {
+		return a + (b - a) * t;
+	}
+
+	/**
+		Get average of 2 numbers
+	**/
+	public function centerof2(a:Float, b:Float) {
+		return (a + b) / 2;
+	}
+
+	/**
+		Get average of multiple numbers
+	**/
+	public function centerofmany(a:Array<Float>) {
+		var result:Float = 0;
+		for (thing in a)
+			result += thing;
+		return result / a.length;
+	}
+
+	/**
+		If `num > 0`, return `1`. If `num < 0`, return `-1`. Otherwise, return `def`.
+	**/
+	public function sign(num:Float, ?def:Float = 0) {
+		if (num == 0)
+			return def;
+		return num > 0 ? 1 : -1;
+	}
 }
 
 class MultiStepResult {

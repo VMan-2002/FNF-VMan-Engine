@@ -1,20 +1,13 @@
 package;
 
 import Controls.Control;
-import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.input.keyboard.FlxKey;
-import flixel.math.FlxMath;
 import flixel.text.FlxText;
-import flixel.util.FlxColor;
-import lime.utils.Assets;
 
-class OptionsMenu extends MusicBeatState
-{
+class OptionsMenu extends MusicBeatState {
 	var selector:FlxText;
 	var curSelected:Int = 0;
 	public static var wasInPlayState:Bool = false;
@@ -33,8 +26,7 @@ class OptionsMenu extends MusicBeatState
 		super();
 	}
 
-	override function create()
-	{
+	override function create() {
 		FlxTransitionableState.skipNextTransIn = true;
 		FlxTransitionableState.skipNextTransOut = true;
 		
@@ -77,8 +69,7 @@ class OptionsMenu extends MusicBeatState
 		launchSubstate = null;
 	}
 
-	override function update(elapsed:Float)
-	{
+	override function update(elapsed:Float) {
 		super.update(elapsed);
 
 		/* 
@@ -101,8 +92,7 @@ class OptionsMenu extends MusicBeatState
 		 */
 	}
 
-	function waitingInput():Void
-	{
+	/*function waitingInput():Void {
 		if (FlxG.keys.getIsDown().length > 0)
 		{
 			PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxG.keys.getIsDown()[0].ID, null);
@@ -112,16 +102,13 @@ class OptionsMenu extends MusicBeatState
 
 	var isSettingControl:Bool = false;
 
-	function changeBinding():Void
-	{
-		if (!isSettingControl)
-		{
+	function changeBinding():Void {
+		if (!isSettingControl) {
 			isSettingControl = true;
 		}
-	}
+	}*/
 
-	function changeSelection(change:Int = 0)
-	{
+	function changeSelection(change:Int = 0) {
 		#if !switch
 		//NGio.logEvent('Fresh');
 		#end

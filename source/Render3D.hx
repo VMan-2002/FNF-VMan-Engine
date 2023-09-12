@@ -2,10 +2,11 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxObject;
+import flixel.FlxSprite;
 import openfl.geom.Vector3D;
 
-class Scene3D extends FlxObject {
-	public var members:Array<Object3D>;
+class VeScene3D extends FlxObject {
+	public var members:Array<VeObject3D>;
 
 	public override function new(?x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0) {
 		if (width == 0)
@@ -19,25 +20,39 @@ class Scene3D extends FlxObject {
 	}
 
 	public override function draw() {
-		
+		if (visible) {
+			//draw to the screen
+		}
+		super.draw();
 	}
 
-	public function add(thing:Object3D) {
-		members.push(thing);
-		thing.addTo(this);
+	public function add(thing:VeObject3D) {
+		if (!members.contains(thing)) {
+			members.push(thing);
+			thing.addTo(this);
+		}
 	}
 
-	public function remove(thing:Object3D) {
+	public function remove(thing:VeObject3D) {
+		if (members.remove(thing))
+			thing.removeFrom(this);
+	}
 
+	public override function update(elapsed:Float) {
+		super.update(elapsed);
+	}
+
+	public override function destroy() {
+		super.destroy();
 	}
 }
 
-class Object3D {
+class VeObject3D {
 	public var moves:Bool = false;
 	public var x(default, set):Float = 0;
 	public var y(default, set):Float = 0;
 	public var z(default, set):Float = 0;
-	public var velocity:Vector3D;
+	public var velocity:Vector3D; //what's a ctor?
 
 	public function new(?x:Float = 0, ?y:Float = 0, ?z:Float = 0) {
 		this.x = x;
@@ -66,15 +81,23 @@ class Object3D {
 		}
 	}
 
-	public function addTo(scene:Scene3D) {}
+	public function addTo(scene:VeScene3D) {}
 
-	public function removeFrom(scene:Scene3D) {}
+	public function removeFrom(scene:VeScene3D) {}
 
 	//No draw function because Scene3D handles that shit
 }
 
-class Model3D extends Object3D {
+class VeModel3D extends VeObject3D {
 	public function new(path:String, modName:String) {
+		super();
+	}
+}
+
+class VeFlxSprite3D extends VeObject3D {
+	public var sprite:FlxSprite;
+	public function new(sprite:FlxSprite) {
+		this.sprite = sprite;
 		super();
 	}
 }

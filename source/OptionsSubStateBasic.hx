@@ -13,11 +13,14 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 
-class OptionsSubStateBasic extends MusicBeatSubstate
-{
+class OptionsSubStateBasic extends MusicBeatSubstate {
 	public var textMenuItems:Array<String> = [
-		'no dur',
-		'but why amog'
+		"The end of my pain will be WHEN",
+		"GIVE ME THE FORMULA",
+		"sure your mods are good,",
+		"but is it FAIR",
+		"that you get a TEAM",
+		"and i do not"
 	];
 	
 	function optionList():Array<String> {
@@ -50,8 +53,7 @@ class OptionsSubStateBasic extends MusicBeatSubstate
 	public var leftRightHold:Float = 0;
 	public var leftRightDir:Bool;
 
-	public function new()
-	{
+	public function new() {
 		super();
 		
 		textMenuItems = optionList();
