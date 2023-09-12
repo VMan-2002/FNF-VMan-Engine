@@ -1,7 +1,6 @@
 package;
 import flixel.input.keyboard.FlxKey;
 import flixel.util.FlxSave;
-import lime.ui.ScanCode;
 
 class Options {
 	public static var saved:Options;
@@ -92,7 +91,8 @@ class Options {
 	public static var vocalsVolume:Float = 1;
 	public var resetButton:Bool = false;
 	public var noteCamMovement:Bool = false;
-	public var selfAware:Bool = false;
+	public static var selfAware(get, never):Bool;
+	private static var _selfAware:Bool = false;
 	public static var dataStrip:Bool = true;
 	public var uiReloading:Bool = false;
 	public var noteQuant:Bool = false;
@@ -225,7 +225,7 @@ class Options {
 		showFPS = ifNotNull(svd.data.showFPS, showFPS);
 		saved.resetButton = ifNotNull(svd.data.resetButton, saved.resetButton);
 		saved.noteCamMovement = ifNotNull(svd.data.noteCamMovement, saved.noteCamMovement);
-		saved.selfAware = ifNotNull(svd.data.selfAware, saved.selfAware);
+		_selfAware = ifNotNull(svd.data.selfAware, _selfAware);
 		dataStrip = ifNotNull(svd.data.dataStrip, dataStrip);
 		saved.uiReloading = ifNotNull(svd.data.uiReloading, saved.uiReloading);
 		saved.noteQuant = ifNotNull(svd.data.noteQuant, saved.noteQuant);
@@ -290,5 +290,9 @@ class Options {
 			a.practice_preplay_menu = false;
 		}
 		return a;
+	}
+
+	static function get_selfAware():Bool {
+		return _selfAware;
 	}
 }

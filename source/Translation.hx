@@ -2,13 +2,8 @@ package;
 import CoolUtil;
 import Paths;
 import flixel.addons.ui.FlxUIDropDownMenu;
-import flixel.addons.ui.FlxUIText;
 import flixel.addons.ui.interfaces.ILabeled;
-import flixel.input.keyboard.FlxKey;
 import flixel.text.FlxText;
-import flixel.util.FlxSave;
-import flixel.util.typeLimit.OneOfTwo;
-import lime.ui.ScanCode;
 
 using StringTools;
 

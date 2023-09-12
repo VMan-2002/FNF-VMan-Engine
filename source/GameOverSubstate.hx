@@ -73,6 +73,8 @@ class GameOverSubstate extends MusicBeatSubstate {
 
 		bf.playAnim('firstDeath');
 
+		Scripting.initScriptsByContext("GameOverSubstate");
+
 		if (Std.isOfType(FlxG.state, PlayStateOffsetCalibrate)) {
 			Achievements.giveAchievement("calibrateDeath");
 		}
@@ -116,6 +118,8 @@ class GameOverSubstate extends MusicBeatSubstate {
 
 		if (FlxG.sound.music.playing)
 			Conductor.songPosition = FlxG.sound.music.time;
+
+		Scripting.runOnScripts("substateUpdate", [elapsed]);
 	}
 
 	override function beatHit() {

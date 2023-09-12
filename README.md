@@ -53,6 +53,8 @@ hxcpp-debugger
 json2object
 extension-networking
 linc_luajit
+flxanimate
+away3d
 ```
 So for each of those type `haxelib install [library]` so shit like `haxelib install polymod 1.5.2`
 

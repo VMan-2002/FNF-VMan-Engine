@@ -138,6 +138,8 @@
 	
 	<haxelib name="hxcpp-debugger" if="debug"/>
 	<haxelib name="flxanimate"/>
+	
+	<haxelib name="away3d" />
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 

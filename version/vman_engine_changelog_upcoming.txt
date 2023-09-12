@@ -1,1 +1,5 @@
 I didn't actually update the doc i forgor im sorry,
+
+Added "badHit" and "shouldJudge" values to note types
+Adding away3d
+Some new scripting callbacks

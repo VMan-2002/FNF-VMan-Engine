@@ -1,7 +1,6 @@
 package;
 
 import flixel.FlxSprite;
-import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import flixel.system.FlxSound;
 import sys.thread.Thread;
 

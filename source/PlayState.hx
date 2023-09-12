@@ -2801,11 +2801,20 @@ class PlayState extends MusicBeatState
 			var noteTypeData = note.getNoteTypeData();
 			var rating = "sick";
 			if (!note.isSustainNote) {
-				rating = popUpScore(note);
-				combo += 1;
-				songHits += 1;
-				if (combo > maxCombo)
-					maxCombo = combo;
+				if (noteTypeData.shouldJudge)
+					rating = popUpScore(note);
+				else
+					rating = "sick";
+				if (!noteTypeData.badHit) {
+					combo += 1;
+					songHits += 1;
+					if (combo > maxCombo)
+						maxCombo = combo;
+				} else {
+					songHittableMisses += 1;
+					songMisses += 1;
+					combo = 0;
+				}
 				lastHitNoteTime = note.strumTime;
 				
 				/*notes.forEachAlive(function(daNote:Note) {

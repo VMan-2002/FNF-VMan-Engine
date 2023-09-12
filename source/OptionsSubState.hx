@@ -2,11 +2,6 @@ package;
 
 import Translation;
 import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
-import openfl.filters.DisplacementMapFilterMode;
 
 class OptionsSubState extends OptionsSubStateBasic
 {
@@ -124,7 +119,7 @@ class OptionsSubState extends OptionsSubStateBasic
 			case "note camera movement":
 				return ["That thing that's in every FNF mod nowadays. The camera will move around depending on the notes.", Options.saved.noteCamMovement ? "Enabled" : "Disabled"];
 			case "self awareness":
-				return ["The mod might know your name. Scary... Bad for livestreamers, though. Only applies when the mod uses it.", Options.saved.selfAware ? "Enabled" : "Disabled"];
+				return ["The mod might know your name. Scary... Bad for livestreamers, though. Only applies when the mod uses it.", Options.selfAware ? "Enabled" : "Disabled"];
 			case "song restart reloads ui":
 				return ["Reload UI style when restarting song.", Options.saved.uiReloading ? "Enabled" : "Disabled"];
 			case "options warning test":
@@ -238,7 +233,8 @@ class OptionsSubState extends OptionsSubStateBasic
 			case "reset button":
 				Options.saved.resetButton = !Options.saved.resetButton;
 			case "self awareness":
-				Options.saved.selfAware = !Options.saved.selfAware;
+				@:privateAccess
+				Options._selfAware = !Options._selfAware;
 			case "song restart reloads ui":
 				Options.saved.uiReloading = !Options.saved.uiReloading;
 			#if debug

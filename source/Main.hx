@@ -9,6 +9,7 @@ import openfl.Lib;
 import openfl.display.FPS;
 import openfl.display.Sprite;
 import openfl.events.Event;
+import render3d.Render3D.VeScene3D;
 #if html5
 import js.Browser;
 #end
@@ -117,5 +118,6 @@ class Main extends Sprite {
 			#end
 		}
 		addChild(fps);
+		stage.addEventListener(Event.RESIZE, VeScene3D.onResize);
 	}
 }

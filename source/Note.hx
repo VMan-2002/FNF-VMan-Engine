@@ -296,6 +296,8 @@ class SwagNoteType {
 	public static var normalNote:String = "Normal Note";
 	public var scrollSpeedMult:Null<Float>;
 	public var shouldBotHit:Null<Bool>;
+	public var shouldJudge:Bool;
+	public var badHit:Bool;
 
 	public static function loadNoteType(name:String, modName:String, ?putInto:Null<String>) {
 		if (putInto == null)
@@ -356,6 +358,8 @@ class SwagNoteType {
 		noteType.noteAnimPrefix = noteType.noteAnimPrefix != null ? noteType.noteAnimPrefix : "";
 		noteType.noAnim = noteType.noAnim == true;
 		noteType.scrollSpeedMult = noteType.scrollSpeedMult == null ? 1 : noteType.scrollSpeedMult;
+		noteType.shouldJudge = noteType.shouldJudge != false;
+		noteType.badHit = noteType.badHit != true;
 
 		//Should bot hit
 		if (noteType.shouldBotHit == null) {
