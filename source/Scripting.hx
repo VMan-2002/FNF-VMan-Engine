@@ -21,6 +21,7 @@ import flixel.tile.FlxTilemap;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
+import flixel.util.FlxAxes;
 import flixel.util.FlxCollision;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
@@ -144,6 +145,7 @@ class Scripting {
         "FlxTilemap" => FlxTilemap,
         "FlxTextBorderStyle" => FlxTextBorderStyle,
         "FlxSound" => FlxSound,
+        "FlxAxes" => FlxAxes,
         
         //Three Dimensions
         "VeScene3D" => VeScene3D,

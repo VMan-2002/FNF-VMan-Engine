@@ -1047,6 +1047,9 @@ class ChartingState extends MusicBeatState {
 
 					FlxG.sound.music.time -= (FlxG.mouse.wheel * Conductor.stepCrochet * 0.4);
 					vocals.time = FlxG.sound.music.time;
+					for (thing in notesPast.keys()) {
+						notesPast.set(thing, _song.notes[curSection].sectionNotes[thing][0] <= FlxG.sound.music.time + songAudioOffset);
+					}
 				}
 			}
 
