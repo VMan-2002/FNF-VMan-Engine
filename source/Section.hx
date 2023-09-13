@@ -13,6 +13,7 @@ typedef SwagSection =
 	var gfSection:Bool;
 	var focusCharacter:Null<Int>;
 	var changeMania:Bool;
+	//var maniaArr:Array<String>;
 	var maniaStr:String;
 	var changeTimeSignature:Bool;
 	var timeSignature:Int;
@@ -51,6 +52,7 @@ class Section
 			focusCharacter: null,
 			changeMania: false,
 			maniaStr: null,
+			//maniaArr: null,
 			notesMoreLayers: null,
 			changeTimeSignature:false,
 			timeSignature:4,

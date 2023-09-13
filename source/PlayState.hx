@@ -110,8 +110,8 @@ class PlayState extends MusicBeatState
 	public var songTitle:String = "pewdiepie";
 	public var songAttributes:Map<String, Dynamic> = new Map<String, Dynamic>();
 	
-	public var currentSection:Int; //todo: So im making variable length sections (for example: with non 4/4 time signatures)
-	public var nextSectionStep:Int;
+	public var currentSection:Int = 0; //todo: So im making variable length sections (for example: with non 4/4 time signatures)
+	public var nextSectionStep:Int = 0;
 	
 	public var generatedMusic:Bool = false;
 	public var startingSong:Bool = false;
@@ -178,8 +178,9 @@ class PlayState extends MusicBeatState
 	//var currentManiaPart:Int = 0;
 	//var currentManiaPartName:Array<String> = [];
 	//var maniaPartArr:Array<Array<String>> = [];
-	//var noteRemainder:Array<Note>; //For hitting notes before your current mania change
+	var noteRemainder:Array<Note>; //For hitting notes before your current mania change
 	//var maniaRemainder:SwagMania;
+	var maniaChanges:Array<SwagMania> = [];
 
 	////::..
 	//Health / Health Bar
@@ -1354,14 +1355,29 @@ class PlayState extends MusicBeatState
 		}
 
 		var daBeats:Int = 0; // Not exactly representative of 'daBeats' lol, just how much it has looped
+		var sectionMania:Array<SwagMania> = [ManiaInfo.GetManiaInfo(songData.maniaStr)];
 		for (section in noteData) {
-			var coolSection:Int = Std.int(section.lengthInSteps / 4);
+			//var coolSection:Int = Std.int(section.lengthInSteps / 4);
 
-			generateNotes(section, section.sectionNotes, 0, unspawnNotes);
+			if (section.changeMania) {
+				/*if (section.maniaArr != null) {
+					for (i in 0...section.maniaArr.length) {
+						if (section.maniaArr[i] != "")
+							sectionMania[i] = ManiaInfo.GetManiaInfo(section.maniaArr[i]);
+					}
+				} else {*/
+					sectionMania.resize(1);
+					sectionMania[0] = ManiaInfo.GetManiaInfo(section.maniaStr);
+				//}
+				maniaChanges.push(sectionMania[0]);
+			}
+
+			//todo: let it have multiple lol
+			generateNotes(section, section.sectionNotes, 0, unspawnNotes, sectionMania[0]);
 			if (section.notesMoreLayers != null) {
 				var layerThing = 1;
 				for (thing in section.notesMoreLayers) {
-					generateNotes(section, thing, layerThing++, unspawnNotes);
+					generateNotes(section, thing, layerThing++, unspawnNotes, sectionMania[0]);
 				}
 			}
 			daBeats += 1;
@@ -1389,10 +1405,10 @@ class PlayState extends MusicBeatState
 
 		if (SONG.picocharts != null) {
 			for (i in 0...SONG.picocharts.length) {
-				//todo: picocharts
 				if (SONG.picocharts[i].length > 0) {
 					trace("Inject chart "+SONG.picocharts[i]+" to slot "+i);
 					var swagshit = Song.loadFromJson(SONG.picocharts[i], Highscore.formatSong(SONG.song));
+					funnyManias[i] = ManiaInfo.GetManiaInfo(swagshit.maniaStr);
 					for (section in swagshit.notes) {
 						//we need to remap Note Types !!
 						for (note in section.sectionNotes) {
@@ -1401,9 +1417,8 @@ class PlayState extends MusicBeatState
 								SONG.usedNoteTypes.push(t);
 							note[3] = SONG.usedNoteTypes.indexOf(t);
 						}
-						generateNotes(section, section.sectionNotes, -2 - i, funnyNotes);
+						generateNotes(section, section.sectionNotes, -2 - i, funnyNotes, funnyManias[i]);
 					}
-					funnyManias[i] = ManiaInfo.GetManiaInfo(swagshit.maniaStr);
 				}
 			}
 			funnyNotes.sort(sortByShit);

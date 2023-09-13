@@ -358,7 +358,7 @@ class SwagNoteType {
 		noteType.noteAnimPrefix = noteType.noteAnimPrefix != null ? noteType.noteAnimPrefix : "";
 		noteType.noAnim = noteType.noAnim == true;
 		noteType.scrollSpeedMult = noteType.scrollSpeedMult == null ? 1 : noteType.scrollSpeedMult;
-		noteType.badHit = noteType.badHit != true;
+		noteType.badHit = noteType.badHit == true;
 		noteType.shouldJudge = noteType.shouldJudge == null ? !noteType.badHit : noteType.shouldJudge;
 
 		//Should bot hit

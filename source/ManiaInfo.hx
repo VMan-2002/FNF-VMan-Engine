@@ -27,6 +27,7 @@ typedef SwagMania = {
 	// for unhardcoded
 	var scale:Null<Float>;
 	var spacing:Null<Float>;
+	var id:String;
 }
 
 class ManiaInfo {
@@ -506,7 +507,8 @@ class ManiaInfo {
 			scale: 0.0,
 			spacing: 0.0,
 			image: image == null || image == "" ? "NOTE_assets" : image,
-			fractor: keys + 1
+			fractor: keys + 1,
+			id: mania
 		};
 		mi.scale = GetNoteScale(mi);
 		mi.spacing = GetNoteSpacing(mi);

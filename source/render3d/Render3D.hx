@@ -8,39 +8,46 @@ import away3d.loaders.Loader3D;
 import away3d.loaders.parsers.DAEParser;
 import away3d.loaders.parsers.Max3DSParser;
 import away3d.loaders.parsers.OBJParser;
+import away3d.loaders.parsers.ParserBase;
 import away3d.materials.TextureMaterial;
 import flixel.FlxG;
-import flixel.FlxObject;
 import flixel.FlxSprite;
+import lime.graphics.Image;
+import openfl.display.BitmapData;
 import openfl.events.Event;
 import openfl.geom.Vector3D;
+import openfl.utils.ByteArray;
 import sys.io.File;
 
 using StringTools;
 
 //todo: The Third Dimension
-class VeScene3D extends FlxObject {
+class VeScene3D extends FlxSprite {
 	public var members:Array<VeObject3D>;
 	public var view3d:View3D;
 
 	public override function new(?x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0) {
-		if (width == 0)
-			width = FlxG.width;
-		if (height == 0)
-			height = FlxG.height;
-		super(x, y, width, height);
+		super(x, y);
 
 		solid = false;
 		moves = false;
+		members = new Array<VeObject3D>();
 		
 		view3d = new View3D();
+		view3d.shareContext = true;
+		FlxG.stage.addChild(view3d).visible = false;
 		sceneViews = CoolUtil.addToArrayPossiblyNull(sceneViews, this);
-		updateScale();
+		setSize(width, height);
 	}
 
+	var bitmap:BitmapData = null;
+
 	public override function draw() {
-		if (visible)
+		if (visible) {
+			view3d.renderer.queueSnapshot(bitmap);
 			view3d.render();
+			loadGraphic(bitmap);
+		}
 		super.draw();
 	}
 
@@ -79,6 +86,13 @@ class VeScene3D extends FlxObject {
 	public inline function updateScale() {
 		view3d.width = width * renderScale;
 		view3d.height = height * renderScale;
+		if (bitmap != null)
+			bitmap.dispose();
+		bitmap = new BitmapData(Math.round(view3d.width), Math.round(view3d.height), false, 0x0);
+		trace("We resize view3d and get "+Std.string(bitmap.image));
+		scale.set(width / view3d.width, height / view3d.height);
+		if (bitmap.image == null) @:privateAccess
+			bitmap.image = new Image(Math.round(view3d.width), Math.round(view3d.height));
 	}
 
 	public override function setPosition(x:Float = 0.0, y:Float = 0.0) {
@@ -98,6 +112,7 @@ class VeScene3D extends FlxObject {
 
 	public override function destroy() {
 		sceneViews.remove(this);
+		FlxG.stage.removeChild(view3d);
 		view3d.dispose();
 		super.destroy();
 	}
@@ -107,7 +122,7 @@ class VeScene3D extends FlxObject {
 
 		`view3d.scene`, `view3d.renderer` and `members` are linked together
 	**/
-	public function clone(?x:Float, ?y:Float, ?width:Float, ?height:Float) {
+	public function cloneView(?x:Float, ?y:Float, ?width:Float, ?height:Float) {
 		var cloned = new VeScene3D(x, y, width, height);
 		cloned.view3d.scene = view3d.scene;
 		cloned.view3d.renderer = view3d.renderer;
@@ -186,28 +201,24 @@ class VeModel3D extends VeObject3D {
 	//public static var parserObj:OBJParser = null;
 	public var loader = new Loader3D();
 
-	public function loadModel(path:String, modName:String, type:String, ?onLoaded:VeModel3D->Void = null) {
-		var filepath = 'mods/${modName}/models/${path}';
+	public function loadModel(path:String, modName:String, ?format:String = "obj", ?onLoaded:VeModel3D->Void = null) {
 		onModelLoad = onLoaded;
-		/*switch(type.toLowerCase()) {
-			case "dae" | ".dae":
-				filepath += ".dae";
-				if (parserDae == null)
-					parserDae = new DAEParser();
-			case "3ds" | ".3ds":
-				filepath += ".3ds";
-				if (parser3ds == null)
-					parser3ds = new Max3DSParser(true);
+		var parser:ParserBase;
+		switch(format.toLowerCase()) {
+			case "dae":
+				parser = new DAEParser();
+			case "3ds":
+				parser = new Max3DSParser(true);
 			default:
-				filepath += ".obj";
-				if (parserObj == null)
-					parserObj = new OBJParser();
-		}*/
-		loader.loadData(File.getBytes(filepath));
+				format = "obj";
+				parser = new OBJParser();
+		}
+		trace("load model " + 'mods/${modName}/models/${path}.${format}');
+		loader.loadData(ByteArray.fromBytes(File.getBytes('mods/${modName}/models/${path}.${format}')), null, null, parser);
 	}
 
-	public function loadTexture(path:String, modName:String, type:String, ?onLoaded:VeModel3D->Void = null) {
-		var filepath = 'mods/${modName}/models/${path}';
+	public function loadTexture(path:String, modName:String, ?format:String = "png", ?onLoaded:VeModel3D->Void = null) {
+		var filepath = 'mods/${modName}/models/${path}.${format}';
 		onMaterialLoad = onLoaded;
 		loader.loadData(File.getBytes(filepath));
 	}
@@ -222,8 +233,12 @@ class VeModel3D extends VeObject3D {
 		var event:Asset3DEvent = cast(e, Asset3DEvent);
 		if (event.asset.assetType == Asset3DType.MESH) {
 			object = cast(event.asset, Mesh);
+			if (onModelLoad != null)
+				onModelLoad(this);
 		} else if (event.asset.assetType == Asset3DType.MATERIAL) {
 			var material:TextureMaterial = cast(event.asset, TextureMaterial);
+			if (onModelLoad != null)
+				onMaterialLoad(this);
 		}
 	}
 

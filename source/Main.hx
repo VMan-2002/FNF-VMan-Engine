@@ -2,14 +2,20 @@ package;
 
 import ManiaInfo;
 import MultiWindow;
+import flixel.FlxG;
 import flixel.FlxGame;
 import flixel.FlxState;
+import haxe.CallStack;
+import haxe.Exception;
 import openfl.Assets;
 import openfl.Lib;
 import openfl.display.FPS;
 import openfl.display.Sprite;
 import openfl.events.Event;
+import openfl.events.UncaughtErrorEvent;
 import render3d.Render3D.VeScene3D;
+import sys.io.File;
+import sys.io.Process;
 #if html5
 import js.Browser;
 #end
@@ -92,9 +98,10 @@ class Main extends Sprite {
 			gameHeight = Math.ceil(stageHeight / zoom);
 		}
 
-		#if !debug
+		//#if !debug
 		initialState = TitleState;
-		#end
+		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, errorHandler);
+		//#end
 		
 		fps = new FPS(10, 3, 0xFFFFFF);
 		fps.visible = Options.showFPS;
@@ -120,4 +127,52 @@ class Main extends Sprite {
 		addChild(fps);
 		stage.addEventListener(Event.RESIZE, VeScene3D.onResize);
 	}
+
+	//#if !debug
+	function errorHandler(evt:UncaughtErrorEvent) {
+		trace("Crashed :(");
+		var stack = new Array<String>();
+		if (CallStack.exceptionStack(true).length == 0) {
+			trace("callstack not available?");
+			stack.push("stack unavailable");
+		} else {
+			for (thing in CallStack.exceptionStack(true)) {
+				switch (thing) {
+					case FilePos(a, f, l, c):
+						stack.push('${f} L${l} C${c}');
+					default:
+						trace("not a filepos?");
+				}
+				trace(thing.getIndex());
+			}
+		}
+		if (stack.length == 0) {
+			stack.push("stack unmeasurable");
+		}
+		var result = [
+			"VMan Engine ran into a problem :(",
+			"",
+			"You can report it here: https://github.com/VMan-2002/FNF-VMan-Engine/issues",
+			"If this is an hscript crash caused by a mod you downloaded, please report it to the mod author instead.",
+			"",
+			"Please explain in detail what got you here and provide this info as well:",
+			"",
+			"VE Version: " + gameVersionNoSubtitle + "(" + gameVersionInt + ")",
+			"Game State: " + Type.getClassName(Type.getClass(FlxG.state)),
+			"Error Classname: " + Type.getClassName(Type.getClass(evt.error)),
+			"Description: " + Std.string(evt.error),
+			"Stack (" + stack.length + " items):",
+			stack.join("\n"),
+			"Enabled Mods (" + ModLoad.enabledMods.length + " items):",
+		].join("\n");
+		for (a in ModLoad.enabledMods) {
+			var modInfo = ModsMenuState.quickModJsonData(a);
+			var version:String = modInfo.versionStr == "" ? Std.string(modInfo.version) : '${modInfo.versionStr} (${modInfo.version})';
+			result += '\n${modInfo.name} (${modInfo.id}) version ${version}';
+		}
+		var path = Sys.getEnv("temp") + "/VeCrash.log";
+		File.saveContent(path, result);
+		new Process(path);
+	}
+	//#end
 }
