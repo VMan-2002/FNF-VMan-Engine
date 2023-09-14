@@ -1095,7 +1095,7 @@ class PlayState extends MusicBeatState
 		Scripting.runOnScripts("statePostInit", ["PlayState", curSong, this]);
 	}
 
-	function schoolIntro(?dialogueBox:DialogueBoxVMan):Void {
+	public function schoolIntro(?dialogueBox:DialogueBoxVMan):Void {
 		var black:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
 		black.scrollFactor.set();
 		
@@ -1164,7 +1164,7 @@ class PlayState extends MusicBeatState
 	var startTimer:FlxTimer;
 	//var perfectMode:Bool = false;
 
-	function startCountdown():Void {
+	public function startCountdown():Void {
 		Scripting.clearScriptResults();
 		Scripting.runOnScripts("startCountdown", []);
 		if (Scripting.scriptResultsContains(false))
@@ -1288,7 +1288,7 @@ class PlayState extends MusicBeatState
 	var lastReportedPlayheadPosition:Int = 0;
 	var songTime:Float = 0;
 
-	function startSong():Void {
+	public function startSong():Void {
 		startingSong = false;
 
 		previousFrameTime = FlxG.game.ticks;
@@ -1321,7 +1321,7 @@ class PlayState extends MusicBeatState
 
 	var debugNum:Int = 0;
 
-	private function generateSong(dataPath:String):Void {
+	public function generateSong(dataPath:String):Void {
 		var songData = SONG;
 		Conductor.changeBPM(songData.bpm);
 
@@ -1439,7 +1439,7 @@ class PlayState extends MusicBeatState
 
 	static final shaggyMattNotes = ["Death Note", "Death Warning Note"];
 
-	function generateNotes(section:SwagSection, sectionNotes:Array<Dynamic>, layer:Int, addTo:Array<Note>, ?mania:Null<SwagMania>) {
+	public function generateNotes(section:SwagSection, sectionNotes:Array<Dynamic>, layer:Int, addTo:Array<Note>, ?mania:Null<SwagMania>) {
 		if (mania == null)
 			mania = curManiaInfo;
 		//i should move dType handling to Song.hx probably
@@ -1521,7 +1521,7 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	function sortByShit(Obj1:Note, Obj2:Note):Int {
+	public static function sortByShit(Obj1:Note, Obj2:Note):Int {
 		return FlxSort.byValues(FlxSort.ASCENDING, Obj1.strumTime, Obj2.strumTime);
 	}
 
@@ -1563,11 +1563,11 @@ class PlayState extends MusicBeatState
 		return thing;
 	}
 
-	function tweenCamIn():Void {
+	public function tweenCamIn():Void {
 		FlxTween.tween(FlxG.camera, {zoom: 1.3}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut});
 	}
 
-	override function openSubState(SubState:FlxSubState) {
+	public override function openSubState(SubState:FlxSubState) {
 		if (paused) {
 			if (FlxG.sound.music != null) {
 				FlxG.sound.music.pause();
@@ -1581,7 +1581,7 @@ class PlayState extends MusicBeatState
 		super.openSubState(SubState);
 	}
 
-	override function closeSubState() {
+	public override function closeSubState() {
 		if (paused) {
 			if (FlxG.sound.music != null && !startingSong) {
 				resyncVocals();
@@ -2112,7 +2112,7 @@ class PlayState extends MusicBeatState
 		endSong();
 	}
 
-	function endSong():Void {
+	public function endSong():Void {
 		Scripting.clearScriptResults();
 		Scripting.runOnScripts("endSong", []);
 		if (Scripting.scriptResultsContains(false))
@@ -2256,7 +2256,7 @@ class PlayState extends MusicBeatState
 	**/
 	var coolText:FlxPoint = new FlxPoint(FlxG.width * 0.275, FlxG.height * 0.5);
 
-	private function popUpScore(daNote:Note):String {
+	public function popUpScore(daNote:Note):String {
 		var strumtime:Float = daNote.strumTime;
 
 		//var noteDiff:Float = Math.abs(strumtime - Conductor.songPosition);
@@ -2595,7 +2595,7 @@ class PlayState extends MusicBeatState
 	}
 
 	//old input system (still used because i havent actually implemented new input)
-	private function keyShit():Void {
+	public function keyShit():Void {
 		if (Options.instance.botplay)
 			return;
 
@@ -2754,7 +2754,7 @@ class PlayState extends MusicBeatState
 		};
 	}
 
-	function noteMiss(direction:Int = 1, ?note:Note):Void {
+	public function noteMiss(direction:Int = 1, ?note:Note):Void {
 		if (!boyfriend.stunned) {
 			if (starActive) {
 				//Idk how i should star power lol! So im doing it like this (For now at least)
@@ -2937,7 +2937,7 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	function animateForNote(?note:Note, ?isBoyfriend:Bool = true, ?noteData:Int = 0, ?isMiss:Bool = false):Void {
+	public function animateForNote(?note:Note, ?isBoyfriend:Bool = true, ?noteData:Int = 0, ?isMiss:Bool = false):Void {
 		//Note to editors: Check if the note EXISTS before doing anything with it
 		var validNote = note != null;
 		if (validNote) {
@@ -3004,7 +3004,7 @@ class PlayState extends MusicBeatState
 	//	return currentStage.elementsNamed.get("fastCar");
 	//}
 
-	function resetFastCar():Void {
+	public function resetFastCar():Void {
 		//var fastCar = getFastCar();
 		fastCar.x = -12600;
 		fastCar.y = FlxG.random.float(140, 250);
@@ -3012,7 +3012,7 @@ class PlayState extends MusicBeatState
 		fastCarCanDrive = true;
 	}
 
-	function fastCarDrive() {
+	public function fastCarDrive() {
 		FlxG.sound.play(Paths.soundRandom('carPass', 0, 1), 0.7);
 
 		//var fastCar = getFastCar();
@@ -3028,13 +3028,13 @@ class PlayState extends MusicBeatState
 	//	return currentStage.elementsNamed.get("phillyTrain");
 	//}
 
-	function trainStart():Void {
+	public function trainStart():Void {
 		trainMoving = true;
 		if (!trainSound.playing)
 			trainSound.play(true);
 	}
 
-	function updateTrainPos():Void {
+	public function updateTrainPos():Void {
 		if (trainSound.time >= 4700) {
 			startedMoving = true;
 			gf.playAnim('hairBlow');
@@ -3057,7 +3057,7 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	function trainReset():Void {
+	public function trainReset():Void {
 		gf.playAnim('hairFall');
 		phillyTrain.x = FlxG.width + 200;
 		trainMoving = false;
@@ -3068,7 +3068,7 @@ class PlayState extends MusicBeatState
 		startedMoving = false;
 	}
 
-	function lightningStrikeShit():Void {
+	public function lightningStrikeShit():Void {
 		FlxG.sound.play(Paths.soundRandom('thunder_', 1, 2));
 		//halloweenBG.animation.play('lightning');
 		currentStage.playAnim("lightning");
