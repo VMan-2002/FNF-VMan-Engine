@@ -374,7 +374,9 @@ class Scripting {
                     "checkUnlocks",
                     "titleText",
                     "onSpawnNote",
-                    "substatePostInit"
+                    "substatePostInit",
+                    "startCountdown",
+                    "endSong"
                 ]);
                 trace("Success Load script: "+id);
             }
@@ -458,5 +460,22 @@ class Scripting {
                 sharedVars.remove(n);
             }
         }
+    }
+
+    public static var scriptResults:Map<String, Dynamic> = new Map<String, Dynamic>();
+    public function addScriptResult(value:Dynamic) {
+        scriptResults.set(id, value);
+    }
+
+    public static inline function clearScriptResults() {
+        scriptResults.clear();
+    }
+
+    public static function scriptResultsContains(value:Dynamic) {
+        for (thing in scriptResults) {
+            if (thing == value)
+                return true;
+        }
+        return false;
     }
 }

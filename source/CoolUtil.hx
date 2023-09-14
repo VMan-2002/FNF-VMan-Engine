@@ -574,6 +574,20 @@ class CoolUtil
 			return def;
 		return num > 0 ? 1 : -1;
 	}
+
+	/**
+		Self Aware
+
+		Returns `"User"` if Self Awareness is disabled in options menu.
+
+		Please use this responsibly, don't save or share it anywhere you sneaky fart. We want the players to trust us.
+	**/
+	public static function getComputerUsername() {
+		if (Options.selfAware)
+			return "User";
+		//todo: this
+		return "User";
+	}
 }
 
 class MultiStepResult {
@@ -623,19 +637,5 @@ class MultiStepResult {
 			return false;
 		then();
 		return true;
-	}
-
-	/**
-		Self Aware
-
-		Returns `"User"` if Self Awareness is disabled in options menu.
-
-		Please use this responsibly, don't save or share it anywhere you sneaky fart. We want the players to trust us.
-	**/
-	public function getComputerUsername() {
-		if (Options.selfAware)
-			return "User";
-		//todo: this
-		return "User";
 	}
 }

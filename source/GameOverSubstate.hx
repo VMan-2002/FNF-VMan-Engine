@@ -130,8 +130,9 @@ class GameOverSubstate extends MusicBeatSubstate {
 
 	var isEnding:Bool = false;
 
-	function endBullshit():Void {
+	inline function endBullshit():Void {
 		if (!isEnding) {
+			Scripting.runOnScripts("onAccept", [null, null]);
 			isEnding = true;
 			bf.playAvailableAnim(['deathConfirm' + (bf.animStartsWith("deathLoop") ? bf.animation.name.substr(9) : bf.animation.name.substr(10)), 'deathConfirm'], true);
 			FlxG.sound.music.stop();

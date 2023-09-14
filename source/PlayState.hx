@@ -1165,6 +1165,11 @@ class PlayState extends MusicBeatState
 	//var perfectMode:Bool = false;
 
 	function startCountdown():Void {
+		Scripting.clearScriptResults();
+		Scripting.runOnScripts("startCountdown", []);
+		if (Scripting.scriptResultsContains(false))
+			return;
+
 		inCutscene = false;
 
 		playerStrums.destroy();
@@ -2108,6 +2113,11 @@ class PlayState extends MusicBeatState
 	}
 
 	function endSong():Void {
+		Scripting.clearScriptResults();
+		Scripting.runOnScripts("endSong", []);
+		if (Scripting.scriptResultsContains(false))
+			return;
+
 		if (loopingSong) {
 			//todo: this
 			return;

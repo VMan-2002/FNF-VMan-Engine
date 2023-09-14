@@ -91,8 +91,8 @@ class Character extends SpriteVMan
 	public var stunned:Bool = false;
 
 	public var holdTimer:Float = 0;
-	public var singTime:Float = 0;
-	public var singBeats:Float = 4;
+	public var singTime:Float = 0.01;
+	public var singBeats:Float = 1;
 
 	public var animationNotes:Array<Dynamic> = [];
 	
@@ -881,6 +881,12 @@ class Character extends SpriteVMan
 					if (loadedStuff.animNoSustain != null) {
 						this.animNoSustain = loadedStuff.animNoSustain;
 					}
+					if (loadedStuff.singTime != null) {
+						this.singTime = loadedStuff.singTime;
+					}
+					if (loadedStuff.singBeats != null) {
+						this.singBeats = loadedStuff.singBeats;
+					}
 					this.isGirlfriend = loadedStuff.isGirlfriend == true;
 					playAvailableAnim([loadedStuff.initAnim, "danceLeft", "idle", "firstDeath"]);
 					if (animation.curAnim == null) {
@@ -1097,7 +1103,7 @@ class Character extends SpriteVMan
 
 			var dadVar:Float = (curCharacter == 'dad') ? 6.1 : 4;
 			
-			if (holdTimer >= Conductor.stepCrochet * dadVar * 0.001) {
+			if (holdTimer >= getSingTime()) {
 				dance(true);
 				holdTimer = 0;
 			}
@@ -1141,12 +1147,12 @@ class Character extends SpriteVMan
 			holdTimer += elapsed;
 
 			//todo: this
-			/*var dadVar:Float = (curCharacter == 'dad') ? 6.1 : 4;
+			/*var dadVar:Float = (curCharacter == 'dad') ? 6.1 : 4;*/
 			
-			if (holdTimer >= Conductor.stepCrochet * dadVar * 0.001 && !FlxG.keys.anyPressed(PlayState.curManiaInfo.control_any)) {
+			if (holdTimer >= getSingTime() && !FlxG.keys.anyPressed(PlayState.curManiaInfo.control_any)) {
 				dance(true);
 				holdTimer = 0;
-			}*/
+			}
 			return;
 		} else {
 			holdTimer = 0;
@@ -1159,13 +1165,17 @@ class Character extends SpriteVMan
 			playAvailableAnim(["deathLoop" + animation.curAnim.name.substr(10), "deathLoop"]);
 	}
 
+	public function getSingTime() {
+		return singTime + (Conductor.crochet * singBeats * 0.001);
+	}
+
 	public var danced:Bool = false;
 
 	/**
 	 * FOR GF DANCING SHIT
 	 */
 	public function dance(?anyway:Bool = false, ?force:Bool = false, ?reverse:Bool = false, ?frame:Int = 0) {
-		if (debugMode || moduloDances == 0 || (animation.curAnim != null && (animation.curAnim.name == 'hairBlow' || (animation.curAnim.name.startsWith('sing') && !animation.curAnim.name.endsWith("-loop") && !animation.curAnim.finished)))) {
+		if (debugMode || moduloDances == 0 || (animation.curAnim != null && (animation.curAnim.name == 'hairBlow' || (animation.curAnim.name.startsWith('sing') && !animation.curAnim.name.endsWith("-loop") && holdTimer >= getSingTime())))) {
 			return;
 		}
 		if (!anyway) {
