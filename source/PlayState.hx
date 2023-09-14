@@ -1037,6 +1037,8 @@ class PlayState extends MusicBeatState
 			#end
 		}*/
 
+		Scripting.runOnScripts("statePostInit", ["PlayState", curSong, this]);
+
 		if (isStoryMode) {
 			if (SONG.actions.contains("winterHorrorlandIntro")) {
 				var blackScreen:FlxSprite = new FlxSprite(0, 0).makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2), FlxColor.BLACK);
@@ -1091,8 +1093,6 @@ class PlayState extends MusicBeatState
 		//stageCharacters = Character.activeArray;
 
 		ErrorReportSubstate.displayReport();
-
-		Scripting.runOnScripts("statePostInit", ["PlayState", curSong, this]);
 	}
 
 	public function schoolIntro(?dialogueBox:DialogueBoxVMan):Void {

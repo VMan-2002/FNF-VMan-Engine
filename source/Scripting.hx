@@ -338,6 +338,7 @@ class Scripting {
                 interp.variables.set("vmanScript", this);
                 interp.variables.set("vmanIsPrimaryMod", modName == ModLoad.primaryMod.id);
                 interp.variables.set("killScript", killScript);
+                interp.variables.set("addScriptResult", addScriptResult);
                 parser.line = 1;
                 for (thing in classThings.keys())
                     interp.variables.set(thing, classThings.get(thing));
