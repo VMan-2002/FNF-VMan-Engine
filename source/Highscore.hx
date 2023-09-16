@@ -204,7 +204,7 @@ class Highscore
 		var daSong = formatSong(song, diff, mode);
 		trace('getting score for ${daSong}');
 		if (!songScores.exists(daSong))
-			setScore(daSong, 0);
+			return 0;
 
 		return songScores.get(daSong);
 	}
@@ -231,7 +231,7 @@ class Highscore
 	{
 		var daWeek = modPrefix(formatSong(week, diff, mode));
 		if (!weekScores.exists(daWeek))
-			weekScores.set(daWeek, 0);
+			return 0;
 
 		return weekScores.get(daWeek);
 	}

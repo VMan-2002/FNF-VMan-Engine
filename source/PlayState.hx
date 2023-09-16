@@ -1322,10 +1322,9 @@ class PlayState extends MusicBeatState
 	var debugNum:Int = 0;
 
 	public function generateSong(dataPath:String):Void {
-		var songData = SONG;
-		Conductor.changeBPM(songData.bpm);
+		Conductor.changeBPM(SONG.bpm);
 
-		curSong = songData.song.toLowerCase().replace(" ", "-");
+		curSong = SONG.song.toLowerCase().replace(" ", "-");
 
 		if (SONG.needsVoices)
 			vocals = new FlxSound().loadEmbedded(Paths.getSongPathThing(PlayState.SONG.song, voicesName), true);
@@ -1350,17 +1349,17 @@ class PlayState extends MusicBeatState
 		var noteData:Array<SwagSection>;
 
 		// NEW SHIT
-		noteData = songData.notes;
+		noteData = SONG.notes;
 
 		//var playerCounter:Int = 0;
 
 		SwagNoteType.clearLoadedNoteTypes();
-		for (thing in songData.usedNoteTypes) {
+		for (thing in SONG.usedNoteTypes) {
 			SwagNoteType.loadNoteType(thing, modName);
 		}
 
 		var daBeats:Int = 0; // Not exactly representative of 'daBeats' lol, just how much it has looped
-		var sectionMania:Array<SwagMania> = [ManiaInfo.GetManiaInfo(songData.maniaStr)];
+		var sectionMania:Array<SwagMania> = [ManiaInfo.GetManiaInfo(SONG.maniaStr)];
 		for (section in noteData) {
 			//var coolSection:Int = Std.int(section.lengthInSteps / 4);
 
@@ -1388,15 +1387,15 @@ class PlayState extends MusicBeatState
 			daBeats += 1;
 		}
 
-		if (songData.vmanEventOrder != null && songData.vmanEventOrder.length != 0) {
-			for (thing in 0...songData.vmanEventOrder.length) {
-				if (songData.vmanEventTime[thing] == -999) {
+		if (SONG.vmanEventOrder != null && SONG.vmanEventOrder.length != 0) {
+			for (thing in 0...SONG.vmanEventOrder.length) {
+				if (SONG.vmanEventTime[thing] == -999) {
 					//-999 means event is run at the start
-					runEvent(songData.vmanEventData[songData.vmanEventOrder[thing]]);
+					runEvent(SONG.vmanEventData[SONG.vmanEventOrder[thing]]);
 				} else {
 					events[thing] = {
-						time: songData.vmanEventTime[thing],
-						values: songData.vmanEventData[songData.vmanEventOrder[thing]]
+						time: SONG.vmanEventTime[thing],
+						values: SONG.vmanEventData[SONG.vmanEventOrder[thing]]
 					};
 				}
 			}

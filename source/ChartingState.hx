@@ -1613,6 +1613,8 @@ class ChartingState extends MusicBeatState {
 		};
 
 		if (Options.dataStrip && !FlxG.keys.pressed.SHIFT) {
+			json.song = Reflect.copy(_song);
+
 			var shrunkNoteTypeArr = new Array<String>();
 			for (i in 0...curNoteTypeArr.length) {
 				if (curNoteTypeArr.indexOf(curNoteTypeArr[i]) == i)
@@ -1633,7 +1635,9 @@ class ChartingState extends MusicBeatState {
 			var curMania:String = json.song.maniaStr;
 			//var remapNoteTypes = new Map<Float, Float>();
 			//var neededNoteTypes = new Array<String>();
+			var i = 0;
 			for (thing in json.song.notes) {
+				thing = json.song.notes[i] = Reflect.copy(thing);
 				//delete unneeded empty layers
 				if (thing.notesMoreLayers != null) {
 					while (thing.notesMoreLayers.length > 0 && thing.notesMoreLayers[thing.notesMoreLayers.length - 1].length == 0) {
