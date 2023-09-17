@@ -8,7 +8,6 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.ui.FlxInputText;
-import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.addons.ui.FlxUI;
 import flixel.addons.ui.FlxUIButton;
 import flixel.addons.ui.FlxUICheckBox;
@@ -16,25 +15,17 @@ import flixel.addons.ui.FlxUIDropDownMenu;
 import flixel.addons.ui.FlxUIInputText;
 import flixel.addons.ui.FlxUINumericStepper;
 import flixel.addons.ui.FlxUITabMenu;
-import flixel.addons.ui.FlxUITooltip.FlxUITooltipStyle;
-import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
-import flixel.math.FlxPoint;
 import flixel.system.FlxSound;
 import flixel.text.FlxText;
-import flixel.ui.FlxButton;
-import flixel.ui.FlxSpriteButton;
 import flixel.util.FlxColor;
 import haxe.Json;
 import lime.utils.Assets;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
-import openfl.media.Sound;
 import openfl.net.FileReference;
-import openfl.utils.ByteArray;
-import sys.FileSystem;
 
 using StringTools;
 
@@ -258,8 +249,7 @@ class ChartingState extends MusicBeatState {
 		super.create();
 	}
 
-	function addSongUI(arrMania:Array<String>):Void
-	{
+	function addSongUI(arrMania:Array<String>):Void {
 		var UI_songTitle = new FlxUIInputText(10, 10, 90, _song.song, 8);
 		typingShit = UI_songTitle;
 		//Translation.setUIObjectFont(UI_songTitle);
@@ -267,8 +257,7 @@ class ChartingState extends MusicBeatState {
 		var check_voices = new FlxUICheckBox(10, 25, null, null, Translation.getTranslation("Has voice track", "charteditor"), 100);
 		check_voices.checked = _song.needsVoices;
 		// _song.needsVoices = check_voices.checked;
-		check_voices.callback = function()
-		{
+		check_voices.callback = function() {
 			_song.needsVoices = check_voices.checked;
 			trace('CHECKED!');
 		};
@@ -276,8 +265,7 @@ class ChartingState extends MusicBeatState {
 
 		var check_mute_inst = new FlxUICheckBox(10, 200, null, null, Translation.getTranslation("Mute Instrumental", "charteditor"), 100);
 		check_mute_inst.checked = false;
-		check_mute_inst.callback = function()
-		{
+		check_mute_inst.callback = function() {
 			var vol:Float = 1;
 
 			if (check_mute_inst.checked)
@@ -287,20 +275,17 @@ class ChartingState extends MusicBeatState {
 		};
 		Translation.setUIObjectFont(check_mute_inst);
 
-		var saveButton:FlxUIButton = new FlxUIButton(110, 8, Translation.getTranslation("Save", "charteditor"), function()
-		{
+		var saveButton:FlxUIButton = new FlxUIButton(110, 8, Translation.getTranslation("Save", "charteditor"), function() {
 			saveLevel();
 		});
 		Translation.setUIObjectFont(saveButton);
 
-		var reloadSong:FlxUIButton = new FlxUIButton(saveButton.x + saveButton.width + 10, saveButton.y, Translation.getTranslation("Reload Audio", "charteditor"), function()
-		{
+		var reloadSong:FlxUIButton = new FlxUIButton(saveButton.x + saveButton.width + 10, saveButton.y, Translation.getTranslation("Reload Audio", "charteditor"), function() {
 			loadSong(_song.song);
 		});
 		Translation.setUIObjectFont(reloadSong);
 
-		var reloadSongJson:FlxUIButton = new FlxUIButton(reloadSong.x, saveButton.y + 30, Translation.getTranslation("Reload JSON", "charteditor"), function()
-		{
+		var reloadSongJson:FlxUIButton = new FlxUIButton(reloadSong.x, saveButton.y + 30, Translation.getTranslation("Reload JSON", "charteditor"), function() {
 			loadJson(_song.song.toLowerCase());
 		});
 		Translation.setUIObjectFont(reloadSongJson);
@@ -996,18 +981,11 @@ class ChartingState extends MusicBeatState {
 			updateGridChangeMania();
 		}
 
-		var spdSideways = elapsed * 128;
-		if (FlxG.keys.pressed.SHIFT) {
-			spdSideways *= 6;
-		}
+		var spdSideways = elapsed * (FlxG.keys.pressed.SHIFT ? 768 : 128);
 		if (FlxG.keys.pressed.I)
-		{
 			xView += spdSideways;
-		}
 		if (FlxG.keys.pressed.O)
-		{
 			xView -= spdSideways;
-		}
 		FlxG.camera.targetOffset.x = xView;
 
 		if (FlxG.keys.justPressed.TAB) {

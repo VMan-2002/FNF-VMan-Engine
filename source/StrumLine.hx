@@ -38,7 +38,7 @@ class StrumLine extends FlxTypedGroup<FlxSprite> {
 		SwitchMania(mania, false, oldScale);
 	}
 	
-	public function SwitchMania(mania:SwagMania, ?anim:Bool = false, oldScale:Float) {
+	public function SwitchMania(mania:SwagMania, ?anim:Bool = false, oldScale:Float, ?forceAppearAnim:Null<Bool> = null) {
 		thisManiaInfo = mania;
 		var oldStrumNotes:Null<Array<StrumNote>> = null;
 		var oldArrows:Null<Array<String>> = null;
@@ -101,8 +101,16 @@ class StrumLine extends FlxTypedGroup<FlxSprite> {
 		}
 		updateSpan();
 
-		if (anim || (((PlayState.instance.startingSong && !PlayState.isStoryMode) || PlayState.SONG.actions.contains("forceStrumAppearAnim")) && !PlayState.SONG.actions.contains("noStrumAppearAnim"))) {
-			trace("play appear anim");
+		if (CoolUtil.isInPlayState() && PlayState.instance.startingSong) {
+			if (PlayState.SONG.actions.contains("noStrumAppear")) {
+				anim = false;
+				for (thing in members)
+					thing.alpha = 0;
+			} else if (anim && (!PlayState.isStoryMode || PlayState.SONG.actions.contains("forceStrumAppearAnim")) && !PlayState.SONG.actions.contains("noStrumAppearAnim")) {
+				anim = false;
+			}
+		}
+		if ((forceAppearAnim == null || forceAppearAnim) && anim) {
 			playAppearAnim();
 		}
 	}

@@ -1,14 +1,10 @@
 package;
 
-import Controls.Control;
 import OptionsMenu;
 import Translation;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.FlxSubState;
-import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.input.keyboard.FlxKey;
 import flixel.system.FlxSound;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
@@ -31,7 +27,7 @@ class PauseSubState extends MusicBeatSubstate
 			menuItems.remove("Exit to menu");
 		}
 		var pauseMusicName = 'breakfast';
-		if (Std.isOfType(FlxG.state, PlayState)) {
+		if (CoolUtil.isInPlayState()) {
 			var thingy:PlayState = cast FlxG.state;
 			if (thingy.currentUIStyle.pauseMusic != null) {
 				pauseMusicName = thingy.currentUIStyle.pauseMusic;
@@ -90,7 +86,7 @@ class PauseSubState extends MusicBeatSubstate
 
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 
-		Scripting.runOnScripts("substatePostInit", ["PauseSubState", Std.isOfType(FlxG.state, PlayState) ? PlayState.instance.curSong : "", this]);
+		Scripting.runOnScripts("substatePostInit", ["PauseSubState", CoolUtil.isInPlayState() ? PlayState.instance.curSong : "", this]);
 	}
 
 	override function update(elapsed:Float)

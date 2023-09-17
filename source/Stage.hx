@@ -1,20 +1,15 @@
 package;
 
-import Character.SwagCharacterAnim;
 import Character;
 import Paths;
 import ThingThatSucks.ErrorReportSubstate;
-import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
-// import io.newgrounds.NGLite;
-import lime.utils.Assets;
 #if !html5
 import sys.FileSystem;
 import sys.io.File;
 #end
 
-typedef StageElement =
-{
+typedef StageElement = {
 	var name:String;
 	var image:String;
 	var animated:Bool;
@@ -31,10 +26,10 @@ typedef StageElement =
 	var blendMode:Null<String>;
 	var alpha:Null<Float>;
 	var showInFast:Null<Bool>; //todo: i should add this into the options menu!!!!!!!!!!!!!!!
+	var generateColor:Null<String>;
 }
 
-typedef SwagStage =
-{
+typedef SwagStage = {
 	var charPosition:Array<Array<Float>>;
 	var defaultCamZoom:Null<Float>;
 	var charZoom:Null<Array<Null<Float>>>;
@@ -50,8 +45,7 @@ typedef SwagStage =
 	var library:Null<String>;
 }
 
-class Stage
-{
+class Stage {
 	public var charPosition:Array<Array<Float>>;
 	public var charFacing:Array<Int>;
 	public var defaultCamZoom:Float;
@@ -148,28 +142,37 @@ class Stage
 			var sprite = new SpriteVMan(element.x == null ? 0 : element.x, element.y == null ? 0 : element.y);
 			sprite.moves = false;
 			sprite.antialiasing = element.antialias != false;
-			if (element.animated == true) {
-				sprite.frames = Paths.getSparrowAtlas(element.image);
-				for (anim in element.animations) {
-					Character.loadAnimation(sprite, anim);
-					if (anim.offset != null) {
-						sprite.addOffset(anim.name, anim.offset[0], anim.offset[1]);
-					}
+			var colorGenArgs = element.generateColor != null ? element.generateColor.split(",") : null;
+			if (colorGenArgs != null) {
+				switch(colorGenArgs.length) {
+					case 1: //solid color
+						sprite.makeGraphic(8, 8, FreeplayState.parseColor(colorGenArgs[0]));
+						sprite.scale.set(element.scaleX / 8, element.scaleY / 8);
+					case 2: //vertical gradient
+					case 3: //rotated gradient
 				}
 			} else {
-				sprite.loadGraphic(Paths.image(element.image));
+				if (element.animated == true) {
+					sprite.frames = Paths.getSparrowAtlas(element.image);
+					for (anim in element.animations) {
+						Character.loadAnimation(sprite, anim);
+						if (anim.offset != null) {
+							sprite.addOffset(anim.name, anim.offset[0], anim.offset[1]);
+						}
+					}
+					sprite.playAvailableAnim([element.initAnim != null ? element.initAnim : "idle"]);
+				} else {
+					sprite.loadGraphic(Paths.image(element.image));
+				}
+				sprite.scale.x = element.scaleX == null ? 1 : Math.abs(element.scaleX);
+				sprite.scale.y = element.scaleY == null ? 1 : Math.abs(element.scaleY);
 			}
-			sprite.scale.x = element.scaleX == null ? 1 : Math.abs(element.scaleX);
-			sprite.scale.y = element.scaleY == null ? 1 : Math.abs(element.scaleY);
 			if (element.scaleX != null && element.scaleX < 0)
 				sprite.flipX = true;
 			if (element.scaleY != null && element.scaleY < 0)
 				sprite.flipY = true;
 			sprite.scrollFactor.x = element.scrollX == null ? 1 : element.scrollX;
 			sprite.scrollFactor.y = element.scrollY == null ? 1 : element.scrollY;
-			if (element.animated) {
-				sprite.playAvailableAnim([element.initAnim != null ? element.initAnim : "idle"]);
-			}
 			sprite.visible = element.startVisible != false;
 			if (element.blendMode != null) {
 				switch(element.blendMode.toLowerCase()) {

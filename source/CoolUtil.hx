@@ -3,12 +3,15 @@ package;
 import Paths;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.FlxState;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
+import flixel.util.FlxColor;
 import flixel.util.typeLimit.OneOfTwo;
 import haxe.Json;
 import lime.utils.Assets;
+import openfl.display.BitmapData;
 
 using StringTools;
 
@@ -588,10 +591,37 @@ class CoolUtil
 		//todo: this
 		return "User";
 	}
+
+	/**
+		Returns true if you're in playstate or any of it's variants
+
+		`state` The state to check. If not specified, uses current state (`FlxG.state`)
+	**/
+	public static function isInPlayState(?state:FlxState = null) {
+		switch(Type.getClass(state != null ? state : FlxG.state)) {
+			case PlayState | PlayStateOffsetCalibrate | PlayStateMulti:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	public static function makeGradientRect(color1:FlxColor, color2:FlxColor, ?tilt:Float = 0) { //todo
+		tilt = 0; //unimplemented
+		var bitmap = new BitmapData(tilt == 0 ? 8 : 64, tilt == 0 ? 32 : 64, true, color1);
+		
+	}
 }
 
 class MultiStepResult {
+	/**
+		Array of all steps. You can use this to check if a specific step is fulfilled.
+	**/
 	public var steps:Array<Bool>;
+	
+	/**
+		Function called when all steps are fulfilled.
+	**/
 	public var then:()->(Void);
 
 	/**

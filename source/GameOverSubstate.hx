@@ -4,9 +4,7 @@ import CoolUtil;
 import Options;
 import flixel.FlxG;
 import flixel.FlxObject;
-import flixel.FlxSubState;
 import flixel.addons.transition.FlxTransitionableState;
-import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 
@@ -42,7 +40,7 @@ class GameOverSubstate extends MusicBeatSubstate {
 		}
 		gameOverMusicName += stageSuffix;
 		gameOverMusicEndName += stageSuffix;
-		if (Std.isOfType(FlxG.state, PlayState)) {
+		if (CoolUtil.isInPlayState()) {
 			var thingy:PlayState = cast FlxG.state;
 			if (thingy.currentUIStyle.gameOverMusic != null) {
 				gameOverMusicName = thingy.currentUIStyle.gameOverMusic;
@@ -84,7 +82,7 @@ class GameOverSubstate extends MusicBeatSubstate {
 			gotoplaystate();
 		}
 
-		Scripting.runOnScripts("substatePostInit", ["GameOverSubstate", Std.isOfType(FlxG.state, PlayState) ? PlayState.instance.curSong : "", this]);
+		Scripting.runOnScripts("substatePostInit", ["GameOverSubstate", CoolUtil.isInPlayState() ? PlayState.instance.curSong : "", this]);
 	}
 
 	override function update(elapsed:Float) {
@@ -97,8 +95,7 @@ class GameOverSubstate extends MusicBeatSubstate {
 			FlxG.sound.music.stop();
 
 			if (Std.isOfType(FlxG.state, PlayStateOffsetCalibrate)) {
-				if (Std.isOfType(FlxG.state, PlayStateOffsetCalibrate))
-					CoolUtil.playMenuMusic();
+				CoolUtil.playMenuMusic();
 				FlxG.state.closeSubState();
 				OptionsMenu.wasInPlayState = !Std.isOfType(FlxG.state, PlayStateOffsetCalibrate);
 				FlxG.switchState(new OptionsMenu());

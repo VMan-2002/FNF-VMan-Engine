@@ -1,6 +1,7 @@
 package;
 
 import CoolUtil;
+import Scripting.MyFlxColor;
 import Translation;
 import flash.text.TextField;
 import flixel.FlxG;
@@ -89,12 +90,12 @@ class FreeplayState extends MusicBeatState {
 	//var cornflowerMenus:Array<Int> = new Array<Int>();
 	//var cornflowerClass:CornflowerFreeplay;
 
-	function parseColor(input:Null<String>):Null<Int> {
+	public static function parseColor(input:Null<String>):Null<Int> {
 		if (input == null)
 			return null;
 		var col:Null<Int> = Std.parseInt(input.startsWith("0x") ? input : '0xff${input}');
 		if (col == null || Math.isNaN(col))
-			return null;
+			return MyFlxColor.d.exists(input) ? MyFlxColor.d.get(input) : null;
 		return col;
 	}
 
@@ -280,12 +281,9 @@ class FreeplayState extends MusicBeatState {
 		add(bg);
 
 		folderDirText = new FlxText(2, 2, FlxG.width - 4, "hi :D", 12);
-		//if (Options.freeplayFolders) {
-			add(folderDirText);
-		//}
-		if (Options.showFPS) {
+		add(folderDirText);
+		if (Options.showFPS)
 			folderDirText.y += 16; //so it's not on top of the fps counter
-		}
 		
 		makeSonglist(true ? categories.get(inFolder[inFolder.length-1]) : noFolders);
 		var flist = folderNames;
@@ -294,15 +292,8 @@ class FreeplayState extends MusicBeatState {
 		
 		nothingIncluded = songs.length <= 0;
 		
-		if (nothingIncluded) {
-			/*var txt:FlxText = new FlxText(0, 0, FlxG.width,
-				Translation.getTranslation("no songs", "freeplay", null, "You have no songs!\nYou need to enable a mod first."),
-			32).setFormat("VCR OSD Mono", 32, FlxColor.WHITE, CENTER);
-			txt.screenCenter();
-			add(txt);
-			return;*/
+		if (nothingIncluded)
 			return NoSongsState.doThing("freeplay", "freeplay");
-		}
 
 		scoreText = new FlxText(FlxG.width, 5, FlxG.width, Translation.getTranslation("personal best", "freeplay", ["1234567890"]), 32);
 		scoreText.x -= scoreText.textField.textWidth + 2;
@@ -658,13 +649,7 @@ class FreeplayState extends MusicBeatState {
 		}*/
 	}
 
-	function changeSelection(change:Int = 0, ?instantColorChange:Bool = false)
-	{
-		#if !switch
-		//NGio.logEvent('Fresh');
-		#end
-
-		// NGio.logEvent('Fresh');
+	function changeSelection(change:Int = 0, ?instantColorChange:Bool = false) {
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 
 		curSelected += change;
@@ -708,9 +693,8 @@ class FreeplayState extends MusicBeatState {
 
 		var bullShit:Int = 0;
 
-		for (i in 0...iconArray.length) {
+		for (i in 0...iconArray.length)
 			iconArray[i].alpha = 0.6;
-		}
 
 		iconArray[curSelected].alpha = 1;
 
@@ -820,9 +804,8 @@ class HighscoreNotification extends FlxTypedSpriteGroup<FlxSprite> {
 	}
 
 	public function untoast() {
-		if (untoasting) {
+		if (untoasting)
 			return;
-		}
 		untoasting = true;
 		FlxTween.tween(this, {x:FlxG.width}, 0.75, {ease:FlxEase.quadIn, onComplete: function(twn) {
 			FlxG.state.remove(this, true);

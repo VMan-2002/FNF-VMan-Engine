@@ -10,7 +10,10 @@ import Note.SwagUIStyle;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.FlxStrip;
 import flixel.addons.display.FlxBackdrop;
+import flixel.addons.effects.FlxSkewedSprite;
+import flixel.addons.effects.chainable.FlxEffectSprite;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup;
@@ -18,6 +21,7 @@ import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.system.FlxSound;
 import flixel.text.FlxText;
+import flixel.tile.FlxTileblock;
 import flixel.tile.FlxTilemap;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -28,6 +32,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import hscript.Interp;
 import hscript.Parser;
+import openfl.system.System;
 import render3d.Render3D.VeFlxSprite3D;
 import render3d.Render3D.VeModel3D;
 import render3d.Render3D.VeObject3D;
@@ -39,52 +44,6 @@ using StringTools;
 
 //todo: gotta keep implementing the scripting !!!!!!!!!
 //more states, more callbacks, more a lot of things
-
-class MyFlxColor {
-    //exists because i cant fucking put FlxColor in the thing
-    //i do indeed seethe :')
-    public static var d = [
-        "BLACK" => FlxColor.BLACK,
-        "BLUE" => FlxColor.BLUE,
-        "BROWN" => FlxColor.BROWN,
-        "CYAN" => FlxColor.BROWN,
-        "GRAY" => FlxColor.GRAY,
-        "GREEN" => FlxColor.GREEN,
-        "LIME" => FlxColor.LIME,
-        "MAGENTA" => FlxColor.MAGENTA,
-        "ORANGE" => FlxColor.ORANGE,
-        "PINK" => FlxColor.PINK,
-        "PURPLE" => FlxColor.PURPLE,
-        "RED" => FlxColor.RED,
-        "TRANSPARENT" => FlxColor.TRANSPARENT,
-        "WHITE" => FlxColor.WHITE,
-        "YELLOW" => FlxColor.YELLOW
-    ];
-    public static function fromInt(n) {
-        return FlxColor.fromInt(n);
-    }
-    public static function fromRGB(r, g, b, a) {
-        return FlxColor.fromRGB(r, g, b, a);
-    }
-    public static function fromRGBFloat(r, g, b, a) {
-        return FlxColor.fromRGBFloat(r, g, b, a);
-    }
-    public static function fromString(s) {
-        return FlxColor.fromString(s);
-    }
-    public static function getRed(n:FlxColor) {
-        return n.red;
-    }
-    public static function getGreen(n:FlxColor) {
-        return n.green;
-    }
-    public static function getBlue(n:FlxColor) {
-        return n.blue;
-    }
-    public static function getAlpha(n:FlxColor) {
-        return n.alpha;
-    }
-}
 
 class Scripting {
     public static var parser:Parser = new Parser();
@@ -98,7 +57,6 @@ class Scripting {
         "CoolUtil" => CoolUtil,
         "Scripting" => Scripting,
         "SpriteVMan" => SpriteVMan,
-        "MyFlxColor" => MyFlxColor, //why cant i put FlxColor here ????????? wtf!!!!!!!!!
         "Highscore" => Highscore,
         "ScriptUtil" => ScriptUtil,
         "Alphabet" => Alphabet,
@@ -132,28 +90,37 @@ class Scripting {
         "FlxG" => FlxG,
         "FlxMath" => FlxMath,
         "FlxTimer" => FlxTimer,
-        "FlxText" => FlxText,
-        "FlxSprite" => FlxSprite,
-        "FlxBar" => FlxBar,
-        "FlxBackdrop" => FlxBackdrop,
         "FlxTween" => FlxTween,
-        "FlxCamera" => FlxCamera,
-        "FlxSpriteGroup" => FlxSpriteGroup,
-        "FlxTypedGroup" => FlxTypedGroup,
         "FlxEase" => FlxEase,
+        "FlxCamera" => FlxCamera,
         "FlxPoint" => FlxPoint,
-        "FlxCollision" => FlxCollision,
-        "FlxTilemap" => FlxTilemap,
-        "FlxTextBorderStyle" => FlxTextBorderStyle,
         "FlxSound" => FlxSound,
         "FlxAxes" => FlxAxes,
         "FlxTransitionableState" => FlxTransitionableState,
+
+        "FlxTypedGroup" => FlxTypedGroup,
+        "FlxSprite" => FlxSprite,
+        "FlxSkewedSprite" => FlxSkewedSprite,
+        "FlxEffectSprite" => FlxEffectSprite,
+        "FlxTileblock" => FlxTileblock,
+        "FlxStrip" => FlxStrip,
+        "FlxText" => FlxText,
+        "FlxTextBorderStyle" => FlxTextBorderStyle,
+        "FlxBar" => FlxBar,
+        "FlxBackdrop" => FlxBackdrop,
+        "FlxTilemap" => FlxTilemap,
+        "FlxSpriteGroup" => FlxSpriteGroup,
+        "FlxCollision" => FlxCollision,
         
         //Three Dimensions
         "VeScene3D" => VeScene3D,
         "VeObject3D" => VeObject3D,
         "VeModel3D" => VeModel3D,
-        "VeFlxSprite3D" => VeFlxSprite3D
+        "VeFlxSprite3D" => VeFlxSprite3D,
+        
+        //retools
+        "MyFlxColor" => MyFlxColor//, //why cant i put FlxColor here ????????? wtf!!!!!!!!!
+        //"MySystem" => MySystem //im worried about security lol
     ];
 
 	public static var gamePlatform(default, never) =
@@ -482,3 +449,63 @@ class Scripting {
         return false;
     }
 }
+
+
+class MyFlxColor {
+    //exists because i cant fucking put FlxColor in the thing
+    //i do indeed seethe :')
+    public static var d = [
+        "BLACK" => FlxColor.BLACK,
+        "BLUE" => FlxColor.BLUE,
+        "BROWN" => FlxColor.BROWN,
+        "CYAN" => FlxColor.BROWN,
+        "GRAY" => FlxColor.GRAY,
+        "GREEN" => FlxColor.GREEN,
+        "LIME" => FlxColor.LIME,
+        "MAGENTA" => FlxColor.MAGENTA,
+        "ORANGE" => FlxColor.ORANGE,
+        "PINK" => FlxColor.PINK,
+        "PURPLE" => FlxColor.PURPLE,
+        "RED" => FlxColor.RED,
+        "TRANSPARENT" => FlxColor.TRANSPARENT,
+        "WHITE" => FlxColor.WHITE,
+        "YELLOW" => FlxColor.YELLOW
+    ];
+    public static function fromInt(n) {
+        return FlxColor.fromInt(n);
+    }
+    public static function fromRGB(r, g, b, a) {
+        return FlxColor.fromRGB(r, g, b, a);
+    }
+    public static function fromRGBFloat(r, g, b, a) {
+        return FlxColor.fromRGBFloat(r, g, b, a);
+    }
+    public static function fromString(s) {
+        return FlxColor.fromString(s);
+    }
+    public static function getRed(n:FlxColor) {
+        return n.red;
+    }
+    public static function getGreen(n:FlxColor) {
+        return n.green;
+    }
+    public static function getBlue(n:FlxColor) {
+        return n.blue;
+    }
+    public static function getAlpha(n:FlxColor) {
+        return n.alpha;
+    }
+}
+
+/*class MySystem {
+    public static var freeMemory(get, never):Float;
+    public static var totalMemoryNumber(get, never):Float;
+
+    static function get_freeMemory() {
+        return System.freeMemory;
+    }
+
+    static function get_totalMemoryNumber() {
+        return System.totalMemoryNumber;
+    }
+}*/
