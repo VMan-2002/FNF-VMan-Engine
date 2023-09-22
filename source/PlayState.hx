@@ -1321,6 +1321,17 @@ class PlayState extends MusicBeatState
 
 	var debugNum:Int = 0;
 
+	public function getAppropriateMania(mania:String) {
+		var result = ManiaInfo.GetManiaInfo(mania);
+		if (allowGameplayChanges && Options.instance.playstate_bothside) {
+			var newkeys = result.keys * 2;
+			var duoresult = ManiaInfo.GetManiaInfo(newkeys + "k");
+			if (duoresult.keys == newkeys)
+				return duoresult;
+		}
+		return result;
+	}
+
 	public function generateSong(dataPath:String):Void {
 		Conductor.changeBPM(SONG.bpm);
 
@@ -1359,7 +1370,7 @@ class PlayState extends MusicBeatState
 		}
 
 		var daBeats:Int = 0; // Not exactly representative of 'daBeats' lol, just how much it has looped
-		var sectionMania:Array<SwagMania> = [ManiaInfo.GetManiaInfo(SONG.maniaStr)];
+		var sectionMania:Array<SwagMania> = [getAppropriateMania(SONG.maniaStr)];
 		for (section in noteData) {
 			//var coolSection:Int = Std.int(section.lengthInSteps / 4);
 
@@ -1367,11 +1378,11 @@ class PlayState extends MusicBeatState
 				/*if (section.maniaArr != null) {
 					for (i in 0...section.maniaArr.length) {
 						if (section.maniaArr[i] != "")
-							sectionMania[i] = ManiaInfo.GetManiaInfo(section.maniaArr[i]);
+							sectionMania[i] = getAppropriateMania(section.maniaArr[i]);
 					}
 				} else {*/
 					sectionMania.resize(1);
-					sectionMania[0] = ManiaInfo.GetManiaInfo(section.maniaStr);
+					sectionMania[0] = getAppropriateMania(section.maniaStr);
 				//}
 				maniaChanges.push(sectionMania[0]);
 			}

@@ -171,6 +171,7 @@ class Character extends SpriteVMan
 				antialiasing = false;
 				animation.add("idle", [0]);
 				addOffset("idle", 0, 0, 0);
+				playAnim("idle");
 			case 'gf':
 				// GIRLFRIEND CODE
 				tex = Paths.getSparrowAtlas('characters/GF_assets');
