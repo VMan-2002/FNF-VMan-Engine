@@ -41,7 +41,6 @@ class ScriptingCustomState extends MusicBeatState {
 		}
 		super.update(FlxG.elapsed);
 		script.interp.variables.set("vmanCustomStateInstance", this);
-		thing("statePostInit", ["ScriptingCustomState", id, this]);
 	}
 
 	inline function thing(name:String, arg:Array<Dynamic>) {
@@ -50,6 +49,10 @@ class ScriptingCustomState extends MusicBeatState {
 
 	public override function update(elapsed:Float) {
 		super.update(elapsed);
+		if (!init) {
+			init = true;
+			thing("statePostInit", ["ScriptingCustomState", id, this]); //Moving this should fix a bug where stuff can't be added in statePostInit
+		}
 		thing("update", [elapsed]);
 		if (controls.ACCEPT)
 			thing("onAccept", [null, null]);
