@@ -116,6 +116,8 @@ class Options {
 	public var practice_disable_death:Bool = false;
 	public var practice_disable_mechanics:Bool = false;
 
+	public static var recordReplay:Bool = false;
+
 	public function updatePlayStateAny() {
 		playstate_anychanges = [playstate_opponentmode, playstate_bothside, playstate_endless, playstate_guitar, playstate_confusion, playstate_anychanges].contains(true);
 	}

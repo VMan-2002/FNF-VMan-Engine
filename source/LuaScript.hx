@@ -1,5 +1,6 @@
 package;
 
+import CoolUtil.ScriptHelper as CoolScriptHelper;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import openfl.events.KeyboardEvent;
@@ -329,132 +330,13 @@ class LuaScript {
 	//internal whatevers (not for addFunction)
 
 	public static inline function getEaseFromString(name:String) {
-		return ScriptHelper.getEaseFromString(name);
+		return CoolScriptHelper.getEaseFromString(name);
 	}
 
 	public inline function getObject(name:String) {
-		return ScriptHelper.getObject(name, state);
+		return CoolScriptHelper.getObject(name, state);
 	}
 }
 #end
 
-class ScriptHelper {
-	
-	//CUSTOM EASINGSGS
-	static var jumpThing:Float = 1.291;
-
-	public static inline function jumpOut(t:Float) {
-		return Math.sin(t * Math.PI) + t;
-	}
-	public static inline function jumpIn(t:Float) {
-		return 1 - jumpOut(t);
-	}
-	public static inline function jumpInOut(t:Float) {
-		return (Math.sin(t*Math.PI*2)*jumpThing)+t;
-	}
-
-	public static function getEaseFromString(name:String) {
-		switch(name.toLowerCase().trim().replace(" ", "")) {
-			case "sinein":
-				return FlxEase.sineIn;
-			case "sineout":
-				return FlxEase.sineOut;
-			case "sineinout" | "sine":
-				return FlxEase.sineInOut;
-			case "cubein":
-				return FlxEase.cubeIn;
-			case "cubeout":
-				return FlxEase.cubeOut;
-			case "cubeinout" | "cube":
-				return FlxEase.cubeInOut;
-			case "quadin":
-				return FlxEase.quadIn;
-			case "quadout":
-				return FlxEase.quadOut;
-			case "quadinout" | "quad":
-				return FlxEase.quadInOut;
-			case "quartin":
-				return FlxEase.quartIn;
-			case "quartout":
-				return FlxEase.quartOut;
-			case "quartinout" | "quart":
-				return FlxEase.quartInOut;
-			case "quintin":
-				return FlxEase.quintIn;
-			case "quintout":
-				return FlxEase.quintOut;
-			case "quintinout" | "quint":
-				return FlxEase.quintInOut;
-			case "smoothstepin":
-				return FlxEase.smoothStepIn;
-			case "smoothstepout":
-				return FlxEase.smoothStepOut;
-			case "smoothstepinout" | "smoothstep":
-				return FlxEase.smoothStepInOut;
-			case "smootherstepin":
-				return FlxEase.smootherStepIn;
-			case "smootherstepout":
-				return FlxEase.smootherStepOut;
-			case "smootherstepinout" | "smootherstep":
-				return FlxEase.smootherStepInOut;
-			case "bouncein":
-				return FlxEase.bounceIn;
-			case "bounceout" | "bounce":
-				return FlxEase.bounceOut;
-			case "bounceinout":
-				return FlxEase.bounceInOut;
-			case "circin":
-				return FlxEase.circIn;
-			case "circout":
-				return FlxEase.circOut;
-			case "circinout" | "circ":
-				return FlxEase.circInOut;
-			case "backin":
-				return FlxEase.backIn;
-			case "backout":
-				return FlxEase.backOut;
-			case "backinout" | "back":
-				return FlxEase.backInOut;
-			case "elasticin":
-				return FlxEase.elasticIn;
-			case "elasticout":
-				return FlxEase.elasticOut;
-			case "elasticinout" | "elastic":
-				return FlxEase.elasticInOut;
-			case "jumpin":
-				return jumpIn;
-			case "jumpout" | "jump":
-				return jumpOut;
-			case "jumpinout":
-				return jumpInOut;
-			case "linear":
-				return FlxEase.linear;
-		}
-		trace("Lua: Cant find ease for \""+name+"\", using linear");
-		return FlxEase.linear;
-	}
-
-	public static function getObjectSimple(name:String, state:MusicBeatState) {
-		return Reflect.getProperty(state, name);
-	}
-
-	public static function getObject(name:String, state:MusicBeatState) {
-		var thing:Dynamic = state;
-		for (step in name.split(".")) {
-			if (step.endsWith("]")) {
-				thing = Reflect.getProperty(thing, step.substring(0, step.indexOf("[") - 1));
-				while (true) {
-					var ind:Dynamic = step.substring(step.indexOf("[") + 1, step.indexOf("]") - 1);
-					thing = thing[ind];
-					if (step.indexOf("]") == step.length) {
-						break;
-					}
-					step = step.substr(step.indexOf("]") + 1);
-				}
-			} else {
-				thing = Reflect.getProperty(thing, step);
-			}
-		}
-		return thing;
-	}
-}
+class ScriptHelperOld extends CoolScriptHelper {}

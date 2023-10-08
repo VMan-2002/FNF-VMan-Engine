@@ -582,12 +582,12 @@ class ManiaInfo {
 		return 560 / (mania.keys + 1);
 	}
 	
-	public static function DoNoteSpecial(spr:StrumNote, num:Int, maniaInfo:SwagMania) {
+	public static function DoNoteSpecial(spr:StrumNote, num:Int, maniaInfo:SwagMania, ?scale:Float = 1) {
 		if (maniaInfo.special) {
 			switch(maniaInfo.specialTag) {
 				case "piano": {
 					final pos:Array<Int> = [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 26, 28];
-					spr.x += 12.5 * (pos[num % maniaInfo.keys] - 14);
+					spr.x += 12.5 * scale * (pos[num % maniaInfo.keys] - 14);
 				}
 			}
 		}

@@ -61,6 +61,7 @@ class StrumLine extends FlxTypedGroup<FlxSprite> {
 			
 			babyArrow.x += ((thisManiaInfo.spacing) * i) * scale;
 			babyArrow.x -= left;
+			ManiaInfo.DoNoteSpecial(babyArrow, i, mania, scale);
 
 			babyArrow.updateHitbox();
 			babyArrow.scrollFactor.set();

@@ -32,9 +32,9 @@ class PlayStateOffsetCalibrate extends PlayState {
 		super.update(elapsed);
 	}*/
 
-	override function goodNoteHit(note:Note) {
+	override function goodNoteHit(note:Note, ?rating:String) {
 		var thisOffset = Conductor.songPositionAudio - note.strumTime;
-		super.goodNoteHit(note);
+		super.goodNoteHit(note, rating);
 		if (hitOffsets.length == 0) {
 			hitOffsetMin = hitOffsetMax = thisOffset; //i think this is a thing
 		} else {

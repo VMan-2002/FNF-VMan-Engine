@@ -4,6 +4,7 @@ import Alphabet.AlphaCharacter;
 import AsyncLoad.AsyncAudioLoad;
 import AsyncLoad.AsyncImageLoad;
 import CoolUtil.MultiStepResult;
+import CoolUtil.ScriptHelper;
 import Note.SwagNoteSkin;
 import Note.SwagNoteType;
 import Note.SwagUIStyle;
@@ -71,6 +72,7 @@ class Scripting {
         "MultiStepResult" => MultiStepResult,
         "AsyncImageLoad" => AsyncImageLoad,
         "AsyncAudioLoad" => AsyncAudioLoad,
+        "ScriptHelper" => ScriptHelper,
 
         //Game state classes
         "PlayState" => PlayState,
@@ -346,7 +348,8 @@ class Scripting {
                     "onSpawnNote",
                     "substatePostInit",
                     "startCountdown",
-                    "endSong"
+                    "endSong",
+                    "replayEvent"
                 ]);
                 trace("Success Load script: "+id);
             }
@@ -497,6 +500,7 @@ class MyFlxColor {
     }
 }
 
+//todo: why doesnt this work
 /*class MySystem {
     public static var freeMemory(get, never):Float;
     public static var totalMemoryNumber(get, never):Float;

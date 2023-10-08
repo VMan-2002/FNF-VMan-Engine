@@ -190,45 +190,34 @@ class SwagUIStyle {
 		uiStyle.oneSound = uiStyleFile.oneSound != null ? uiStyleFile.oneSound : "intro1";
 		uiStyle.goSound = uiStyleFile.goSound != null ? uiStyleFile.goSound : "introGo";
 		uiStyle.countdownScale = uiStyleFile.countdownScale != null ? uiStyleFile.countdownScale : 1.0;
-		if (uiStyleFile.ratings == null) {
+		if (uiStyleFile.ratings == null)
 			uiStyle.ratings = ["sick" => uiStyleFile.sick, "good" => uiStyleFile.good, "bad" => uiStyleFile.bad, "shit" => uiStyleFile.shit, "sick-cool" => (uiStyleFile.sickcool == null ? uiStyleFile.sick : uiStyleFile.sickcool)];
-		}
 		if (uiStyle.ratings.get("sick") == null) {
 			uiStyle.ratings.set("sick", "normal/sick");
-			if (uiStyle.ratings.get("sick-cool") == null) {
+			if (uiStyle.ratings.get("sick-cool") == null)
 				uiStyle.ratings.set("sick-cool", "normal/sick-cool");
-			}
 		} else {
-			if (uiStyle.ratings.get("sick-cool") == null) {
+			if (uiStyle.ratings.get("sick-cool") == null)
 				uiStyle.ratings.set("sick-cool", uiStyle.ratings.get("sick"));
-			}
 		}
 		//i'll probably use this but not now
-		/*if (uiStyle.ratings.get("marvelous") == null) {
-			uiStyle.ratings.set("marvelous", "normal/marvelous");
-			if (uiStyle.ratings.get("marvelous-cool") == null) {
+		if (uiStyle.ratings.get("marvelous") == null) {
+			uiStyle.ratings.set("marvelous", uiStyle.ratings.exists("sick") ? uiStyle.ratings.get("sick") : "normal/marvelous");
+			if (uiStyle.ratings.get("marvelous-cool") == null)
 				uiStyle.ratings.set("marvelous-cool", "normal/marvelous-cool");
-			}
-			if (uiStyle.ratings.get("marvelous-epic") == null) {
+			if (uiStyle.ratings.get("marvelous-epic") == null)
 				uiStyle.ratings.set("marvelous-epic", "normal/marvelous-epic");
-			}
-		} else {
-			if (uiStyle.ratings.get("marvelous-cool") == null) {
-				uiStyle.ratings.set("marvelous-cool", uiStyle.ratings.get("marvelous"));
-			}
-			if (uiStyle.ratings.get("marvelous-epic") == null) {
-				uiStyle.ratings.set("marvelous-epic", uiStyle.ratings.get("marvelous"));
-			}
-		}*/
-		if (uiStyle.ratings.get("good") == null) {
+		}
+		if (uiStyle.ratings.get("marvelous-cool") == null)
+			uiStyle.ratings.set("marvelous-cool", uiStyle.ratings.get("marvelous"));
+		if (uiStyle.ratings.get("marvelous-epic") == null)
+			uiStyle.ratings.set("marvelous-epic", uiStyle.ratings.get("marvelous"));
+		if (uiStyle.ratings.get("good") == null)
 			uiStyle.ratings.set("good", "normal/good");
-		}
-		if (uiStyle.ratings.get("bad") == null) {
+		if (uiStyle.ratings.get("bad") == null)
 			uiStyle.ratings.set("bad", "normal/bad");
-		}
-		if (uiStyle.ratings.get("shit") == null) {
+		if (uiStyle.ratings.get("shit") == null)
 			uiStyle.ratings.set("shit", "normal/shit");
-		}
 		uiStyle.ratingScale = uiStyleFile.ratingScale != null ? uiStyleFile.ratingScale : 0.7;
 		uiStyle.comboScale = uiStyleFile.comboScale != null ? uiStyleFile.comboScale : 0.5;
 		uiStyle.comboSpacing = uiStyleFile.comboSpacing != null ? uiStyleFile.comboSpacing : 43;
@@ -242,11 +231,10 @@ class SwagUIStyle {
 			uiStyle.healthBarSides[2] = uiStyleFile.healthBarSides[uiStyleFile.healthBarSides.length < 3 ? 0 : 2];
 			uiStyle.healthBarSides[3] = uiStyleFile.healthBarSides[uiStyleFile.healthBarSides.length < 4 ? 1 : 3];
 		}
-		if (uiStyleFile.iconEaseStr != null && uiStyleFile.iconEaseStr != "") {
-			uiStyle.iconEaseFunc = LuaScript.ScriptHelper.getEaseFromString(uiStyleFile.iconEaseStr);
-		} else {
+		if (uiStyleFile.iconEaseStr != null && uiStyleFile.iconEaseStr != "")
+			uiStyle.iconEaseFunc = CoolUtil.ScriptHelper.getEaseFromString(uiStyleFile.iconEaseStr);
+		else
 			uiStyle.iconEase = uiStyleFile.iconEase != null ? uiStyleFile.iconEase : 1.0;
-		}
 		uiStyle.font = uiStyleFile.font == null ? "vcr font" : uiStyleFile.font;
 		uiStyle.hudThingPos = uiStyleFile.hudThingPos == null ? new Map<String, Array<Float>>() : uiStyleFile.hudThingPos;
 		uiStyle.gameOverMusic = uiStyleFile.gameOverMusic;
@@ -459,6 +447,9 @@ class Note extends FlxSprite {
 	}*/
 
 	public static var swagWidth:Float = 160 * 0.7;
+
+	public static var noteIdP:Int = 0;
+	public var noteId:Int = noteIdP++;
 
 	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?mania:SwagMania, ?noteType:Int = 0, ?strumLineNum:Int = 0) {
 		super();

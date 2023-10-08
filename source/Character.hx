@@ -82,6 +82,9 @@ class Character extends SpriteVMan
 		return activeArray.indexOf(findSuitableCharacter(name, def));
 	}
 
+	/**
+		Position of the character in Character.activeArray
+	**/
 	public var thisId:Int = 0;
 
 	public var debugMode:Bool = false;
@@ -121,6 +124,7 @@ class Character extends SpriteVMan
 	
 	public var cameraOffset:Array<Float> = [0, 0, 0];
 	public var noteCameraOffset:Map<String, FlxPoint> = new Map<String, FlxPoint>();
+	public var cameraTickUpdate:Bool = false;
 
 	public var hitNoteByPlayer = false;
 	public var idleAlt(default, set):String = "";

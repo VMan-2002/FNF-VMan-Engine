@@ -1,12 +1,11 @@
 package;
 
 import Translation;
-import flixel.FlxSprite;
+import flixel.FlxG;
 import flixel.group.FlxGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
-import haxe.xml.Fast;
 
 typedef SwagRank = {
 	level:Float,
@@ -56,6 +55,7 @@ class HudThing extends FlxGroup {
 	//arbitrary whatevers
 	//public var ratingAcc:Array<Float> = [0.25, 0.5, 0.7, 0.8, 0.85, 0.9, 0.95, 0.975, 0.9825, 0.995, 1];
 	//public var ratingLetters:Array<String> = ["F", "D", "C", "B", "B+", "A-", "A", "A+", "S-", "S", "S+", "P"];
+
 	
 	public function new(x:Float, y:Float, list:Array<String>, ?vertical:Bool = false) {
 		super();
@@ -209,7 +209,7 @@ class HudThing extends FlxGroup {
 					text += Translation.getTranslation("hud_maxcombo", "playstate", [Std.string(PlayState.instance.maxCombo)]);*/
 				case "engine":
 					//this one should always show on the hud thing in the corner
-					text += Translation.getTranslation(Options.instance.botplay ? "hud_engine botplay" : "hud_engine", "playstate");
+					text += Translation.getTranslation(Std.isOfType(FlxG.state, PlayStateReplay) ? "hud_engine replay" : (Options.instance.botplay ? "hud_engine botplay" : "hud_engine"), "playstate");
 				//For input offset calibrate ONLY (these won't work in normal PlayState right now. //todo: fix this)
 				case "offset_min":
 					text += "MinOffset: "+offsetMilliseconds(getPlayState().hitOffsetMin);

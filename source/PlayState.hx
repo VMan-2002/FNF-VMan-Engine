@@ -5,6 +5,7 @@ import HudThing.HudThingGroup;
 import ManiaInfo;
 import Note.SwagNoteType;
 import Note.SwagUIStyle;
+import PlayStateReplay.ReplayData;
 import RatingPopUp.RatingPopUpGroup;
 import Section.SwagSection;
 import Song.SwagSong;
@@ -91,8 +92,7 @@ typedef BobBleed = {
 	maxHealth:Float
 }
 
-class PlayState extends MusicBeatState
-{
+class PlayState extends MusicBeatState {
 	public static var instance:PlayState;
 	public static var modName:String = "";
 	public var allowGameplayChanges:Bool;
@@ -102,7 +102,7 @@ class PlayState extends MusicBeatState
 	public static var SONG:SwagSong;
 	public static var curStage:String = '';
 	public var curSong:String = "";
-	public var songLength:Float = 0;
+	public var songLength:Float = -1;
 	public var vocals:FlxSound;
 
 	public var voicesName:String = "Voices";
@@ -220,14 +220,18 @@ class PlayState extends MusicBeatState
 	public var songScore:Int = 0;
 	public var possibleMoreScore:Int = 0;
 	
+	public var marvelous:Int = 0;
 	public var sicks:Int = 0;
 	public var goods:Int = 0;
 	public var bads:Int = 0;
 	public var shits:Int = 0;
 	public var songFC:Int = 0; //todo: Not yet used in Highscore.hx
+	public var songMFC:Bool = true;
 	public static final fcTypes:Array<String> = ["sfc", "gfc", "fc", "sdcb", "clear"];
 	public var overTaps:Int = 0;
 	public var overStrums:Int = 0;
+
+	public var replay:ReplayData;
 
 	////::..
 	//Background Stuff
@@ -323,9 +327,10 @@ class PlayState extends MusicBeatState
 	//part of this will be handled in MusicBeatState
 	//i think i have started
 
-	override public function create() {	
+	override public function create() {
 		Options.instance = Options.saved.copy();
 		Note.cacheString = "";
+		Note.noteIdP = 0;
 		ErrorReportSubstate.initReport();
 
 		instance = this;
@@ -360,6 +365,20 @@ class PlayState extends MusicBeatState
 				switch(Std.string(thing[0])) {
 					case "loopPoint":
 						loopingSong = true;
+					case "startingHealth":
+						health = Std.parseFloat(thing[1]);
+					case "maxHealth":
+						maxHealth = Std.parseFloat(thing[1]);
+					case "songLength":
+						songLength = Std.parseFloat(thing[1]);
+					case "camFollowSpeed":
+						camFollowSpeed = Std.parseFloat(thing[1]);
+					case "camZoomSpeed":
+						camZoomSpeed = Std.parseFloat(thing[1]);
+					case "hudZoomSpeed":
+						hudZoomSpeed = Std.parseFloat(thing[1]);
+					case "zoomBeats":
+						zoomBeats = Std.parseInt(thing[1]);
 				}
 			}
 			trace("Added "+SONG.attributes.length+" song attributes");
@@ -367,9 +386,8 @@ class PlayState extends MusicBeatState
 
 		super.create();
 
-		if (SONG.actions == null) {
+		if (SONG.actions == null)
 			SONG.actions = new Array<String>();
-		}
 		
 		curManiaInfo = ManiaInfo.GetManiaInfo(SONG.maniaStr);
 		if (isStoryMode)
@@ -390,6 +408,10 @@ class PlayState extends MusicBeatState
 				curManiaInfo = newMania;
 				isMiddlescroll = true;
 			}
+		}
+
+		if (Std.isOfType(this, PlayStateReplay)) {
+			Options.instance.botplay = false;
 		}
 
 		mania_preventReset = curManiaInfo.control_any.contains(Options.uiControls["reset"][0]) || curManiaInfo.control_any.contains(Options.uiControls["reset"][1]);
@@ -488,8 +510,13 @@ class PlayState extends MusicBeatState
 		var customStageCharPos:Array<Array<Float>> = null;
 
 		//Script inits
+		var scriptList = ['data/${sn}/script'];
+		if (songAttributes.exists("moreScripts"))
+			scriptList = scriptList.concat(songAttributes.get("moreScripts").split(","));
 		Scripting.initScriptsByContext("PlayState");
-		new Scripting('data/${sn}/script', modName, "PlayStateSong");
+		for (thing in scriptList)
+			new Scripting(thing, modName, "PlayStateSong");
+		Scripting.runOnScripts("statePreInit", ["PlayState", curSong, this]);
 
 		switch (curStage) {
 		    case 'philly': {
@@ -1302,16 +1329,18 @@ class PlayState extends MusicBeatState
 		if (loopingSong)
 			FlxG.sound.music.loopTime = Std.parseFloat(songAttributes.get("loopPoint"));
 
-		songLength = FlxG.sound.music.length;
+		var newSongLength = FlxG.sound.music.length;
 		// Song duration in a float, useful for the time left feature
 		var i = 0;
 		while (FileSystem.exists(Paths.getSongPathThing(PlayState.SONG.song, 'part{i}/${instName}'))) {
 			//this is probably not good but it's accurate i guess
 			var aud = new FlxSound().loadEmbedded(Paths.getSongPathThing(PlayState.SONG.song, 'part{i}/${instName}'));
-			songLength += aud.length;
+			newSongLength += aud.length;
 			aud.destroy();
 			i++;
 		}
+		if (songLength == -1)
+			songLength = newSongLength;
 		
 		#if desktop
 		// Updating Discord Rich Presence (with Time Left)
@@ -1798,7 +1827,7 @@ class PlayState extends MusicBeatState
 					newFocus = Character.activeArray[focusNum - 1];
 				}
 
-				var yeah = focusCharacter != newFocus;
+				var yeah = focusCharacter != newFocus || newFocus.cameraTickUpdate;
 				camFollowSetOnCharacter(newFocus, yeah, yeah, true);
 				focusCharacter = newFocus;
 			}
@@ -2280,7 +2309,7 @@ class PlayState extends MusicBeatState
 
 		var score:Int = 350;
 
-		var daRating:String = "sick";
+		var daRating:String = "marvelous";
 
 		if (noteDiff > Conductor.safeZoneOffset * 0.9) {
 			daRating = 'shit';
@@ -2294,13 +2323,20 @@ class PlayState extends MusicBeatState
 			daRating = 'good';
 			score = 200;
 			goods += 1;
+		} else if (noteDiff > Conductor.safeZoneOffset * 0.08) {
+			daRating = 'sick';
+			score = 350;
+			sicks += 1;
 		} else {
 			sicks += 1;
+			marvelous += 1;
 			//todo: sometimes notesplashes are the wrong color
 			//todo: sometimes notesplashes crash.
 			//grpNoteSplashes.recycle(NoteSplash, NoteSplash.new).playNoteSplash(playerStrums.strumNotes[daNote.strumNoteNum], daNote);
 		}
-		if (daRating != "sick" && songFC < 2) {
+		if (daRating != "marvelous")
+			songMFC = false;
+		if (!songMFC && daRating != "sick" && songFC < 2) {
 			if (daRating == "good") {
 				if (songFC == 0)
 					songFC = 1;
@@ -2321,7 +2357,7 @@ class PlayState extends MusicBeatState
 			pixelShitPart2 = '-pixel';
 		}*/
 
-		var daRatingImg = songFC == 0 ? 'sick-cool' : daRating;
+		var daRatingImg = songMFC ? "marvelous-epic" : (songFC == 0 ? daRating + '-cool' : daRating);
 
 		var comboSpr = ratingsGroup.comboThingAdd(coolText.x, 0, Paths.image(currentUIStyle.combo), currentUIStyle.ratingScale, currentUIStyle.antialias);
 		comboSpr.screenCenter(Y);
@@ -2344,26 +2380,6 @@ class PlayState extends MusicBeatState
 				startDelay: Conductor.crochet * 0.001
 			});*/
 		}
-
-		//if (validUIStyle) {
-		//comboSpr.scale.x = currentUIStyle.ratingScale;
-		//comboSpr.scale.y = currentUIStyle.ratingScale;
-		//comboSpr.antialiasing = currentUIStyle.antialias;
-		//coolText.antialiasing = currentUIStyle.antialias;
-		/*} else {
-			if (!curStage.startsWith('school')) {
-				rating.setGraphicSize(Std.int(rating.width * 0.7));
-				rating.antialiasing = true;
-				comboSpr.setGraphicSize(Std.int(comboSpr.width * 0.7));
-				comboSpr.antialiasing = true;
-			} else {
-				rating.setGraphicSize(Std.int(rating.width * daPixelZoom * 0.7));
-				comboSpr.setGraphicSize(Std.int(comboSpr.width * daPixelZoom * 0.7));
-			}
-		}*/
-
-		//comboSpr.updateHitbox();
-		//rating.updateHitbox();
 
 		if (combo >= 10 || combo == 0 || Options.instance.botplay) {
 			var seperatedScore:Array<String> = Std.string(combo).split("");
@@ -2421,8 +2437,6 @@ class PlayState extends MusicBeatState
 			},
 			startDelay: Conductor.crochet * 0.001
 		});*/
-
-		//curSection += 1;
 		
 		/*if (ratingsGroup.length > 60) {
 			var clears:Array<FlxSprite> = ratingsGroup.members.splice(0, 30 - ratingsGroup.length);
@@ -2831,15 +2845,12 @@ class PlayState extends MusicBeatState
 		return false;
 	}
 
-	public function goodNoteHit(note:Note):Void {
+	public function goodNoteHit(note:Note, ?rating:String = ""):Void {
 		if (!note.wasGoodHit) {
 			var noteTypeData = note.getNoteTypeData();
-			var rating = "sick";
 			if (!note.isSustainNote) {
 				if (noteTypeData.shouldJudge)
 					rating = popUpScore(note);
-				else
-					rating = "sick";
 				if (!noteTypeData.badHit) {
 					combo += 1;
 					songHits += 1;
@@ -2866,7 +2877,7 @@ class PlayState extends MusicBeatState
 				setHealth(health + noteTypeData.healthHold, newMax);
 			} else {
 				setHealth(health + switch(rating) {
-					case "sick":
+					case "sick" | "":
 						noteTypeData.healthHitSick;
 					case "good":
 						noteTypeData.healthHitGood;
@@ -2889,7 +2900,7 @@ class PlayState extends MusicBeatState
 			note.wasGoodHit = true;
 			vocals.volume = 1;
 
-			Scripting.runOnScripts("goodNoteHit", [note]);
+			Scripting.runOnScripts("goodNoteHit", [note, rating]);
 
 			if (!note.isSustainNote) {
 				note.kill();
@@ -3372,6 +3383,21 @@ class PlayState extends MusicBeatState
 			maxHealth: maxHealth
 		});
 		return true;
+	}
+
+	public function addReplayEvent(name:String, ?num:Int = 0) {
+		if (!Options.recordReplay)
+			return;
+		var evtn = replay.eventNames.indexOf(name);
+		if (evtn == -1) {
+			replay.eventNames.push(name);
+			evtn = replay.eventNames.length - 1;
+		}
+		replay.events.push({
+			time: Conductor.songPosition,
+			num: num,
+			evt: evtn
+		});
 	}
 
 	//Really long songs
