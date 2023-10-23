@@ -1,2 +1,2 @@
-modsActive.txt
+mods/modList.txt
 assets/data/charting_snapMults.txt

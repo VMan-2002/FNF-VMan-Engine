@@ -12,7 +12,6 @@ import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxStrip;
-import flixel.addons.display.FlxBackdrop;
 import flixel.addons.effects.FlxSkewedSprite;
 import flixel.addons.effects.chainable.FlxEffectSprite;
 import flixel.addons.transition.FlxTransitionableState;
@@ -40,6 +39,7 @@ import render3d.Render3D.VeObject3D;
 import render3d.Render3D.VeScene3D;
 import sys.FileSystem;
 import sys.io.File;
+import wackierstuff.FlxBackdropFix;
 
 using StringTools;
 
@@ -73,6 +73,9 @@ class Scripting {
         "AsyncImageLoad" => AsyncImageLoad,
         "AsyncAudioLoad" => AsyncAudioLoad,
         "ScriptHelper" => ScriptHelper,
+        "Note" => Note,
+        "ChartingNote" => ChartingNote,
+        "StrumLine" => StrumLine,
 
         //Game state classes
         "PlayState" => PlayState,
@@ -109,7 +112,7 @@ class Scripting {
         "FlxText" => FlxText,
         "FlxTextBorderStyle" => FlxTextBorderStyle,
         "FlxBar" => FlxBar,
-        "FlxBackdrop" => FlxBackdrop,
+        "FlxBackdrop" => FlxBackdropFix,
         "FlxTilemap" => FlxTilemap,
         "FlxSpriteGroup" => FlxSpriteGroup,
         "FlxCollision" => FlxCollision,
@@ -151,8 +154,8 @@ class Scripting {
     /**
         Get a script by id, loading it if it doesn't already exist
     **/
-    public static function getScript(name:String, modName:String, ?context:String = "") {
-        return namedScripts.exists('${modName}:${name}') ? namedScripts['${modName}:${name}'] : new Scripting(name, modName, context);
+    public static function getScript(name:String, modName:String, ?context:String = "", ?loadError:Null<Bool->Void>) {
+        return namedScripts.exists('${modName}:${name}') ? namedScripts['${modName}:${name}'] : new Scripting(name, modName, context, loadError);
     }
 
     /**
@@ -213,9 +216,8 @@ class Scripting {
         Run a function on all loaded scripts
     **/
     public static function runOnScripts(funcName:String, args:Array<Dynamic>) {
-        for (script in scripts) {
+        for (script in scripts)
             script.runValidFunction(funcName, args);
-        }
     }
 
     /**
@@ -234,9 +236,8 @@ class Scripting {
     public static function runModchartUpdateOnScripts(name:String) {
         if (!Options.instance.modchartEnabled)
             return;
-        for (script in scripts) {
+        for (script in scripts)
             script.runValidFunction(name, [FlxG.elapsed]);
-        }
     }
 
     /**
@@ -255,9 +256,8 @@ class Scripting {
     public static function nameMapToArray<T>(map:Map<String, T>, ?result:Array<T> = null) {
         if (result == null)
             result = new Array<T>();
-        for (thing in map) {
+        for (thing in map)
             result.push(thing);
-        }
         return result;
     }
 
@@ -282,9 +282,8 @@ class Scripting {
         Load scripts by a context
     **/
     public static function initScriptsByContext(context:String) {
-        for (mod in ModLoad.enabledMods) {
+        for (mod in ModLoad.enabledMods)
             new Scripting("scripts/context/"+context, mod, context);
-        }
         trace("Loaded scripts for context "+context+", now "+scripts.length+" scripts are loaded");
     }
 
@@ -349,7 +348,12 @@ class Scripting {
                     "substatePostInit",
                     "startCountdown",
                     "endSong",
-                    "replayEvent"
+                    "replayEvent",
+                    "dialogueCloseAnim",
+                    "dialogueStart",
+                    "dialogueLine",
+                    "dialogueUpdate",
+                    "dialogueBoxStyle"
                 ]);
                 trace("Success Load script: "+id);
             }
@@ -360,7 +364,7 @@ class Scripting {
     }
 
     /**
-        Clears the script.
+        Remove the script from memory
     **/
     public function killScript() {
         runValidFunction("destroy", new Array<Dynamic>());
@@ -374,9 +378,8 @@ class Scripting {
     public function checkValidFuncs(funcNames:Array<String>) {
         validFuncs = new Map<String, Bool>();
         for (n in funcNames) {
-            if (Reflect.isFunction(interp.variables.get(n))) {
+            if (Reflect.isFunction(interp.variables.get(n)))
                 validFuncs.set(n, true);
-            }
         }
         return validFuncs;
     }
@@ -451,6 +454,41 @@ class Scripting {
         }
         return false;
     }
+
+    public static function setBlendMode(obj:FlxSprite, blend:String) {
+        obj.blend = blend.toLowerCase();
+    }
+
+    public static function emptyDynamicMap()
+        return new Map<Dynamic, Dynamic>();
+
+    public static function emptyStringMap()
+        return new Map<String, Dynamic>();
+
+    //interp variables map stuff
+
+    @:arrayAccess
+    public function get(name:String)
+        return interp.variables.get(name);
+
+    @:arrayAccess
+    public function set(name:String, value:Dynamic)
+        return interp.variables.set(name, value);
+
+    public function exists(name:String)
+        return interp.variables.exists(name);
+
+    public function iterator()
+        return interp.variables.iterator();
+
+    public function keyValueIterator()
+        return interp.variables.keyValueIterator();
+
+    public function keys()
+        return interp.variables.keys();
+
+    public function remove(name:String)
+        return interp.variables.remove(name);
 }
 
 
@@ -461,7 +499,7 @@ class MyFlxColor {
         "BLACK" => FlxColor.BLACK,
         "BLUE" => FlxColor.BLUE,
         "BROWN" => FlxColor.BROWN,
-        "CYAN" => FlxColor.BROWN,
+        "CYAN" => FlxColor.CYAN,
         "GRAY" => FlxColor.GRAY,
         "GREEN" => FlxColor.GREEN,
         "LIME" => FlxColor.LIME,
@@ -474,6 +512,21 @@ class MyFlxColor {
         "WHITE" => FlxColor.WHITE,
         "YELLOW" => FlxColor.YELLOW
     ];
+    public static var BLACK = FlxColor.BLACK;
+    public static var BLUE = FlxColor.BLUE;
+    public static var BROWN = FlxColor.BROWN;
+    public static var CYAN = FlxColor.CYAN;
+    public static var GREEN = FlxColor.GREEN;
+    public static var LIME = FlxColor.LIME;
+    public static var MAGENTA = FlxColor.MAGENTA;
+    public static var ORANGE = FlxColor.ORANGE;
+    public static var PINK = FlxColor.PINK;
+    public static var PURPLE = FlxColor.PURPLE;
+    public static var RED = FlxColor.RED;
+    public static var TRANSPARENT = FlxColor.TRANSPARENT;
+    public static var WHITE = FlxColor.WHITE;
+    public static var YELLOW = FlxColor.YELLOW;
+
     public static function fromInt(n) {
         return FlxColor.fromInt(n);
     }

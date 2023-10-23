@@ -43,6 +43,7 @@ class OptionsSubState extends OptionsSubStateBasic
 			#if debug
 			"Save Data Management",
 			#end
+			"Enable Notesplash",
 			"Customize HUD",
 			"Gameplay Changes",
 			"Exit Without Saving",
@@ -128,6 +129,8 @@ class OptionsSubState extends OptionsSubStateBasic
 				return ["Look at your save data, and if necessary, kill it to death."];
 			case "customize hud":
 				return ["Modify hud meters"];
+			case "enable notesplash":
+				return ["Enable a splashy effect when you hit \"Sick\" rating."];
 		}
 		return ["Unknown option.", name, 'unknownOption'];
 	}
@@ -243,6 +246,8 @@ class OptionsSubState extends OptionsSubStateBasic
 			#end
 			case "customize hud":
 				FlxG.switchState(new HudThingMenu());
+			case "enable notesplash":
+				Options.saved.noteSplash = !Options.saved.noteSplash;
 			default:
 				trace("Tried to accept unknown option: " + name);
 		}

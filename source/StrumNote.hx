@@ -72,22 +72,6 @@ class StrumNote extends FlxSprite
 		var myStrumArrow = ManiaInfo.StrumlineArrow[myArrow];
 		curStyle = style;
 		switch(style) {
-			/*case "pixel":
-				loadGraphic(Paths.image('pixelUI/arrows-pixels'), true, 17, 17);
-				//animation.add('green', [6]);
-				//animation.add('red', [7]);
-				//animation.add('blue', [5]);
-				//animation.add('purplel', [4]); //what does this even do, if anything
-
-				scale.x = PlayState.daPixelZoom * 1.5;
-				antialiasing = false;
-				
-				var i = noteData; //It dont work properly in >4k! Lol
-				var wide = 4;
-				animation.add('static', [i]);
-				animation.add('pressed', [wide+i, (wide * 2)+i], 12, false);
-				animation.add('confirm', [(wide * 3)+i, (wide * 4)+i], 24, false);*/
-			
 			case "pixel":
 				frames = Paths.getSparrowAtlas('pixelUI/NOTE_assets-pixel');
 

@@ -1,7 +1,6 @@
 package;
 
 import ThingThatSucks.ErrorReportSubstate;
-import WiggleEffect.WiggleEffectType;
 import flixel.FlxSprite;
 
 using StringTools;
@@ -63,7 +62,11 @@ class SpriteVMan extends FlxSprite {
 	}
 
 	public inline function animStartsWith(start:String) {
-		return animation.name.startsWith(start);
+		return animation.curAnim.name.startsWith(start);
+	}
+
+	public inline function animEndsWith(end:String) {
+		return animation.curAnim.name.endsWith(end);
 	}
 
 	public function copyAnimation(from:String, to:String) {

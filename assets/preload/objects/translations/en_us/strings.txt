@@ -209,6 +209,7 @@ playstate_fc_gfc::GFC
 playstate_fc_fc::FC
 playstate_fc_sdcb::SDCB
 playstate_fc_clear::Clear
+playstate_fc_mfc::MFC
 playstate_hud_score::Score:#0
 playstate_hud_misses::Misses:#0
 playstate_hud_accrating::AccRating:#0%

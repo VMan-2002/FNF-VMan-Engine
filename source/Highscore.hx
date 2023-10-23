@@ -47,38 +47,34 @@ class Highscore
 	}
 	
 	public static function getPlayStateFC(the:PlayState) {
-		if (the.songMisses >= 10) {
+		if (the.songMisses >= 10)
 			return "Clear";
-		}
-		if (the.songMisses > 0) {
+		if (the.songMFC)
+			return "MFC";
+		if (the.songMisses > 0)
 			return "SDCB";
-		}
-		if (the.bads > 0 || the.shits > 0) {
+		if (the.bads > 0 || the.shits > 0)
 			return "FC";
-		}
-		if (the.goods > 0) {
+		if (the.goods > 0)
 			return "GFC";
-		}
 		return "SFC";
 	}
 	
 	public static function getPlayStateFCStore(the:PlayState) {
-		if (the.songMisses > 0) {
+		if (the.songMisses > 0)
 			return -the.songMisses;
-		}
-		if (the.bads > 0 || the.shits > 0) {
+		if (the.songMFC)
+			return 3;
+		if (the.bads > 0 || the.shits > 0)
 			return 0;
-		}
-		if (the.goods > 0) {
+		if (the.goods > 0)
 			return 1;
-		}
 		return 2;
 	}
 	
 	public static function formatFC(num:Int) {
-		if (num < 0) {
+		if (num < 0)
 			return '${num <= -10 ? "Clear" : "SDCB"} (${-num})';
-		}
 		switch(num) {
 			case 0:
 				return "FC";
@@ -86,6 +82,8 @@ class Highscore
 				return "GFC";
 			case 2:
 				return "SFC";
+			case 3:
+				return "MFC";
 		}
 		return "???";
 	}
@@ -125,53 +123,45 @@ class Highscore
 	public static function getModeString(?translated:Bool = false, ?prefixed:Bool = false):String {
 		var prefix = prefixed ? (translated ? Translation.getTranslation("prefix", "modifier", null, "^") : "^") : "";
 		var result:Array<String> = new Array<String>();
-		if (Options.instance.playstate_bothside) {
+		if (Options.instance.playstate_bothside)
 			result.push("Both");
-		} else if (Options.instance.playstate_opponentmode) {
+		else if (Options.instance.playstate_opponentmode)
 			result.push("Opponent");
-		}
-		if (Options.instance.playstate_endless && !PlayState.isStoryMode) {
+		if (Options.instance.playstate_endless && !PlayState.isStoryMode)
 			result.push("Endless");
-		}
-		if (Options.instance.playstate_guitar) {
+		if (Options.instance.playstate_guitar)
 			result.push("Guitar");
-		}
-		if (Options.instance.playstate_confusion) {
+		if (Options.instance.playstate_confusion)
 			result.push("Confusion");
-		}
-		if (result.length == 0) {
+		if (Options.instance.playstate_inorder)
+			result.push("Ordered");
+		if (result.length == 0)
 			return "";
-		}
-		if (translated) {
+		if (translated)
 			return prefix + result.map(function(a:String) { return Translation.getTranslation(a, "modifier"); }).join(Translation.getTranslation("separator", "modifer", null, ""));
-		}
 		return prefix + result.join("");
 	}
 
 	/**
 	 * YOU SHOULD FORMAT SONG WITH formatSong() BEFORE TOSSING IN SONG VARIABLE... NOW!!
 	 */
-	static function setScore(song:String, score:Int):Bool
-	{
+	static function setScore(song:String, score:Int):Bool {
 		// Reminder that I don't need to format this song, it should come formatted!
 		var formatted = formatSong(song);
 		trace('setting score for ${formatted}');
-		if (songScores.exists(formatted) && songScores.get(formatted) > score) {
+		if (songScores.exists(formatted) && songScores.get(formatted) > score)
 			return false;
-		}
 		songScores.set(formatted, score);
 		FlxG.save.data.songScores = songScores;
 		FlxG.save.flush();
 		return true;
 	}
 	
-	static function setFC(song:String, score:Int):Bool
-	{
+	static function setFC(song:String, score:Int):Bool {
 		// Reminder that I don't need to format this song, it should come formatted!
 		var formatted = formatSong(song);
-		if (songScoreFC.exists(formatted) && songScoreFC.get(formatted) > score) {
+		if (songScoreFC.exists(formatted) && songScoreFC.get(formatted) > score)
 			return false;
-		}
 		songScoreFC.set(formatted, score);
 		FlxG.save.data.songScoreFC = songScoreFC;
 		FlxG.save.flush();
@@ -181,9 +171,8 @@ class Highscore
 	static function setAcc(song:String, score:Float):Bool {
 		// Reminder that I don't need to format this song, it should come formatted!
 		var formatted = formatSong(song);
-		if (songScoreAcc.exists(formatted) && songScoreAcc.get(formatted) > score) {
+		if (songScoreAcc.exists(formatted) && songScoreAcc.get(formatted) > score)
 			return false;
-		}
 		songScoreAcc.set(formatted, score);
 		FlxG.save.data.songScoreAcc = songScoreAcc;
 		FlxG.save.flush();
@@ -199,8 +188,7 @@ class Highscore
 		return daSong + CoolUtil.difficultyPostfixString(diff);
 	}
 
-	public static function getScore(song:String, diff:Int, ?mode:Bool = false):Int
-	{
+	public static function getScore(song:String, diff:Int, ?mode:Bool = false):Int {
 		var daSong = formatSong(song, diff, mode);
 		trace('getting score for ${daSong}');
 		if (!songScores.exists(daSong))
@@ -209,8 +197,7 @@ class Highscore
 		return songScores.get(daSong);
 	}
 
-	public static function getFCFormatted(song:String, diff:Int, ?mode:Bool = false):String
-	{
+	public static function getFCFormatted(song:String, diff:Int, ?mode:Bool = false):String {
 		var daSong = formatSong(song, diff, mode);
 		if (!songScoreFC.exists(daSong))
 			return "???";
@@ -218,8 +205,7 @@ class Highscore
 		return formatFC(songScoreFC.get(daSong));
 	}
 
-	public static function getAcc(song:String, diff:Int, ?mode:Bool = false):Float
-	{
+	public static function getAcc(song:String, diff:Int, ?mode:Bool = false):Float {
 		var daSong = formatSong(song, diff, mode);
 		if (!songScores.exists(daSong))
 			return 0;
@@ -227,8 +213,7 @@ class Highscore
 		return songScoreAcc.get(daSong);
 	}
 
-	public static function getWeekScore(week:String, diff:Int, ?mode:Bool = false):Int
-	{
+	public static function getWeekScore(week:String, diff:Int, ?mode:Bool = false):Int {
 		var daWeek = modPrefix(formatSong(week, diff, mode));
 		if (!weekScores.exists(daWeek))
 			return 0;
@@ -236,16 +221,12 @@ class Highscore
 		return weekScores.get(daWeek);
 	}
 
-	public static function load():Void
-	{
-		if (FlxG.save.data.songScores != null) {
+	public static function load():Void {
+		if (FlxG.save.data.songScores != null)
 			songScores = FlxG.save.data.songScores;
-		}
-		if (FlxG.save.data.songScoreAcc != null) {
+		if (FlxG.save.data.songScoreAcc != null)
 			songScoreAcc = FlxG.save.data.songScoreAcc;
-		}
-		if (FlxG.save.data.songScoreFC != null) {
+		if (FlxG.save.data.songScoreFC != null)
 			songScoreFC = FlxG.save.data.songScoreFC;
-		}
 	}
 }

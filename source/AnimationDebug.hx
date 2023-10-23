@@ -20,16 +20,14 @@ using StringTools;
 /**
 	*DEBUG MODE
  */
-class AnimationDebug extends MusicBeatState
-{
+class AnimationDebug extends MusicBeatState {
 	var char:Character;
 	var charGhost:Character;
 	var textAnim:FlxText;
 	var dumbTexts:FlxTypedGroup<FlxText>;
 	var animList:Array<String> = [];
 	var curAnim:Int = 0;
-	var isDad:Bool = true;
-	var daAnim:String = 'spooky';
+	var daAnim:String;
 	var camFollow:FlxObject;
 
 	var colorBar:FlxSprite;
@@ -40,8 +38,7 @@ class AnimationDebug extends MusicBeatState
 	//why does this error?
 	//var playHint:FlxText = new FlxText(8, 8, 0, 'Use your 4K binds: ${Options.controls.get("4k").map(function(a) {return ControlsSubState.ConvertKey(a[0], true)}).join(",")} to play sing anims\nHold Shift to play miss anims instead');
 
-	public function new(daAnim:String = 'spooky')
-	{
+	public function new(daAnim:String = 'bf') {
 		super();
 		this.daAnim = daAnim;
 	}
@@ -63,7 +60,9 @@ class AnimationDebug extends MusicBeatState
 		var xPositionThing = FlxG.width / 2;
 		xPositionThing -= 150;
 		
-		var floorLine = new FlxSprite(xPositionThing + 50, 725).makeGraphic(250, 10, FlxColor.BLUE);
+		var floorLine = new FlxSprite(xPositionThing + 50, 725).makeGraphic(10, 10);
+		floorLine.color = FlxColor.BLUE;
+		floorLine.scale.x = 25;
 		floorLine.alpha = 0.5;
 		add(floorLine);
 		
@@ -72,17 +71,16 @@ class AnimationDebug extends MusicBeatState
 		add(originThing);
 
 		//
-		var dad = new Character(xPositionThing, 0, daAnim);
-		dad.debugMode = true;
-		add(dad);
-
-		char = dad;
+		char = new Character(xPositionThing, 0, daAnim);
+		char.debugMode = true;
+		add(char);
 		//
 
 		if (char.isGirlfriend) {
 			floorLine.x += 107;
 			floorLine.y -= 72;
-			floorLine.makeGraphic(386, 10, FlxColor.RED);
+			floorLine.color = FlxColor.RED;
+			floorLine.scale.x = 38.6;
 		}
 
 		charGhost = new Character(xPositionThing, 0, daAnim);
@@ -225,6 +223,7 @@ class AnimationDebug extends MusicBeatState
 			"Z: Set ghost to current anim",
 			"X: Remove ghost",
 			"C: Toggle flip",
+			//Options.getUIControlName("gtstrum") + ": Toggle anim gameplay test",
 			Options.getUIControlName("back") + ": Exit"
 		].join("\n"), 15);
 		text.alignment = FlxTextAlign.RIGHT;
@@ -244,6 +243,7 @@ class AnimationDebug extends MusicBeatState
 		healthIcon.x = colorBar.x + colorBar.width + 26 - 150;
 		add(healthIcon);
 
+		updateAnimNameText();
 		super.create();
 	}
 
@@ -279,8 +279,11 @@ class AnimationDebug extends MusicBeatState
 		genBoyOffsets();
 	}
 
-	override function update(elapsed:Float) {
+	public function updateAnimNameText() {
 		textAnim.text = char.animation.curAnim.name;
+	}
+
+	override function update(elapsed:Float) {
 		if (nameTxtBox.hasFocus)
 			return super.update(elapsed);
 		
@@ -341,12 +344,13 @@ class AnimationDebug extends MusicBeatState
 
 		if (FlxG.keys.justPressed.C) {
 			char.flipX = !char.flipX;
-			char.playAnim(char.animation.name, true);
+			char.playAnim(char.animation.curAnim.name, true);
 		}
 
 		if (FlxG.keys.justPressed.S || FlxG.keys.justPressed.W || FlxG.keys.justPressed.SPACE) {
 			char.playAnim(animList[curAnim], true);
 
+			updateAnimNameText();
 			updateTexts();
 		}
 		var upP = FlxG.keys.anyJustPressed([UP]);

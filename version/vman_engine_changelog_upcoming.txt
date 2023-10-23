@@ -1,5 +1,8 @@
 I didn't actually update the doc i forgor im sorry,
 
+Added Marvelous rating (technically.)
 Added "badHit" and "shouldJudge" values to note types
-Adding away3d
+Started adding away3d (i don't think it's ready for use tho.)
 Some new scripting callbacks
+Work on the Dialogue system
+Fixed positioning of notes in piano mania

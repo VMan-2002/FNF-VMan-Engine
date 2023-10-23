@@ -1,12 +1,5 @@
 package;
 
-import Translation;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
-
 class PlayStateChangesSubState extends OptionsSubStateBasic
 {
 	override function optionList() {
@@ -17,6 +10,9 @@ class PlayStateChangesSubState extends OptionsSubStateBasic
 			'Endless Mode',
 			'Guitar Mode',
 			'Confusion',
+			#if debug
+			'Notes In Order',
+			#end
 			'Clear Gameplay Changes'
 		];
 	}
@@ -33,8 +29,10 @@ class PlayStateChangesSubState extends OptionsSubStateBasic
 				return ["Guitar Hero, basically. Hold the arrow key down and use Guitar Strum keybind to hit notes.", Options.saved.playstate_guitar ? "Enabled" : "Disabled"];
 			case "confusion":
 				return ["Notes may sometimes appear visually in wrong lanes.", Options.saved.playstate_confusion ? "Enabled" : "Disabled"];
+			case "notes in order":
+				return ["Notes must be hit strictly in order.", Options.saved.playstate_inorder ? "Enabled" : "Disabled"];
 			case "clear gameplay changes":
-				var any = [Options.saved.playstate_bothside, Options.saved.playstate_opponentmode, Options.saved.playstate_endless, Options.saved.playstate_guitar, Options.saved.playstate_confusion].contains(true);
+				var any = [Options.saved.playstate_bothside, Options.saved.playstate_opponentmode, Options.saved.playstate_endless, Options.saved.playstate_guitar, Options.saved.playstate_confusion, Options.saved.playstate_inorder].contains(true);
 				return ["Disable all currently enabled changes.", any ? "Not cleared" : "Cleared"];
 		}
 		return ["Unknown option.", name, 'unknownOption'];
@@ -60,12 +58,15 @@ class PlayStateChangesSubState extends OptionsSubStateBasic
 				Options.saved.playstate_guitar = !Options.saved.playstate_guitar;
 			case "confusion":
 				Options.saved.playstate_confusion = !Options.saved.playstate_confusion;
+			case "notes in order":
+				Options.saved.playstate_inorder = !Options.saved.playstate_inorder;
 			case "clear gameplay changes":
 				Options.saved.playstate_bothside = false;
 				Options.saved.playstate_opponentmode = false;
 				Options.saved.playstate_endless = false;
 				Options.saved.playstate_guitar = false;
 				Options.saved.playstate_confusion = false;
+				Options.saved.playstate_inorder = false;
 			default:
 				trace("Tried to accept unknown option: " + name);
 		}

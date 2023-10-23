@@ -1,0 +1,23 @@
+{
+	"assetver": -1,
+	"assets": [],
+	"targets": [
+		["version/update/manifest/", "manifest/"],
+		["assets/preload/", "assets/"],
+		["assets/shared/"],
+		["example_mods/friday_night_funkin/", "mods/friday_night_funkin/"],
+		["example_mods/", "mods/"],
+		["assets/songs/"],
+		["assets/week1/"],
+		["assets/week2/"],
+		["assets/week3/"],
+		["assets/week4/"],
+		["assets/week5/"],
+		["assets/week6/"],
+	],
+	"addition": [
+		"funkin.exe",
+		"vmanengineupdater.exe",
+		"lime.ndll"
+	]
+}

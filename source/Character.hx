@@ -159,7 +159,6 @@ class Character extends SpriteVMan
 		
 		myMod = modName;
 
-		var tex:FlxAtlasFrames;
 		antialiasing = true;
 		flipX = false;
 
@@ -168,6 +167,7 @@ class Character extends SpriteVMan
 		noteCameraOffset.set("singUP", new FlxPoint(0, -45));
 		noteCameraOffset.set("singDOWN", new FlxPoint(0, 45));
 
+		//todo: i still haven't unhardcoded these characters (gf, gf-christmas, gf-tankmen, bf-holding-gf, gf-car, gf-pixel, mom-car, monster, monster-christmas, pico-speaker, bf, bf-dead, bf-christmas, bf-car, bf-pixel, bf-pixel-dead, bf-holding-gf-dead, senpai, senpai-angry, spirit, parents-christmas, tankman)
 		switch (curCharacter) {
 			case "emptyLoad":
 				//load the minimum required stuff
@@ -178,9 +178,8 @@ class Character extends SpriteVMan
 				playAnim("idle");
 			case 'gf':
 				// GIRLFRIEND CODE
-				tex = Paths.getSparrowAtlas('characters/GF_assets');
 				AnimationDebug.imageFile = 'characters/GF_assets';
-				frames = tex;
+				frames = Paths.getSparrowAtlas('characters/GF_assets');
 				animation.addByPrefix('cheer', 'GF Cheer', 24, false);
 				animation.addByPrefix('singLEFT', 'GF left note', 24, false);
 				animation.addByPrefix('singRIGHT', 'GF Right Note', 24, false);
@@ -217,9 +216,8 @@ class Character extends SpriteVMan
 				healthBarColor.setRGB(165, 0, 77);
 				isGirlfriend = true;
 			case 'gf-christmas':
-				tex = Paths.getSparrowAtlas('characters/gfChristmas');
 				AnimationDebug.imageFile = 'characters/gfChristmas';
-				frames = tex;
+				frames = Paths.getSparrowAtlas('characters/gfChristmas');
 				animation.addByPrefix('cheer', 'GF Cheer', 24, false);
 				animation.addByPrefix('singLEFT', 'GF left note', 24, false);
 				animation.addByPrefix('singRIGHT', 'GF Right Note', 24, false);
@@ -303,9 +301,8 @@ class Character extends SpriteVMan
 				flipX = true;
 				healthBarColor.setRGB(43, 176, 209);
 			case 'gf-car':
-				tex = Paths.getSparrowAtlas('characters/gfCar');
 				AnimationDebug.imageFile = 'characters/gfCar';
-				frames = tex;
+				frames = Paths.getSparrowAtlas('characters/gfCar');
 				animation.addByIndices('singUP', 'GF Dancing Beat Hair blowing CAR', [0], "", 24, false);
 				animation.addByIndices('danceLeft', 'GF Dancing Beat Hair blowing CAR', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
 				animation.addByIndices('danceRight', 'GF Dancing Beat Hair blowing CAR', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
@@ -318,9 +315,8 @@ class Character extends SpriteVMan
 				healthBarColor.setRGB(165, 0, 77);
 				isGirlfriend = true;
 			case 'gf-pixel':
-				tex = Paths.getSparrowAtlas('characters/gfPixel');
 				AnimationDebug.imageFile = 'characters/gfPixel';
-				frames = tex;
+				frames = Paths.getSparrowAtlas('characters/gfPixel');
 				animation.addByIndices('singUP', 'GF IDLE', [2], "", 24, false);
 				animation.addByIndices('danceLeft', 'GF IDLE', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
 				animation.addByIndices('danceRight', 'GF IDLE', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
@@ -339,9 +335,8 @@ class Character extends SpriteVMan
 				healthBarColor.setRGB(165, 0, 77);
 				isGirlfriend = true;
 			case 'mom-car':
-				tex = Paths.getSparrowAtlas('characters/momCar');
 				AnimationDebug.imageFile = 'characters/momCar';
-				frames = tex;
+				frames = Paths.getSparrowAtlas('characters/momCar');
 
 				animation.addByPrefix('idle', "Mom Idle", 24, false);
 				animation.addByPrefix('singUP', "Mom Up Pose", 24, false);
@@ -361,9 +356,8 @@ class Character extends SpriteVMan
 
 				healthBarColor.setRGB(216, 85, 142);
 			case 'monster':
-				tex = Paths.getSparrowAtlas('characters/Monster_Assets');
 				AnimationDebug.imageFile = 'characters/Monster_Assets';
-				frames = tex;
+				frames = Paths.getSparrowAtlas('characters/Monster_Assets');
 				animation.addByPrefix('idle', 'monster nrm idle', 24, false);
 				animation.addByPrefix('singUP', 'monster nrm up', 24, false);
 				animation.addByPrefix('singDOWN', 'monster nrm down', 24, false);
@@ -381,9 +375,8 @@ class Character extends SpriteVMan
 
 				healthBarColor.setRGB(243, 255, 110);
 			case 'monster-christmas':
-				tex = Paths.getSparrowAtlas('characters/monsterChristmas');
 				AnimationDebug.imageFile = 'characters/monsterChristmas';
-				frames = tex;
+				frames = Paths.getSparrowAtlas('characters/monsterChristmas');
 				animation.addByPrefix('idle', 'monster idle', 24, false);
 				animation.addByPrefix('singUP', 'monster up note', 24, false);
 				animation.addByPrefix('singDOWN', 'monster down', 24, false);
@@ -423,9 +416,8 @@ class Character extends SpriteVMan
 				
 				healthBarColor.setRGB(183, 216, 85);
 			case 'bf':
-				var tex = Paths.getSparrowAtlas('characters/BOYFRIEND');
 				AnimationDebug.imageFile = 'characters/BOYFRIEND';
-				frames = tex;
+				frames = Paths.getSparrowAtlas('characters/BOYFRIEND');
 				animation.addByPrefix('idle', 'BF idle dance', 24, false);
 				animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);
 				animation.addByPrefix('singLEFT', 'BF NOTE LEFT0', 24, false);
@@ -462,9 +454,8 @@ class Character extends SpriteVMan
 
 				healthBarColor.setRGB(43, 176, 209);
 			case 'bf-dead':
-				var tex = Paths.getSparrowAtlas('characters/BF_Death');
 				AnimationDebug.imageFile = 'characters/BF_Death';
-				frames = tex;
+				frames = Paths.getSparrowAtlas('characters/BF_Death');
 				animation.addByPrefix('idle', "BF dies", 24, false);
 				animation.addByPrefix('firstDeath', "BF dies", 24, false);
 				animation.addByPrefix('deathLoop', "BF Dead Loop", 24, true);
@@ -482,9 +473,8 @@ class Character extends SpriteVMan
 
 				healthBarColor.setRGB(43, 176, 209);
 			case 'bf-christmas':
-				var tex = Paths.getSparrowAtlas('characters/bfChristmas');
 				AnimationDebug.imageFile = 'characters/bfChristmas';
-				frames = tex;
+				frames = Paths.getSparrowAtlas('characters/bfChristmas');
 				animation.addByPrefix('idle', 'BF idle dance', 24, false);
 				animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);
 				animation.addByPrefix('singLEFT', 'BF NOTE LEFT0', 24, false);
@@ -516,9 +506,8 @@ class Character extends SpriteVMan
 
 				healthBarColor.setRGB(43, 176, 209);
 			case 'bf-car':
-				var tex = Paths.getSparrowAtlas('characters/bfCar');
 				AnimationDebug.imageFile = 'characters/bfCar';
-				frames = tex;
+				frames = Paths.getSparrowAtlas('characters/bfCar');
 				animation.addByPrefix('idle', 'BF idle dance', 24, false);
 				animation.addByPrefix('singUP', 'BF NOTE UP0', 24, false);
 				animation.addByPrefix('singLEFT', 'BF NOTE LEFT0', 24, false);
@@ -942,19 +931,11 @@ class Character extends SpriteVMan
 		hasMissAnims = hasAnim('singRIGHTmiss');
 		
 		if (flipX != isPlayer && hasAnim("singRIGHT") && hasAnim("singLEFT")) {
-			// var animArray
-			/*var oldRight = animation.getByName('singRIGHT').frames;
-			animation.getByName('singRIGHT').frames = animation.getByName('singLEFT').frames;
-			animation.getByName('singLEFT').frames = oldRight;*/
 			swapAnimations('singLEFT', 'singRIGHT');
 
 			// IF THEY HAVE MISS ANIMATIONS??
-			if (hasMissAnims) {
-				/*var oldMiss = animation.getByName('singRIGHTmiss').frames;
-				animation.getByName('singRIGHTmiss').frames = animation.getByName('singLEFTmiss').frames;
-				animation.getByName('singLEFTmiss').frames = oldMiss;*/
+			if (hasMissAnims)
 				swapAnimations('singLEFTmiss', 'singRIGHTmiss');
-			}
 		}
 
 		generateFlipOffsets();
@@ -965,22 +946,18 @@ class Character extends SpriteVMan
 				if (n.startsWith("sing") && !n.endsWith("miss"))
 					things.push(n);
 			}
-			for (a in things) {
+			for (a in things)
 				copyAnimation(a, a + "miss");
-			}
 		}
 
-		if (isPlayer) {
+		if (isPlayer)
 			flipX = !flipX;
-		}
 		
-		if (frames == null) {
+		if (frames == null)
 			ErrorReportSubstate.addError('INVALID SPRITE SHEET for $curCharacter');
-		}
 		
-		if (animation.curAnim == null) {
+		if (animation.curAnim == null)
 			ErrorReportSubstate.addError("Animation for char "+curCharacter+" is null somehow! This will cause a crash!");
-		}
 		
 		danceType = hasAnim("danceLeft");
 		dance();
@@ -1086,17 +1063,15 @@ class Character extends SpriteVMan
 	}
 
 	public static function loadAnimation(sprite:FlxSprite, anim:SwagCharacterAnim, ?flip:Bool = false) {
-		if (anim.indicies != null && anim.indicies.length > 0) {
+		if (anim.indicies != null && anim.indicies.length > 0)
 			sprite.animation.addByIndices(anim.name, anim.anim, anim.indicies, "", anim.framerate, anim.loop, flip != (anim.flipX == true), anim.flipY == true);
-		} else {
+		else
 			sprite.animation.addByPrefix(anim.name, anim.anim, anim.framerate, anim.loop, flip != (anim.flipX == true), anim.flipY == true);
-		}
 	}
 
 	public static function loadAnimationNameless(sprite:FlxSprite, anim:SwagCharacterAnim, ?flip:Bool = false) {
-		if (anim.indicies != null && anim.indicies.length > 0) {
+		if (anim.indicies != null && anim.indicies.length > 0)
 			sprite.animation.add(anim.name, anim.indicies, anim.framerate, anim.loop, flip);
-		}
 	}
 
 	override function update(elapsed:Float) {
@@ -1130,7 +1105,7 @@ class Character extends SpriteVMan
 			playAnim(animation.curAnim.name, false, false, animation.curAnim.numFrames - 3);
 		}
 		
-		if (!hasMissAnims && misscolored && !animation.curAnim.name.endsWith('miss')) {
+		if (!hasMissAnims && misscolored && !animEndsWith("miss")) {
 			misscolored = false;
 			color = realcolor;
 		}
@@ -1163,14 +1138,14 @@ class Character extends SpriteVMan
 			holdTimer = 0;
 		}
 
-		if (animation.curAnim.name.endsWith('miss') && animation.curAnim.finished)
+		if (animEndsWith("miss") && animation.curAnim.finished)
 			return dance(true, true, false, 10);
 
 		if (animStartsWith('firstDeath') && animation.curAnim.finished)
 			playAvailableAnim(["deathLoop" + animation.curAnim.name.substr(10), "deathLoop"]);
 	}
 
-	public function getSingTime() {
+	public inline function getSingTime() {
 		return singTime + (Conductor.crochet * singBeats * 0.001);
 	}
 
@@ -1180,7 +1155,7 @@ class Character extends SpriteVMan
 	 * FOR GF DANCING SHIT
 	 */
 	public function dance(?anyway:Bool = false, ?force:Bool = false, ?reverse:Bool = false, ?frame:Int = 0) {
-		if (debugMode || moduloDances == 0 || (animation.curAnim != null && (animation.curAnim.name == 'hairBlow' || (animation.curAnim.name.startsWith('sing') && !animation.curAnim.name.endsWith("-loop") && holdTimer >= getSingTime())))) {
+		if (debugMode || moduloDances == 0 || (animation.curAnim != null && (animation.curAnim.name == 'hairBlow' || (animStartsWith('sing') && !animEndsWith("-loop") && holdTimer >= getSingTime())))) {
 			return;
 		}
 		if (!anyway) {
@@ -1200,7 +1175,7 @@ class Character extends SpriteVMan
 		playAnim('idle' + idleAlt, force, reverse, frame);
 	}
 	
-	public function applyPositionOffset() {
+	public inline function applyPositionOffset() {
 		x += positionOffset[0];
 		y += positionOffset[1];
 	}

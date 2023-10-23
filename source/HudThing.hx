@@ -188,7 +188,8 @@ class HudThing extends FlxGroup {
 				//case "accRating":
 				//	text += Translation.getTranslation("hud_accrating", "playstate", [trimNoPercent(accuracy())]);
 				case "fc":
-					text += Translation.getTranslation("fc_"+PlayState.fcTypes[PlayState.instance.songFC], "playstate");
+					var fcThing = PlayState.instance.songMFC ? "mfc" : PlayState.fcTypes[PlayState.instance.songFC];
+					text += Translation.getTranslation("fc_" + fcThing, "playstate");
 				/*case "sicks":
 					text += Translation.getTranslation("hud_sicks", "playstate", [Std.string(PlayState.instance.sicks)]);
 				case "goods":

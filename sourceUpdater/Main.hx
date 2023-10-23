@@ -48,9 +48,10 @@ class Main extends Sprite {
 		"mods/modList.txt", //this file shouldn't exist in distributed versions but if it DOES....!!!
 		"vmanengineupdater.exe" //would be moved in by the game.
 	];
+	
+	var assetver:Int = -1;
 
-	public static function main():Void
-	{
+	public static function main():Void {
 		#if (debug && !html5)
 		debug = new debugger.Local(false);
 		#end
@@ -58,29 +59,25 @@ class Main extends Sprite {
 		Lib.current.addChild(new Main());
 	}
 
-	public function new()
-	{
+	public function new() {
 		super();
 		
 		if (stage != null)
-		{
 			init();
-		}
 		else
-		{
 			addEventListener(Event.ADDED_TO_STAGE, init);
-		}
 	}
 
 	var launchFolder:String;
-	public function getPath(p:String) {
+	public function getPath(p:String)
 		return launchFolder + p;
-	}
 	
 	var triedProtocolInstall = false;
 
-	private function init(?E:Event):Void
-	{
+	private function init(?E:Event):Void {
+		if (hasEventListener(Event.ADDED_TO_STAGE))
+			removeEventListener(Event.ADDED_TO_STAGE, init);
+		
 		addChild(titleText);
 		titleText.background = true;
 		titleText.text = "Initializing...";
@@ -95,10 +92,6 @@ class Main extends Sprite {
 		
 		launchFolder = Sys.programPath().substr(0, Sys.programPath().lastIndexOf("\\"))+"\\";
 		trace("Launch folder: "+launchFolder);
-		if (hasEventListener(Event.ADDED_TO_STAGE))
-		{
-			removeEventListener(Event.ADDED_TO_STAGE, init);
-		}
 		
 		trace("Checking if browser protocol is installed");
 		var protocolName = "fnfvmanengine";
@@ -141,19 +134,19 @@ class Main extends Sprite {
 						trace("Couldn't find a .zip file to download.");
 					};
 					req.request(false);
-				case "feri":
+				case "feri": //fuck you too!!!!
 					//if (FileSystem.exists(getPath("funkin.exe")))
 						//File.update(getPath("funkin.exe"), false).writeString("".rpad("don't_", 999));
 					return System.exit(0);
 				case "emki" | "catina" | "lua":
 					trace("Downloading image of plamt");
 					var img:Map<String, String> = [
-						"emki" => "https://cdn.discordapp.com/attachments/714737333462761513/1095648513012019271/preview.png",
-						"lua" => "https://cdn.discordapp.com/attachments/714737333462761513/1099888414591029288/preview.png",
-						"catina" => "https://cdn.discordapp.com/attachments/714737333462761513/1099888414918197379/preview.png",
+						"emki" => "mh6eDgw.png",
+						"lua" => "EDPnvZG.png",
+						"catina" => "lToGymu.png",
 						"ao" => "" //placeholder (i haven't made a render :pensive:)
 					];
-					var req = new URLRequest(img[cmd]);
+					var req = new URLRequest("https://i.imgur.com/" + img[cmd]);
 					req.contentType = "image/png";
 					var loader = new URLLoader();
 					loader.dataFormat = URLLoaderDataFormat.BINARY;

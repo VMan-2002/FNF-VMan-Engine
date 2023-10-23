@@ -15,6 +15,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import json2object.JsonParser;
 import lime.utils.Assets;
+import sys.FileSystem;
 
 using StringTools;
 #if !html5
@@ -29,6 +30,7 @@ class DialogueFile {
 	public var dontClose:Bool = false;
 	public var usedInFreeplay:Bool = false;
 	public var music:String;
+	public var introSound:String;
 }
 
 class DialogueLine {
@@ -44,8 +46,9 @@ class DialogueLine {
 	public var fontSize:Float = 1.0;
 	public var font:String = "";
 	public var choices:Array<String>;
-	public var screenGraphic:String;
+	public var screenGraphic:String = "";
 	public var screenGraphicAnim:String = "";
+	public var screenGraphicLoop:Bool = true;
 	public var music:String;
 }
 
@@ -64,27 +67,31 @@ class DialogBoxStyle {
 	public var imagePosition:Array<Float> = [-20, 45, 6];
 	public var animations:Array<Character.SwagCharacterAnim>;
 	public var textPosition:Array<Float> = [240, 500];
-	public var textWidth:Float = 100;
 	public var textLines:Int = 3;
 	public var textOverflowUp:Bool = false;
 	public var font:String = "";
 	public var fontSize:Int = 18;
 	public var fontColor:String = "0xffffffff";
 	public var fontShadowColor:String = "0xff000000";
-	public var fontShadowOffset:Array<Float>;
+	public var closeType:String = "pixel";
+
+	public static function load(n:String, modName:String):DialogBoxStyle {
+		var thing:DialogBoxStyle = cast CoolUtil.useJson2Object(new JsonParser<DialogBoxStyle>(), CoolUtil.tryPathBoth(n, modName));
+		return thing;
+	}
 }
 
-class DialogueBoxVMan extends FlxSpriteGroup
-{
-	var box:FlxSprite;
+class DialogueBoxVMan extends FlxSpriteGroup {
+	var box:SpriteVMan;
 
 	var curCharacter:DialogueCharacter;
 
-	var dialogue:Alphabet;
+	//var dialogue:Alphabet;
 	var dialogueList:Array<DialogueLine> = [];
 
 	// SECOND DIALOGUE FOR THE PIXEL SHIT INSTEAD???
 	var swagDialogue:FlxTypeText;
+	var dropText:FlxText;
 
 	public var finishThing:Void->Void;
 
@@ -103,7 +110,14 @@ class DialogueBoxVMan extends FlxSpriteGroup
 
 	public var screenGraphic:FlxSprite = new FlxSprite();
 
-	public function new(?file:String, ?dialogueFile:DialogueFile) {
+	public var overflowUp = false;
+	public var closeType = "pixel";
+	public var closeTime:Float = 1.2;
+	public var dialogueLineCount:Int = 0;
+	public var autoWait:Float = 0;
+	public var curBoxStyle:Null<String> = null;
+
+	public function new(?file:Null<String>, ?dialogueFile:DialogueFile) {
 		super();
 
 		trace('loading vman dialogue');
@@ -119,6 +133,7 @@ class DialogueBoxVMan extends FlxSpriteGroup
 			this.dialogueFile = dialogueFile;
 		}
 		dialogueList = dialogueFile.texts;
+		dialogueLineCount = dialogueFile.texts.length;
 
 		trace(dialogueList[0].text);
 
@@ -127,21 +142,24 @@ class DialogueBoxVMan extends FlxSpriteGroup
 			FlxG.sound.music.fadeIn(1, 0, 0.8);
 		}
 
-		bgFade = new FlxSprite(-200, -200).makeGraphic(Std.int(FlxG.width * 1.3), Std.int(FlxG.height * 1.3), 0xFFB3DFd8);
+		bgFade = new FlxSprite(-200, -200).makeGraphic(8, 8, 0xFFB3DFd8);
+		bgFade.scale.set(FlxG.width * 0.1625, FlxG.height * 0.1625);
 		bgFade.scrollFactor.set();
 		bgFade.alpha = 0;
 		add(bgFade);
 
-		new FlxTimer().start(0.83, function(tmr:FlxTimer)
-		{
-			bgFade.alpha += (1 / 5) * 0.7;
+		new FlxTimer().start(0.83, function(tmr:FlxTimer) {
+			bgFade.alpha += 0.7 / 5;
 			if (bgFade.alpha > 0.7)
 				bgFade.alpha = 0.7;
 		}, 5);
 
 		add(charObjects);
 
-		box = new FlxSprite(-20, 45);
+		if (dialogueFile.introSound != "")
+			FlxG.sound.play(Paths.sound(dialogueFile.introSound));
+
+		box = new SpriteVMan(-20, 45);
 
 		switch (dialogueFile.texts[0].boxStyle) {
 			case 'senpai':
@@ -150,8 +168,6 @@ class DialogueBoxVMan extends FlxSpriteGroup
 				box.animation.addByIndices('normal', 'Text Box Appear', [4], "", 24);
 				box.animation.addByIndices('normalClose', 'Text Box Appear', [4, 3, 2, 1, 0], "", 24);
 			case 'roses':
-				FlxG.sound.play(Paths.sound('ANGRY_TEXT_BOX'));
-
 				box.frames = Paths.getSparrowAtlas('weeb/pixelUI/dialogueBox-senpaiMad');
 				box.animation.addByPrefix('normalOpen', 'SENPAI ANGRY IMPACT SPEECH', 24, false);
 				box.animation.addByIndices('normal', 'SENPAI ANGRY IMPACT SPEECH', [4], "", 24);
@@ -163,7 +179,7 @@ class DialogueBoxVMan extends FlxSpriteGroup
 				box.animation.addByIndices('normalClose', 'Spirit Textbox spawn', [11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0], "", 24);
 
 				var face:FlxSprite = new FlxSprite(320, 170).loadGraphic(Paths.image('weeb/spiritFaceForward'));
-				face.setGraphicSize(Std.int(face.width * 6));
+				face.scale.set(6, 6);
 				add(face);
 			case 'invisible':
 				box.frames = Paths.getSparrowAtlas('weeb/pixelUI/dialogueBox-pixel');
@@ -197,7 +213,7 @@ class DialogueBoxVMan extends FlxSpriteGroup
 		add(portraitRight);
 		portraitRight.visible = false;
 		
-		box.animation.play('normalOpen');
+		box.playAnim('normalOpen');
 		box.setGraphicSize(Std.int(box.width * PlayState.daPixelZoom * 0.9));
 		box.updateHitbox();
 		add(box);
@@ -215,47 +231,63 @@ class DialogueBoxVMan extends FlxSpriteGroup
 			handSelect.x = -4000;
 		}
 
-		swagDialogue = new FlxTypeText(240, 500, Std.int(FlxG.width * 0.6), "", 32);
+		dropText = new FlxText(242, 502, Std.int(FlxG.width * 0.6), "", 32);
+		dropText.color = 0xFFD89494;
+		add(dropText);
+
+		swagDialogue = new FlxTypeText(240, 500, Std.int(dropText.width), "", 32);
 		swagDialogue.font = 'Pixel Arial 11 Bold';
 		swagDialogue.color = 0xFF3F2021;
 		swagDialogue.sounds = [FlxG.sound.load(Paths.sound('pixelText'), 0.6)];
 		add(swagDialogue);
 		
 		Translation.setObjectFont(swagDialogue, "pixel font");
+		dropText.font = swagDialogue.font;
 
-		dialogue = new Alphabet(0, 80, "", false, true);
+		// dialogue = new Alphabet(0, 80, "", false, true);
 		// dialogue.x = 90;
 		// add(dialogue);
+
+		Scripting.runOnScripts("dialogueStart", [this]);
 	}
 
 	public function setDialogueBoxStyle(style:DialogBoxStyle):Void {
-		var keepAnim = box.animation.curAnim;
+		var keepAnim = box.animation.curAnim != null ? box.animation.curAnim.name : "normalOpen";
+		box.animation.destroyAnimations();
 		box.frames = Paths.getSparrowAtlas(style.image);
-		box.x = style.imagePosition[0];
-		box.y = style.imagePosition[1];
+		box.setPosition(style.imagePosition[0], style.imagePosition[1]);
 		box.scale.x = style.imagePosition.length <= 2 ? 1 : style.imagePosition[2];
 		box.scale.y = style.imagePosition.length <= 3 ? box.scale.x : style.imagePosition[3];
-		for (a in 0...style.animations.length) {
+		
+		for (a in 0...style.animations.length)
 			Character.loadAnimation(box, style.animations[a]);
-		}
-		if (keepAnim != null) {
-			box.animation.play(keepAnim.name);
-		} else {
-			box.animation.play('normalOpen');
-		}
-		swagDialogue.x = style.textPosition[0];
-		swagDialogue.y = style.textPosition[1];
+		
+		if (keepAnim != null && box.hasAnim(keepAnim))
+			box.playAnim(keepAnim);
+		else
+			box.playAnim('normalOpen');
+		
+		swagDialogue.setPosition(style.textPosition[0], style.textPosition[1]);
 		swagDialogue.fieldWidth = Std.int(style.textPosition[2]);
-		swagDialogue.setFormat(style.font, style.fontSize, style.fontColor);
+		swagDialogue.setFormat(null, style.fontSize, style.fontColor);
+		Translation.setObjectFont(swagDialogue, style.font, "vcr font");
+
+		var offsetpos = [style.textPosition.length <= 2 ? 0 : style.textPosition[3]];
+		offsetpos[1] = style.textPosition.length <= 3 ? offsetpos[0] : style.textPosition[4];
+		dropText.setPosition(swagDialogue.x + offsetpos[0], swagDialogue.y + offsetpos[1]);
+		dropText.fieldWidth = swagDialogue.fieldWidth;
+		dropText.setFormat(swagDialogue.font, style.fontSize, style.fontColor);
 	}
 
 	var dialogueOpened:Bool = false;
 	var dialogueStarted:Bool = false;
 
 	override function update(elapsed:Float) {
+		Scripting.runOnScripts("dialogueUpdate", [this, elapsed]);
+
 		if (box.animation.curAnim != null) {
-			if (box.animation.curAnim.name == 'normalOpen' && box.animation.curAnim.finished) {
-				box.animation.play('normal');
+			if (box.animEndsWith('Open') && box.animation.curAnim.finished) {
+				box.playAnim(box.animation.curAnim.name.substr(0, box.animation.curAnim.name.length - 4));
 				dialogueOpened = true;
 			}
 		}
@@ -265,42 +297,36 @@ class DialogueBoxVMan extends FlxSpriteGroup
 			dialogueStarted = true;
 		}
 
-		if (FlxG.keys.justPressed.ANY && dialogueStarted == true) {
-			remove(dialogue);
-				
-			FlxG.sound.play(Paths.sound('clickText'), 0.8);
+		if (dialogueStarted) {
+			autoWait += elapsed;
 
-			@:privateAccess(flixel.addons.text.FlxTypeText._typing) //Why is FlxTypeText._typing private i dont get it why is it needed
-			if (swagDialogue._typing) {
-				swagDialogue.skip();
-			} else {
-				if (dialogueList[1] == null && dialogueList[0] != null) {
-					if (!isEnding) {
-						isEnding = true;
-						
-						if (dialogueFile.dontClose) {
-							finishThing();
-						} else {
-							if (FlxG.sound.music != null && FlxG.sound.music.playing)
-								FlxG.sound.music.fadeOut(2.2, 0);
+			if (FlxG.keys.anyJustPressed(Options.uiControls.get("accept")) || (dialogueList[0].autoNext && autoWait >= dialogueList[0].autoNextDelay)) {
+				//remove(dialogue);
+					
+				FlxG.sound.play(Paths.sound('clickText'), 0.8);
 
-							new FlxTimer().start(0.2, function(tmr:FlxTimer) {
-								box.alpha -= 1 / 5;
-								bgFade.alpha -= 1 / 5 * 0.7;
-								portraitLeft.visible = false;
-								portraitRight.visible = false;
-								swagDialogue.alpha -= 1 / 5;
-							}, 5);
-
-							new FlxTimer().start(1.2, function(tmr:FlxTimer) {
-								finishThing();
-								kill();
-							});
-						}
-					}
+				@:privateAccess //Why is FlxTypeText._typing private i dont get it why is it needed
+				if (swagDialogue._typing && dialogueList[0].skippable != false) {
+					swagDialogue.skip();
+					autoWait = 0;
 				} else {
-					dialogueList.shift();
-					startDialogue();
+					if (dialogueList[1] == null && dialogueList[0] != null) {
+						if (!isEnding) {
+							isEnding = true;
+							
+							if (dialogueFile.dontClose)
+								finishThing();
+							else if (closeType == "pixel")
+								closeDialoguePixel(closeTime);
+							else if (closeType == "custom" || closeType == "script")
+								Scripting.runOnScripts("dialogueCloseAnim", [this, closeTime, finishThing]);
+							else
+								closeDialogue(closeTime);
+						}
+					} else {
+						dialogueList.shift();
+						startDialogue();
+					}
 				}
 			}
 		}
@@ -308,18 +334,62 @@ class DialogueBoxVMan extends FlxSpriteGroup
 		super.update(elapsed);
 	}
 
+	public function closeDialoguePixel(?length:Float = 1.2) {
+		if (FlxG.sound.music != null && FlxG.sound.music.playing)
+			FlxG.sound.music.fadeOut(2.2, 0);
+
+		new FlxTimer().start(length / 6, function(tmr:FlxTimer) {
+			box.alpha -= 1 / 5;
+			bgFade.alpha -= 0.7 / 5;
+			swagDialogue.alpha -= 1 / 5;
+			dropText.alpha -= 1 / 5;
+			charObjects.forEach(function(dc:DialogueCharacter) {
+				dc.alpha *= tmr.loopsLeft == 0 ? 0 : 1 / tmr.loopsLeft;
+			});
+		}, 5);
+
+		new FlxTimer().start(length, function(tmr:FlxTimer) {
+			finishThing();
+			kill();
+		});
+	}
+
+	public function closeDialogue(?length:Float = 1.2) {
+		if (FlxG.sound.music != null && FlxG.sound.music.playing)
+			FlxG.sound.music.fadeOut(2.2, 0);
+
+		box.playAnim(box.animation.curAnim.name + "Close");
+		FlxTween.tween(bgFade, {alpha: 0.0}, length);
+		FlxTween.tween(swagDialogue, {alpha: 0.0}, length);
+		FlxTween.tween(dropText, {alpha: 0.0}, length);
+		charObjects.forEach(function(dc:DialogueCharacter) {
+			dc.exit(length);
+		});
+
+		new FlxTimer().start(length, function(tmr:FlxTimer) {
+			finishThing();
+			kill();
+		});
+	}
+
 	var isEnding:Bool = false;
 
 	function startDialogue():Void {
+		if (curBoxStyle != dialogueList[0].boxStyle && dialogueList[0].boxStyle != null && dialogueList[0].boxStyle != "") {
+			setDialogueBoxStyle(DialogBoxStyle.load(dialogueList[0].boxStyle, PlayState.modName));
+			Scripting.runOnScripts("dialogueBoxStyle", [this, dialogueList[0].boxStyle, curBoxStyle]);
+			curBoxStyle = dialogueList[0].boxStyle;
+		}
+
+		Scripting.runOnScripts("dialogueLine", [this, dialogueList[0], dialogueList.length - dialogueLineCount]);
 		if (dialogueList[0].portraitEvents != null) {
 			for (ev in dialogueList[0].portraitEvents) {
 				if (ev.character.length > 0) {
 					charList[ev.number] = ev.character;
-					if (charObjects.members[ev.number] != null) {
+					if (charObjects.members[ev.number] != null)
 						charObjects.members[ev.number].setCharacter(ev.character);
-					} else {
+					else
 						charObjects.add(new DialogueCharacter(ev.character, PlayState.modName, this));
-					}
 				}
 				var charObject = charObjects.members[ev.number];
 				if (ev.isTalking)
@@ -328,10 +398,23 @@ class DialogueBoxVMan extends FlxSpriteGroup
 				charObject.setTalking(ev.isTalking);
 				charObject.setFlip(ev.flip);
 				charObject.setSide(ev.side);
-				if (ev.removeCharacter) {
+				if (ev.removeCharacter)
 					charObject.exit();
-				}
 			}
+		}
+
+		if (dialogueList[0].screenGraphic != "") {
+			screenGraphic.visible = false;
+		} else {
+			if (dialogueList[0].screenGraphicAnim != "") {
+				screenGraphic.frames = Paths.getSparrowAtlas(dialogueList[0].screenGraphic);
+				screenGraphic.animation.addByPrefix("idle", dialogueList[0].screenGraphicAnim, 24, dialogueList[0].screenGraphicLoop);
+				screenGraphic.animation.play("idle");
+			} else {
+				screenGraphic.loadGraphic(dialogueList[0].screenGraphic);
+			}
+			screenGraphic.scale.x = Math.min(FlxG.width / screenGraphic.frameWidth, FlxG.height / screenGraphic.frameHeight);
+			screenGraphic.scale.y = screenGraphic.scale.x;
 		}
 
 		trace("curCharacter: " + curCharacter.characterName);
@@ -341,20 +424,19 @@ class DialogueBoxVMan extends FlxSpriteGroup
 
 		// swagDialogue.text = ;
 		swagDialogue.resetText(dialogueList[0].text);
-		swagDialogue.start(0.04, true);
+		swagDialogue.start(dialogueList[0].rate, true);
+		autoWait = dialogueList[0].text.length * -swagDialogue.delay;
 
 		switch (curCharacter.characterName) {
 			case 'senpai-pixel' | 'spirit-pixel':
 				portraitRight.visible = false;
-				if (!portraitLeft.visible)
-				{
+				if (!portraitLeft.visible) {
 					portraitLeft.visible = true;
 					portraitLeft.animation.play('enter');
 				}
 			case 'bf-pixel':
 				portraitLeft.visible = false;
-				if (!portraitRight.visible)
-				{
+				if (!portraitRight.visible) {
 					portraitRight.visible = true;
 					portraitRight.animation.play('enter');
 				}
@@ -367,7 +449,8 @@ class DialogueCharacter extends SpriteVMan {
 	public var talking:Bool;
 	public var parent:DialogueBoxVMan;
 	public var isJustAdded:Bool;
-	var myMod:String;
+	
+	public var myMod:String;
 	public var characterName:String;
 	public var isPlayer:Bool;
 
@@ -435,26 +518,25 @@ class DialogueCharacter extends SpriteVMan {
 			playAvailableAnim(["talkstart_"+this.expression, "talking_"+this.expression]);
 	}
 
-	public function exit() {
-		playAvailableAnim(["exit_"+expression]);
-		FlxTween.tween(this, {alpha:0.0}, 0.3, {onComplete:function(tween:FlxTween) {
+	public function exit(?time:Float = 0.3) {
+		playAvailableAnim(["exit_"+expression, "stoptalk_"+expression, "idle_"+expression]);
+		FlxTween.tween(this, {alpha:0.0}, time, {onComplete:function(tween:FlxTween) {
 			kill();
 		}});
 	}
 
 	public override function update(elapsed:Float) {
 		if (animation.curAnim != null && (animation.curAnim.finished || animation.curAnim.looped)) {
-			if (animStartsWith("idle")) {
+			if (animStartsWith("idle"))
 				return super.update(elapsed); //do nothing
-			} else if (!talking && animStartsWith("talking")) {
+			else if (!talking && animStartsWith("talking"))
 				playAvailableAnim(["stoptalk"+expression, "idle_"+expression]);
-			} else if (animStartsWith("starttalk") || animStartsWith("talkswitch")) {
+			else if (animStartsWith("starttalk") || animStartsWith("talkswitch"))
 				playAvailableAnim(["talking_"+expression, "idle_"+expression]);
-			} else if (animStartsWith("stoptalk")) {
+			else if (animStartsWith("stoptalk"))
 				playAvailableAnim(["idle_"+expression]);
-			} else if (animStartsWith("talkflip") || animStartsWith("flip")) {
+			else if (animStartsWith("talkflip") || animStartsWith("flip"))
 				playAvailableAnim(talking ? ["talking_"+expression, "idle_"+expression] : ["idle_"+expression]);
-			}
 		}
 		super.update(elapsed);
 	}

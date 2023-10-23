@@ -1,7 +1,6 @@
 package;
 
 import CoolUtil;
-import Scripting.MyFlxColor;
 import Translation;
 import flash.text.TextField;
 import flixel.FlxG;
@@ -90,13 +89,9 @@ class FreeplayState extends MusicBeatState {
 	//var cornflowerMenus:Array<Int> = new Array<Int>();
 	//var cornflowerClass:CornflowerFreeplay;
 
-	public static function parseColor(input:Null<String>):Null<Int> {
-		if (input == null)
-			return null;
-		var col:Null<Int> = Std.parseInt(input.startsWith("0x") ? input : '0xff${input}');
-		if (col == null || Math.isNaN(col))
-			return MyFlxColor.d.exists(input) ? MyFlxColor.d.get(input) : null;
-		return col;
+	@:deprecated("Use CoolUtil.parseColor instead")
+	public static inline function parseColor(input:Null<String>):Null<Int> {
+		return CoolUtil.parseColor(input);
 	}
 
 	override function create() {
@@ -181,11 +176,11 @@ class FreeplayState extends MusicBeatState {
 										diffAdd = thing[4];
 									}
 								}
-								var justAdd = new SongMetadata(thing[0], 0, icon, 0, iathing, diffAdd, parseColor(thing[2]));
+								var justAdd = new SongMetadata(thing[0], 0, icon, 0, iathing, diffAdd, CoolUtil.parseColor(thing[2]));
 								resultItems.push(justAdd);
 								noFolders.push(justAdd);
 							default:
-								resultItems.push(new SongMetadata(thing[0], folderIds[thing[0]], Character.getHealthIcon(folderStructure.folderIcons.get(thing[0]), iathing), thing[1] == "folder" ? 1 : 2, iathing, null, parseColor(thing[2])));
+								resultItems.push(new SongMetadata(thing[0], folderIds[thing[0]], Character.getHealthIcon(folderStructure.folderIcons.get(thing[0]), iathing), thing[1] == "folder" ? 1 : 2, iathing, null, CoolUtil.parseColor(thing[2])));
 						}
 					}
 					categories.set(folderIds[cat], resultItems);
@@ -193,7 +188,7 @@ class FreeplayState extends MusicBeatState {
 				
 				//add to category list
 				trace('added ${iathing} (name ${folderStructure.groupName}) to category list');
-				categoryList.push(new SongMetadata(folderStructure.groupName, folderRootPut, folderStructure.folderIcons.get(folderStructure.initFolder), 1, iathing, parseColor(folderStructure.color)));
+				categoryList.push(new SongMetadata(folderStructure.groupName, folderRootPut, folderStructure.folderIcons.get(folderStructure.initFolder), 1, iathing, CoolUtil.parseColor(folderStructure.color)));
 				folderNames[folderRootPut] = folderStructure.groupName;
 				/*if (iAmCornflower) {
 					cornflowerMenus.push(folderRootPut);

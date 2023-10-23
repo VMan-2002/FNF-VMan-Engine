@@ -154,6 +154,7 @@ class PlayState extends MusicBeatState {
 	public var funnyManias:Array<SwagMania> = [];
 	public var lastHitNoteTime:Float = 0;
 	public var scrollSpeed:Float = 1;
+	public var myHitsound:Null<FlxSound> = null;
 	
 	//public var strumLineNotes = new Array<StrumNote>();
 	public var strumLines:FlxTypedGroup<StrumLine>;
@@ -335,7 +336,7 @@ class PlayState extends MusicBeatState {
 
 		instance = this;
 		allowGameplayChanges = !Std.isOfType(this, PlayStateOffsetCalibrate);
-		NoteSplash.noteSplashColors = NoteSplash.noteSplashColorsDefault;
+		//NoteSplash.noteSplashColors = NoteSplash.noteSplashColorsDefault;
 		
 		if (FlxG.sound.music != null)
 			FlxG.sound.music.stop();
@@ -410,9 +411,8 @@ class PlayState extends MusicBeatState {
 			}
 		}
 
-		if (Std.isOfType(this, PlayStateReplay)) {
+		if (Std.isOfType(this, PlayStateReplay))
 			Options.instance.botplay = false;
-		}
 
 		mania_preventReset = curManiaInfo.control_any.contains(Options.uiControls["reset"][0]) || curManiaInfo.control_any.contains(Options.uiControls["reset"][1]);
 		mania_preventSeven = curManiaInfo.control_any.contains(FlxKey.SEVEN);
@@ -518,6 +518,10 @@ class PlayState extends MusicBeatState {
 			new Scripting(thing, modName, "PlayStateSong");
 		Scripting.runOnScripts("statePreInit", ["PlayState", curSong, this]);
 
+		if (Options.instance.hitsound != "")
+			myHitsound = new FlxSound().loadEmbedded(Paths.sound(Options.instance.hitsound));
+
+		//todo: i still haven't unhardcoded these stages (philly, limo, school and schoolEvil)
 		switch (curStage) {
 		    case 'philly': {
 				Paths.setCurrentLevel("week3");
@@ -2332,7 +2336,8 @@ class PlayState extends MusicBeatState {
 			marvelous += 1;
 			//todo: sometimes notesplashes are the wrong color
 			//todo: sometimes notesplashes crash.
-			//grpNoteSplashes.recycle(NoteSplash, NoteSplash.new).playNoteSplash(playerStrums.strumNotes[daNote.strumNoteNum], daNote);
+			if (Options.instance.noteSplash)
+				grpNoteSplashes.recycle(NoteSplash, NoteSplash.new).playNoteSplash(playerStrums.strumNotes[daNote.strumNoteNum], daNote);
 		}
 		if (daRating != "marvelous")
 			songMFC = false;
@@ -2348,14 +2353,6 @@ class PlayState extends MusicBeatState {
 			usedBotplay = Options.instance.botplay || Options.instance.practice_enabled;
 
 		songScore += Options.instance.botplay ? 350 : score;
-
-		/*var pixelShitPart1:String = "normal/";
-		var pixelShitPart2:String = '';
-
-		if (curStage.startsWith('school')) {
-			pixelShitPart1 = 'pixelUI/';
-			pixelShitPart2 = '-pixel';
-		}*/
 
 		var daRatingImg = songMFC ? "marvelous-epic" : (songFC == 0 ? daRating + '-cool' : daRating);
 
@@ -2396,20 +2393,6 @@ class PlayState extends MusicBeatState {
 				numScore.screenCenter(Y);
 				numScore.y += 80;
 
-				//if (validUIStyle) {
-				//numScore.scale.x = currentUIStyle.comboScale;
-				//numScore.scale.y = currentUIStyle.comboScale;
-				//numScore.antialiasing = currentUIStyle.antialias;
-				/*} else {
-					if (!curStage.startsWith('school')) {
-						numScore.antialiasing = true;
-						numScore.setGraphicSize(Std.int(numScore.width * 0.5));
-					} else {
-						numScore.setGraphicSize(Std.int(numScore.width * daPixelZoom));
-					}
-				}*/
-				//numScore.updateHitbox();
-
 				/*FlxTween.tween(numScore, {alpha: 0}, 0.2, {
 					onComplete: function(tween:FlxTween) {
 						ratingsGroup.remove(numScore, true);
@@ -2419,13 +2402,6 @@ class PlayState extends MusicBeatState {
 				});*/
 			}
 		}
-		/* 
-		trace(combo);
-		trace(seperatedScore);
-		*/
-
-		//coolText.text = Std.string(seperatedScore);
-		// add(coolText);
 
 		/*FlxTween.tween(comboSpr, {alpha: 0}, 0.2, {
 			onComplete: function(tween:FlxTween) {
@@ -2761,7 +2737,7 @@ class PlayState extends MusicBeatState {
 		}
 
 		if (boyfriend.holdTimer > Conductor.stepCrochet * 0.004 && !FlxG.keys.anyPressed(curManiaInfo.control_any)) {
-			if (boyfriend.animStartsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss')) {
+			if (boyfriend.animStartsWith('sing') && !boyfriend.animEndsWith('miss')) {
 				boyfriend.dance();
 			}
 		}
@@ -2801,6 +2777,7 @@ class PlayState extends MusicBeatState {
 				
 				songScore -= 10;
 				songMisses += 1;
+				songMFC = false;
 
 				if (songFC != 4)
 					songFC = songMisses > 9 ? 4 : 3;
@@ -2846,6 +2823,19 @@ class PlayState extends MusicBeatState {
 	}
 
 	public function goodNoteHit(note:Note, ?rating:String = ""):Void {
+		if (Options.instance.playstate_inorder) {
+			for (sillyNote in notes) {
+				if (sillyNote.mustPress && sillyNote.getNoteTypeDataNoCheck().shouldBotHit) {
+					if (sillyNote.mustPress && sillyNote.getNoteTypeDataNoCheck().shouldBotHit && note.strumTime - sillyNote.strumTime > 10) {
+						if (!Options.instance.ghostTapping)
+							noteMiss(note.noteData, sillyNote);
+						return;
+					} else if (sillyNote == note) { //notes are in order by strumTime, so if we reach our current note, we've gone through the previous ones already
+						break;
+					}
+				}
+			}
+		}
 		if (!note.wasGoodHit) {
 			var noteTypeData = note.getNoteTypeData();
 			if (!note.isSustainNote) {

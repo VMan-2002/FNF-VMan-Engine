@@ -551,11 +551,11 @@ class ManiaInfo {
 			//lime.window.alert("Undefined mania with ID "+mania, "Undefined Mania");
 			mi.keys = 1;
 		}
-		if (mi.splashName != null) {
+		/*if (mi.splashName != null) {
 			for (thing in mi.splashName.keys()) {
 				NoteSplash.noteSplashColors[thing] = NoteSplash.noteSplashColorsDefault[mi.splashName[thing]];
 			}
-		}
+		}*/
 		return mi;
 	}
 	

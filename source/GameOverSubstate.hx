@@ -14,6 +14,8 @@ class GameOverSubstate extends MusicBeatSubstate {
 
 	public var gameOverMusicName:String = "gameOver";
 	public var gameOverMusicEndName:String = "gameOverEnd";
+	public var canConfirm:Bool = true;
+	public var canExit:Bool = true;
 
 	public function new(x:Float, y:Float) {
 		var daStage = PlayState.curStage;
@@ -27,17 +29,15 @@ class GameOverSubstate extends MusicBeatSubstate {
 				daBf = 'bf-dead';
 		}
 		var daChar:Character = (Options.saved.playstate_opponentmode && PlayState.instance.dad.deathChar != null ? PlayState.instance.dad : PlayState.instance.boyfriend);
-		if (daChar.deathChar != null) {
+		if (daChar.deathChar != null)
 			daBf = daChar.deathChar;
-		} else if (daChar.hasAnim("firstDeath")) {
+		else if (daChar.hasAnim("firstDeath"))
 			daBf = daChar.curCharacter;
-		}
 		var deathSound:String = "fnf_loss_sfx";
-		if (daChar.deathSound != null) {
+		if (daChar.deathSound != null)
 			deathSound = daChar.deathSound;
-		} else {
+		else
 			deathSound += stageSuffix;
-		}
 		gameOverMusicName += stageSuffix;
 		gameOverMusicEndName += stageSuffix;
 		if (CoolUtil.isInPlayState()) {
@@ -73,25 +73,24 @@ class GameOverSubstate extends MusicBeatSubstate {
 
 		Scripting.initScriptsByContext("GameOverSubstate");
 
-		if (Std.isOfType(FlxG.state, PlayStateOffsetCalibrate)) {
+		if (Std.isOfType(FlxG.state, PlayStateOffsetCalibrate))
 			Achievements.giveAchievement("calibrateDeath");
-		}
+
+		Scripting.runOnScripts("substatePostInit", ["GameOverSubstate", CoolUtil.isInPlayState() ? PlayState.instance.curSong : "", this]);
 		
 		if (Options.instance.instantRespawn) {
 			FlxTransitionableState.skipNextTransOut = true;
 			gotoplaystate();
 		}
-
-		Scripting.runOnScripts("substatePostInit", ["GameOverSubstate", CoolUtil.isInPlayState() ? PlayState.instance.curSong : "", this]);
 	}
 
 	override function update(elapsed:Float) {
 		super.update(elapsed);
 
-		if (controls.ACCEPT)
+		if (controls.ACCEPT && canConfirm)
 			endBullshit();
 
-		if (controls.BACK) {
+		if (controls.BACK && canExit) {
 			FlxG.sound.music.stop();
 
 			if (Std.isOfType(FlxG.state, PlayStateOffsetCalibrate)) {
@@ -127,11 +126,11 @@ class GameOverSubstate extends MusicBeatSubstate {
 
 	var isEnding:Bool = false;
 
-	inline function endBullshit():Void {
+	public inline function endBullshit():Void {
 		if (!isEnding) {
 			Scripting.runOnScripts("onAccept", [null, null]);
 			isEnding = true;
-			bf.playAvailableAnim(['deathConfirm' + (bf.animStartsWith("deathLoop") ? bf.animation.name.substr(9) : bf.animation.name.substr(10)), 'deathConfirm'], true);
+			bf.playAvailableAnim(['deathConfirm' + (bf.animStartsWith("deathLoop") ? bf.animation.curAnim.name.substr(9) : bf.animation.name.substr(10)), 'deathConfirm'], true);
 			FlxG.sound.music.stop();
 			FlxG.sound.play(Paths.music(gameOverMusicEndName));
 			new FlxTimer().start(0.7, function(tmr:FlxTimer) {
@@ -140,7 +139,7 @@ class GameOverSubstate extends MusicBeatSubstate {
 		}
 	}
 	
-	inline function gotoplaystate() {
+	public inline function gotoplaystate() {
 		LoadingState.loadAndSwitchState(Std.isOfType(FlxG.state, PlayStateOffsetCalibrate) ? new PlayStateOffsetCalibrate() : new PlayState());
 	}
 }

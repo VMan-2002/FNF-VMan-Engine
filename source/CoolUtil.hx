@@ -1,6 +1,7 @@
 package;
 
 import Paths;
+import Scripting.MyFlxColor;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -611,6 +612,15 @@ class CoolUtil
 		tilt = 0; //unimplemented
 		var bitmap = new BitmapData(tilt == 0 ? 8 : 64, tilt == 0 ? 32 : 64, true, color1);
 		
+	}
+	
+	public static function parseColor(input:Null<String>):Null<Int> {
+		if (input == null)
+			return null;
+		var col:Null<Int> = Std.parseInt(input.startsWith("0x") ? input : '0xff${input}');
+		if (col == null || Math.isNaN(col))
+			return MyFlxColor.d.exists(input) ? MyFlxColor.d.get(input) : null;
+		return col;
 	}
 }
 
