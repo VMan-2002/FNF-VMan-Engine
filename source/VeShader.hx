@@ -1,12 +1,22 @@
 package;
 
 import flixel.FlxCamera;
+import flixel.FlxG;
 import openfl.display.Shader;
+import openfl.display.ShaderParameter;
 import openfl.filters.ShaderFilter;
 import sys.FileSystem;
 import sys.io.File;
 
 using StringTools;
+
+//u suck
+/* class VeShaderParamater<T> extends ShaderParameter<T> {
+    public override function new(?value:Null<Array<T>>) {
+        super();
+        this.value = value;
+    }
+} */
 
 class VeShader extends Shader {
     //When I Veshad. I'm a Veshader
@@ -19,7 +29,17 @@ class VeShader extends Shader {
         if (FileSystem.exists(fragpath))
             glFragmentSource = File.getContent(fragpath);
         if (FileSystem.exists(vertpath))
-            glFragmentSource = File.getContent(vertpath);
+            glVertexSource = File.getContent(vertpath);
+        //not efficient
+        for (name in Reflect.fields(data)) {
+            switch(name) {
+                case "iResolution":
+                    /*var p = new ShaderParameter<Int>();
+                    p.value = [FlxG.stage.stageWidth, FlxG.stage.stageWidth];
+                    data.iResolution = p;*/
+                    data.iResolution = VeShader.shaderParameter([FlxG.stage.stageWidth, FlxG.stage.stageHeight]);
+            }
+        }
         filter = new ShaderFilter(this);
     }
 
@@ -40,7 +60,7 @@ class VeShader extends Shader {
 
         `state`: Whether to add (`true`) or remove (`false`)
 
-        `noDupes`: Whether to prevent duplicates
+        `noDupes`: Whether to prevent duplicates (don't add if already applied, or remove all that are applied)
     **/
     public function cameraApply(camera:FlxCamera, ?state:Bool = true, ?noDupes:Bool = true) {
         @:privateAccess
@@ -61,5 +81,14 @@ class VeShader extends Shader {
                 } while (noDupes && camera._filters.contains(filter));
             }
         }
+    }
+
+    /**
+        Helper function to create a ShaderParameter with predefined value
+    **/
+    public static function shaderParameter<T>(value:Null<Array<T>>):ShaderParameter<T> {
+        var result = new ShaderParameter<T>();
+        result.value = value;
+        return result;
     }
 }

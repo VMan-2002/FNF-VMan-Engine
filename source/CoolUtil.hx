@@ -147,8 +147,8 @@ class CoolUtil
 	/**
 		Plays music using a sound asset
 	**/
-	public static function playMusicRaw(sndAsset, name:String, ?volume:Float = 1, ?bpm:Null<Float> = null) {
-		FlxG.sound.playMusic(sndAsset, volume);
+	public static function playMusicRaw(sndAsset, name:String, ?volume:Float = 1, ?loop:Bool = true) {
+		FlxG.sound.playMusic(sndAsset, volume, loop);
 	}
 
 	/**

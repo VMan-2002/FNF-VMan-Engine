@@ -35,7 +35,7 @@ class Main extends Sprite {
 	var framerate:Int = 60; // How many frames per second the game should run at.
 	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
 	var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets
-	public static var fps:FPS;
+	public static var fps:VeFPS;
 	
 	#if (debug && !html5)
 	public static var debug:debugger.Local;
@@ -103,7 +103,7 @@ class Main extends Sprite {
 		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, errorHandler);
 		//#end
 		
-		fps = new FPS(10, 3, 0xFFFFFF);
+		fps = new VeFPS(10, 3, 0xFFFFFF);
 		fps.visible = Options.showFPS;
 		
 		#if html5

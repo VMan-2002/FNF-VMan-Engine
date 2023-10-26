@@ -616,6 +616,7 @@ class Note extends FlxSprite {
 		
 	}
 	
+	//todo: hi
 	public function noteSetArrow(type:String) {
 		
 	}
