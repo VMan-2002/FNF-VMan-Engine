@@ -18,11 +18,15 @@ labels: bug
 [weed]: <> (Put an X in the [ ] thingies to fill out checkbox!)
 [weed]: <> (something like [x] pretty much, don't screw up or you will look stupid)
 
-- [ ] [Newgrounds](https://www.newgrounds.com/portal/view/770371)
-- [ ] [Itch.io](https://ninja-muffin24.itch.io/funkin)? Specify below
-- - [ ] Windows
-- - [ ] Mac
-- - [ ] Linux
+- [ ] [GitHub](https://github.com/VMan-2002/FNF-VMan-Engine)
+- [ ] [GameBanana (Friday Night Funkbox)](https://gamebanana.com/mods/428567)
+- [ ] Somewhere else (please specify)
+
+### Operating system you're using
+- [ ] Windows (the only official release so far, if you're on some other OS, please specify how you got your game build!)
+- [ ] Mac
+- [ ] Linux
+- [ ] Something else (please specify)
 
 ### If you are playing the game in a browser, what browser are you using?
 
@@ -32,15 +36,15 @@ labels: bug
 - [ ] Firefox
 - [ ] Safari
 - [ ] Opera GX
-- [ ] Other
+- [ ] Something else (please specify)
 
-## What version of the game are you using? Look in the bottom left corner of the main menu. (ex: 0.2.7, 0.2.1, shit like that)
-
-
-## Have you identified any steps to reproduce the bug? If so, please describe them below in as much detail as possible. Use images if possible.
-
-## Please describe your issue. Provide extensive detail and images if possible.
+### What version of the game are you using? Look in the bottom left corner of the main menu. (ex: 0.2.7, 0.2.1, shit like that)
 
 
+### Have you identified any steps to reproduce the bug? If so, please describe them below in as much detail as possible. Use images if possible.
 
-## If you're game is FROZEN and you're playing a web version, press F12 to open up browser dev window, and go to console, and copy-paste whatever red error you're getting
+### Please describe your issue. Provide extensive detail and images if possible.
+
+
+
+### If you're game is FROZEN and you're playing a web version, press F12 to open up browser dev window, and go to console, and copy-paste whatever red error you're getting
