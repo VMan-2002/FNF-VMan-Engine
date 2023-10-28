@@ -21,5 +21,5 @@ labels: compiling help
 - [ ] Linux
 - [ ] HTML5
 
-## Please describe your issue. Provide extensive detail and images if possible.
+## Please describe your issue. Provide extensive detail and images if possible. Also provide the compile log
 
