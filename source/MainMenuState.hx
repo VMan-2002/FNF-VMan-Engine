@@ -24,12 +24,11 @@ using StringTools;
 import Discord.DiscordClient;
 #end
 
-class MainMenuState extends MusicBeatState
-{
-	var curSelected:Int = 0;
+class MainMenuState extends MusicBeatState {
+	public var curSelected:Int = 0;
 
-	var menuItems:FlxTypedGroup<FlxSprite>;
-	var optionShit:Array<String> = [
+	public var menuItems:FlxTypedGroup<FlxSprite>;
+	public var optionShit:Array<String> = [
 		'story mode',
 		'freeplay',
 	#if !switch
@@ -42,19 +41,27 @@ class MainMenuState extends MusicBeatState
 		'credits'
 	];
 
-	var magenta:FlxSprite;
-	var camFollow:FlxObject;
+	public var magenta:FlxSprite;
+	public var camFollow:FlxObject;
 	
 	/*#if !html5
 	var hillarious:MultiWindow;
 	#end*/
 
-	var menuButtonTextures:Map<String, String> = new Map<String, String>();
+	public var menuButtonTextures:Map<String, String> = new Map<String, String>();
 
-	static var possiblyForgotControls:Bool = true;
-	var possiblyForgotControlsTimer:Float = 8;
-	var possiblyForgotControlsText:FlxText;
-	var resetControlsTimer:Float = 0;
+	public function addMenuButton(name:String, tex:String, ?pos:Int = -1) {
+		menuButtonTextures.set(name, tex);
+		if (pos == -1)
+			optionShit.push(name);
+		else
+			optionShit.insert(pos, name);
+	}
+
+	public static var possiblyForgotControls:Bool = true;
+	public var possiblyForgotControlsTimer:Float = 8;
+	public var possiblyForgotControlsText:FlxText;
+	public var resetControlsTimer:Float = 0;
 
 	override function create() {
 		#if desktop
@@ -78,7 +85,7 @@ class MainMenuState extends MusicBeatState
 		Scripting.initScriptsByContext("MainMenuState");
 
 		var bg:FlxSprite = CoolUtil.makeMenuBackground('', -80);
-		bg.setGraphicSize(Std.int(bg.width * 1.1));
+		bg.scale.set(1.1, 1.1);
 		bg.updateHitbox();
 		bg.screenCenter();
 		bg.antialiasing = true;
@@ -88,7 +95,7 @@ class MainMenuState extends MusicBeatState
 		add(camFollow);
 
 		magenta = new FlxSprite(-80).loadGraphic(Paths.image('menuBGDesat'));
-		magenta.setGraphicSize(Std.int(magenta.width * 1.1));
+		magenta.scale.set(1.1, 1.1);
 		magenta.updateHitbox();
 		magenta.screenCenter();
 		magenta.visible = false;
@@ -99,6 +106,9 @@ class MainMenuState extends MusicBeatState
 
 		menuItems = new FlxTypedGroup<FlxSprite>();
 		add(menuItems);
+
+		if (Weeks.getAllWeeksUnsorted(false).length == 0)
+			optionShit.remove("story mode");
 
 		Scripting.runOnScripts("preCreateMenuButtons", []);
 
@@ -179,6 +189,7 @@ class MainMenuState extends MusicBeatState
 		if (FlxG.keys.pressed.SHIFT) {
 			resetControlsTimer += elapsed;
 			if (resetControlsTimer > 3) {
+				persistentUpdate = false;
 				openSubState(new ThingThatSucks.ResetControlsSubState());
 			}
 		} else {
@@ -224,50 +235,57 @@ class MainMenuState extends MusicBeatState
 			}
 
 			if (controls.ACCEPT) {
-				#if !switch
-				if (optionShit[curSelected] == 'donate') {
-					#if linux
-					Sys.command('/usr/bin/xdg-open', ["https://ninja-muffin24.itch.io/funkin", "&"]);
-					#else
-					FlxG.openURL('https://ninja-muffin24.itch.io/funkin');
+				Scripting.clearScriptResults();
+				Scripting.runOnScripts("onAccept", ["MainMenu", optionShit[curSelected], false]);
+				if (!Scripting.scriptResultsContains(false)) {
+					#if !switch
+					if (optionShit[curSelected] == 'donate') {
+						#if linux
+						Sys.command('/usr/bin/xdg-open', ["https://ninja-muffin24.itch.io/funkin", "&"]);
+						#else
+						FlxG.openURL('https://ninja-muffin24.itch.io/funkin');
+						#end
+					} else
 					#end
-				} else
-				#end
-				{
-					selectedSomethin = true;
-					FlxG.sound.play(Paths.sound('confirmMenu'));
+					{
+						selectedSomethin = true;
+						FlxG.sound.play(Paths.sound('confirmMenu'));
 
-					FlxFlicker.flicker(magenta, 1.1, 0.15, false);
+						FlxFlicker.flicker(magenta, 1.1, 0.15, false);
 
-					menuItems.forEach(function(spr:FlxSprite) {
-						if (curSelected != spr.ID) {
-							FlxTween.tween(spr, {alpha: 0}, 0.4, {
-								ease: FlxEase.quadOut,
-								onComplete: function(twn:FlxTween) {
-									spr.kill();
-								}
-							});
-						} else {
-							spr.scale.set(1.2, 1.2);
-							FlxTween.cancelTweensOf(spr.scale);
-							FlxTween.tween(spr.scale, {x: 1.0, y:1.0}, 0.81, {ease: FlxEase.cubeOut, startDelay: 0.1});
-							FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker) {
-								Scripting.runOnScripts("onAccept", [optionShit[curSelected]]);
-								switch (optionShit[curSelected]) {
-									case 'story mode':
-										FlxG.switchState(new StoryMenuState());
-									case 'freeplay':
-										FlxG.switchState(new FreeplayState());
-									case 'options':
-										FlxG.switchState(new OptionsMenu());
-									case 'mods':
-										FlxG.switchState(new ModsMenuState());
-									case 'credits':
-										FlxG.switchState(new CreditsState());
-								}
-							});
-						}
-					});
+						menuItems.forEach(function(spr:FlxSprite) {
+							if (curSelected != spr.ID) {
+								FlxTween.tween(spr, {alpha: 0}, 0.4, {
+									ease: FlxEase.quadOut,
+									onComplete: function(twn:FlxTween) {
+										spr.kill();
+									}
+								});
+							} else {
+								spr.scale.set(1.2, 1.2);
+								FlxTween.cancelTweensOf(spr.scale);
+								FlxTween.tween(spr.scale, {x: 1.0, y:1.0}, 0.81, {ease: FlxEase.cubeOut, startDelay: 0.1});
+								FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker) {
+									Scripting.clearScriptResults();
+									Scripting.runOnScripts("onAccept", ["MainMenu", optionShit[curSelected], true]);
+									if (!Scripting.scriptResultsContains(false)) {
+										switch (optionShit[curSelected]) {
+											case 'story mode':
+												FlxG.switchState(new StoryMenuState());
+											case 'freeplay':
+												FlxG.switchState(new FreeplayState());
+											case 'options':
+												FlxG.switchState(new OptionsMenu());
+											case 'mods':
+												FlxG.switchState(new ModsMenuState());
+											case 'credits':
+												FlxG.switchState(new CreditsState());
+										}
+									}
+								});
+							}
+						});
+					}
 				}
 			}
 		}

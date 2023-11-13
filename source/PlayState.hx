@@ -155,6 +155,7 @@ class PlayState extends MusicBeatState {
 	public var lastHitNoteTime:Float = 0;
 	public var scrollSpeed:Float = 1;
 	public var myHitsound:Null<FlxSound> = null;
+	public var myHitsoundOvertap:Null<FlxSound> = null;
 	
 	//public var strumLineNotes = new Array<StrumNote>();
 	public var strumLines:FlxTypedGroup<StrumLine>;
@@ -172,6 +173,7 @@ class PlayState extends MusicBeatState {
 	public static var curManiaInfo:SwagMania;
 	public var mania_preventSeven:Bool = false;
 	public var mania_preventReset:Bool = false;
+	public var maniaScale:Float = 1.0;
 	
 	//public var notesCanBeHit = true;
 	public static var usedBotplay = false;
@@ -380,6 +382,8 @@ class PlayState extends MusicBeatState {
 						hudZoomSpeed = Std.parseFloat(thing[1]);
 					case "zoomBeats":
 						zoomBeats = Std.parseInt(thing[1]);
+					case "maniaScale":
+						maniaScale = Std.parseInt(thing[1]);
 				}
 			}
 			trace("Added "+SONG.attributes.length+" song attributes");
@@ -520,6 +524,9 @@ class PlayState extends MusicBeatState {
 
 		if (Options.instance.hitsound != "")
 			myHitsound = new FlxSound().loadEmbedded(Paths.sound(Options.instance.hitsound));
+
+		if (Options.instance.hitsound_overtap != "")
+			myHitsoundOvertap = Options.instance.hitsound == Options.instance.hitsound_overtap ? myHitsound : new FlxSound().loadEmbedded(Paths.sound(Options.instance.hitsound));
 
 		//todo: i still haven't unhardcoded these stages (philly, limo, school and schoolEvil)
 		switch (curStage) {
@@ -1254,18 +1261,22 @@ class PlayState extends MusicBeatState {
 						creditString += "\n" + thing[3];
 				}
 			}
-			var creditText = new FlxText(0, FlxG.height, FlxG.width, Assets.getText(thingPath).replace("\r\n", "\n"));
-			creditText.setFormat("vcr.ttf", 24, 0xFFFFFFFF, FlxTextAlign.CENTER);
-			creditText.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 1);
-			creditText.y -= ((creditText.textField.height * 2) + 4);
-			creditText.cameras = [camHUD];
-			add(creditText);
-			timerThingText.alpha = 0.25;
-			FlxTween.tween(creditText, {y: FlxG.height + 4}, 1, {startDelay: 2.5, ease: FlxEase.quartIn, onComplete: function(tw:FlxTween) {
-				remove(creditText);
-				creditText.destroy();
-			}});
-			FlxTween.tween(timerThingText, {alpha: 1}, 0.5, {startDelay: 3, ease: FlxEase.cubeInOut});
+			Scripting.clearScriptResults();
+			Scripting.runOnScripts("songCredit", [creditString, curSong, modName]);
+			if (!Scripting.scriptResultsContains(false)) {
+				var creditText = new FlxText(0, FlxG.height, FlxG.width, Assets.getText(thingPath).replace("\r\n", "\n"));
+				creditText.setFormat("vcr.ttf", 24, 0xFFFFFFFF, FlxTextAlign.CENTER);
+				creditText.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 1);
+				creditText.y -= ((creditText.textField.height * 2) + 4);
+				creditText.cameras = [camHUD];
+				add(creditText);
+				timerThingText.alpha = 0.25;
+				FlxTween.tween(creditText, {y: FlxG.height + 4}, 1, {startDelay: 2.5, ease: FlxEase.quartIn, onComplete: function(tw:FlxTween) {
+					remove(creditText);
+					creditText.destroy();
+				}});
+				FlxTween.tween(timerThingText, {alpha: 1}, 0.5, {startDelay: 3, ease: FlxEase.cubeInOut});
+			}
 		}
 	}
 
@@ -1485,7 +1496,7 @@ class PlayState extends MusicBeatState {
 	public function generateNotes(section:SwagSection, sectionNotes:Array<Dynamic>, layer:Int, addTo:Array<Note>, ?mania:Null<SwagMania>) {
 		if (mania == null)
 			mania = curManiaInfo;
-		//i should move dType handling to Song.hx probably
+		//todo: i should move dType handling to Song.hx probably
 		var hasDType = mania.keys == 9 && section.dType != -1;
 		for (songNotes in sectionNotes) {
 			var daStrumTime:Float = songNotes[0];
@@ -1570,7 +1581,7 @@ class PlayState extends MusicBeatState {
 
 	public function generateStaticArrows(player:Int) {
 		var xPos:Float = 0;
-		var scale:Float = 1;
+		var scale:Float = maniaScale;
 		if (player == 1) {
 			xPos = isMiddlescroll ? FlxG.width / 2 : FlxG.width * 0.75;
 		} else {

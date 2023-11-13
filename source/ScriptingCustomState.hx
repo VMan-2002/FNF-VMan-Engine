@@ -55,8 +55,8 @@ class ScriptingCustomState extends MusicBeatState {
 		}
 		thing("update", [elapsed]);
 		if (controls.ACCEPT)
-			thing("onAccept", [null, null]);
+			thing("onAccept", ["ScriptingCustomState", null, null]);
 		if (controls.BACK)
-			thing("onBack", [null, null]);
+			thing("onBack", ["ScriptingCustomState", null, null]);
 	}
 }

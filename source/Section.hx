@@ -1,8 +1,11 @@
 package;
 
-typedef SwagSection =
-{
-	var sectionNotes:Array<Array<Dynamic>>;
+typedef SwagSection = {
+	var sectionNotes:Array<Array<Dynamic>>; // putting here so i remember:
+	//sectionNotes[i][0]: strumTime
+	//sectionNotes[i][1]: noteData
+	//sectionNotes[i][2]: sustainLength
+	//sectionNotes[i][3]: noteType
 	var notesMoreLayers:Array<Array<Array<Dynamic>>>;
 	var lengthInSteps:Int;
 	var typeOfSection:Int;

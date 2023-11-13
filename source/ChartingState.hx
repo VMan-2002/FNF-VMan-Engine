@@ -368,11 +368,11 @@ class ChartingState extends MusicBeatState {
 		Translation.setUIObjectFont(clearNotesButton);
 
 		var unstackNotesButton:FlxUIButton = new FlxUIButton(10, 320, Translation.getTranslation("Fix Stacked Notes", "charteditor"), function() {
-			var i:Int = _song.notes.length;
-			function fixSection(thing:Array<Array<Dynamic>>) {
-				if (thing == null || thing.length == 0)
-					return;
-				var rows = new Array<Array<Dynamic>>();
+			function fixSection(notes:Array<Array<Dynamic>>) {
+				if (notes == null || notes.length == 0)
+					return notes;
+				//this one sucks
+				/*var rows = new Array<Array<Dynamic>>();
 				for (note in thing) {
 					if (rows[note[1]] == null)
 						rows[note[1]] = new Array<Dynamic>();
@@ -385,15 +385,33 @@ class ChartingState extends MusicBeatState {
 							thing.pop();
 						i -= 1;
 					} while (i >= 0);
+				}*/
+				var rowStuffs = new Map<Int, Array<Null<Float>>>();
+				var result = new Array<Array<Dynamic>>();
+				for (i in 0...notes.length) {
+					if (!rowStuffs.exists(notes[i][3]))
+						rowStuffs.set(notes[i][3], new Array<Null<Float>>());
+					var rowThing = rowStuffs.get(notes[i][3]);
+					while (rowThing.length < notes[i][1])
+						rowThing.push(null);
+
+					if (rowThing[i] == null || Math.abs(rowThing[i] - notes[i][0]) >= 5) {
+						rowThing[i] = notes[i][0];
+						result.push(notes[i]);
+						continue;
+					}
 				}
+				trace("removed " + (notes.length - result.length) + " stacked notes from a section");
+				return result;
 			}
+			var i:Int = _song.notes.length;
 			while (i > 0) {
 				i -= 1;
 				if (_song.notes[i].sectionNotes != null && _song.notes[i].sectionNotes.length > 0)
-					fixSection(_song.notes[i].sectionNotes);
+					_song.notes[i].sectionNotes = fixSection(_song.notes[i].sectionNotes);
 				if (_song.notes[i].notesMoreLayers != null && _song.notes[i].notesMoreLayers.length > 0) {
-					for (lol in _song.notes[i].notesMoreLayers) {
-						fixSection(lol);
+					for (lol in 0..._song.notes[i].notesMoreLayers.length) {
+						_song.notes[i].notesMoreLayers[lol] = fixSection(_song.notes[i].notesMoreLayers[lol]);
 					}
 				}
 			}
@@ -1343,7 +1361,8 @@ class ChartingState extends MusicBeatState {
 			var note:ChartingNote = new ChartingNote(daStrumTime, Math.floor(daNoteInfo % currentChartMania.keys), null, false, null, i.length > 3 ? Math.floor(i[3]) : 0);
 			note.sustainLength = daSus;
 			note.setGraphicSize(GRID_SIZE, GRID_SIZE);
-			note.updateHitbox();
+			note.width = GRID_SIZE;
+			note.height = GRID_SIZE;
 			note.x = Math.floor(daNoteInfo * GRID_SIZE);
 			note.y = Math.floor(getYfromStrum((daStrumTime - startThing) % (Conductor.stepCrochet * getLengthInSteps(curSection))));
 			note.mustPress = daNoteInfo < currentChartMania.keys;
@@ -1352,11 +1371,12 @@ class ChartingState extends MusicBeatState {
 
 			if (daSus > 0) {
 				var sustainVis:FlxSprite = new FlxSprite(note.x + (GRID_SIZE / 2),
-					note.y + GRID_SIZE).makeGraphic(8, Math.floor(FlxMath.remapToRange(daSus, 0, Conductor.stepCrochet * 4 * currentTimeSignature, 0, gridBG.height)));
+					note.y + GRID_SIZE).makeGraphic(8, 4);
+				sustainVis.scale.y = FlxMath.remapToRange(daSus, 0, Conductor.stepCrochet * currentTimeSignature, 0, gridBG.height);
 				curRenderedSustains.add(sustainVis);
 			}
 			if ((!hasNormalNote || i[3] != normalNoteNum) && i.length >= 4) {
-				var roundedType = Math.round(i[3]);
+				var roundedType = Math.floor(i[3]);
 				curRenderedNoteTypes.add(new FlxText(note.x, note.y, GRID_SIZE, (roundedType >= _song.usedNoteTypes.length || roundedType < 0) ? '${roundedType}?' : Note.SwagNoteType.loadNoteType(_song.usedNoteTypes[roundedType], PlayState.modName).acronym).setFormat("VCR OSD Mono", 10, 0xffffffff, FlxTextAlign.LEFT, FlxTextBorderStyle.OUTLINE_FAST, 0xFF000000));
 				//trace("added rendered note type of "+_song.usedNoteTypes[Math.floor(i[3])]);
 			}

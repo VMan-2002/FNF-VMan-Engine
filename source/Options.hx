@@ -101,6 +101,7 @@ class Options {
 	public var hudThingInfo:String = "score,misses,fc,accRating,accSimple,health\nsong,difficulty\nhits,sicks,goods,bads,shits,misses,totalnotes";
 	public var noteSplash:Bool = true;
 	public var hitsound:String = "";
+	public var hitsound_overtap:String = "";
 	
 	//PlayState changeables
 	public var playstate_opponentmode:Bool = false;

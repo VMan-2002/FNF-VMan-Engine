@@ -76,6 +76,7 @@ class Scripting {
         "Note" => Note,
         "ChartingNote" => ChartingNote,
         "StrumLine" => StrumLine,
+        "HealthIcon" => HealthIcon,
 
         //Game state classes
         "PlayState" => PlayState,
@@ -142,6 +143,12 @@ class Scripting {
 	#else
 		"unknown";
 	#end
+    public static var gameBuildType(default, never) =
+    #if debug
+        "debug";
+    #else
+        "release";
+    #end
 
     public var validFuncs:Map<String, Bool>;
     public var interp:Interp;
@@ -149,6 +156,7 @@ class Scripting {
     public var modName:String;
     public var name:String;
     public var context:String;
+    public var alive:Bool = true;
     //public var exitStateDelete:Bool = false;
 
     /**
@@ -353,7 +361,9 @@ class Scripting {
                     "dialogueStart",
                     "dialogueLine",
                     "dialogueUpdate",
-                    "dialogueBoxStyle"
+                    "dialogueBoxStyle",
+                    "songCredit",
+                    "maniaSpecial"
                 ]);
                 trace("Success Load script: "+id);
             }
@@ -370,6 +380,7 @@ class Scripting {
         runValidFunction("destroy", new Array<Dynamic>());
         namedScripts.remove(id);
         scripts.remove(this);
+        alive = false;
     }
     
     /**
@@ -464,6 +475,15 @@ class Scripting {
 
     public static function emptyStringMap()
         return new Map<String, Dynamic>();
+
+    /**
+        This is not ScriptingCustomState().switchToThis(), it exists for convenience
+    **/
+    public function switchToThis() {
+        var mod = id.substring(0, id.indexOf(":") - 1);
+        var name = id.substring(id.indexOf(":") + 1);
+        new ScriptingCustomState(name, mod).switchToThis();
+    }
 
     //interp variables map stuff
 

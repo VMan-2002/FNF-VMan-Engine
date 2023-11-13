@@ -12,6 +12,16 @@ import lime.utils.Assets;
 // import lime;
 using StringTools;
 
+class ManiaFile {
+	public var hasControls:Bool = false;
+	public var basedOn:String = "";
+
+	public var arrows:Array<String>;
+	public var specialTag:Null<String>;
+	public var image:Null<String>;
+	public var scale:Null<Float>;
+	public var spacing:Null<Float>;
+}
 
 typedef SwagMania = {
 	var keys:Int;
@@ -479,10 +489,10 @@ class ManiaInfo {
 					arrows = ['17a', '17b', 'purple', 'blue', 'green', 'red', '13a', '13b', 'white', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17c', '17d', '17a', '17b', 'purple', 'blue', 'green', 'red', '13a', '13b', 'white', '13c', '13d', 'yellow', 'violet', 'darkred', 'dark', '17c', '17d'];
 				case "36k": //18K
 					arrows = ['17a', '17b', 'purple', 'blue', 'green', 'red', 'white', '13a', '13b', '13c', '13d', 'white', 'yellow', 'violet', 'darkred', 'dark', '17c', '17d', '17a', '17b', 'purple', 'blue', 'green', 'red', 'white', '13a', '13b', '13c', '13d', 'white', 'yellow', 'violet', 'darkred', 'dark', '17c', '17d'];
-				default: //4K
-					if (mania != '4k') {
-						trace('Mania not existant!');
-					}
+				case "4k": //4K
+					arrows = ['purple', 'blue', 'green', 'red'];
+				default: //todo: custom
+					trace('Mania not existant!');
 					arrows = ['purple', 'blue', 'green', 'red'];
 			};
 		}
@@ -590,6 +600,7 @@ class ManiaInfo {
 					spr.x += 12.5 * scale * (pos[num % maniaInfo.keys] - 14);
 				}
 			}
+			Scripting.runOnScripts("maniaSpecial", [maniaInfo, num, spr, scale]);
 		}
 	}
 	

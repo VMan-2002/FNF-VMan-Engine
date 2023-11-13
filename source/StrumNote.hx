@@ -71,8 +71,10 @@ class StrumNote extends FlxSprite
 		myArrow = parent.thisManiaInfo.arrows[noteData];
 		var myStrumArrow = ManiaInfo.StrumlineArrow[myArrow];
 		curStyle = style;
-		switch(style) {
-			case "pixel":
+		if (style == "" || style == null)
+			curStyle = "normal";
+		switch(curStyle) {
+			/*case "pixel":
 				frames = Paths.getSparrowAtlas('pixelUI/NOTE_assets-pixel');
 
 				scale.x = PlayState.daPixelZoom * 1.5;
@@ -90,11 +92,11 @@ class StrumNote extends FlxSprite
 				
 				animation.addByPrefix('static', "arrow"+myStrumArrow, 24, true);
 				animation.addByPrefix('pressed', myArrow+' press', 24, false);
-				animation.addByPrefix('confirm', myArrow+' confirm', 24, false);
+				animation.addByPrefix('confirm', myArrow+' confirm', 24, false);*/
 
 			default:
 				//load custom
-				var noteSkin:SwagNoteSkin = SwagNoteSkin.loadNoteSkin(PlayState.SONG.noteSkin, PlayState.modName);
+				var noteSkin:SwagNoteSkin = SwagNoteSkin.loadNoteSkin(curStyle, PlayState.modName);
 				frames = Paths.getSparrowAtlas(noteSkin.image);
 
 				if (noteSkin.arrows == null) {

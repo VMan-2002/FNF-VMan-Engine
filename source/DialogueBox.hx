@@ -85,7 +85,7 @@ class DialogueBox extends FlxSpriteGroup
 				box.animation.addByIndices('normal', 'Spirit Textbox spawn', [11], "", 24);
 
 				var face:FlxSprite = new FlxSprite(320, 170).loadGraphic(Paths.image('weeb/spiritFaceForward'));
-				face.setGraphicSize(Std.int(face.width * 6));
+				face.scale.set(6, 6);
 				add(face);
 		}
 

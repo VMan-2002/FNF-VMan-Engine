@@ -2,6 +2,8 @@ package;
 
 import Paths;
 import Scripting.MyFlxColor;
+import flixel.FlxBasic;
+import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -10,6 +12,7 @@ import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
 import flixel.tweens.FlxEase;
 import flixel.util.FlxColor;
+import flixel.util.typeLimit.OneOfThree;
 import flixel.util.typeLimit.OneOfTwo;
 import haxe.Json;
 import lime.utils.Assets;
@@ -305,7 +308,7 @@ class CoolUtil
 
 		Also sets the Group's `length` value to 0 (unless the group is already empty)
 	**/
-	public static function clearMembers(grp:OneOfTwo<FlxTypedGroup<Dynamic>, FlxSpriteGroup>) {
+	public static function clearMembers(grp:OneOfThree<FlxTypedGroup<Dynamic>, FlxSpriteGroup, FlxTypedSpriteGroup<Dynamic>>) {
 		var memb:Array<Dynamic> = Reflect.field(grp, "members"); //Typesafe is fucking my ass so i cant use grp.members
 		if (memb == null || memb.length == 0)
 			return;
@@ -327,7 +330,7 @@ class CoolUtil
 	}
 
 	/**
-		Does the string contain 1 or more letters
+		Does the string contain 1 or more letters (chars that uppercase/lowercase forms)
 	**/
 	public static inline function isLetters(s:String) {
 		return s.toUpperCase() != s.toLowerCase();
@@ -621,6 +624,15 @@ class CoolUtil
 		if (col == null || Math.isNaN(col))
 			return MyFlxColor.d.exists(input) ? MyFlxColor.d.get(input) : null;
 		return col;
+	}
+
+	public static function putInCamera(camera:FlxCamera, items:Array<FlxBasic>, ?replace:Bool = true) {
+		for (thing in items) {
+			if (replace)
+				thing.cameras = [camera];
+			else
+				thing.cameras.push(camera);
+		}
 	}
 }
 

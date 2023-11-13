@@ -70,7 +70,7 @@ class TitleState extends MusicBeatState {
 	public static var doCoolText = true;
 	public var introTexts:Array<String>;
 
-	var replayTitle:Bool = false;
+	public static var replayTitle:Bool = false;
 	var reloadingMods:Bool = false;
 	var fromOptions:Bool = false;
 	var toPlayState:Bool = false;
@@ -342,7 +342,7 @@ class TitleState extends MusicBeatState {
 		ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('title/newgrounds_logo'));
 		add(ngSpr);
 		ngSpr.visible = false;
-		ngSpr.setGraphicSize(Std.int(ngSpr.width * 0.8));
+		ngSpr.scale.set(0.8, 0.8);
 		ngSpr.updateHitbox();
 		ngSpr.screenCenter(X);
 		ngSpr.antialiasing = true;
@@ -407,6 +407,7 @@ class TitleState extends MusicBeatState {
 		if (pressedEnter) {
 			if (skippedIntro) {
 				if (!transitioning) {
+					Scripting.runOnScripts("onAccept", ["TitleState", "titleProceed", null]);
 					#if !switch
 					//NGio.unlockMedal(60960);
 		
@@ -529,7 +530,7 @@ class TitleState extends MusicBeatState {
 
 	function skipIntro(?manual:Bool = false):Void {
 		if (!skippedIntro) {
-			Scripting.runOnScripts("onAccept", ["skipIntro", manual]);
+			Scripting.runOnScripts("onAccept", ["TitleState", "skipIntro", manual]);
 			remove(ngSpr);
 
 			FlxG.camera.flash(FlxColor.WHITE, 4);

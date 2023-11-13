@@ -58,6 +58,7 @@ class ResetControlsSubState extends MusicBeatSubstate
 
 		if (FlxG.keys.justPressed.ESCAPE) {
 			close();
+			FlxG.state.persistentUpdate = true;
 		}
 	}
 

@@ -35,10 +35,11 @@ class StrumLine extends FlxTypedGroup<FlxSprite> {
 		if (mania == null) {
 			return;
 		}
-		SwitchMania(mania, false, oldScale);
+		SwitchManiaInstant(mania, false, oldScale);
 	}
 	
 	public function SwitchMania(mania:SwagMania, ?anim:Bool = false, oldScale:Float, ?forceAppearAnim:Null<Bool> = null) {
+		var style = strumNotes.length != 0 ? strumNotes[0].curStyle : PlayState.SONG.noteSkin;
 		thisManiaInfo = mania;
 		var oldStrumNotes:Null<Array<StrumNote>> = null;
 		var oldArrows:Null<Array<String>> = null;
@@ -52,11 +53,10 @@ class StrumLine extends FlxTypedGroup<FlxSprite> {
 		}
 		members.resize(0);
 		length = 0;
-		strumNotes = new Array<StrumNote>();
+		strumNotes.resize(0);
 		var left:Float = ((thisManiaInfo.spacing) * (thisManiaInfo.keys - 1) * scale) / 2;
 		for (i in 0...thisManiaInfo.keys) {
 			// FlxG.log.add(i);
-			var style = PlayState.SONG.noteSkin;
 			var babyArrow:StrumNote = new StrumNote(x, y, i, style, this);
 			
 			babyArrow.x += ((thisManiaInfo.spacing) * i) * scale;
@@ -97,9 +97,46 @@ class StrumLine extends FlxTypedGroup<FlxSprite> {
 			strumNotes.push(babyArrow);
 		}
 		if (oldStrumNotes != null) {
-			for (a in oldStrumNotes)
+			for (a in oldStrumNotes) {
+				FlxTween.cancelTweensOf(a);
 				a.destroy();
+			}
 		}
+		postManiaSwitch(anim, forceAppearAnim);
+	}
+	
+	public function SwitchManiaInstant(mania:SwagMania, ?anim:Bool = false, oldScale:Float, ?forceAppearAnim:Null<Bool> = null) {
+		var style = strumNotes.length != 0 ? strumNotes[0].curStyle : PlayState.SONG.noteSkin;
+		thisManiaInfo = mania;
+		for (a in members) {
+			FlxTween.cancelTweensOf(a);
+			a.destroy();
+		}
+		members.resize(0);
+		length = 0;
+		strumNotes.resize(0);
+		var left:Float = ((thisManiaInfo.spacing) * (thisManiaInfo.keys - 1) * scale) / 2;
+		for (i in 0...thisManiaInfo.keys) {
+			// FlxG.log.add(i);
+			var babyArrow:StrumNote = new StrumNote(x, y, i, style, this);
+			
+			babyArrow.x += ((thisManiaInfo.spacing) * i) * scale;
+			babyArrow.x -= left;
+			ManiaInfo.DoNoteSpecial(babyArrow, i, mania, scale);
+
+			babyArrow.updateHitbox();
+			babyArrow.scrollFactor.set();
+			babyArrow.visible = babyArrow.visible && !Options.instance.invisibleNotes;
+
+			babyArrow.animation.play('static');
+
+			add(babyArrow);
+			strumNotes.push(babyArrow);
+		}
+		postManiaSwitch(anim, forceAppearAnim);
+	}
+
+	function postManiaSwitch(anim:Bool, forceAppearAnim:Null<Bool>) {
 		updateSpan();
 
 		if (CoolUtil.isInPlayState() && PlayState.instance.startingSong) {

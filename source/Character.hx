@@ -63,8 +63,7 @@ typedef SwagCharacterAnim = {
 	public var flipY:Null<Bool>;
 }
 
-class Character extends SpriteVMan
-{
+class Character extends SpriteVManExtra {
 	public static var nextId:Int = 0;
 	public static var activeArray:Array<Character>;
 	public static function findSuitableCharacter(name:String, ?def:Int = 0) {
@@ -326,7 +325,7 @@ class Character extends SpriteVMan
 
 				playAnim('danceRight');
 
-				setGraphicSize(Std.int(width * PlayState.daPixelZoom));
+				scale.set(6, 6);
 				updateHitbox();
 				antialiasing = false;
 

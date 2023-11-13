@@ -431,6 +431,7 @@ class ControlsSubState extends OptionsSubStateBasic
 			Options.controls.set(i, ncControls.get(i));
 		}
 		Options.applyControls();
+		MainMenuState.possiblyForgotControls = true;
 		return true;
 	}
 	

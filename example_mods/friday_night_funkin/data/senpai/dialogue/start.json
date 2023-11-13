@@ -9,7 +9,8 @@
 					"isTalking": true
 				}
 			],
-			"boxStyle": "senpai"
+			"boxStyle": "senpai",
+			"music": "Lunchbox"
 		},
 		{
 			"text": "A serenade between gentlemen shall decide where her beautiful heart shall reside."
@@ -28,6 +29,5 @@
 				}
 			]
 		}
-	],
-	"music": "Lunchbox"
+	]
 }

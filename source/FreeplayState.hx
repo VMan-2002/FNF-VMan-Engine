@@ -543,7 +543,7 @@ class FreeplayState extends MusicBeatState {
 		}
 
 		if (accepted) {
-			Scripting.runOnScripts("onAccept", [songs[curSelected].songName, songs[curSelected].mod]);
+			Scripting.runOnScripts("onAccept", ["Freeplay", songs[curSelected].songName, songs[curSelected].mod]);
 			if (songs[curSelected].type == 1) {
 				//a folder
 				/*if (cornflowerMenus.contains(songs[curSelected].week)) {

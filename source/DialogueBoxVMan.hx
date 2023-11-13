@@ -31,6 +31,7 @@ class DialogueFile {
 	public var usedInFreeplay:Bool = false;
 	public var music:String;
 	public var introSound:String;
+	public var stopMusicOnEnd:Bool = true;
 }
 
 class DialogueLine {
@@ -116,6 +117,7 @@ class DialogueBoxVMan extends FlxSpriteGroup {
 	public var dialogueLineCount:Int = 0;
 	public var autoWait:Float = 0;
 	public var curBoxStyle:Null<String> = null;
+	public var stopMusicOnEnd:Bool = true;
 
 	public function new(?file:Null<String>, ?dialogueFile:DialogueFile) {
 		super();
@@ -136,9 +138,10 @@ class DialogueBoxVMan extends FlxSpriteGroup {
 		dialogueLineCount = dialogueFile.texts.length;
 
 		trace(dialogueList[0].text);
+		stopMusicOnEnd = dialogueFile.stopMusicOnEnd != false;
 
-		if (dialogueFile.music != "" && dialogueFile.music != null) {
-			FlxG.sound.playMusic(Paths.music(dialogueFile.music), 0);
+		if (dialogueList[0].music != "" && dialogueList[0].music != null) {
+			FlxG.sound.playMusic(Paths.music(dialogueList[0].music), 0);
 			FlxG.sound.music.fadeIn(1, 0, 0.8);
 		}
 
@@ -198,7 +201,7 @@ class DialogueBoxVMan extends FlxSpriteGroup {
 		portraitLeft = new FlxSprite(-20, 40);
 		portraitLeft.frames = Paths.getSparrowAtlas('weeb/senpaiPortrait');
 		portraitLeft.animation.addByPrefix('enter', 'Senpai Portrait Enter', 24, false);
-		portraitLeft.setGraphicSize(Std.int(portraitLeft.width * PlayState.daPixelZoom * 0.9));
+		portraitLeft.scale.set(PlayState.daPixelZoom * 0.9, PlayState.daPixelZoom * 0.9);
 		portraitLeft.updateHitbox();
 		portraitLeft.scrollFactor.set();
 		add(portraitLeft);
@@ -207,14 +210,14 @@ class DialogueBoxVMan extends FlxSpriteGroup {
 		portraitRight = new FlxSprite(0, 40);
 		portraitRight.frames = Paths.getSparrowAtlas('weeb/senpaiPortrait');
 		portraitRight.animation.addByPrefix('enter', 'Boyfriend portrait enter', 24, false);
-		portraitRight.setGraphicSize(Std.int(portraitRight.width * PlayState.daPixelZoom * 0.9));
+		portraitRight.scale.set(PlayState.daPixelZoom * 0.9, PlayState.daPixelZoom * 0.9);
 		portraitRight.updateHitbox();
 		portraitRight.scrollFactor.set();
 		add(portraitRight);
 		portraitRight.visible = false;
 		
 		box.playAnim('normalOpen');
-		box.setGraphicSize(Std.int(box.width * PlayState.daPixelZoom * 0.9));
+		box.scale.set(PlayState.daPixelZoom * 0.9, PlayState.daPixelZoom * 0.9);
 		box.updateHitbox();
 		add(box);
 
@@ -222,7 +225,7 @@ class DialogueBoxVMan extends FlxSpriteGroup {
 		portraitLeft.screenCenter(X);
 
 		handSelect = new FlxSprite(FlxG.width * 0.9, FlxG.height * 0.9).loadGraphic(Paths.image('pixelUI/hand_textbox'));
-		handSelect.setGraphicSize(Std.int(handSelect.width * PlayState.daPixelZoom * 0.9));
+		handSelect.scale.set(PlayState.daPixelZoom * 0.9, PlayState.daPixelZoom * 0.9);
 		add(handSelect);
 
 		if (dialogueFile.texts[0].boxStyle == "invisible") {
@@ -262,10 +265,7 @@ class DialogueBoxVMan extends FlxSpriteGroup {
 		for (a in 0...style.animations.length)
 			Character.loadAnimation(box, style.animations[a]);
 		
-		if (keepAnim != null && box.hasAnim(keepAnim))
-			box.playAnim(keepAnim);
-		else
-			box.playAnim('normalOpen');
+		box.playAvailableAnim([keepAnim, 'normalOpen']);
 		
 		swagDialogue.setPosition(style.textPosition[0], style.textPosition[1]);
 		swagDialogue.fieldWidth = Std.int(style.textPosition[2]);
@@ -313,6 +313,8 @@ class DialogueBoxVMan extends FlxSpriteGroup {
 					if (dialogueList[1] == null && dialogueList[0] != null) {
 						if (!isEnding) {
 							isEnding = true;
+							if (stopMusicOnEnd && FlxG.sound.music != null && FlxG.sound.music.playing)
+								FlxG.sound.music.fadeOut(2.2, 0);
 							
 							if (dialogueFile.dontClose)
 								finishThing();
@@ -335,9 +337,6 @@ class DialogueBoxVMan extends FlxSpriteGroup {
 	}
 
 	public function closeDialoguePixel(?length:Float = 1.2) {
-		if (FlxG.sound.music != null && FlxG.sound.music.playing)
-			FlxG.sound.music.fadeOut(2.2, 0);
-
 		new FlxTimer().start(length / 6, function(tmr:FlxTimer) {
 			box.alpha -= 1 / 5;
 			bgFade.alpha -= 0.7 / 5;
@@ -355,9 +354,6 @@ class DialogueBoxVMan extends FlxSpriteGroup {
 	}
 
 	public function closeDialogue(?length:Float = 1.2) {
-		if (FlxG.sound.music != null && FlxG.sound.music.playing)
-			FlxG.sound.music.fadeOut(2.2, 0);
-
 		box.playAnim(box.animation.curAnim.name + "Close");
 		FlxTween.tween(bgFade, {alpha: 0.0}, length);
 		FlxTween.tween(swagDialogue, {alpha: 0.0}, length);
@@ -444,11 +440,11 @@ class DialogueBoxVMan extends FlxSpriteGroup {
 	}
 }
 
-class DialogueCharacter extends SpriteVMan {
-	public var expression:String;
-	public var talking:Bool;
+class DialogueCharacter extends SpriteVManExtra {
+	public var expression:String = "normal";
+	public var talking:Bool = false;
 	public var parent:DialogueBoxVMan;
-	public var isJustAdded:Bool;
+	public var isJustAdded:Bool = true;
 	
 	public var myMod:String;
 	public var characterName:String;
@@ -456,9 +452,6 @@ class DialogueCharacter extends SpriteVMan {
 
 	public function new(char:String, mod:String, parent:DialogueBoxVMan) {
 		super(0, 0);
-		expression = "normal";
-		talking = false;
-		isJustAdded = true;
 		characterName = char;
 		this.parent = parent;
 		setCharacter(char, mod);
@@ -487,6 +480,7 @@ class DialogueCharacter extends SpriteVMan {
 			trace("Could not load character " + char);
 			return;
 		}
+		isPlayer = jsonThing.isPlayer;
 		frames = Paths.getSparrowAtlas(jsonThing.image);
 		for (anim in jsonThing.animations) {
 			Character.loadAnimation(this, anim);
@@ -497,6 +491,8 @@ class DialogueCharacter extends SpriteVMan {
 	}
 
 	public function setFlip(flip:Bool) {
+		if (isPlayer)
+			flip = !flip;
 		if (flipX == flip)
 			return;
 		flipX = flip;

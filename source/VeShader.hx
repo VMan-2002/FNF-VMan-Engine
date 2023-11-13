@@ -2,7 +2,7 @@ package;
 
 import flixel.FlxCamera;
 import flixel.FlxG;
-import openfl.display.Shader;
+import flixel.system.FlxAssets.FlxShader;
 import openfl.display.ShaderParameter;
 import openfl.filters.ShaderFilter;
 import sys.FileSystem;
@@ -18,7 +18,7 @@ using StringTools;
     }
 } */
 
-class VeShader extends Shader {
+class VeShader extends FlxShader {
     //When I Veshad. I'm a Veshader
     public var filter:ShaderFilter;
 

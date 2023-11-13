@@ -44,6 +44,27 @@ class Weeks { //we REALYL gettin in the deep stuff!
 			return 0;
 		return -SortWeeks(b, a, true);
 	}
+
+	public static function getAllWeeksUnsorted(?includeHidden:Bool = true):Array<SwagWeek> {
+		var weeks:Array<SwagWeek> = new Array<SwagWeek>();
+		//var portedOld = false;
+		for (thing in ModLoad.enabledMods) {
+			var path = "mods/" + thing + "/weeks/";
+			//if the folder exists, read it
+			if (FileSystem.exists(path)) {
+				var files = FileSystem.readDirectory(path);
+				for (file in files) {
+					if (file.endsWith(".json")) {
+						var week = getWeek(file.substring(0, file.length - 5), thing);
+						if (!week.visibleStoryMenu && !includeHidden)
+							continue;
+						weeks.push(week);
+					}
+				}
+			}
+		}
+		return weeks;
+	}
 	
 	public static function getAllWeeks(?includeHidden:Bool = true):Array<SwagWeek> {
 		//for every mod folder, read the weeks folder

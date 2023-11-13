@@ -132,11 +132,13 @@ class Main extends Sprite {
 	function errorHandler(evt:UncaughtErrorEvent) {
 		trace("Crashed :(");
 		var stack = new Array<String>();
-		if (CallStack.exceptionStack(true).length == 0) {
+		//todo: i dont know why but the exceptionstack is empty
+		var exceptionstack = CallStack.exceptionStack(true);
+		if (exceptionstack.length == 0) {
 			trace("callstack not available?");
-			stack.push("stack unavailable");
+			stack.push("[stack unavailable]");
 		} else {
-			for (thing in CallStack.exceptionStack(true)) {
+			for (thing in exceptionstack) {
 				switch (thing) {
 					case FilePos(a, f, l, c):
 						stack.push('${f} L${l} C${c}');
@@ -146,9 +148,8 @@ class Main extends Sprite {
 				trace(thing.getIndex());
 			}
 		}
-		if (stack.length == 0) {
-			stack.push("stack unmeasurable");
-		}
+		if (stack.length == 0)
+			stack.push("[stack unmeasurable]");
 		var result = [
 			"VMan Engine ran into a problem :(",
 			"",

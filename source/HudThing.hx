@@ -35,7 +35,7 @@ class HudThing extends FlxGroup {
 	];
 
 	public var ranks:Array<SwagRank> = [
-		{level: -99, name: "WTF!?"},
+		{level: -99, name: "What!?"},
 		{level: 0.0, name: "Awful"},
 		{level: 0.1, name: "Terrible"},
 		{level: 0.2, name: "Stupid"},
@@ -51,6 +51,9 @@ class HudThing extends FlxGroup {
 		{level: 0.98, name: "Amazing"},
 		{level: 1.0, name: "PERFECT!!"}
 	];
+
+	public var onUpdateText:Null<HudThing->Void> = null;
+	public var onUpdateInfo:Null<HudThing->Void> = null;
 
 	//arbitrary whatevers
 	//public var ratingAcc:Array<Float> = [0.25, 0.5, 0.7, 0.8, 0.85, 0.9, 0.95, 0.975, 0.9825, 0.995, 1];
@@ -119,43 +122,45 @@ class HudThing extends FlxGroup {
 
 	public function updateDatas() {
 		for (i in 0...items.length) {
-			switch(items[i]) {
+			itemDatas[i] = switch(items[i]) {
 				case "score":
-					itemDatas[i] = Std.string(PlayState.instance.songScore);
+					Std.string(PlayState.instance.songScore);
 				case "misses":
-					itemDatas[i] = Std.string(PlayState.instance.songMisses);
+					Std.string(PlayState.instance.songMisses);
 				case "health":
-					itemDatas[i] = trimNoPercent(PlayState.instance.health / 2);
+					trimNoPercent(PlayState.instance.health / 2);
 				//case "difficulty":
-				//	itemDatas[i] = Translation.getTranslation(PlayState.instance.storyDifficultyText, "difficulty") + Highscore.getModeString(true, true);
+				//	Translation.getTranslation(PlayState.instance.storyDifficultyText, "difficulty") + Highscore.getModeString(true, true);
 				case "accSimple":
-					itemDatas[i] = trimNoPercent(PlayState.instance.songHits / (PlayState.instance.songHits + PlayState.instance.songMisses));
+					trimNoPercent(PlayState.instance.songHits / (PlayState.instance.songHits + PlayState.instance.songMisses));
 				case "accRating":
-					itemDatas[i] = trimNoPercent(accuracy());
+					trimNoPercent(accuracy());
 				case "sicks":
-					itemDatas[i] = Std.string(PlayState.instance.sicks);
+					Std.string(PlayState.instance.sicks);
 				case "goods":
-					itemDatas[i] = Std.string(PlayState.instance.goods);
+					Std.string(PlayState.instance.goods);
 				case "bads":
-					itemDatas[i] = Std.string(PlayState.instance.bads);
+					Std.string(PlayState.instance.bads);
 				case "shits":
-					itemDatas[i] = Std.string(PlayState.instance.shits);
+					Std.string(PlayState.instance.shits);
 				case "imperfects":
-					itemDatas[i] = Std.string(PlayState.instance.shits + PlayState.instance.bads + PlayState.instance.goods);
+					Std.string(PlayState.instance.shits + PlayState.instance.bads + PlayState.instance.goods);
 				case "hits":
-					itemDatas[i] = Std.string(PlayState.instance.songHits);
+					Std.string(PlayState.instance.songHits);
 				case "totalnotes":
-					itemDatas[i] = Std.string(PlayState.instance.songHits + PlayState.instance.songHittableMisses);
+					Std.string(PlayState.instance.songHits + PlayState.instance.songHittableMisses);
 				case "combo":
-					itemDatas[i] = Std.string(PlayState.instance.combo);
+					Std.string(PlayState.instance.combo);
 				case "maxCombo":
-					itemDatas[i] = Std.string(PlayState.instance.maxCombo);
+					Std.string(PlayState.instance.maxCombo);
 				case "overTaps":
-					itemDatas[i] = Std.string(PlayState.instance.overTaps);
+					Std.string(PlayState.instance.overTaps);
 				case "overStrums":
-					itemDatas[i] = Std.string(PlayState.instance.overStrums);
+					Std.string(PlayState.instance.overStrums);
 				case "rankWord":
-					itemDatas[i] = getRank(accuracy(), ranks);
+					getRank(accuracy(), ranks);
+				default:
+					null;
 			}
 		}
 	}
@@ -243,6 +248,8 @@ class HudThing extends FlxGroup {
 					text += "Unknown: "+items[i];
 			}
 		}
+		if (onUpdateInfo != null)
+			onUpdateInfo(this);
 		return vertical ? text+"\n" : text; //vertical text needs an additional newline idk why
 	}
 	
@@ -252,6 +259,8 @@ class HudThing extends FlxGroup {
 	
 	public inline function updateInfo() {
 		textThing.text = getInfoText();
+		if (onUpdateText != null)
+			onUpdateText(this);
 	}
 	
 	public inline static function trimPercent(num:Float) {
@@ -295,5 +304,12 @@ class HudThingGroup extends FlxTypedGroup<HudThing> {
 	public function updateDatas() {
 		for (thing in members)
 			thing.updateDatas();
+	}
+
+	public function updateTextDatas() {
+		for (thing in members) {
+			thing.updateDatas();
+			thing.updateInfo();
+		}
 	}
 }
