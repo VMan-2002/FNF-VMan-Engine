@@ -145,7 +145,7 @@ class MainMenuState extends MusicBeatState {
 
 		// NG.core.calls.event.logEvent('swag').send();
 		if (focusOn != null)
-			curSelected = a.optionShit.indexOf(focusOn);
+			curSelected = optionShit.indexOf(focusOn);
 		changeItem(0, false);
 		FlxG.camera.snapToTarget();
 		

@@ -2347,8 +2347,9 @@ class PlayState extends MusicBeatState {
 			marvelous += 1;
 			//todo: sometimes notesplashes are the wrong color
 			//todo: sometimes notesplashes crash.
-			if (Options.instance.noteSplash)
-				grpNoteSplashes.recycle(NoteSplash, NoteSplash.new).playNoteSplash(playerStrums.strumNotes[daNote.strumNoteNum], daNote);
+			if (Options.instance.noteSplash) {
+				grpNoteSplashes.add(new NoteSplash()).playNoteSplash(playerStrums.strumNotes[daNote.strumNoteNum], daNote);
+			}
 		}
 		if (daRating != "marvelous")
 			songMFC = false;
