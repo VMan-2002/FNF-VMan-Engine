@@ -20,7 +20,7 @@ class StrumLine extends FlxTypedGroup<FlxSprite> {
 	public var y:Float;
 	public var scale:Float;
 	public var curManiaChangeNum:Int = 0;
-	public var strumNotes:Array<StrumNote>;
+	public var strumNotes = new Array<StrumNote>();
 	public var spanX:Float = 0;
 	public var spanY:Float = 0;
 	public var inManiaChange:Bool = false;

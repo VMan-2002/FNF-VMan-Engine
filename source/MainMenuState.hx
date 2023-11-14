@@ -43,6 +43,7 @@ class MainMenuState extends MusicBeatState {
 
 	public var magenta:FlxSprite;
 	public var camFollow:FlxObject;
+	public var focusOn:Null<String> = null;
 	
 	/*#if !html5
 	var hillarious:MultiWindow;
@@ -143,7 +144,8 @@ class MainMenuState extends MusicBeatState {
 		add(vmanEngineThing);
 
 		// NG.core.calls.event.logEvent('swag').send();
-
+		if (focusOn != null)
+			curSelected = a.optionShit.indexOf(focusOn);
 		changeItem(0, false);
 		FlxG.camera.snapToTarget();
 		
@@ -155,7 +157,7 @@ class MainMenuState extends MusicBeatState {
 	
 	public inline static function returnToMenuFocusOn(item:String) {
 		var a = new MainMenuState();
-		a.curSelected = a.optionShit.indexOf(item);
+		a.focusOn = item;
 		FlxG.switchState(a);
 	}
 

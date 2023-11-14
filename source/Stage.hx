@@ -27,6 +27,7 @@ typedef StageElement = {
 	var alpha:Null<Float>;
 	var showInFast:Null<Bool>; //todo: i should add this into the options menu!!!!!!!!!!!!!!!
 	var generateColor:Null<String>;
+	var angle:Null<Float>;
 }
 
 typedef SwagStage = {
@@ -146,7 +147,7 @@ class Stage {
 			if (colorGenArgs != null) {
 				switch(colorGenArgs.length) {
 					case 1: //solid color
-						sprite.makeGraphic(8, 8, FreeplayState.parseColor(colorGenArgs[0]));
+						sprite.makeGraphic(8, 8, CoolUtil.parseColor(colorGenArgs[0]));
 						sprite.scale.set(element.scaleX / 8, element.scaleY / 8);
 					case 2: //vertical gradient
 					case 3: //rotated gradient
@@ -174,6 +175,7 @@ class Stage {
 			sprite.scrollFactor.x = element.scrollX == null ? 1 : element.scrollX;
 			sprite.scrollFactor.y = element.scrollY == null ? 1 : element.scrollY;
 			sprite.visible = element.startVisible != false;
+			sprite.angle = element.angle == null ? 0 : element.angle;
 			if (element.blendMode != null) {
 				switch(element.blendMode.toLowerCase()) {
 					case "add" | "alpha" | "darken" | "difference" | "erase" | "hardlight" | "invert" | "layer" | "lighten" | "multiply" | "normal" | "overlay" | "screen" | "shader" | "subtract":

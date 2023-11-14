@@ -168,13 +168,16 @@ class Character extends SpriteVManExtra {
 
 		//todo: i still haven't unhardcoded these characters (gf, gf-christmas, gf-tankmen, bf-holding-gf, gf-car, gf-pixel, mom-car, monster, monster-christmas, pico-speaker, bf, bf-dead, bf-christmas, bf-car, bf-pixel, bf-pixel-dead, bf-holding-gf-dead, senpai, senpai-angry, spirit, parents-christmas, tankman)
 		switch (curCharacter) {
-			case "emptyLoad":
+			case "emptyLoad" | "emptyInvisible":
 				//load the minimum required stuff
-				frames = null;
+				//todo: why doesn't this work hmmmm
+				loadGraphic(null, true);
 				antialiasing = false;
 				animation.add("idle", [0]);
 				addOffset("idle", 0, 0, 0);
 				playAnim("idle");
+				if (curCharacter == "emptyInvisible")
+					visible = false;
 			case 'gf':
 				// GIRLFRIEND CODE
 				AnimationDebug.imageFile = 'characters/GF_assets';

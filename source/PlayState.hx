@@ -2878,7 +2878,7 @@ class PlayState extends MusicBeatState {
 				setHealth(health + noteTypeData.healthHold, newMax);
 			} else {
 				setHealth(health + switch(rating) {
-					case "sick" | "":
+					case "sick" | "" | "marvelous":
 						noteTypeData.healthHitSick;
 					case "good":
 						noteTypeData.healthHitGood;
