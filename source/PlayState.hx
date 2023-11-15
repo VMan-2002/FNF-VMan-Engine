@@ -2338,16 +2338,15 @@ class PlayState extends MusicBeatState {
 			daRating = 'good';
 			score = 200;
 			goods += 1;
-		} else if (noteDiff > Conductor.safeZoneOffset * 0.08) {
+		} else {
 			score = 350;
 			sicks += 1;
 			if (noteDiff <= Conductor.safeZoneOffset * 0.08)
 				marvelous += 1;
 			else
 				daRating = 'sick';
-			if (Options.instance.noteSplash) {
+			if (Options.instance.noteSplash)
 				grpNoteSplashes.add(new NoteSplash()).playNoteSplash(playerStrums.strumNotes[daNote.strumNoteNum], daNote);
-			}
 		}
 		if (daRating != "marvelous") {
 			songMFC = false;

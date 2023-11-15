@@ -200,17 +200,12 @@ class SwagUIStyle {
 			if (uiStyle.ratings.get("sick-cool") == null)
 				uiStyle.ratings.set("sick-cool", uiStyle.ratings.get("sick"));
 		}
-		//i'll probably use this but not now
-		if (uiStyle.ratings.get("marvelous") == null) {
+		if (uiStyle.ratings.get("marvelous") == null)
 			uiStyle.ratings.set("marvelous", uiStyle.ratings.get("sick"));
-			uiStyle.ratings.set("marvelous-cool", uiStyle.ratings.get("sick-cool"));
-			uiStyle.ratings.set("marvelous-epic", uiStyle.ratings.get("sick-cool"));
-		} else {
-			if (uiStyle.ratings.get("marvelous-cool") == null)
-				uiStyle.ratings.set("marvelous-cool", uiStyle.ratings.get("marvelous"));
-			if (uiStyle.ratings.get("marvelous-epic") == null)
-				uiStyle.ratings.set("marvelous-epic", uiStyle.ratings.get("marvelous-cool"));
-		}
+		if (uiStyle.ratings.get("marvelous-cool") == null)
+			uiStyle.ratings.set("marvelous-cool", uiStyle.ratings.get("sick-cool") == uiStyle.ratings.get("sick") ? uiStyle.ratings.get("marvelous") : uiStyle.ratings.get("sick-cool"));
+		if (uiStyle.ratings.get("marvelous-epic") == null)
+			uiStyle.ratings.set("marvelous-epic", uiStyle.ratings.get("marvelous-cool"));
 		if (uiStyle.ratings.get("good") == null)
 			uiStyle.ratings.set("good", "normal/good");
 		if (uiStyle.ratings.get("bad") == null)
