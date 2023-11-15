@@ -2339,26 +2339,25 @@ class PlayState extends MusicBeatState {
 			score = 200;
 			goods += 1;
 		} else if (noteDiff > Conductor.safeZoneOffset * 0.08) {
-			daRating = 'sick';
 			score = 350;
 			sicks += 1;
-		} else {
-			sicks += 1;
-			marvelous += 1;
-			//todo: sometimes notesplashes are the wrong color
-			//todo: sometimes notesplashes crash.
+			if (noteDiff <= Conductor.safeZoneOffset * 0.08)
+				marvelous += 1;
+			else
+				daRating = 'sick';
 			if (Options.instance.noteSplash) {
 				grpNoteSplashes.add(new NoteSplash()).playNoteSplash(playerStrums.strumNotes[daNote.strumNoteNum], daNote);
 			}
 		}
-		if (daRating != "marvelous")
+		if (daRating != "marvelous") {
 			songMFC = false;
-		if (!songMFC && daRating != "sick" && songFC < 2) {
-			if (daRating == "good") {
-				if (songFC == 0)
-					songFC = 1;
-			} else if (songFC < 2) {
-				songFC = 2;
+			if (!songMFC && daRating != "sick" && songFC < 2) {
+				if (daRating == "good") {
+					if (songFC == 0)
+						songFC = 1;
+				} else if (songFC < 2) {
+					songFC = 2;
+				}
 			}
 		}
 		if (!usedBotplay || !isStoryMode)

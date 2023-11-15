@@ -1357,7 +1357,10 @@ class ChartingState extends MusicBeatState {
 
 			if (daSus > 0) {
 				var sustainVis:FlxSprite = new FlxSprite(note.x + (GRID_SIZE / 2),
-					note.y + GRID_SIZE).makeGraphic(8, Math.floor(FlxMath.remapToRange(daSus, 0, Conductor.stepCrochet * 16, 0, gridBG.height)));
+					note.y + GRID_SIZE).makeGraphic(8, 4);
+				sustainVis.scale.y = FlxMath.remapToRange(daSus, 0, Conductor.stepCrochet * currentTimeSignature * 16, 0, gridBG.height);
+				sustainVis.offset.y = -2 * sustainVis.scale.y;
+				//sustainVis.updateHitbox();
 				curRenderedSustains.add(sustainVis);
 			}
 			if ((!hasNormalNote || i[3] != normalNoteNum) && i.length >= 4) {

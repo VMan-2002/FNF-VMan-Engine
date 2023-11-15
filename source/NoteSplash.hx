@@ -41,10 +41,8 @@ class NoteSplash extends FlxSprite {
 		else
 			color = noteSplashColorsDefault.get(thing.parent.thisManiaInfo.arrows[daNote.noteData]);
 		animation.play("splash", true);
-		animation.finishCallback = function(name:String) {
-			destroy();
-			this = null;
-		}
+		animation.finishCallback = function(name:String)
+			PlayState.instance.grpNoteSplashes.remove(this).destroy();
 	}
 	
 	public var curStyle:String;
