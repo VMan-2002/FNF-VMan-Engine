@@ -34,6 +34,7 @@ class AnimationDebug extends MusicBeatState {
 	var healthIcon:HealthIcon;
 	
 	var nameTxtBox:FlxUIInputText;
+	var modName:String;
 
 	//why does this error?
 	//var playHint:FlxText = new FlxText(8, 8, 0, 'Use your 4K binds: ${Options.controls.get("4k").map(function(a) {return ControlsSubState.ConvertKey(a[0], true)}).join(",")} to play sing anims\nHold Shift to play miss anims instead');
@@ -70,8 +71,11 @@ class AnimationDebug extends MusicBeatState {
 		originThing.alpha = 0.5;
 		add(originThing);
 
+		//get char origin mod
+		var modNameTmp = CoolUtil.getFileOriginMod("objects/characters/" + daAnim + ".json");
+		modName = modNameTmp == null ? "" : modNameTmp;
 		//
-		char = new Character(xPositionThing, 0, daAnim);
+		char = new Character(xPositionThing, 0, daAnim, false, modName);
 		char.debugMode = true;
 		add(char);
 		//
@@ -108,7 +112,7 @@ class AnimationDebug extends MusicBeatState {
 
 		FlxG.camera.follow(camFollow);
 
-		var animThing = Character.loadCharacterJson(daAnim, null);
+		var animThing = Character.loadCharacterJson(daAnim, modName);
 		if (animThing != null && animThing.animations != null) {
 			for (anim in animThing.animations) {
 				fileAnims.set(anim.name, anim);
@@ -173,8 +177,8 @@ class AnimationDebug extends MusicBeatState {
 				animNoSustain: char.animNoSustain,
 				isGirlfriend: char.isGirlfriend,
 				substitutable: validFile ? substitutable : (char.curCharacter.startsWith("bf_") || char.curCharacter == "bf" || char.curCharacter.startsWith("gf_") || char.curCharacter == "gf"),
-				singTime: null,
-				singBeats: null
+				singTime: char.singTime,
+				singBeats: char.singBeats
 			};
 			if (Options.dataStrip) {
 				if (savedChar.substitutable != true)
@@ -238,7 +242,7 @@ class AnimationDebug extends MusicBeatState {
 		add(barSprite);
 		add(colorBar);
 
-		healthIcon = new HealthIcon(char.healthIcon);
+		healthIcon = new HealthIcon(char.healthIcon, modName);
 		healthIcon.y = colorBar.y - (healthIcon.height / 2);
 		healthIcon.x = colorBar.x + colorBar.width + 26 - 150;
 		add(healthIcon);

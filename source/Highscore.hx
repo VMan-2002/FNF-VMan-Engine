@@ -45,6 +45,10 @@ class Highscore
 		var saveAcc = setAcc(daSong, PlayState.instance.songScore / (((PlayState.instance.songHits + PlayState.instance.songMisses) * 350) + PlayState.instance.possibleMoreScore));
 		return saveScore || saveFC || saveAcc; //return true if you got a high score
 	}
+
+	public static function accuracyCalc(state:PlayState) {
+		return state.songScore / (((state.songHits + state.songMisses) * 350) + state.possibleMoreScore);
+	}
 	
 	public static function getPlayStateFC(the:PlayState) {
 		if (the.songMisses >= 10)

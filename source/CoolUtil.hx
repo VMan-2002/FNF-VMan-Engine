@@ -13,7 +13,6 @@ import flixel.math.FlxMath;
 import flixel.tweens.FlxEase;
 import flixel.util.FlxColor;
 import flixel.util.typeLimit.OneOfThree;
-import flixel.util.typeLimit.OneOfTwo;
 import haxe.Json;
 import lime.utils.Assets;
 import openfl.display.BitmapData;
@@ -633,6 +632,17 @@ class CoolUtil
 			else
 				thing.cameras.push(camera);
 		}
+	}
+
+	/**
+		Get mod that a file originates from. Returns `null` if the file doesn't exist or it's a vanilla file.
+	**/
+	public static function getFileOriginMod(file:String):Null<String> {
+		for (mod in ModLoad.enabledMods) {
+			if (FileSystem.exists('mods/${mod}/${file}'))
+				return mod;
+		}
+		return null;
 	}
 }
 

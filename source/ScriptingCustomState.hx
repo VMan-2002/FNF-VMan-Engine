@@ -1,16 +1,6 @@
 package;
 
-import Translation;
 import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.FlxSubState;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
-import flixel.math.FlxMath;
-import flixel.text.FlxText;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
-import flixel.util.FlxColor;
 
 class ScriptingCustomState extends MusicBeatState {
 	public static var instance:ScriptingCustomState;
@@ -36,9 +26,8 @@ class ScriptingCustomState extends MusicBeatState {
 		var script = new Scripting(path, modName, "ScriptingCustomState", function(thing:Bool) {
 			NoSongsState.doThing("story mode", thing ? "customstate error" : "customstate", '${modName}:${path}');
 		});
-		if (script.interp == null) {
+		if (script.interp == null)
 			return;
-		}
 		super.update(FlxG.elapsed);
 		script.interp.variables.set("vmanCustomStateInstance", this);
 	}

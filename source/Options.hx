@@ -1,8 +1,10 @@
 package;
+import flixel.FlxG;
 import flixel.input.keyboard.FlxKey;
 import flixel.util.FlxSave;
 import openfl.Assets;
 import openfl.utils.AssetType;
+import wackierstuff.VeFlxCamera;
 
 class Options {
 	public static var saved:Options;
@@ -102,6 +104,7 @@ class Options {
 	public var noteSplash:Bool = true;
 	public var hitsound:String = "";
 	public var hitsound_overtap:String = "";
+	public static var colorblind:String = "";
 	
 	//PlayState changeables
 	public var playstate_opponentmode:Bool = false;
@@ -305,5 +308,10 @@ class Options {
 
 	static function get_selfAware():Bool {
 		return _selfAware;
+	}
+
+	public function updateColorblind() {
+		new ColorblindShader(colorblind);
+		cast(FlxG.camera, VeFlxCamera).ve_filters.updateColorblind();
 	}
 }

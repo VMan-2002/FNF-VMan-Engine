@@ -65,4 +65,19 @@ class MusicBeatSubstate extends FlxSubState
 		//do literally nothing dumbass
 		Scripting.runOnScripts("beatHit", [curBeat]);
 	}
+
+	/**
+		`top`: Open this substate on top of the topmost current substate, otherwise open it on `FlxG.state` which may not work if a substate is already active
+	**/
+	public function openThis(?top:Bool = false) {
+		if (top && subState != null) {
+			var a = subState;
+			while (a.subState != null)
+				a = a.subState;
+			a.openSubState(this);
+		} else {
+			FlxG.state.openSubState(this);
+		}
+		return this;
+	}
 }

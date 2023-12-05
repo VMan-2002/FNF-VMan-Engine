@@ -130,7 +130,7 @@ class GameOverSubstate extends MusicBeatSubstate {
 		if (!isEnding) {
 			Scripting.runOnScripts("onAccept", ["GameOverSubstate", null, null]);
 			isEnding = true;
-			bf.playAvailableAnim(['deathConfirm' + (bf.animStartsWith("deathLoop") ? bf.animation.curAnim.name.substr(9) : bf.animation.name.substr(10)), 'deathConfirm'], true);
+			bf.playAvailableAnim(['deathConfirm' + bf.animation.curAnim.name.substr(bf.animStartsWith("deathLoop") ? 9 : 10), 'deathConfirm'], true);
 			FlxG.sound.music.stop();
 			FlxG.sound.play(Paths.music(gameOverMusicEndName));
 			new FlxTimer().start(0.7, function(tmr:FlxTimer) {

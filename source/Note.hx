@@ -42,6 +42,9 @@ class SwagNoteSkin {
 	public var variations:Map<String, String>;
 
 	public static function loadNoteSkin(name:String, modName:String) {
+		//todo: THIS IS A TEMPORARY HARDCODED FIX LOL
+		if (name == "vpt_love_notes" && modName == "vmans_past_time")
+			name = "vpt_love_notes_fixed";
 		if (Note.loadedNoteSkins.exists('${modName}:${name}')) {
 			return Note.loadedNoteSkins.get('${modName}:${name}');
 		}
@@ -192,6 +195,8 @@ class SwagUIStyle {
 		uiStyle.countdownScale = uiStyleFile.countdownScale != null ? uiStyleFile.countdownScale : 1.0;
 		if (uiStyleFile.ratings == null)
 			uiStyle.ratings = ["sick" => uiStyleFile.sick, "good" => uiStyleFile.good, "bad" => uiStyleFile.bad, "shit" => uiStyleFile.shit, "sick-cool" => (uiStyleFile.sickcool == null ? uiStyleFile.sick : uiStyleFile.sickcool)];
+		else
+			uiStyle.ratings = uiStyleFile.ratings;
 		if (uiStyle.ratings.get("sick") == null) {
 			uiStyle.ratings.set("sick", "normal/sick");
 			if (uiStyle.ratings.get("sick-cool") == null)

@@ -1,6 +1,7 @@
 package;
 import ModsMenuState.ModInfo;
 import flixel.util.FlxSave;
+import net.VeGameJolt;
 
 class Achievements {
 	//todo: Actual custom achievements will come soon
@@ -23,6 +24,7 @@ class Achievements {
 		//"6kBothPlay", //Dunno lol
 		"fridayNight",
 		"calibrateDeath",
+		"gamejoltLinked",
 		"modFunkboxPlay",
 		"modRegGuitPlay",
 		"modPastTimePlay"
@@ -37,6 +39,7 @@ class Achievements {
 		}
 		achievementsChanged = true;
 		achievements.push(name);
+		VeGameJolt.syncOneAchievement(name);
 		return true;
 	}
 
@@ -62,6 +65,8 @@ class Achievements {
 				return ["That's Epic", "Complete any song with no misses, and you hit only \"Good\" or better. (GFC, aka Good Full Combo)"];
 			case "anySFC":
 				return ["Perfect Combo", "Complete any song with no misses, and you hit only \"Sick!\". (SFC, aka Sick Full Combo)"];
+			case "anyMFC":
+				return ["Superpower", "Complete any song with no misses, and you hit only \"Marvelous!\". (MFC, aka Marvelous Full Combo)"];
 			case "anyWeekComplete":
 				return ["Storytold", "Complete any week in Story Mode."];
 			case "anyWeekFC":
@@ -84,6 +89,8 @@ class Achievements {
 				return ["Just Like The Game", "Funk on a Friday (real time)."];
 			case "calibrateDeath":
 				return checkAchievement("calibrateDeath") ? ["???", "Hidden Achievement"] : ["Out Of Time", "Die during Input Offset Calibrate."];
+			case "gamejoltLinked":
+				return ["Jolt", "Connect your Game Jolt account."];
 			//hmm should i do this
 			case "modFunkboxPlay":
 				return ["Beepy on a Friday Night", "Complete a Story Mode week from `Friday Night Funkbox`."];

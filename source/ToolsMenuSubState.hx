@@ -40,7 +40,8 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			//"Noteskin Creator",
 			"Clone Hero Import",
 			"Unload Scripts",
-			"Documentation"
+			"Documentation",
+			"Discord Server"
 		];
 	}
 	
@@ -114,6 +115,8 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 					}
 				}
 				return ["Unload all currently loaded scripts.", list, "unknownOption"];
+			case "discord server":
+				return ["A Discord Server, for VMan Engine discussion and probably more"];
 		}
 		return ["Unknown option.", '', 'unknownOption'];
 	}
@@ -153,6 +156,8 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			case "unload scripts":
 				Scripting.clearScripts();
 				return true;
+			case "discord server":
+				FlxG.openURL("https://discord.gg/aYkugcADnd");
 		}
 		return false;
 	}

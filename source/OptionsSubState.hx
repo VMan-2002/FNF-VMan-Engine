@@ -48,8 +48,9 @@ class OptionsSubState extends OptionsSubStateBasic
 			"Gameplay Changes",
 			"Exit Without Saving",
 			#if debug
-			"Options Warning Test"
+			"Options Warning Test",
 			#end
+			"GameJolt Login"
 		];
 	}
 	
@@ -131,6 +132,10 @@ class OptionsSubState extends OptionsSubStateBasic
 				return ["Modify hud meters"];
 			case "enable notesplash":
 				return ["Enable a splashy effect when you hit \"Sick\" rating."];
+			case "colorblind filter":
+				return ["Color filter that aids colorblind users or simulates colorblindness."];
+			case "gamejolt login":
+				return ["Log in to your Game Jolt account."];
 		}
 		return ["Unknown option.", name, 'unknownOption'];
 	}

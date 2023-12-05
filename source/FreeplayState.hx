@@ -322,7 +322,7 @@ class FreeplayState extends MusicBeatState {
 		scoreFCText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, LEFT);
 		Translation.setObjectFont(scoreFCText, "vcr font");
 
-		scoreAccText = new FlxText(FlxG.width, 90, FlxG.width, "99.99%", 32);
+		scoreAccText = new FlxText(FlxG.width, 90, FlxG.width, "99.999%", 32);
 		scoreAccText.x -= scoreAccText.textField.textWidth + 2;
 		scoreAccText.fieldWidth -= scoreAccText.x;
 		// scoreAccText.autoSize = false;
@@ -636,7 +636,7 @@ class FreeplayState extends MusicBeatState {
 				return;
 			}
 			scoreFCText.text = Highscore.getFCFormatted(songId, curDifficulty, true);
-			scoreAccText.text = HudThing.trimPercent(Highscore.getAcc(songId, curDifficulty, true));
+			scoreAccText.text = Std.string(FlxMath.roundDecimal(Highscore.getAcc(songId, curDifficulty, true), 3));
 		}
 		#end
 		/*if (isCornflower) {

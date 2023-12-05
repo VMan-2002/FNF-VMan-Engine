@@ -1,0 +1,6 @@
+First Section
+Last Section
+Starting Time
+Ending Time
+Starting BPM
+Ending BPM

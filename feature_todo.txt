@@ -1,0 +1,15 @@
+-- feature todo (in no particular order) (feel free to add shit) --
+
+note quant color
+endless songs
+cool chart editor stuff such as "double section" and "mirror section"
+time signatures in chart editor
+mod browser
+multiplayer
+make the html build work at some point
+flashing lights mod assets
+
+-- things i havent made yet --
+
+-- minor shit
+make the GTStrum key in controls menu shaped like a guitar pick

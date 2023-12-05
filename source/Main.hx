@@ -7,6 +7,8 @@ import flixel.FlxGame;
 import flixel.FlxState;
 import haxe.CallStack;
 import haxe.Exception;
+import net.VeAPIKeys;
+import net.VeGameJolt.FlxGameJolt;
 import openfl.Assets;
 import openfl.Lib;
 import openfl.display.FPS;
@@ -16,6 +18,7 @@ import openfl.events.UncaughtErrorEvent;
 import render3d.Render3D.VeScene3D;
 import sys.io.File;
 import sys.io.Process;
+import wackierstuff.VeFlxCamera;
 #if html5
 import js.Browser;
 #end
@@ -81,6 +84,9 @@ class Main extends Sprite {
 		Achievements.LoadOptions();
 		Weeks.LoadOptions();
 		PlayState.curManiaInfo = ManiaInfo.GetManiaInfo("4k");
+		new ColorblindShader(Options.colorblind);
+		FlxG.camera = new VeFlxCamera();
+		@:privateAccess FlxGameJolt.init(Std.parseInt(VeAPIKeys.get("gj_gameid")), VeAPIKeys.get("gj_secret"));
 
 		setupGame();
 	}

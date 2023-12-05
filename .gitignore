@@ -5,3 +5,5 @@ assets/ignore
 !export/
 export/*
 !export/debug/windows/bin/mods/*/*
+source/net/VeAPIKeys.hx
+*.secret

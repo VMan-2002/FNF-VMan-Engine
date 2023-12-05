@@ -1,4 +1,4 @@
-I didn't actually update the doc i forgor im sorry,
+I didn't actually update the doc i forgor im sorry, i also didnt do it again this time
 
 Added Marvelous rating (technically.)
 Added "badHit" and "shouldJudge" values to note types
@@ -6,3 +6,6 @@ Started adding away3d (i don't think it's ready for use tho.)
 Some new scripting callbacks
 Work on the Dialogue system
 Fixed positioning of notes in piano mania
+Added GameJolt integration (currently in testing)
+Temporary hardcoded fix for Love-Extra^Both crash in The Past Time (i shouldn't be doing this)
+Put discord link in tools menu (7 on main menu)

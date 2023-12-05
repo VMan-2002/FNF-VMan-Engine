@@ -18,6 +18,9 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 // import io.newgrounds.NG;
 import lime.app.Application;
+import net.VeAPIKeys;
+import net.VeGameJolt.FlxGameJolt;
+import net.VeGameJolt;
 
 using StringTools;
 #if desktop
@@ -144,7 +147,7 @@ class MainMenuState extends MusicBeatState {
 		add(vmanEngineThing);
 
 		// NG.core.calls.event.logEvent('swag').send();
-		if (focusOn != null)
+		if (focusOn != null && optionShit.contains(focusOn))
 			curSelected = optionShit.indexOf(focusOn);
 		changeItem(0, false);
 		FlxG.camera.snapToTarget();
@@ -225,6 +228,18 @@ class MainMenuState extends MusicBeatState {
 				hillarious = new MultiWindow(1, true);
 			}
 			#end*/
+			if (FlxG.keys.justPressed.G) {
+				var gamejoltUser = CoolUtil.coolTextFile("data/gamejoltLogin");
+				if (gamejoltUser.length > 1)
+					FlxGameJolt.authUser(gamejoltUser[0], gamejoltUser[1], function(success:Bool) {
+						trace(success ? "Gamejolt login success" : "Gamejolt login fail");
+						if (success) {
+							VeGameJolt.loggedIn = true;
+							Achievements.giveAchievement("gamejoltLinked");
+							VeGameJolt.syncAchievements();
+						}
+					});
+			}
 
 			if (FlxG.keys.justPressed.SEVEN) {
 				FlxG.switchState(new OptionsMenu(new ToolsMenuSubState()));

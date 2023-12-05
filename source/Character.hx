@@ -4,16 +4,9 @@ import CoolUtil;
 import ThingThatSucks.ErrorReportSubstate;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.animation.FlxAnimationController;
-import flixel.animation.FlxBaseAnimation;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.graphics.frames.FlxFramesCollection;
-import flixel.graphics.frames.FlxImageFrame;
-import flixel.input.keyboard.FlxKeyboard;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
-import haxe.Json;
 import lime.utils.Assets;
 
 using StringTools;
@@ -168,7 +161,7 @@ class Character extends SpriteVManExtra {
 
 		//todo: i still haven't unhardcoded these characters (gf, gf-christmas, gf-tankmen, bf-holding-gf, gf-car, gf-pixel, mom-car, monster, monster-christmas, pico-speaker, bf, bf-dead, bf-christmas, bf-car, bf-pixel, bf-pixel-dead, bf-holding-gf-dead, senpai, senpai-angry, spirit, parents-christmas, tankman)
 		switch (curCharacter) {
-			case "emptyLoad" | "emptyInvisible":
+			case "emptyLoad" | "emptyInvisible" | "invisibleStandard":
 				//load the minimum required stuff
 				//todo: why doesn't this work hmmmm
 				loadGraphic(null, true);
@@ -176,8 +169,14 @@ class Character extends SpriteVManExtra {
 				animation.add("idle", [0]);
 				addOffset("idle", 0, 0, 0);
 				playAnim("idle");
-				if (curCharacter == "emptyInvisible")
+				if (curCharacter != "emptyLoad")
 					visible = false;
+				if (curCharacter == "invisibleStandard") {
+					for (thing in ["singLEFT", "singDOWN", "singRIGHT", "singUP"]) {
+						animation.add(thing, [0]);
+						animation.add(thing + "miss", [0]);
+					}
+				}
 			case 'gf':
 				// GIRLFRIEND CODE
 				AnimationDebug.imageFile = 'characters/GF_assets';
@@ -879,6 +878,8 @@ class Character extends SpriteVManExtra {
 					}
 					if (loadedStuff.singTime != null) {
 						this.singTime = loadedStuff.singTime;
+					} else {
+						this.singBeats = -4;
 					}
 					if (loadedStuff.singBeats != null) {
 						this.singBeats = loadedStuff.singBeats;
@@ -943,6 +944,7 @@ class Character extends SpriteVManExtra {
 		generateFlipOffsets();
 
 		if (!hasMissAnims) {
+			trace("generating miss anims since the character doesn't have it.");
 			var things = new Array<String>();
 			for (n in animation.getNameList()) {
 				if (n.startsWith("sing") && !n.endsWith("miss"))
@@ -1147,8 +1149,15 @@ class Character extends SpriteVManExtra {
 			playAvailableAnim(["deathLoop" + animation.curAnim.name.substr(10), "deathLoop"]);
 	}
 
+	var _animTimeLen:Float = 1;
+
+	public var animTimeLen(get, never):Float;
+
+	public function get_animTimeLen()
+		return _animTimeLen;
+
 	public inline function getSingTime() {
-		return singTime + (Conductor.crochet * singBeats * 0.001);
+		return (singTime != -4) ? singTime + (Conductor.crochet * singBeats * 0.001) + 0.01 : _animTimeLen;
 	}
 
 	public var danced:Bool = false;
@@ -1157,7 +1166,7 @@ class Character extends SpriteVManExtra {
 	 * FOR GF DANCING SHIT
 	 */
 	public function dance(?anyway:Bool = false, ?force:Bool = false, ?reverse:Bool = false, ?frame:Int = 0) {
-		if (debugMode || moduloDances == 0 || (animation.curAnim != null && (animation.curAnim.name == 'hairBlow' || (animStartsWith('sing') && !animEndsWith("-loop") && holdTimer >= getSingTime())))) {
+		if (debugMode || moduloDances <= 0 || (animation.curAnim != null && (animation.curAnim.name == 'hairBlow' || (animStartsWith('sing') && !animEndsWith("-loop") && holdTimer < getSingTime())))) {
 			return;
 		}
 		if (!anyway) {
@@ -1198,10 +1207,23 @@ class Character extends SpriteVManExtra {
 			misscolored = true;
 			color = 0x999aff;
 		}
+
+		_animTimeLen = animation.curAnim.frames.length / animation.curAnim.frameRate;
 	}
 
 	public function set_idleAlt(value:String):String {
 		danceType = hasAnim("danceLeft" + value);
 		return idleAlt = value;
+	}
+
+	public var skipDance(get, set):Bool;
+	
+	public function set_skipDance(val:Bool) {
+		if (val != get_skipDance())
+			moduloDances = 0 - moduloDances;
+		return val;
+	}
+	public function get_skipDance() {
+		return moduloDances <= 0;
 	}
 }

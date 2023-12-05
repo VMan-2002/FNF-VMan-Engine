@@ -51,6 +51,7 @@ import flixel.util.typeLimit.OneOfTwo;
 import haxe.Json;
 import haxe.ds.ArraySort;
 import lime.utils.Assets;
+import net.VeGameJolt;
 import openfl.display.BlendMode;
 import openfl.display.GraphicsEndFill;
 import openfl.display.StageQuality;
@@ -159,6 +160,7 @@ class PlayState extends MusicBeatState {
 	
 	//public var strumLineNotes = new Array<StrumNote>();
 	public var strumLines:FlxTypedGroup<StrumLine>;
+	public var swappedStrumline:Bool = false;
 	public var playerStrums = new StrumLine();
 	public var opponentStrums = new StrumLine();
 	//Not the same as playerStrums and opponentStrums respectively (except when opponent mode is disabled)
@@ -403,6 +405,8 @@ class PlayState extends MusicBeatState {
 			Options.instance.playstate_opponentmode = false;
 		if (SONG.actions.contains("noGuitarMode"))
 			Options.instance.playstate_guitar = false;
+		if (SONG.actions.contains("strumlineSwap"))
+			swappedStrumline = !swappedStrumline;
 		if (allowGameplayChanges && Options.instance.playstate_bothside) {
 			var newKeys = curManiaInfo.keys * 2;
 			var newMania = ManiaInfo.GetManiaInfo(newKeys + "k");
@@ -776,6 +780,9 @@ class PlayState extends MusicBeatState {
 					gfVersion = 'gf-pixel';
 			}
 		}
+
+		var betweenCharArr = new Array<Character>();
+		var baseCharArr = new Array<Character>();
 		
 		boyfriend = new Character(770, 100, SONG.player1, currentStage.charFacing.contains(0), modName, true, true);
 		dad = new Character(100, 100, SONG.player2, currentStage.charFacing.contains(1), modName);
@@ -792,6 +799,20 @@ class PlayState extends MusicBeatState {
 		dad.applyPositionOffset();
 		
 		gf.applyPositionOffset();
+
+		(currentStage.charBetween.contains(1) ? betweenCharArr : baseCharArr).push(dad);
+		(currentStage.charBetween.contains(0) ? betweenCharArr : baseCharArr).push(boyfriend);
+		(currentStage.charBetween.contains(2) ? betweenCharArr : baseCharArr).push(gf);
+		
+		if (SONG.moreCharacters != null && SONG.moreCharacters.length != 0) {
+			trace('Adding ${SONG.moreCharacters.length} extra characters');
+			var bullShit:Int = 3;
+			for (i in SONG.moreCharacters) {
+				var newChar = new Character(0, 0, i, currentStage.charFacing.contains(bullShit), modName);
+				(currentStage.charBetween.contains(bullShit) ? betweenCharArr : baseCharArr).push(newChar);
+				bullShit++;
+			}
+		}
 
 		var camPos:FlxPoint = new FlxPoint(dad.getGraphicMidpoint().x, dad.getGraphicMidpoint().y);
 
@@ -856,7 +877,13 @@ class PlayState extends MusicBeatState {
 			add(evilTrail);
 		}
 
-		add(gf);
+		inline function addTheGuys(arr:Array<Character>) {
+			while (arr.length != 0) {
+				add(arr.shift());
+			}
+		}
+
+		addTheGuys(betweenCharArr);
 
 		// Shitty layering but whatev it works LOL
 		
@@ -866,17 +893,7 @@ class PlayState extends MusicBeatState {
 		else if (curStage == 'limo')
 			add(limo);
 
-		add(dad);
-		add(boyfriend);
-		
-		if (SONG.moreCharacters != null && SONG.moreCharacters.length != 0) {
-			trace('Adding ${SONG.moreCharacters.length} extra characters');
-			var bullShit:Int = 3;
-			for (i in SONG.moreCharacters) {
-				add(new Character(0, 0, i, currentStage.charFacing.contains(bullShit), modName)); //these are automatically put into Character.activeArray, so it's ok that they're not assigned to variables here
-				bullShit++;
-			}
-		}
+		addTheGuys(baseCharArr);
 		
 		if (customStageCharPos != null) {
 			for (i in 0...Character.activeArray.length) {
@@ -1582,15 +1599,17 @@ class PlayState extends MusicBeatState {
 	public function generateStaticArrows(player:Int) {
 		var xPos:Float = 0;
 		var scale:Float = maniaScale;
+		var playerSide = FlxG.width * (swappedStrumline ? 0.25 : 0.75);
+		var opponentSide = FlxG.width * (swappedStrumline ? 0.75 : 0.25);
 		if (player == 1) {
-			xPos = isMiddlescroll ? FlxG.width / 2 : FlxG.width * 0.75;
+			xPos = isMiddlescroll ? FlxG.width * 0.5 : playerSide;
 		} else {
-			xPos = isMiddlescroll || SONG.actions.contains("hideOpponentNotes") ? FlxG.width * 8 : FlxG.width * 0.25;
+			xPos = isMiddlescroll || SONG.actions.contains("hideOpponentNotes") ? FlxG.width * 8 : opponentSide;
 			if (SONG.moreStrumLines > 0 && !isMiddlescroll) {
 				if (!SONG.actions.contains("dontResizeStrumlines"))
 					scale /= SONG.moreStrumLines + 1;
 				var myNum = player == 0 ? 0.5 : player - 0.5;
-				xPos = (myNum * FlxG.width / 2) / (SONG.moreStrumLines + 1);
+				xPos = (myNum * FlxG.width * 0.5) / (SONG.moreStrumLines + 1);
 			}
 		}
 		var thing:StrumLine = new StrumLine(curManiaInfo, xPos, strumLine.y, scale);
@@ -2182,6 +2201,7 @@ class PlayState extends MusicBeatState {
 		if (SONG.validScore && !(Options.instance.botplay || usedBotplay)) {
 			#if !switch
 			Highscore.saveScore(SONG.song, songScore, storyDifficulty);
+			VeGameJolt.submitScore();
 			#end
 		}
 
@@ -2218,6 +2238,9 @@ class PlayState extends MusicBeatState {
 					Achievements.giveAchievement("anyGFC");
 					if (goods == 0) {
 						Achievements.giveAchievement("anySFC");
+						if (songMFC) {
+							Achievements.giveAchievement("anyMFC");
+						}
 					}
 				}
 			}

@@ -2,6 +2,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import openfl.display.Shader;
+import openfl.filters.ShaderFilter;
 
 //original by doggydentures
 class ColorblindShader extends Shader {
@@ -16,6 +17,8 @@ class ColorblindShader extends Shader {
     ];
 
     public var intensity(default, set):Float;
+    public var valid:Bool = false;
+    public static var instanceFilter:Null<ShaderFilter>;
 
     public function set_intensity(val:Float) {
         return intensity = val;
@@ -23,8 +26,12 @@ class ColorblindShader extends Shader {
 
     public function new(type:String) {
         super();
-        if (!filterList.contains(type))
+        if (!filterList.contains(type)) {
+            instanceFilter = null;
             return trace("Colorblind type not found: "+type);//you're up to no good?
+        }
+        valid = true;
+        instanceFilter = new ShaderFilter(this);
         var mat = switch(type) {
             case "deuteranopia_correct" | "deuteranopia_simulate":
                 "1.0,      0.0, 0.0,

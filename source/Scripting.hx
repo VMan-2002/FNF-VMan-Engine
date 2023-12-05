@@ -8,7 +8,6 @@ import CoolUtil.ScriptHelper;
 import Note.SwagNoteSkin;
 import Note.SwagNoteType;
 import Note.SwagUIStyle;
-import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxStrip;
@@ -32,7 +31,6 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import hscript.Interp;
 import hscript.Parser;
-import openfl.system.System;
 import render3d.Render3D.VeFlxSprite3D;
 import render3d.Render3D.VeModel3D;
 import render3d.Render3D.VeObject3D;
@@ -40,6 +38,7 @@ import render3d.Render3D.VeScene3D;
 import sys.FileSystem;
 import sys.io.File;
 import wackierstuff.FlxBackdropFix;
+import wackierstuff.VeFlxCamera;
 
 using StringTools;
 
@@ -98,7 +97,7 @@ class Scripting {
         "FlxTimer" => FlxTimer,
         "FlxTween" => FlxTween,
         "FlxEase" => FlxEase,
-        "FlxCamera" => FlxCamera,
+        "FlxCamera" => VeFlxCamera, //Modified for colorblind filter usage
         "FlxPoint" => FlxPoint,
         "FlxSound" => FlxSound,
         "FlxAxes" => FlxAxes,
@@ -125,8 +124,11 @@ class Scripting {
         "VeFlxSprite3D" => VeFlxSprite3D,
         
         //retools
-        "MyFlxColor" => MyFlxColor//, //why cant i put FlxColor here ????????? wtf!!!!!!!!!
+        "MyFlxColor" => MyFlxColor,//, //why cant i put FlxColor here ????????? wtf!!!!!!!!!
         //"MySystem" => MySystem //im worried about security lol
+
+        //what
+        "ValueAccessor" => Accessor
     ];
 
 	public static var gamePlatform(default, never) =
@@ -586,3 +588,21 @@ class MyFlxColor {
         return System.totalMemoryNumber;
     }
 }*/
+
+class Accessor {
+    var obj:Dynamic;
+    var prop:String;
+    /**
+        This class is a shortcut for `Reflect.getProperty` and `Reflect.setProperty`, using `this.get` and `this.set` respectively
+    **/
+    public function new(obj:Dynamic, property:String) {
+        this.obj = obj;
+        prop = property;
+    }
+
+    public function get()
+        return Reflect.getProperty(obj, prop);
+
+    public function set(val:Dynamic)
+        return Reflect.setProperty(obj, prop, val);
+}

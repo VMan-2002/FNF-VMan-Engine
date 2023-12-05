@@ -137,6 +137,8 @@ class StoryMenuState extends MusicBeatState
 				var lock:FlxSprite = new FlxSprite(weekThing.width + 10 + weekThing.x);
 				lock.frames = ui_tex;
 				lock.animation.addByPrefix('lock', 'lock');
+				lock.animation.addByPrefix('white', 'white lock');
+				lock.animation.addByPrefix('outline', 'white outlined lock');
 				lock.animation.play('lock');
 				lock.ID = i;
 				lock.antialiasing = true;

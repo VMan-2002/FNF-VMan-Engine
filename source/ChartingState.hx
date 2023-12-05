@@ -570,19 +570,29 @@ class ChartingState extends MusicBeatState {
 		//noteTypeSelect.resize(200, 20);
 		noteTypeSelect.selectedLabel = noteTypes[0];
 
+		inline function ensureNoteType(name:String) {
+			if (!curNoteTypeArr.contains(name)) {
+				curNoteTypeArr.push(name);
+				_song.usedNoteTypes = curNoteTypeArr;
+			}
+			return curNoteTypeArr.indexOf(name);
+		}
+
 		var allLeftType:FlxUIButton = new FlxUIButton(100, 70, Translation.getTranslation("Set All Type Left", "charteditor"), function() {
+			var num = ensureNoteType(curNoteType);
 			for (thing in getSectionNotes()) {
 				if (thing[1] < PlayState.curManiaInfo.keys)
-					thing[3] = curNoteType;
+					thing[3] = num;
 			}
 			updateGrid();
 		});
 		Translation.setUIObjectFont(allLeftType);
 
 		var allRightType:FlxUIButton = new FlxUIButton(100, 90, Translation.getTranslation("Set All Type Right", "charteditor"), function() {
+			var num = ensureNoteType(curNoteType);
 			for (thing in getSectionNotes()) {
 				if (thing[1] >= PlayState.curManiaInfo.keys)
-					thing[3] = curNoteType;
+					thing[3] = num;
 			}
 			updateGrid();
 		});
