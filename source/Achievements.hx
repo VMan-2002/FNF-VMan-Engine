@@ -14,6 +14,7 @@ class Achievements {
 		"anyFC",
 		"anyGFC",
 		"anySFC",
+		"anyMFC",
 		"anyWeekComplete",
 		"anyWeekFC",
 		"anyOpponentPlay",

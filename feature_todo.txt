@@ -12,4 +12,3 @@ flashing lights mod assets
 -- things i havent made yet --
 
 -- minor shit
-make the GTStrum key in controls menu shaped like a guitar pick
