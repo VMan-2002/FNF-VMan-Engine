@@ -644,6 +644,24 @@ class CoolUtil
 		}
 		return null;
 	}
+
+	public static function fastCreateSparrowSprite(?x:Float = 0, ?y:Float = 0, image:String, ?sprite:Null<FlxSprite> = null) {
+		if (sprite == null)
+			sprite = new FlxSprite(x, y);
+		else
+			sprite.setPosition(x, y);
+		sprite.frames = Paths.getSparrowAtlas(image);
+		return sprite;
+	}
+
+	public static function fastCreateGridSprite(?x:Float = 0, ?y:Float = 0, image:String, ?tileWidth:Int = 16, ?tileHeight:Int = 16, ?sprite:Null<FlxSprite> = null) {
+		if (sprite == null)
+			sprite = new FlxSprite(x, y);
+		else
+			sprite.setPosition(x, y);
+		sprite.loadGraphic(image, true, tileWidth, tileHeight);
+		return sprite;
+	}
 }
 
 class MultiStepResult {
