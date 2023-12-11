@@ -58,7 +58,6 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 		optionsImage.animation.addByPrefix("freeplay folders", "freeplay folders0", 12, true);
 		optionsImage.animation.addByPrefix("change color advanced", "change color advanced0", 12, true);
 		optionsImage.animation.addByPrefix("confusion", "confusion0", 12, true);
-		optionsImage.animation.addByPrefix("skip intro", "skip intro0", 12, true);
 		optionsImage.animation.addByPrefix("activate new mods", "activate new mods0", 12, true);
 	}
 	
@@ -70,7 +69,7 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 				return ["Look at animations n stuff."];
 			#if debug
 			case "cutscene anim test":
-				return ["Cutscene anim test", "", "animation debug"];
+				return ["Cutscene anim test"];
 			case "texture atlas test":
 				return ["Texture atlast text", "", "animation debug"];
 			#end
@@ -83,7 +82,7 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			case "intro text test":
 				return ["Preview the randomized intro text."];
 			case "title intro test":
-				return ["Preview the title screen intro.", "", "skip intro"];
+				return ["Preview the title screen intro."];
 			case "stage editor":
 				return ["Edit stages, including positions of stage sprites."];
 			case "spritesheet tool":
@@ -95,7 +94,7 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			case "dialogue editor":
 				return ["Edit dialogue."];
 			case "clone hero import":
-				return ["Import a chart from Clone Hero.\n\nThe chart file must be in the same folder as the game executable and be named \"clonehero_import.chart\".\nWork in progress :)", "", "chart editor"];
+				return ["Import a chart from Clone Hero.\n\nThe chart file must be in the same folder as the game executable and be named \"clonehero_import.chart\".\nWork in progress :)"];
 			case "strip file data":
 				return ["Strip unneeded data from saved files such as charts, drastically reducing the file size.", Options.dataStrip ? "Enabled" : "Disabled", "confusion"];
 			case "documentation":
