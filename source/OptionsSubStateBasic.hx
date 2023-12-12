@@ -84,7 +84,7 @@ class OptionsSubStateBasic extends MusicBeatSubstate {
 		optionsImage.antialiasing = true;
 		add(optionsImage);
 		
-		willReturnToTxt = new FlxText(8, FlxG.height - 24, FlxG.width - 16, "Hyuponia is very cool", 16);
+		willReturnToTxt = new FlxText(8, FlxG.height - 24, FlxG.width - 16, "Hyuponia is very cool :'(", 16);
 		Translation.setObjectFont(willReturnToTxt);
 		if (Std.isOfType(FlxG.state.subState, ToolsMenuSubState)) {
 			willReturnToTxt.text = Translation.getTranslation("version int", "optionsMenu", [Std.string(Main.gameVersionInt)], "Version Int: "+Main.gameVersionInt);
