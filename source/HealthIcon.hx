@@ -130,9 +130,8 @@ class HealthIcon extends SpriteVMan
 				//todo: this doesn't work yet
 				isMultiIcon = true;
 				visible = false;
-				for (thing in jsonData.items) {
+				for (thing in jsonData.items)
 					addChild(thing.name, thing.x, thing.y, thing.scale);
-				}
 				folderType = children[0].folderType;
 				return;
 			}

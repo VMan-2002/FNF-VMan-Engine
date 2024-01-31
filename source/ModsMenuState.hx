@@ -175,12 +175,27 @@ class ModsMenuState extends MusicBeatState {
 	}
 
 	public function loadCreditsJsonString(stuff:String, ?mod:Null<String>) {
-		var creditsFile:ModInfo = CoolUtil.loadJsonFromString(stuff);
-		var descTranslationPath:String = 'mods/${mod}/modmenu_desc_${Translation.translationId}.txt';
-		if (FileSystem.exists(descTranslationPath)) {
-			creditsFile.description = File.getContent(descTranslationPath);
+		try {
+			var creditsFile:ModInfo = CoolUtil.loadJsonFromString(stuff);
+			var descTranslationPath:String = 'mods/${mod}/modmenu_desc_${Translation.translationId}.txt';
+			if (FileSystem.exists(descTranslationPath))
+				creditsFile.description = File.getContent(descTranslationPath);
+			addCreditsStuff(mod, creditsFile);
+		} catch (err) {
+			trace("Error while loading mod json for "+mod);
+			addCreditsStuff(mod, {
+				name: mod,
+				description: fillDesc ? Translation.getTranslation("error desc", "mods", null, "This mod's mod.json isn't formatted correctly"),
+				version: 0,
+				versionStr: "",
+				titleScreen: false,
+				gamebananaId: null,
+				id: mod,
+				devMode: false,
+				requiredGameVer: null,
+				loadableGameVer: null
+			});
 		}
-		addCreditsStuff(mod, creditsFile);
 	}
 
 	public function toggleTabber() {

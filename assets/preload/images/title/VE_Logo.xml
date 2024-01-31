@@ -3,92 +3,92 @@
 Created with Free texture packer v0.6.7 http://free-tex-packer.com
 -->
 <TextureAtlas imagePath="VE_Logo.png" width="4894" height="3944">
-  <SubTexture name="VE_Logo_Anim_Confirm0044.png" x="4" y="4"  width="1342" height="378" frameX="-94" frameY="-91" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0042.png" x="4" y="390"  width="1354" height="363" frameX="-88" frameY="-98" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0046.png" x="4" y="761"  width="1293" height="374" frameX="-119" frameY="-93" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0040.png" x="4" y="1143"  width="1363" height="344" frameX="-83" frameY="-107" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0038.png" x="1375" y="4" width="325" height="1365" rotated="true"  frameX="-82" frameY="-116" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0036.png" x="4" y="1495"  width="1377" height="312" frameX="-76" frameY="-122" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0034.png" x="1708" y="4" width="295" height="1381" rotated="true"  frameX="-73" frameY="-130" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0032.png" x="4" y="1815"  width="1378" height="281" frameX="-74" frameY="-137" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0030.png" x="2011" y="4" width="271" height="1384" rotated="true"  frameX="-71" frameY="-142" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0028.png" x="4" y="2104"  width="1381" height="263" frameX="-72" frameY="-146" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0014.png" x="2290" y="4" width="257" height="1400" rotated="true"  frameX="-62" frameY="-149" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0016.png" x="4" y="2375"  width="1399" height="257" frameX="-63" frameY="-149" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0018.png" x="1389" y="1412"  width="1399" height="257" frameX="-63" frameY="-149" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0012.png" x="2555" y="4" width="257" height="1395" rotated="true"  frameX="-65" frameY="-149" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0020.png" x="1390" y="1677"  width="1395" height="257" frameX="-65" frameY="-149" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0026.png" x="1393" y="1942"  width="1382" height="259" frameX="-71" frameY="-148" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0022.png" x="1411" y="2209"  width="1391" height="257" frameX="-67" frameY="-149" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0010.png" x="1411" y="2474"  width="1383" height="258" frameX="-71" frameY="-148" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0024.png" x="4" y="2640"  width="1382" height="257" frameX="-71" frameY="-149" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0008.png" x="2810" y="1407" width="257" height="1361" rotated="true"  frameX="-82" frameY="-149" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0006.png" x="1394" y="2740"  width="1322" height="259" frameX="-102" frameY="-148" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Shadow0000.png" x="2820" y="4" width="288" height="1191" rotated="true"  frameX="-7" frameY="-3" frameWidth="1205" frameHeight="297"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0005.png" x="4" y="2905"  width="1296" height="258" frameX="-115" frameY="-149" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0004.png" x="3075" y="1203" width="257" height="1260" rotated="true"  frameX="-133" frameY="-149" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0003.png" x="1308" y="3007"  width="1215" height="254" frameX="-155" frameY="-150" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Idle0024.png" x="3116" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0023.png" x="4" y="3171"  width="1158" height="251" frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0022.png" x="3340" y="1170" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0000.png" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0003.png" x="3340" y="2336" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0004.png" x="3075" y="2471" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0005.png" x="1170" y="3269"  width="1158" height="251" frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0006.png" x="4" y="3430"  width="1158" height="251" frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0007.png" x="3599" y="1170" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0008.png" x="3634" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0009.png" x="3599" y="2336" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0010.png" x="2724" y="2776" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0011.png" x="1170" y="3528"  width="1158" height="251" frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0012.png" x="4" y="3689"  width="1158" height="251" frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0013.png" x="2983" y="3637"  width="1158" height="251" frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0014.png" x="3858" y="1170" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0015.png" x="3893" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0016.png" x="3858" y="2336" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0017.png" x="4117" y="1170" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0018.png" x="4152" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0019.png" x="4117" y="2336" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0020.png" x="4376" y="1170" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0021.png" x="4411" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0048.png" x="4376" y="2336" width="251" height="1157" rotated="true"  frameX="-176" frameY="-152" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0002.png" x="4635" y="1170" width="223" height="1106" rotated="true"  frameX="-210" frameY="-166" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0001.png" x="4670" y="4" width="220" height="1102" rotated="true"  frameX="-212" frameY="-167" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0000.png" x="4635" y="2284" width="218" height="1109" rotated="true"  frameX="-201" frameY="-168" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0007.png" x="1394" y="2740"  width="1322" height="259" frameX="-102" frameY="-148" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0009.png" x="2810" y="1407" width="257" height="1361" rotated="true"  frameX="-82" frameY="-149" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0011.png" x="1411" y="2474"  width="1383" height="258" frameX="-71" frameY="-148" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0013.png" x="2555" y="4" width="257" height="1395" rotated="true"  frameX="-65" frameY="-149" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0015.png" x="2290" y="4" width="257" height="1400" rotated="true"  frameX="-62" frameY="-149" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0017.png" x="4" y="2375"  width="1399" height="257" frameX="-63" frameY="-149" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0019.png" x="1389" y="1412"  width="1399" height="257" frameX="-63" frameY="-149" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0021.png" x="1390" y="1677"  width="1395" height="257" frameX="-65" frameY="-149" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0023.png" x="1411" y="2209"  width="1391" height="257" frameX="-67" frameY="-149" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0025.png" x="4" y="2640"  width="1382" height="257" frameX="-71" frameY="-149" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0027.png" x="1393" y="1942"  width="1382" height="259" frameX="-71" frameY="-148" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0029.png" x="4" y="2104"  width="1381" height="263" frameX="-72" frameY="-146" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0031.png" x="2011" y="4" width="271" height="1384" rotated="true"  frameX="-71" frameY="-142" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0033.png" x="4" y="1815"  width="1378" height="281" frameX="-74" frameY="-137" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0035.png" x="1708" y="4" width="295" height="1381" rotated="true"  frameX="-73" frameY="-130" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0037.png" x="4" y="1495"  width="1377" height="312" frameX="-76" frameY="-122" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0039.png" x="1375" y="4" width="325" height="1365" rotated="true"  frameX="-82" frameY="-116" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0041.png" x="4" y="1143"  width="1363" height="344" frameX="-83" frameY="-107" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0043.png" x="4" y="390"  width="1354" height="363" frameX="-88" frameY="-98" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0045.png" x="4" y="4"  width="1342" height="378" frameX="-94" frameY="-91" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0047.png" x="4" y="761"  width="1293" height="374" frameX="-119" frameY="-93" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Confirm0049.png" x="4376" y="2336" width="251" height="1157" rotated="true"  frameX="-176" frameY="-152" frameWidth="1528" frameHeight="561"/>
-  <SubTexture name="VE_Logo_Anim_Idle0001.png" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0002.png" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0025.png" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0026.png" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0027.png" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0028.png" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0029.png" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0030.png" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0031.png" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0032.png" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0033.png" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0034.png" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0035.png" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
-  <SubTexture name="VE_Logo_Anim_Idle0036.png" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0044" x="4" y="4"  width="1342" height="378" frameX="-94" frameY="-91" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0042" x="4" y="390"  width="1354" height="363" frameX="-88" frameY="-98" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0046" x="4" y="761"  width="1293" height="374" frameX="-119" frameY="-93" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0040" x="4" y="1143"  width="1363" height="344" frameX="-83" frameY="-107" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0038" x="1375" y="4" width="325" height="1365" rotated="true"  frameX="-82" frameY="-116" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0036" x="4" y="1495"  width="1377" height="312" frameX="-76" frameY="-122" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0034" x="1708" y="4" width="295" height="1381" rotated="true"  frameX="-73" frameY="-130" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0032" x="4" y="1815"  width="1378" height="281" frameX="-74" frameY="-137" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0030" x="2011" y="4" width="271" height="1384" rotated="true"  frameX="-71" frameY="-142" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0028" x="4" y="2104"  width="1381" height="263" frameX="-72" frameY="-146" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0014" x="2290" y="4" width="257" height="1400" rotated="true"  frameX="-62" frameY="-149" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0016" x="4" y="2375"  width="1399" height="257" frameX="-63" frameY="-149" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0018" x="1389" y="1412"  width="1399" height="257" frameX="-63" frameY="-149" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0012" x="2555" y="4" width="257" height="1395" rotated="true"  frameX="-65" frameY="-149" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0020" x="1390" y="1677"  width="1395" height="257" frameX="-65" frameY="-149" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0026" x="1393" y="1942"  width="1382" height="259" frameX="-71" frameY="-148" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0022" x="1411" y="2209"  width="1391" height="257" frameX="-67" frameY="-149" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0010" x="1411" y="2474"  width="1383" height="258" frameX="-71" frameY="-148" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0024" x="4" y="2640"  width="1382" height="257" frameX="-71" frameY="-149" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0008" x="2810" y="1407" width="257" height="1361" rotated="true"  frameX="-82" frameY="-149" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0006" x="1394" y="2740"  width="1322" height="259" frameX="-102" frameY="-148" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Shadow0000" x="2820" y="4" width="288" height="1191" rotated="true"  frameX="-7" frameY="-3" frameWidth="1205" frameHeight="297"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0005" x="4" y="2905"  width="1296" height="258" frameX="-115" frameY="-149" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0004" x="3075" y="1203" width="257" height="1260" rotated="true"  frameX="-133" frameY="-149" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0003" x="1308" y="3007"  width="1215" height="254" frameX="-155" frameY="-150" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Idle0024" x="3116" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0023" x="4" y="3171"  width="1158" height="251" frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0022" x="3340" y="1170" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0000" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0003" x="3340" y="2336" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0004" x="3075" y="2471" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0005" x="1170" y="3269"  width="1158" height="251" frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0006" x="4" y="3430"  width="1158" height="251" frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0007" x="3599" y="1170" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0008" x="3634" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0009" x="3599" y="2336" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0010" x="2724" y="2776" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0011" x="1170" y="3528"  width="1158" height="251" frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0012" x="4" y="3689"  width="1158" height="251" frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0013" x="2983" y="3637"  width="1158" height="251" frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0014" x="3858" y="1170" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0015" x="3893" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0016" x="3858" y="2336" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0017" x="4117" y="1170" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0018" x="4152" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0019" x="4117" y="2336" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0020" x="4376" y="1170" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0021" x="4411" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0048" x="4376" y="2336" width="251" height="1157" rotated="true"  frameX="-176" frameY="-152" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0002" x="4635" y="1170" width="223" height="1106" rotated="true"  frameX="-210" frameY="-166" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0001" x="4670" y="4" width="220" height="1102" rotated="true"  frameX="-212" frameY="-167" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0000" x="4635" y="2284" width="218" height="1109" rotated="true"  frameX="-201" frameY="-168" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0007" x="1394" y="2740"  width="1322" height="259" frameX="-102" frameY="-148" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0009" x="2810" y="1407" width="257" height="1361" rotated="true"  frameX="-82" frameY="-149" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0011" x="1411" y="2474"  width="1383" height="258" frameX="-71" frameY="-148" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0013" x="2555" y="4" width="257" height="1395" rotated="true"  frameX="-65" frameY="-149" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0015" x="2290" y="4" width="257" height="1400" rotated="true"  frameX="-62" frameY="-149" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0017" x="4" y="2375"  width="1399" height="257" frameX="-63" frameY="-149" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0019" x="1389" y="1412"  width="1399" height="257" frameX="-63" frameY="-149" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0021" x="1390" y="1677"  width="1395" height="257" frameX="-65" frameY="-149" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0023" x="1411" y="2209"  width="1391" height="257" frameX="-67" frameY="-149" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0025" x="4" y="2640"  width="1382" height="257" frameX="-71" frameY="-149" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0027" x="1393" y="1942"  width="1382" height="259" frameX="-71" frameY="-148" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0029" x="4" y="2104"  width="1381" height="263" frameX="-72" frameY="-146" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0031" x="2011" y="4" width="271" height="1384" rotated="true"  frameX="-71" frameY="-142" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0033" x="4" y="1815"  width="1378" height="281" frameX="-74" frameY="-137" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0035" x="1708" y="4" width="295" height="1381" rotated="true"  frameX="-73" frameY="-130" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0037" x="4" y="1495"  width="1377" height="312" frameX="-76" frameY="-122" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0039" x="1375" y="4" width="325" height="1365" rotated="true"  frameX="-82" frameY="-116" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0041" x="4" y="1143"  width="1363" height="344" frameX="-83" frameY="-107" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0043" x="4" y="390"  width="1354" height="363" frameX="-88" frameY="-98" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0045" x="4" y="4"  width="1342" height="378" frameX="-94" frameY="-91" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0047" x="4" y="761"  width="1293" height="374" frameX="-119" frameY="-93" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Confirm0049" x="4376" y="2336" width="251" height="1157" rotated="true"  frameX="-176" frameY="-152" frameWidth="1528" frameHeight="561"/>
+  <SubTexture name="VE_Logo_Anim_Idle0001" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0002" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0025" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0026" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0027" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0028" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0029" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0030" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0031" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0032" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0033" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0034" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0035" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
+  <SubTexture name="VE_Logo_Anim_Idle0036" x="3375" y="4" width="251" height="1158" rotated="true"  frameX="-0" frameY="-0" frameWidth="1158" frameHeight="251"/>
 </TextureAtlas>

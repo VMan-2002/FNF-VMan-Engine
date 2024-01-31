@@ -1,4 +1,4 @@
 - multiplayer
-- scripting (using lua)
-- loading psych engine mods (probably??)
+- scripting (using lua) [we already have hscript so why add this]
+- loading psych engine mods (probably??) [not possible]
 - some things idk (check translations files)

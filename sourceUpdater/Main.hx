@@ -21,6 +21,14 @@ import sys.io.File;
 
 using StringTools;
 
+typedef UpdateFileInfo = {
+	assetver:Int,
+	assets:Array<Array<Any>>,
+	targets:Array<Array<String>>,
+	manifestfiles:Array<String>,
+	addition:Array<String>
+}
+
 typedef GamebananaFileResult = {
 	_sFile:String,
 	_tsDateAdded:Int,
