@@ -185,7 +185,7 @@ class ModsMenuState extends MusicBeatState {
 			trace("Error while loading mod json for "+mod);
 			addCreditsStuff(mod, {
 				name: mod,
-				description: fillDesc ? Translation.getTranslation("error desc", "mods", null, "This mod's mod.json isn't formatted correctly"),
+				description: Translation.getTranslation("error desc", "mods", null, "This mod's mod.json isn't formatted correctly"),
 				version: 0,
 				versionStr: "",
 				titleScreen: false,
