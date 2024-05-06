@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Friday Night Funkin' VMan Engine" file="funkin" packageName="com.ninjamuffin99.funkin" package="com.ninjamuffin99.funkin" main="Main" version="0.2.7.1" company="VMan_2002" />
+	<app title="Friday Night Funkin' VMan Engine" file="funkin" packageName="com.vman_2002.fnfvmanengine" package="com.vman_2002.fnfvmanengine" main="Main" version="0.2.7.1" company="VMan_2002" />
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
@@ -42,6 +42,9 @@
 
 	<assets path="assets/preload" rename="assets" exclude="*.ogg" if="web"/>
 	<assets path="assets/preload" rename="assets" exclude="*.mp3" unless="web"/>
+	<!--<assets path="assets/preload_png" rename="assets" exclude="*.png" if="cpp"/>-->
+	<assets path="assets/preload_png" rename="assets" if="cpp"/>
+	<assets path="assets/preload_png" rename="assets" exclude="*.webp" unless="cpp"/>
 	
 	<!-- <define name="PRELOAD_ALL" /> -->
 	<define name="PRELOAD_ALL" unless="web" />
@@ -139,6 +142,7 @@
 	<haxelib name="flxanimate"/>
 	
 	<haxelib name="away3d" />
+	<haxelib name="hxWebP" if="cpp || web" />
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 
@@ -171,6 +175,9 @@
 
 	<!--Enable this for Nape release builds for a serious peformance improvement-->
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
+
+	<!--Profiler-->
+	<haxedef name="VE_PROFILER" />
 
 	<!-- _________________________________ Custom _______________________________ -->
 

@@ -44,9 +44,9 @@ First, you need to install Haxe and HaxeFlixel. I'm too lazy to write and keep u
 
 Other installations you'd need are the additional libraries, a fully updated list will be in `Project.xml` in the project root. Currently, these are all of the things you need to install:
 ```
-flixel
-flixel-addons
-flixel-ui
+flixel 4.11.0
+flixel-addons 2.11.0
+flixel-ui 2.6.0
 hscript
 polymod 1.5.2
 hxcpp-debugger
@@ -55,10 +55,12 @@ extension-networking
 linc_luajit
 flxanimate
 away3d
+hxwebp
 ```
 So for each of those type `haxelib install [library]` so shit like `haxelib install polymod 1.5.2`
-
-Make sure you have version 1.5.2 of Polymod `haxelib install polymod 1.5.2`
+If they're already installed, check `haxelib list` to see which version is active.
+Use `haxelib set [library] [version]` to change an active version.
+Make sure you have the right versions!!!
 
 You'll also need to install a couple things that involve Gits. To do this, you need to do a few things first.
 1. Download [git-scm](https://git-scm.com/downloads). Works for Windows, Mac, and Linux, just select your build.

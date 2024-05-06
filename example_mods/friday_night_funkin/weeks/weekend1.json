@@ -1,0 +1,13 @@
+{
+	"name": "Weekend 1",
+	"title": "Due Debts",
+	"songs": [
+		"Darnell","Lit Up","2Hot","Blazin"
+	],
+	"displaySongs": [
+		"Darnell","Lit Up","2Hot","Blazin'"
+	],
+	"menuChars": ["bf", "pico", "gf"],
+	"previous": "week6",
+	"bgColor": "0x413CAE"
+}
