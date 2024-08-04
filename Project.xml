@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Friday Night Funkin' VMan Engine" file="funkin" packageName="com.vman_2002.fnfvmanengine" package="com.vman_2002.fnfvmanengine" main="Main" version="0.2.7.1" company="VMan_2002" />
+	<app title="Friday Night Funkin' VMan Engine (V2BC)" file="funkin" packageName="com.vman_2002.fnfvmanengine" package="com.vman_2002.fnfvmanengine" main="Main" version="0.2.7.1" company="VMan_2002" />
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
@@ -34,9 +34,9 @@
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
-	<set name="BUILD_DIR" value="export/debug" if="debug" />
-	<set name="BUILD_DIR" value="export/release" unless="debug" />
-	<set name="BUILD_DIR" value="export/32bit" if="32bit" />
+	<set name="BUILD_DIR" value="export/v2bc_debug" if="debug" />
+	<set name="BUILD_DIR" value="export/v2bc_release" unless="debug" />
+	<set name="BUILD_DIR" value="export/v2bc_32bit" if="32bit" />
 
 	<classpath name="source" />
 
