@@ -43,8 +43,8 @@ class SwagNoteSkin {
 
 	public static function loadNoteSkin(name:String, modName:String) {
 		//todo: THIS IS A TEMPORARY HARDCODED FIX LOL
-		if (name == "vpt_love_notes" && modName == "vmans_past_time")
-			name = "vpt_love_notes_fixed";
+		/*if (name == "vpt_love_notes" && modName == "vmans_past_time")
+			name = "vpt_love_notes_fixed";*/
 		if (Note.loadedNoteSkins.exists('${modName}:${name}')) {
 			return Note.loadedNoteSkins.get('${modName}:${name}');
 		}
@@ -178,7 +178,7 @@ class SwagUIStyle {
 		uiStyleFile = cast parser.fromJson(CoolUtil.tryPathBoth('objects/uiStyles/${name}.json', modName));
 		if (uiStyleFile == null) {
 			ErrorReportSubstate.addError('loading default ui style because ${modName}:${name} wasnt found');
-			uiStyleFile = new SwagUIStyleFile();
+			return loadUIStyle("normal", modName);
 		}
 		var uiStyle:SwagUIStyle = new SwagUIStyle(); //for some reason a cast fails here
 		uiStyle.three = uiStyleFile.three != null ? uiStyleFile.three : "";
@@ -205,12 +205,22 @@ class SwagUIStyle {
 			if (uiStyle.ratings.get("sick-cool") == null)
 				uiStyle.ratings.set("sick-cool", uiStyle.ratings.get("sick"));
 		}
-		if (uiStyle.ratings.get("marvelous") == null)
-			uiStyle.ratings.set("marvelous", uiStyle.ratings.get("sick"));
-		if (uiStyle.ratings.get("marvelous-cool") == null)
-			uiStyle.ratings.set("marvelous-cool", uiStyle.ratings.get("sick-cool") == uiStyle.ratings.get("sick") ? uiStyle.ratings.get("marvelous") : uiStyle.ratings.get("sick-cool"));
-		if (uiStyle.ratings.get("marvelous-epic") == null)
-			uiStyle.ratings.set("marvelous-epic", uiStyle.ratings.get("marvelous-cool"));
+		if (uiStyle.ratings.get("sick-cool") == "normal/sick-cool") {
+			uiStyle.ratings.set("marvelous", "normal/marvellous");
+			uiStyle.ratings.set("marvelous-cool", "normal/marvellous-cool");
+			uiStyle.ratings.set("marvelous-epic", "normal/marvellous-epic");
+		} else if (uiStyle.ratings.get("sick-cool") == "pixelUI/sick-cool-pixel") {
+			uiStyle.ratings.set("marvelous", "pixelUI/marvellous");
+			uiStyle.ratings.set("marvelous-cool", "pixelUI/marvellous-cool");
+			uiStyle.ratings.set("marvelous-epic", "pixelUI/marvellous-epic");
+		} else {
+			if (uiStyle.ratings.get("marvelous") == null)
+				uiStyle.ratings.set("marvelous", uiStyle.ratings.get("sick"));
+			if (uiStyle.ratings.get("marvelous-cool") == null)
+				uiStyle.ratings.set("marvelous-cool", uiStyle.ratings.get("sick-cool") == uiStyle.ratings.get("sick") ? uiStyle.ratings.get("marvelous") : uiStyle.ratings.get("sick-cool"));
+			if (uiStyle.ratings.get("marvelous-epic") == null)
+				uiStyle.ratings.set("marvelous-epic", uiStyle.ratings.get("marvelous-cool"));
+		}
 		if (uiStyle.ratings.get("good") == null)
 			uiStyle.ratings.set("good", "normal/good");
 		if (uiStyle.ratings.get("bad") == null)
@@ -257,6 +267,7 @@ class SwagNoteType {
 	public var healthHitShit:Null<Float>;
 	public var healthHold:Null<Float>;
 	public var healthMiss:Null<Float>;
+	public var healthHoldMiss:Null<Float>;
 	public var healthMaxMult:Null<Float>;
 	public var ignoreMiss:Null<Bool>;
 	public var imagePrefix:String = "";
@@ -285,6 +296,8 @@ class SwagNoteType {
 	public var shouldBotHit:Null<Bool>;
 	public var shouldJudge:Null<Bool>;
 	public var badHit:Null<Bool>;
+	public var holdMethod:Null<Int>; //0: pre-weekend1, 1: weekend1, 2: destroy entire hold
+	public var holdScore:Null<Int>;
 
 	public static function loadNoteType(name:String, modName:String, ?putInto:Null<String>) {
 		if (putInto == null)
@@ -309,6 +322,7 @@ class SwagNoteType {
 		noteType.healthHitBad = noteType.healthHitBad != null ? noteType.healthHitBad : (noteType.healthHit != null ? noteType.healthHit : defaultNote.healthHitBad);
 		noteType.healthHitShit = noteType.healthHitShit != null ? noteType.healthHitShit : (noteType.healthHit != null ? noteType.healthHit : defaultNote.healthHitShit);
 		noteType.healthMiss = noteType.healthMiss != null ? noteType.healthMiss : (noteType.ignoreMiss ? 0 : defaultNote.healthMiss);
+		noteType.healthHoldMiss = noteType.healthHoldMiss != null ? noteType.healthHoldMiss : defaultNote.healthMiss;
 		noteType.healthMaxMult = noteType.healthMaxMult != null ? noteType.healthMaxMult : 1;
 		noteType.healthHold = noteType.healthHold != null ? noteType.healthHold : (noteType.healthHit != null ? noteType.healthHit : defaultNote.healthHold);
 		noteType.ignoreMiss = noteType.ignoreMiss != null ? noteType.ignoreMiss : false;
@@ -347,6 +361,8 @@ class SwagNoteType {
 		noteType.scrollSpeedMult = noteType.scrollSpeedMult == null ? 1 : noteType.scrollSpeedMult;
 		noteType.badHit = noteType.badHit == true;
 		noteType.shouldJudge = noteType.shouldJudge == null ? !noteType.badHit : noteType.shouldJudge;
+		noteType.holdMethod = noteType.holdMethod != null ? noteType.holdMethod : 0;
+		noteType.holdScore = noteType.holdScore != null ? noteType.holdScore : 0;
 
 		//Should bot hit
 		if (noteType.shouldBotHit == null) {
@@ -406,7 +422,7 @@ class Note extends FlxSprite {
 	public var isReleaseNote:Bool = false;
 	public var isOpenHopo:Bool = false;
 
-	public var noteScore:Float = 1;
+	//public var noteScore:Float = 1;
 	
 	public var noteType:Int = 0;
 
@@ -470,7 +486,8 @@ class Note extends FlxSprite {
 		this.strumTime = strumTime;
 
 		this.noteData = noteData;
-		strumNoteNum = noteData;
+		this.strumNoteNum = noteData;
+		this.strumLineNum = strumLineNum;
 
 		var myArrow = mania.arrows[noteData];
 
@@ -483,6 +500,11 @@ class Note extends FlxSprite {
 			center = true;
 			maniaFract = 0.5;
 			myArrow = "opennote";
+			if (typedata.guitar && typedata.guitarHopo) {
+				//This is a open hopo note
+				//So it's funy
+				isOpenHopo = true;
+			}
 		} else {
 			maniaFract = noteData / mania.fractor;
 		}
@@ -490,31 +512,6 @@ class Note extends FlxSprite {
 		var skin = (typedata.noteSkinPrefix != null ? typedata.noteSkinPrefix : "") + ((PlayState.SONG.noteSkin == "" || PlayState.SONG.noteSkin == null) ? "normal" : PlayState.SONG.noteSkin);
 		
 		switch (skin) {
-			/*case 'pixel':
-				frames = Paths.getSparrowAtlas('pixelUI/NOTE_assets-pixel');
-				
-				animation.addByPrefix('${myArrow}Scroll', '${typedata.noteAnimPrefix}${myArrow}0', 24);
-				animation.addByPrefix('${myArrow}holdend', '${typedata.noteAnimPrefix}${myArrow} hold end', 24);
-				animation.addByPrefix('${myArrow}hold', '${typedata.noteAnimPrefix}${myArrow} hold piece', 24);
-				animation.addByPrefix('${myArrow}Release', '${typedata.noteAnimPrefix}${myArrow} release', 24);
-				animation.addByPrefix('${myArrow}holdstart', '${typedata.noteAnimPrefix}${myArrow} hold start', 24);
-				//animation.appendByPrefix('purpleholdend', 'pruple end hold'); //develop your spritesheets properly challenge (impossible)
-
-				scale.x = PlayState.daPixelZoom * 1.5;
-				antialiasing = false;
-
-			case 'normal' | "" | null:
-				frames = Paths.getSparrowAtlas('normal/NOTE_assets');
-				
-				animation.addByPrefix('${myArrow}Scroll', '${typedata.noteAnimPrefix}${myArrow}0', 24);
-				animation.addByPrefix('${myArrow}holdend', '${typedata.noteAnimPrefix}${myArrow} hold end', 24);
-				animation.addByPrefix('${myArrow}hold', '${typedata.noteAnimPrefix}${myArrow} hold piece', 24);
-				animation.addByPrefix('${myArrow}Release', '${typedata.noteAnimPrefix}${myArrow} release', 24);
-				animation.addByPrefix('${myArrow}holdstart', '${typedata.noteAnimPrefix}${myArrow} hold start', 24);
-				//animation.appendByPrefix('purpleholdend', 'pruple end hold'); //develop your spritesheets properly challenge (impossible)
-
-				antialiasing = true;*/
-
 			default:
 				//load custom
 				var noteSkin:SwagNoteSkin = SwagNoteSkin.loadNoteSkin(skin, PlayState.modName);
@@ -523,11 +520,10 @@ class Note extends FlxSprite {
 				var l = stuff.join("/");
 				if (l != cacheString) {
 					cacheString = l;
-					cacheGraphic = Paths.getSparrowAtlas(l);
+					cacheGraphic = FlxAtlasFrames.fromSparrow(Paths2.image(l, "shared/images/"), Paths.file('images/${l}.xml'));
 				}
 				frames = cacheGraphic;
 				var noteAnimPrefix = strumLineNum < 0 ? "" : typedata.noteAnimPrefix;
-				//trace('Images [normal: ${noteSkin.image}] [downscroll: ${noteSkin.imageDownscroll}] Stuff is ${stuff.join("/")}');
 				
 				if (noteSkin.arrows == null) {
 					animation.addByPrefix('${myArrow}Scroll', '${noteAnimPrefix}${myArrow}0', 24);
@@ -551,8 +547,6 @@ class Note extends FlxSprite {
 				antialiasing = noteSkin.antialias != false;
 				scale.x = noteSkin.scale;
 		}
-
-		this.strumLineNum = strumLineNum;
 		
 		scale.x *= typedata.guitarOpen ? 0.7 : mania.scale;
 		scale.y = scale.x;
@@ -566,7 +560,7 @@ class Note extends FlxSprite {
 			
 			flipY = Options.instance.downScroll;
 			
-			noteScore * 0.2;
+			//noteScore * 0.2;
 			alpha = 0.6;
 
 			animation.play(myArrow+"holdend");
@@ -599,24 +593,14 @@ class Note extends FlxSprite {
 		if (animation.curAnim == null) {
 			trace("Note's animation is null. Fuck! Strum time is: " + strumTime + " And Note type is: "+getNoteType());
 		}
-		/*switch(getNoteType()) {
-			case "Guitar Note":
-				color = 0xFF0000; //todo: this is temporary
-			case "Guitar HOPO Note":
-				color = 0xFFFF00; //todo: this is temporary
-			case "Guitar Open HOPO Note":
-				color = 0x00FFFF; //todo: this is temporary
-		}*/
-		if (typedata.guitar && typedata.guitarOpen && typedata.guitarHopo) {
-			//This is a open hopo note
-			//So it's funy
-			isOpenHopo = true;
-		}
-		
 	}
 	
 	//todo: hi
 	public function noteSetArrow(type:String) {
+		
+	}
+
+	public function setSkin(name:String) {
 		
 	}
 
@@ -639,6 +623,18 @@ class Note extends FlxSprite {
 
 	public inline function getNoteTypeDataNoCheck():SwagNoteType {
 		return Note.loadedNoteTypes.get('${PlayState.modName}:${getNoteType()}');
+	}
+
+	public inline function getStrumLine() {
+		return PlayState.instance.strumLines.members[strumLineNum];
+	}
+
+	public inline function getStrumNote() {
+		return PlayState.instance.strumLines.members[strumLineNum].strumNotes[strumNoteNum];
+	}
+
+	public inline function getStrumNoteData() {
+		return PlayState.instance.strumLines.members[strumLineNum].strumNotes[noteData];
 	}
 
 	public function makeReleaseNote() {

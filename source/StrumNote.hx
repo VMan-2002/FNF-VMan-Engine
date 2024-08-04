@@ -4,6 +4,7 @@ import CoolUtil;
 import Note.SwagNoteSkin;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -97,7 +98,8 @@ class StrumNote extends FlxSprite
 			default:
 				//load custom
 				var noteSkin:SwagNoteSkin = SwagNoteSkin.loadNoteSkin(curStyle, PlayState.modName);
-				frames = Paths.getSparrowAtlas(noteSkin.image);
+				//frames = Paths.getSparrowAtlas(noteSkin.image);
+				frames = FlxAtlasFrames.fromSparrow(Paths2.image(noteSkin.image, "shared/images/"), Paths.file('images/${noteSkin.image}.xml'));
 
 				if (noteSkin.arrows == null) {
 					animation.addByPrefix('static', "arrow"+myStrumArrow, 24, true);
@@ -134,16 +136,14 @@ class StrumNote extends FlxSprite
 				alpha = 1;
 			} else {
 				playAnim("static");
-				alpha = 0;
 				FlxTween.tween(this, {alpha: 1}, 1, {ease: FlxEase.circOut});
 			}
 		});
 	}
 	
 	public function playAnim(name:String, ?force:Bool = false) {
-		if (name == animation.curAnim.name && !force) {
+		if (name == animation.curAnim.name && !force)
 			return;
-		}
 		animation.play(name, force);
 		updateHitbox();
 		centerOffsets();

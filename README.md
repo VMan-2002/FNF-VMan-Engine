@@ -52,7 +52,6 @@ polymod 1.5.2
 hxcpp-debugger
 json2object
 extension-networking
-linc_luajit
 flxanimate
 away3d
 hxwebp

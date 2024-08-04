@@ -52,7 +52,9 @@ class MainMenuState extends MusicBeatState {
 	var hillarious:MultiWindow;
 	#end*/
 
-	public var menuButtonTextures:Map<String, String> = new Map<String, String>();
+	public var menuButtonTextures:Map<String, String> = [
+		"credits" => "menu/credits" //hell yeah
+	];
 
 	public function addMenuButton(name:String, tex:String, ?pos:Int = -1) {
 		menuButtonTextures.set(name, tex);
@@ -98,7 +100,7 @@ class MainMenuState extends MusicBeatState {
 		camFollow = new FlxObject(0, 0, 1, 1);
 		add(camFollow);
 
-		magenta = new FlxSprite(-80).loadGraphic(Paths.image('menuBGDesat'));
+		magenta = new FlxSprite(-80).loadGraphic(Paths2.image('menuBGDesat'));
 		magenta.scale.set(1.1, 1.1);
 		magenta.updateHitbox();
 		magenta.screenCenter();

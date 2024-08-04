@@ -2,3 +2,4 @@
 High
 bf-car::mom-car::gf-car
 Kawai Sprite
+Easy,Normal,Hard,Erect,Nightmare

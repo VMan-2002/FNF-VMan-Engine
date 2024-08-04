@@ -159,9 +159,8 @@ class DiscordClient
 					changePresence("Options Menu");
 				}
 			case "controls":
-				if (extra.length > 128) {
-					extra = extra.substring(0, extra.indexOf(":")) + " too long";
-				}
+				if (extra.length > 128)
+					extra = extra.substring(0, extra.indexOf(":")) + " (too long)";
 				changePresence("Controls Menu", extra);
 			case "story":
 				changePresence("Story Mode Menu");

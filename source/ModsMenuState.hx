@@ -10,6 +10,7 @@ import flixel.group.FlxGroup;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxRect;
+import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -84,7 +85,7 @@ class ModsMenuState extends MusicBeatState {
 			devMode: false,
 			requiredGameVer: null,
 			loadableGameVer: null
-		}, Paths.image("menu/moreModsIcon"));
+		}, Paths2.image("menu/moreModsIcon", "shared/images/"));
 		updateCheckboxes();
 	}
 
@@ -203,8 +204,8 @@ class ModsMenuState extends MusicBeatState {
 		trace(inTabber ? "tabber is now On" : "tabber is now Off");
 		if (grabber == null) {
 			if (inTabber) {
-				grabber = new FlxSprite(0, 0, Paths.image("menu/grabber"));
-				grabber.loadGraphic(Paths.image("menu/grabber"), true, 100, 130);
+				grabber = new FlxSprite(0, 0);
+				grabber.loadGraphic(Paths2.image("menu/grabber", "shared/images/"), true, 100, 130);
 				grabber.offset.set(-70, -40);
 				grabber.animation.add("idle", [0]);
 				grabber.animation.add("grab", [1]);
@@ -450,7 +451,7 @@ class ModsMenuState extends MusicBeatState {
 		newBgCorner.clipRect = bgCornerRect;
 	}
 	
-	public function addCreditsStuff(mod:String, stuff:ModInfo, ?image:Null<String>) {
+	public function addCreditsStuff(mod:String, stuff:ModInfo, ?image:Null<FlxGraphicAsset>) {
 		//trace("Adding credits of "+title);
 		var stuffGroup = currentCreditsThing;
 		//for (thing in stuff) {
@@ -477,13 +478,13 @@ class ModsMenuState extends MusicBeatState {
 				if (FileSystem.exists(iconPath))
 					icon.loadGraphic(BitmapData.fromFile(iconPath));
 				else 
-					icon.loadGraphic(Paths.image("menu/noModIcon"));
+					icon.loadGraphic(Paths2.image("menu/noModIcon", "shared/images/"));
 			}
 			icon.antialiasing = thisEntry.menuStuff.antialiasIcon == true;
 			icon.offset.set((icon.frameWidth - 150) * 0.5, (icon.frameHeight - 150) * 0.5);
 			thisEntry.add(icon);
 			if (modObjects == null) {
-				var checkmark = new FlxSprite(110, 110).loadGraphic(Paths.image("menu/modCheckmark"), true, 40, 40);
+				var checkmark = new FlxSprite(110, 110).loadGraphic(Paths2.image("menu/modCheckmark", "shared/images/"), true, 40, 40);
 				checkmark.animation.add("enable", [1]);
 				checkmark.animation.add("disable", [0]);
 				checkmark.animation.add("outdated", [2]);

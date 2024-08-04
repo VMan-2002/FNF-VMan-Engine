@@ -8,3 +8,4 @@ export/*
 source/net/VeAPIKeys.hx
 *.secret
 source/ScriptUtil.hx
+source/ScriptUtil.hx

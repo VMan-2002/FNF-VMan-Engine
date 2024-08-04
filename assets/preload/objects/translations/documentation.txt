@@ -1,0 +1,43 @@
+== translation documentation ==
+
+[strings.txt]
+	This file is used for most translatable strings in the game.
+	A translatable string is defined in this file like this:
+
+	<context>_<key>::<text>
+
+	<context>: The context of the string, example: "playstate" or "optionsMenu"
+	<key>: Reference for the text. Must be lowercase.
+	<text>: The resulting translated text. Can contain inputs such as "#0" for the game's code to input other text in certain situations.
+
+	Lines that are blank or that start with "//" are skipped over and can be used as comments.
+	Lines that contain but don't start with "//" however, are not treated as having comments.
+	To write a comment about a specific line, you must write it on a different line.
+
+[rankwords/default.txt]
+	This file is used for rank words.
+	They can be seen in the in-game HUD via the "rankWord" item in "Customize HUD" in options.
+	Each line looks like this:
+
+	<threshold>::<text>
+
+	<threshold>: accRating must be equal to or above this value to show this line.
+	<text>: The text shown when accRating meets the threshold.
+
+	Thresholds must be in ascending order in order to work correctly.
+	The first, seconds and last rank words in the file are given special treatment.
+	The first rank word is used when the player hasn't hit any notes yet.
+	The second rank word is used when accRating doesn't meet any threshold.
+	The last rank word is used when the player has MFC; they only hit "Marvelous" rating.
+
+[Dialogue]
+	[NOT YET IMPLEMENTED]
+	Dialogue can be translated using files at the following location:
+
+	<mod>/dialogue/<song>-<dialogue>.json
+
+	<mod>: Matches the name of the folder containing the entire mod.
+	<song>: Matches the name of the folder containing the song data.
+	<dialogue>: Matches the name of the original dialogue file.
+
+	When a translated dialogue file exists, the game uses it instead of the original file.

@@ -1,0 +1,20 @@
+//The Fresh(tm)
+
+function stateInitPost() {
+	if (PlayState.instance.instName != "Inst") {
+		trace("Erect lol, byebye script XD");
+		killScript();
+	} else {
+		trace("Regular FNF Song");
+	}
+}
+
+function beatHit(num:Int) {
+	if (num == 16 || num == 80) {
+		camZooming = true;
+		if (num == 16)
+			gfSpeed = 2;
+	} else if (num == 48 || num == 112) {
+		gfSpeed = 1;
+	}
+}

@@ -1,0 +1,21 @@
+//The boperbo
+
+function stateInitPost() {
+	if (PlayState.instance.instName != "Inst") {
+		trace("Erect lol, byebye script XD");
+		killScript();
+	} else {
+		trace("Regular FNF Song");
+	}
+}
+
+function beatHit(num:Int) {
+	if (num >= 128) {
+		PlayState.instance.vocals.volume = 0;
+		PlayState.instance.vocalsOpponent.volume = 0;
+	}
+
+	if (num % 8 == 7) {
+		PlayState.instance.boyfriend.playAnim('hey', true);
+	}
+}

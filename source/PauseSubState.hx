@@ -101,49 +101,48 @@ class PauseSubState extends MusicBeatSubstate
 		var accepted = controls.ACCEPT;
 
 		if (upP)
-		{
 			changeSelection(-1);
-		}
 		if (downP)
-		{
 			changeSelection(1);
-		}
 
-		if (accepted)
-		{
-			var daSelected:String = menuItems[curSelected];
+		if (accepted) {
+			var daSelected:String = menuItems[curSelected].toLowerCase();
 
-			switch (daSelected.toLowerCase())
-			{
-				case "resume":
-					close();
-				case "restart song":
-					if (Options.instance.uiReloading) {
-						Note.SwagNoteSkin.clearLoadedNoteSkins();
-						Note.SwagUIStyle.clearLoadedUIStyles();
-						Note.SwagNoteType.clearLoadedNoteTypes();
-					}
-					FlxG.resetState();
-				case "exit to menu":
-					if (PlayState.isStoryMode)
-						FlxG.switchState(new StoryMenuState());
-					else
-						FlxG.switchState(new FreeplayState());
-				case "options":
-					if (Std.isOfType(FlxG.state, PlayStateOffsetCalibrate)) {
-						CoolUtil.playMenuMusic();
-					}
-					FlxG.state.closeSubState();
-					OptionsMenu.wasInPlayState = !Std.isOfType(FlxG.state, PlayStateOffsetCalibrate);
-					FlxG.switchState(new OptionsMenu());
+			Scripting.clearScriptResults();
+			Scripting.runOnScripts("onAccept", ["PauseSubState", daSelected, true]);
+			if (!Scripting.scriptResultsContains(false)) {
+				switch (daSelected) {
+					case "resume":
+						close();
+					case "restart song":
+						if (Options.instance.uiReloading) {
+							Note.SwagNoteSkin.clearLoadedNoteSkins();
+							Note.SwagUIStyle.clearLoadedUIStyles();
+							Note.SwagNoteType.clearLoadedNoteTypes();
+						}
+						FlxG.resetState();
+					case "exit to menu":
+						if (Std.isOfType(FlxG.state, PlayState) && cast(FlxG.state, PlayState).exitState != null)
+							FlxG.switchState(cast(FlxG.state, PlayState).exitState);
+						else if (PlayState.isStoryMode)
+							FlxG.switchState(new StoryMenuState());
+						else
+							FlxG.switchState(new FreeplayState());
+					case "options":
+						if (Std.isOfType(FlxG.state, PlayStateOffsetCalibrate)) {
+							CoolUtil.playMenuMusic();
+						}
+						FlxG.state.closeSubState();
+						OptionsMenu.wasInPlayState = !Std.isOfType(FlxG.state, PlayStateOffsetCalibrate);
+						FlxG.switchState(new OptionsMenu());
+				}
 			}
 		}
 
-		if (FlxG.keys.justPressed.J)
-		{
+		/*if (FlxG.keys.justPressed.J) {
 			// for reference later!
 			// PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxKey.J, null);
-		}
+		}*/
 	}
 
 	override function destroy()

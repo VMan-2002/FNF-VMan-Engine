@@ -1,0 +1,12 @@
+{
+	"cat": {
+		"common": {
+			"images": [
+				"stage/stage_light",
+				"stage/stageback",
+				"stage/stagecurtains",
+				"stage/stagefront"
+			]
+		}
+	}
+}

@@ -75,10 +75,23 @@ class TitleState extends MusicBeatState {
 	var fromOptions:Bool = false;
 	var toPlayState:Bool = false;
 
-	public var updateCheck:String = initialized ? "NO_CHECK" : Http.requestUrl("https://raw.githubusercontent.com/VMan-2002/FNF-VMan-Engine/master/version/vman_engine.txt").replace("\r", "");
+	public var updateChecked:Bool = false;
+	public var updateCheck:String = "NO_CHECK";
 	public var needsUpdate:Bool = false;
+	public static var updateCheckSucceeded:Bool = false;
 
 	override public function new(?replayTitle:Bool = false, ?reloadingMods:Bool = false, ?fromOptions:Bool = false, ?toPlayState:Bool = false) {
+		if (!updateChecked) {
+			updateChecked = true;
+			try {
+				updateCheck = Http.requestUrl("https://raw.githubusercontent.com/VMan-2002/FNF-VMan-Engine/master/version/vman_engine.txt").replace("\r", "");
+				updateCheckSucceeded = true;
+			} catch (err) {
+				trace("Failed to check for updates. Internet connection may be down. Error description below:");
+				trace(err);
+				updateCheckSucceeded = false;
+			}
+		}
 		//todo: this doesn't always work
 		//this.replayTitle = replayTitle;
 		this.reloadingMods = reloadingMods;
@@ -94,6 +107,7 @@ class TitleState extends MusicBeatState {
 			Scripting.sharedVars.clear();
 			Note.cacheString = "";
 			Note.cacheGraphic = null;
+			Paths2.dumpCache();
 		}
 		Scripting.initScriptsByContext("Global");
 
@@ -162,8 +176,6 @@ class TitleState extends MusicBeatState {
 		FlxG.save.bind('funkin', 'ninjamuffin99');
 
 		Highscore.load();
-		
-		stageObject = new Stage("_FnfTitle", null, true);
 
 		if (FlxG.save.data.weekUnlocked != null) {
 			//We don't need this anymore
@@ -208,13 +220,29 @@ class TitleState extends MusicBeatState {
 			}
 			#end
 		}
+
+		#if desktop
+		if (!Main.launchArgumentsParsed.exists("noDiscord")) {
+			DiscordClient.initialize();
+			
+			Application.current.onExit.add(function (exitCode) {
+				DiscordClient.shutdown();
+			});
+		}
+		#end
 		
-		if (Main.launchArgumentsParsed.get("multiWindowType") > 0) {
+		/*if (Main.launchArgumentsParsed.get("multiWindowType") > 0) {
 			initialized = true;
 			CoolUtil.playMenuMusic(1);
 			initTransitionShit();
 			return FlxG.switchState(new FreeplayState());
+		}*/
+
+		if (Main.launchArgumentsParsed.exists("forceWebp")) {
+			Options.useWebp = Main.launchArgumentsParsed.get("forceWebp") != 0;
 		}
+		
+		stageObject = new Stage("_FnfTitle", CoolUtil.getFileOriginMod("objects/stages/_fnfTitle.json", null), true);
 		
 		titleGroup = new FlxGroup();
 		add(titleGroup);
@@ -255,14 +283,6 @@ class TitleState extends MusicBeatState {
 			startIntro();
 		});
 		#end
-
-		#if desktop
-		DiscordClient.initialize();
-		
-		Application.current.onExit.add (function (exitCode) {
-			DiscordClient.shutdown();
-		 });
-		#end
 	}
 
 	var logoBl:FlxSprite;
@@ -270,18 +290,28 @@ class TitleState extends MusicBeatState {
 	var danceLeft:Bool = false;
 	var titleText:FlxSprite;
 	
-	inline function initTransitionShit() {
+	public static inline function initTransitionShit(?zoom:Float = 0) {
 		var diamond:FlxGraphic = FlxGraphic.fromClass(GraphicTransTileDiamond);
 		diamond.persist = true;
 		diamond.destroyOnNoUse = false;
 
-		FlxTransitionableState.defaultTransIn = new TransitionData(FADE, FlxColor.BLACK, 1, new FlxPoint(0, -1), {asset: diamond, width: 32, height: 32},
-			new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
-		FlxTransitionableState.defaultTransOut = new TransitionData(FADE, FlxColor.BLACK, 0.7, new FlxPoint(0, 1),
-			{asset: diamond, width: 32, height: 32}, new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
+		if (zoom == 0)
+			zoom = Math.max(FlxG.camera.zoom, 1.4);
 
-		transIn = FlxTransitionableState.defaultTransIn;
-		transOut = FlxTransitionableState.defaultTransOut;
+		zoom = ((zoom - 1) * 2) + 1;
+		var backzoom = 1 - zoom;
+		var rect = new FlxRect(FlxG.width * backzoom, FlxG.height * backzoom, FlxG.width * zoom, FlxG.height * zoom);
+
+		FlxTransitionableState.defaultTransIn = new TransitionData(FADE, FlxColor.BLACK, 1, new FlxPoint(0, -1), {asset: diamond, width: 32, height: 32},
+			rect);
+		FlxTransitionableState.defaultTransOut = new TransitionData(FADE, FlxColor.BLACK, 0.7, new FlxPoint(0, 1),
+			{asset: diamond, width: 32, height: 32}, rect);
+
+		try {
+			var state = cast(FlxG.state, FlxTransitionableState);
+			state.transIn = FlxTransitionableState.defaultTransIn;
+			state.transOut = FlxTransitionableState.defaultTransOut;
+		}
 
 		// HAD TO MODIFY SOME BACKEND SHIT
 		// IF THIS PR IS HERE IF ITS ACCEPTED UR GOOD TO GO
@@ -339,7 +369,7 @@ class TitleState extends MusicBeatState {
 
 		//credTextShit.visible = false;
 
-		ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('title/newgrounds_logo'));
+		ngSpr = new FlxSprite(0, FlxG.height * 0.52, Paths2.image('title/newgrounds_logo'));
 		add(ngSpr);
 		ngSpr.visible = false;
 		ngSpr.scale.set(0.8, 0.8);

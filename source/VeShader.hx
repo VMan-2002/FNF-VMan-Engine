@@ -78,9 +78,23 @@ class VeShader extends FlxShader {
                 do {
                     @:privateAccess
                     camera._filters.remove(filter);
-                } while (noDupes && camera._filters.contains(filter));
+                } while (noDupes && @:privateAccess camera._filters.contains(filter));
             }
         }
+       /* if (camera.filters == null) {
+            if (state)
+                camera.filters = [filter];
+        } else {
+            if (state) {
+                if (!noDupes || !camera.filters.contains(filter)) {
+                    camera.filters.push(filter);
+                }
+            } else {
+                do {
+                    camera.filters.remove(filter);
+                } while (noDupes && camera.filters.contains(filter));
+            }
+        }*/
     }
 
     /**

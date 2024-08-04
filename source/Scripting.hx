@@ -8,26 +8,41 @@ import CoolUtil.ScriptHelper;
 import Note.SwagNoteSkin;
 import Note.SwagNoteType;
 import Note.SwagUIStyle;
+import Options.PrivateOptions;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxStrip;
+import flixel.addons.display.FlxBackdrop;
 import flixel.addons.effects.FlxSkewedSprite;
 import flixel.addons.effects.chainable.FlxEffectSprite;
 import flixel.addons.transition.FlxTransitionableState;
+import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
+import flixel.system.FlxAssets;
 import flixel.system.FlxSound;
 import flixel.text.FlxText;
 import flixel.tile.FlxTileblock;
 import flixel.tile.FlxTilemap;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
+import flixel.tweens.misc.AngleTween;
+import flixel.tweens.misc.ColorTween;
+import flixel.tweens.misc.NumTween;
+import flixel.tweens.misc.VarTween;
+import flixel.tweens.motion.CircularMotion;
+import flixel.tweens.motion.CubicMotion;
+import flixel.tweens.motion.LinearMotion;
+import flixel.tweens.motion.LinearPath;
+import flixel.tweens.motion.QuadMotion;
+import flixel.tweens.motion.QuadPath;
 import flixel.ui.FlxBar;
 import flixel.util.FlxAxes;
 import flixel.util.FlxCollision;
 import flixel.util.FlxColor;
+import flixel.util.FlxSave;
 import flixel.util.FlxTimer;
 import hscript.Interp;
 import hscript.Parser;
@@ -37,7 +52,6 @@ import render3d.Render3D.VeObject3D;
 import render3d.Render3D.VeScene3D;
 import sys.FileSystem;
 import sys.io.File;
-import wackierstuff.FlxBackdropFix;
 import wackierstuff.VeFlxCamera;
 
 using StringTools;
@@ -63,6 +77,7 @@ class Scripting {
         "AlphaCharacter" => AlphaCharacter,
         "Translation" => Translation,
         "Paths" => Paths,
+        "Paths2" => Paths2,
         "SwagUIStyle" => SwagUIStyle,
         "SwagNoteType" => SwagNoteType,
         "SwagNoteSkin" => SwagNoteSkin,
@@ -100,7 +115,7 @@ class Scripting {
         "FlxCamera" => VeFlxCamera, //Modified for colorblind filter usage
         "FlxPoint" => FlxPoint,
         "FlxSound" => FlxSound,
-        "FlxAxes" => FlxAxes,
+        "FlxAxes" => FlxAxes, //Deprecated
         "FlxTransitionableState" => FlxTransitionableState,
 
         "FlxTypedGroup" => FlxTypedGroup,
@@ -112,7 +127,7 @@ class Scripting {
         "FlxText" => FlxText,
         "FlxTextBorderStyle" => FlxTextBorderStyle,
         "FlxBar" => FlxBar,
-        "FlxBackdrop" => FlxBackdropFix,
+        "FlxBackdrop" => FlxBackdrop,
         "FlxTilemap" => FlxTilemap,
         "FlxSpriteGroup" => FlxSpriteGroup,
         "FlxCollision" => FlxCollision,
@@ -128,7 +143,8 @@ class Scripting {
         //"MySystem" => MySystem //im worried about security lol
 
         //what
-        "ValueAccessor" => Accessor
+        "ValueAccessor" => Accessor,
+        "FlxAtlasFrames" => FlxAtlasFrames
     ];
 
 	public static var gamePlatform(default, never) =
@@ -155,7 +171,7 @@ class Scripting {
     public var validFuncs:Map<String, Bool>;
     public var interp:Interp;
     public var id:String;
-    public var modName:String;
+    public var modName(default, never):String;
     public var name:String;
     public var context:String;
     public var alive:Bool = true;
@@ -322,6 +338,11 @@ class Scripting {
                 parser.line = 1;
                 for (thing in classThings.keys())
                     interp.variables.set(thing, classThings.get(thing));
+                #if debug
+                @:privateAccess
+                if (PrivateOptions.typeClassAvailable && PrivateOptions.checkTypeClassAllowed())
+                    interp.variables.set("Type", Type);
+                #end
                 try {
                     interp.execute(parser.parseString(File.getContent(filepath)));
                 } catch (err) {
@@ -451,6 +472,8 @@ class Scripting {
         }
     }
 
+    //Script results
+
     public static var scriptResults:Map<String, Dynamic> = new Map<String, Dynamic>();
     public function addScriptResult(value:Dynamic) {
         scriptResults.set(id, value);
@@ -468,15 +491,137 @@ class Scripting {
         return false;
     }
 
-    public static function setBlendMode(obj:FlxSprite, blend:String) {
+    //Misc
+
+    public static function setBlendMode(obj:FlxSprite, blend:String)
         obj.blend = blend.toLowerCase();
-    }
 
     public static function emptyDynamicMap()
         return new Map<Dynamic, Dynamic>();
 
     public static function emptyStringMap()
         return new Map<String, Dynamic>();
+
+    public static function textBorderStyle(name:String) {
+        switch(name.toLowerCase()) {
+            case "shadow":
+                return FlxTextBorderStyle.SHADOW;
+            case "outline":
+                return FlxTextBorderStyle.OUTLINE;
+            case "outlinefast" | "outline_fast":
+                return FlxTextBorderStyle.OUTLINE_FAST;
+        }
+        return FlxTextBorderStyle.NONE;
+    }
+
+    public static function axes(name:String) {
+        switch(name.toLowerCase()) {
+            case "x":
+                return FlxAxes.X;
+            case "y":
+                return FlxAxes.Y;
+        }
+        return FlxAxes.XY;
+    }
+
+    public static function ease(name:String) {
+        //todo: move the code here
+        return ScriptHelper.getEaseFromString(name);
+    }
+
+    public static function tweenType(name:String) {
+        switch(name.toLowerCase()) {
+            case "backward":
+                return FlxTweenType.BACKWARD;
+            case "looping":
+                return FlxTweenType.LOOPING;
+            case "persist":
+                return FlxTweenType.PERSIST;
+            case "pingpong":
+                return FlxTweenType.PINGPONG;
+        }
+        return FlxTweenType.ONESHOT;
+    }
+
+    public static function cloneTween(tween:FlxTween, obj:Dynamic, ?cont:Bool = true):FlxTween {
+        var options:TweenOptions = {
+            type: tween.type,
+            onStart: tween.onStart,
+            onUpdate: tween.onUpdate,
+            ease: tween.ease,
+            onComplete: tween.onComplete,
+            startDelay: tween.startDelay,
+            loopDelay: tween.loopDelay
+        };
+        var result:FlxTween = switch(Type.getClass(tween)) {
+            case AngleTween:
+                var tAng:AngleTween = cast tween;
+                //guys i LOVE typing @:privateAccess!!!!!!!!!
+                @:privateAccess var newTAng = new AngleTween(options, tween.manager);
+                @:privateAccess return newTAng.tween(tAng._start, tAng._start + tAng._range, tween.duration, obj);
+            case CircularMotion:
+                var mCirc:CircularMotion = cast tween;
+                //guys i love it
+                @:privateAccess var newCirc = new CircularMotion(options, tween.manager);
+                newCirc.setObject(obj);
+                @:privateAccess return newCirc.setMotion(mCirc._centerX, mCirc._centerY, mCirc._radius, mCirc._angleStart, mCirc._angleFinish >= 0, tween.duration);
+            case ColorTween:
+                var color:ColorTween = cast tween;
+                //i love it so much
+                @:privateAccess var newColor = new ColorTween(options, tween.manager);
+                @:privateAccess return newColor.tween(tween.duration, color.startColor, color.endColor, obj);
+            case CubicMotion:
+                var mCube:CubicMotion = cast tween;
+                //so much in fact
+                @:privateAccess var newMCube = new CubicMotion(options, tween.manager);
+                newMCube.setObject(obj);
+                @:privateAccess return newMCube.setMotion(mCube._fromX, mCube._fromY, mCube._aX, mCube._aX, mCube._bX, mCube._bY, mCube._toX, mCube._toY, tween.duration);
+            case LinearMotion:
+                var mLine:LinearMotion = cast tween;
+                //that uhhhh
+                @:privateAccess var newMLine = new LinearMotion(options, tween.manager);
+                newMLine.setObject(obj);
+                @:privateAccess return newMLine.setMotion(mLine._fromX, mLine._fromY, mLine._moveX + mLine._fromX, mLine._moveY + mLine._fromY, tween.duration);
+            case LinearPath:
+                var pLine:LinearPath = cast tween;
+                //i forgot how to love it
+                @:privateAccess var newPLine = new LinearPath(options, tween.manager);
+                newPLine.setObject(obj);
+                newPLine.points = pLine.points.copy();
+                @:privateAccess newPLine._pointD = pLine._pointD.copy();
+                @:privateAccess return newPLine.setMotion(tween.duration);
+            case NumTween:
+                var tNum:NumTween = cast tween;
+                //what's a private access again?
+                @:privateAccess var newTNum = new NumTween(options, tween.manager);
+                @:privateAccess return newTNum.tween(tNum._start, tNum._range + tNum._start, tween.duration, tNum._tweenFunction);
+            case QuadMotion:
+                var mQuad:QuadMotion = cast tween;
+                //seems like something invasive and bothering
+                @:privateAccess var newMQuad = new QuadMotion(options, tween.manager);
+                newMQuad.setObject(obj);
+                @:privateAccess return newMQuad.setMotion(mQuad._fromX, mQuad._fromY, mQuad._controlX, mQuad._controlY, mQuad._toX, mQuad._toY, tween.duration);
+            case QuadPath:
+                var pQuad:QuadPath = cast tween;
+                //it sucks to have to be so invasive
+                @:privateAccess var newPQuad = new QuadPath(options, tween.manager);
+                newPQuad.setObject(obj);
+                @:privateAccess newPQuad._points = pQuad._points;
+                @:privateAccess newPQuad._updateCurve = true;
+                @:privateAccess return newPQuad.setMotion(tween.duration);
+            case VarTween:
+                var tVar:VarTween = cast tween;
+                //sadb
+                @:privateAccess var newTVar = new VarTween(options, tween.manager);
+                @:privateAccess return newTVar.tween(obj, tVar._properties, tween.duration);
+            default:
+                trace("Tween type "+ Type.getClassName(Type.getClass(tween)) +" not found when trying to Scripting.cloneTween (Probably gonna crash now?)");
+                null;
+        }
+        if (cont)
+            @:privateAccess result._secondsSinceStart = tween._secondsSinceStart;
+        return @:privateAccess tween.manager.add(result);
+    }
 
     /**
         This is not ScriptingCustomState().switchToThis(), it exists for convenience
@@ -513,6 +658,33 @@ class Scripting {
         return interp.variables.remove(name);
 }
 
+class ScriptSave {
+    private var name:String;
+    private var modName:String;
+    private var dsav:FlxSave;
+
+
+    public function new(name:String, modName:String) {
+        this.name = name;
+        this.modName = modName;
+    }
+
+    public function load(?setAll:Bool = false) {
+
+    }
+
+    public function save() {
+        
+    }
+
+    /*@:arrayAccess
+    public function get(name:String)
+        return interp.variables.get(name);
+
+    @:arrayAccess
+    public function set(name:String, value:Dynamic)
+        return interp.variables.set(name, value);*/
+}
 
 class MyFlxColor {
     //exists because i cant fucking put FlxColor in the thing

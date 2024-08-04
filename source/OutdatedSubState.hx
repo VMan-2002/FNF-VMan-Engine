@@ -25,7 +25,7 @@ class OutdatedSubState extends MusicBeatState {
 	override function create() {
 		super.create();
 
-		var bg:FlxSprite = new FlxSprite(0, 0, Paths.image("menu/update_bg"));
+		var bg:FlxSprite = new FlxSprite(0, 0, Paths2.image("menu/update_bg", "shared/images/"));
 		bg.scale.x = FlxG.width / bg.frameWidth;
 		bg.scale.y = bg.scale.x;
 		bg.updateHitbox();

@@ -1,0 +1,17 @@
+//breast milk
+
+function stateInitPost() {
+	if (PlayState.instance.instName != "Inst") {
+		trace("Erect lol, byebye script XD");
+		killScript();
+	} else {
+		trace("Regular FNF Song");
+	}
+}
+
+function beatHit(num:Int) {
+	if (num >= 168 && num < 200 && PlayState.instance.camZooming && FlxG.camera.zoom < 1.35) {
+		FlxG.camera.zoom += 0.015;
+		PlayState.instance.camHUD.zoom += 0.03;
+	}
+}

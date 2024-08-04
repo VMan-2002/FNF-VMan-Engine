@@ -19,13 +19,13 @@ class MenuItem extends FlxSpriteGroup
 	public function new(x:Float, y:Float, weekNum:String = "week0", ?modName:String = "") {
 		moves = false;
 		super(x, y);
-		week = new FlxSprite().loadGraphic(Paths.image('storymenu/' + weekNum));
-		var assetsPath = 'assets/shared/images/storymenu/${weekNum}.png';
+		week = new FlxSprite().loadGraphic(Paths2.image('storymenu/' + weekNum, "shared/images/", modName));
+		/*var assetsPath = 'assets/shared/images/storymenu/${weekNum}.png';
 		var modsPath = 'mods/${modName}/images/storymenu/${weekNum}.png';
 		trace("Assets Folder Path "+assetsPath);
 		trace("Mod Folder Path "+modsPath);
 		trace("Image exists in Assets Folder: "+FileSystem.exists(assetsPath));
-		trace("Image exists in Mod Folder: "+FileSystem.exists(modsPath));
+		trace("Image exists in Mod Folder: "+FileSystem.exists(modsPath));*/
 		/*
 		var path:String = CoolUtil.tryPathBothReturnPath('images/storymenu/' + weekNum +".png", modName, 'shared/');
 		trace(path);

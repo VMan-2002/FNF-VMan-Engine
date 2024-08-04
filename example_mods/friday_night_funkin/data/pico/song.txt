@@ -2,3 +2,4 @@
 Pico
 bf::pico::gf
 Kawai Sprite
+Easy,Normal,Hard,Erect,Nightmare

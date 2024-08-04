@@ -139,7 +139,7 @@ class ModLoad {
 	**/
 	public static function checkNewMods() {
 		#if FEATURE_STATIC_MOD_LIST
-		return false
+		return false;
 		#else
 		var folderList = getAllModFolders();
 		trace(folderList.length+" Mod folders available: "+folderList.join(","));
@@ -147,9 +147,8 @@ class ModLoad {
 		var listyMods = normalizeModsListFileArr(modsListFile);
 		var toAdd = new Array<String>();
 		for (folder in folderList) {
-			if (!listyMods.contains(folder)) {
-				toAdd.push((Options.newModsActive ? "1::" : "0::") + folder);
-			}
+			if (!listyMods.contains(folder))
+				toAdd.push((Options.newModsActive || folder == "ve_title" ? "1::" : "0::") + folder);
 		}
 		if (toAdd.length == 0)
 			return false;

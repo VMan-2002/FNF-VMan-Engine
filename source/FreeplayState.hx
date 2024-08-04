@@ -216,7 +216,8 @@ class FreeplayState extends MusicBeatState {
 				inFolder = [0];
 			}
 			if (inFolder.length == 1 && !categories.keys().hasNext()) {
-				while (categories.get(inFolder[0]).length == 1 && categories.get(inFolder[0])[0].type == 1) {
+				var catThing = categories.get(inFolder[0]);
+				while (catThing.length == 1 && catThing[0].type == 1 || catThing[0].type == 3) {
 					inFolder[0] = categories.get(inFolder[0])[0].week;
 				}
 			}
@@ -322,7 +323,7 @@ class FreeplayState extends MusicBeatState {
 		scoreFCText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, LEFT);
 		Translation.setObjectFont(scoreFCText, "vcr font");
 
-		scoreAccText = new FlxText(FlxG.width, 90, FlxG.width, "99.999%", 32);
+		scoreAccText = new FlxText(FlxG.width, 90, FlxG.width, "99.99999%", 32);
 		scoreAccText.x -= scoreAccText.textField.textWidth + 2;
 		scoreAccText.fieldWidth -= scoreAccText.x;
 		// scoreAccText.autoSize = false;
@@ -411,7 +412,7 @@ class FreeplayState extends MusicBeatState {
 
 			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter, false, songs[i].mod);
 			icon.sprTracker = songText;
-			if (songs[i].type == 1) {
+			if (songs[i].type == 1 || songs[i].type == 3) {
 				var folder:FolderIcon = new FolderIcon();
 				folder.sprTracker = songText;
 				icon2Array.push(folder);
@@ -527,7 +528,7 @@ class FreeplayState extends MusicBeatState {
 				makeSonglist(categories.get(inFolder[inFolder.length-1]));
 				curSelected = 0;
 				for (i in 0...songs.length) {
-					if (songs[i].week == was && songs[i].type == 1) {
+					if (songs[i].week == was && songs[i].type == 1 || songs[i].type == 3) {
 						curSelected = i;
 						break;
 					}
@@ -544,13 +545,8 @@ class FreeplayState extends MusicBeatState {
 
 		if (accepted) {
 			Scripting.runOnScripts("onAccept", ["Freeplay", songs[curSelected].songName, songs[curSelected].mod]);
-			if (songs[curSelected].type == 1) {
+			if (songs[curSelected].type == 1 || songs[curSelected].type == 3) {
 				//a folder
-				/*if (cornflowerMenus.contains(songs[curSelected].week)) {
-					isCornflower = true; //This is corn flower
-					updateIsCornflower();
-				}*/
-
 				inFolder.push(songs[curSelected].week);
 				var flist = folderNames;
 				flist.shift();
@@ -636,7 +632,7 @@ class FreeplayState extends MusicBeatState {
 				return;
 			}
 			scoreFCText.text = Highscore.getFCFormatted(songId, curDifficulty, true);
-			scoreAccText.text = Std.string(FlxMath.roundDecimal(Highscore.getAcc(songId, curDifficulty, true), 3));
+			scoreAccText.text = Std.string(FlxMath.roundDecimal(Highscore.getAcc(songId, curDifficulty, true) * 100, 5) + "%");
 		}
 		#end
 		/*if (isCornflower) {
@@ -752,7 +748,7 @@ class SongMetadata {
 	public var songName:String = "";
 	public var week:Int = 0;
 	public var songCharacter:String = "";
-	public var type:Int = 0; //0: song, 1: folder, 2: nothing
+	public var type:Int = 0; //0: song, 1: folder, 2: nothing, 3: main category folder
 	public var mod:String;
 	public var difficulties:Array<String> = new Array<String>();
 	public var color:Null<Int>;

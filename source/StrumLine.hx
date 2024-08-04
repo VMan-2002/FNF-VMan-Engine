@@ -38,7 +38,7 @@ class StrumLine extends FlxTypedGroup<FlxSprite> {
 		SwitchManiaInstant(mania, false, oldScale);
 	}
 	
-	public function SwitchMania(mania:SwagMania, ?anim:Bool = false, oldScale:Float, ?forceAppearAnim:Null<Bool> = null) {
+	public function SwitchMania(mania:SwagMania, ?anim:Bool = false, ?oldScale:Null<Float> = null, ?forceAppearAnim:Null<Bool> = null, ?animTime:Float = 0.5) {
 		var style = strumNotes.length != 0 ? strumNotes[0].curStyle : PlayState.SONG.noteSkin;
 		thisManiaInfo = mania;
 		var oldStrumNotes:Null<Array<StrumNote>> = null;
@@ -51,6 +51,8 @@ class StrumLine extends FlxTypedGroup<FlxSprite> {
 				oldStrumNotes[i].destroyKeybindReminder();
 			}
 		}
+		if (oldScale == null)
+			oldScale = members[0].scale.x;
 		members.resize(0);
 		length = 0;
 		strumNotes.resize(0);
@@ -79,7 +81,7 @@ class StrumLine extends FlxTypedGroup<FlxSprite> {
 						var putX = babyArrow.x;
 						babyArrow.x = oldStrumNotes[i].x;
 						babyArrow.scale.set(oldScale, oldScale);
-						FlxTween.tween(babyArrow, {x: putX, "scale.x": scale, "scale.y": scale}, 0.5, {ease: FlxEase.cubeOut, onComplete: function(a) {
+						FlxTween.tween(babyArrow, {x: putX, "scale.x": scale * mania.scale, "scale.y": scale * mania.scale}, animTime, {ease: FlxEase.cubeOut, onComplete: function(a) {
 							setX(i, putX);
 						}});
 						break;

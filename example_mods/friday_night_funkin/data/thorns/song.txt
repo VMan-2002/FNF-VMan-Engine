@@ -2,3 +2,4 @@
 Thorns
 bf-pixel::spirit::gf-pixel
 Kawai Sprite
+Easy,Normal,Hard,Erect,Nightmare

@@ -43,13 +43,13 @@ class SaveDeleteSubState extends OptionsSubStateBasic {
 	public override function new() {
 		super();
 		warnText = new FlxText(8, FlxG.height - 80, 0, Translation.getTranslation("delete save warning", "optionsMenu", "This operation is NOT REVERSIBLE,\nyour progress of this type will be GONE FOREVER.\nIf you're sure about this, press ACCEPT again to delete this progress. Otherwise, press BACK."), 16);
-		warnText.visible = false;
+		warnText.exists = false;
 		add(warnText);
 	}
 
 	override function optionAccept(name:String) {
-		if (!warnText.visible) {
-			warnText.visible = true;
+		if (!warnText.exists) {
+			warnText.exists = true;
 			warnTime = false;
 			return false;
 		}

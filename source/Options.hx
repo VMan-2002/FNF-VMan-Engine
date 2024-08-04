@@ -2,9 +2,14 @@ package;
 import flixel.FlxG;
 import flixel.input.keyboard.FlxKey;
 import flixel.util.FlxSave;
+import lime.math.Vector2;
 import openfl.Assets;
 import openfl.utils.AssetType;
+import sys.FileSystem;
+import sys.io.File;
 import wackierstuff.VeFlxCamera;
+
+using StringTools;
 
 class Options {
 	public static var saved:Options;
@@ -87,8 +92,8 @@ class Options {
 	public static var seenOptionsWarning:Int = 0;
 	public var silentCountdown:Bool = false;
 	public var noteMissAction:Int = 0;
-	public static var noteMissAction_Vocals:Array<Bool> = [true, false, true, false];
-	public static var noteMissAction_MissSound:Array<Bool> = [true, true, false, false];
+	public static final noteMissAction_Vocals:Array<Bool> = [true, false, true, false];
+	public static final noteMissAction_MissSound:Array<Bool> = [true, true, false, false];
 	public static var showFPS:Bool = #if mobile false #else true #end;
 	public static var soundVolume:Float = 1;
 	public static var instrumentalVolume:Float = 1;
@@ -105,6 +110,7 @@ class Options {
 	public var hitsound:String = "";
 	public var hitsound_overtap:String = "";
 	public static var colorblind:String = "";
+	public static var useWebp:Bool = true;
 	
 	//PlayState changeables
 	public var playstate_opponentmode:Bool = false;
@@ -125,6 +131,29 @@ class Options {
 	public var practice_disable_mechanics:Bool = false;
 
 	public static var recordReplay:Bool = false;
+
+	//Touch controls
+	public var touch_enabled:Bool = #if mobile true; #else false; #end
+	public var touch_menuEnabled:Bool = #if mobile true; #else false; #end
+	public var touch_icons:Bool = true;
+	public var touch_colors:Bool = true;
+
+	//Render
+	public var render_enabled:Bool = false;
+	#if VE_VIDEORENDER
+	public static var render_resolution:Int = 0;
+	public static var render_framerate:Int = 30;
+	public static final render_resolution_dimensions:Array<Vector2> = [
+		new Vector2(426, 240),
+		new Vector2(640, 360),
+		new Vector2(854, 480),
+		new Vector2(1280, 720),
+		new Vector2(1920, 1080),
+		new Vector2(2560, 1440),
+		new Vector2(3840, 2160),
+		new Vector2(7680, 4320)
+	];
+	#end
 
 	public function updatePlayStateAny() {
 		playstate_anychanges = [playstate_opponentmode, playstate_bothside, playstate_endless, playstate_guitar, playstate_confusion, playstate_anychanges].contains(true);
@@ -194,6 +223,7 @@ class Options {
 		svd.data.noteQuant = noteQuant;
 		svd.data.hudThingInfo = hudThingInfo;
 		svd.data.noteSplash = noteSplash;
+		svd.data.useWebp = useWebp;
 
 		svd.data.playstate_opponentmode = playstate_opponentmode;
 		svd.data.playstate_bothside = playstate_bothside;
@@ -203,6 +233,12 @@ class Options {
 
 		svd.data.playedVersion = Main.gameVersionInt;
 		svd.data.optionVersion = Std.int(0);
+
+		svd.data.touch_enabled = touch_enabled;
+		svd.data.touch_menuEnabled = touch_menuEnabled;
+		svd.data.touch_icons = touch_icons;
+		svd.data.touch_colors = touch_colors;
+
 		svd.close();
 	}
 	
@@ -240,8 +276,10 @@ class Options {
 		dataStrip = ifNotNull(svd.data.dataStrip, dataStrip);
 		saved.uiReloading = ifNotNull(svd.data.uiReloading, saved.uiReloading);
 		saved.noteQuant = ifNotNull(svd.data.noteQuant, saved.noteQuant);
-		saved.hudThingInfo = Std.string(ifNotNull(svd.data.hudThingInfo, saved.hudThingInfo)).split("\n").slice(0, 2).join("\n"); //Ok
+		saved.hudThingInfo = Std.string(ifNotNull(svd.data.hudThingInfo, saved.hudThingInfo)).split("\n").slice(0, 3).join("\n"); //Ok
+		trace("Loaded hudThingInfo: "+saved.hudThingInfo);
 		saved.noteSplash = ifNotNull(svd.data.noteSplash, saved.noteSplash);
+		useWebp = ifNotNull(svd.data.useWebp, useWebp);
 		
 		saved.playstate_opponentmode = ifNotNull(svd.data.playstate_opponentmode, saved.playstate_opponentmode);
 		saved.playstate_bothside = ifNotNull(svd.data.playstate_bothside, saved.playstate_bothside);
@@ -250,6 +288,11 @@ class Options {
 		saved.playstate_confusion = ifNotNull(svd.data.playstate_confusion, saved.playstate_confusion);
 
 		saved.updatePlayStateAny();
+
+		saved.touch_enabled = ifNotNull(svd.data.touch_enabled, saved.touch_enabled);
+		saved.touch_menuEnabled = ifNotNull(svd.data.touch_enabled, saved.touch_menuEnabled);
+		saved.touch_icons = ifNotNull(svd.data.touch_icons, saved.touch_icons);
+		saved.touch_colors = ifNotNull(svd.data.touch_colors, saved.touch_colors);
 		
 		/*var insertControls = new Map<String, Array<Array<Int>>>();
 		insertControls = ifNotNull(svd.data.controls, controls);
@@ -303,6 +346,8 @@ class Options {
 		}
 		if (a.hitsound != "" && Assets.exists(Paths.sound(a.hitsound), AssetType.SOUND))
 			a.hitsound = "";
+		if (render_enabled)
+			a.botplay = true;
 		return a;
 	}
 
@@ -313,5 +358,28 @@ class Options {
 	public function updateColorblind() {
 		new ColorblindShader(colorblind);
 		cast(FlxG.camera, VeFlxCamera).ve_filters.updateColorblind();
+	}
+}
+
+class PrivateOptions {
+	/**
+		SECURITY RISK, despite the upsides (which are also the downsides)
+	**/
+	private static var typeClassAvailable:Bool = false;
+
+	private static function checkTypeClassAllowed() {
+		#if debug
+		return FileSystem.exists("assets/data/unlockTypeClass.txt") && File.getContent("assets/data/unlockTypeClass.txt").trim() == "WITH_GREAT_POWER_COMES_GREAT_RESPONSIBILITY";
+		#else
+		return false;
+		#end
+	}
+
+	private static function typeClassEnabled() {
+		#if debug
+		return checkTypeClassAllowed() && typeClassAvailable;
+		#else
+		return false;
+		#end
 	}
 }

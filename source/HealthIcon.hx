@@ -85,7 +85,8 @@ class HealthIcon extends SpriteVMan
 		'gf-car' => [16, 16, 16],
 		'parents-christmas' => [17, 17, 17],
 		'monster' => [19, 20, 19],
-		'monster-christmas' => [19, 20, 19]
+		'monster-christmas' => [19, 20, 19],
+		'darnell' => [24, 25, 24]
 	];
 
 	public var iconOffsets:Array<Float> = [0, 0];
@@ -137,12 +138,12 @@ class HealthIcon extends SpriteVMan
 			}
 			trace("wait what");
 		}
-		if (!FileSystem.exists('${path}.png')) {
+		if (!FileSystem.exists('${path}.png') && !FileSystem.exists('${path}.webp')) {
 			pathPrefix = "assets/images/icons/";
 			path = '${pathPrefix}${char}';
 		}
 		isMultiIcon = false;
-		if (Paths.exists('${path}.png')) {
+		if (Paths.exists('${path}.png') || Paths.exists('${path}.webp')) {
 			trace('found health icon ${char}');
 			var isJson = Paths.exists('${path}.json');
 			var jsonData:Null<SwagHealthIcon> = null;
@@ -163,7 +164,9 @@ class HealthIcon extends SpriteVMan
 			}
 			//is there accompanying xml
 			var isSheet = Paths.exists('${path}.xml');
-			var bitmap = BitmapData.fromFile('${path}.png');
+			//var bitmap = BitmapData.fromFile('${path}.png');
+			//todo: This is an unusual way to do this
+			var bitmap = Paths.exists('${path}.webp') ? Paths2.webpTest('${path}.webp') : BitmapData.fromFile('${path}.png');
 			if (isSheet) {
 				#if !html5
 				frames = FlxAtlasFrames.fromSparrow(bitmap, File.getContent('${path}.xml'));
@@ -242,7 +245,7 @@ class HealthIcon extends SpriteVMan
 			trace('using inbuilt health icon for ${char}');
 		}
 		
-		loadGraphic(Paths.image('iconGrid'), true, 150, 150);
+		loadGraphic(Paths2.image('iconGrid'), true, 150, 150);
 
 		var isPixel = (char == "bf-pixel" || char == "senpai" || char == "senpai-angry" || char == "spirit");
 		antialiasing = !isPixel;

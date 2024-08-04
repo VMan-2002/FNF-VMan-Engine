@@ -40,76 +40,38 @@ class MenuCharacter extends SpriteVMan {
 				return;
 			flipX = flipped;
 			animOffsets = new Map<String, Array<Null<Float>>>();
-			/*if (mod == "friday_night_funkin" && name != "tankman") {
-				trace("Inbuilt menu char "+name);
-				frames = Paths.getSparrowAtlas('campaign_menu_UI_characters');
-		
-				animation.addByPrefix('bf', "BF idle dance white", 24);
-				animation.addByPrefix('confirm', 'BF HEY!!', 24, false);
-				animation.addByPrefix('gf', "GF Dancing Beat WHITE", 24);
-				animation.addByPrefix('dad', "Dad idle dance BLACK LINE", 24);
-				animation.addByPrefix('spooky', "spooky dance idle BLACK LINES", 24);
-				animation.addByPrefix('pico', "Pico Idle Dance", 24);
-				animation.addByPrefix('mom', "Mom Idle BLACK LINES", 24);
-				animation.addByPrefix('parents-christmas', "Parent Christmas Idle", 24);
-				animation.addByPrefix('senpai', "SENPAI idle Black Lines", 24);
-				offset.set(-180, 0);
-				scale.set(0.5, 0.5);
-				switch(name) {
-					case 'bf':
-						scale.set(0.9, 0.9);
-					case 'gf':
-						offset.set(-69, 15);
-					case 'parents-christmas':
-						scale.set(0.45, 0.45);
-						flipX = !flipX;
-					case 'senpai':
-						offset.set(130, 0);
-						scale.set(1, 1);
-						flipX = !flipX;
-					case 'mom':
-						flipX = !flipX;
-					case 'dad':
-						flipX = !flipX;
-					case 'spooky':
-						flipX = !flipX;
+
+			trace("Mod menu char "+name+" from "+mod);
+			var input = loadCharacterJson(name, mod);
+			if (input != null) {
+				frames = Paths.getSparrowAtlas(input.image);
+				animOffsets.clear();
+				
+				antialiasing = input.antialias != false;
+				flipX = (input.isPlayer == true) == flipped;
+				if (input.position == null) {
+					input.position = [0, 0];
+				} else while (input.position.length < 2) {
+					input.position.push(0);
 				}
-				animation.play(name, false);
-				width = frameWidth;
-				height = frameHeight;
-				antialiasing = true;
-			} else*/ {
-				trace("Mod menu char "+name+" from "+mod);
-				var input = loadCharacterJson(name, mod);
-				if (input != null) {
-					frames = Paths.getSparrowAtlas(input.image);
-					animOffsets.clear();
-					
-					antialiasing = input.antialias != false;
-					flipX = (input.isPlayer == true) == flipped;
-					if (input.position == null) {
-						input.position = [0, 0];
-					} else while (input.position.length < 2) {
-						input.position.push(0);
+				for (thing in input.animations) {
+					if (thing.indicies != null && thing.indicies.length > 0) {
+						animation.addByIndices(thing.name, thing.anim, thing.indicies, "", thing.framerate, thing.loop);
+					} else {
+						animation.addByPrefix(thing.name, thing.anim, thing.framerate, thing.loop);
 					}
-					for (thing in input.animations) {
-						if (thing.indicies != null && thing.indicies.length > 0) {
-							animation.addByIndices(thing.name, thing.anim, thing.indicies, "", thing.framerate, thing.loop);
-						} else {
-							animation.addByPrefix(thing.name, thing.anim, thing.framerate, thing.loop);
-						}
-						var flippedPlayer:Bool = !input.isPlayer;
-						if (thing.offset != null && thing.offset.length > 0) {
-							//im tired of it (also got no time lol)
-							addOffset(thing.name, thing.offset[0] + input.position[0], thing.offset[1] + input.position[1], thing.offset[0] + input.position[0]);
-						} else {
-							addOffset(thing.name, input.position[0], input.position[1], input.position[0]);
-						}
+					var flippedPlayer:Bool = !input.isPlayer;
+					if (thing.offset != null && thing.offset.length > 0) {
+						//im tired of it (also got no time lol)
+						addOffset(thing.name, thing.offset[0] + input.position[0], thing.offset[1] + input.position[1], thing.offset[0] + input.position[0]);
+					} else {
+						addOffset(thing.name, input.position[0], input.position[1], input.position[0]);
 					}
-					scale.set(input.scale, input.scale);
-					playAnim(input.initAnim);
 				}
+				scale.set(input.scale, input.scale);
+				playAnim(input.initAnim);
 			}
+			
 			generateFlipOffsets();
 			character = name;
 			modName = mod;

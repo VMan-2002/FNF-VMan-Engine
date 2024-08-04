@@ -216,6 +216,7 @@ playstate_hud_accrating::AccRating:#0%
 playstate_hud_accsimple::AccSimple:#0%
 playstate_hud_health::Health:#0%
 playstate_hud_hits::Hits:#0
+playstate_hud_marvelous::Marvellous:#0
 playstate_hud_sicks::Sicks:#0
 playstate_hud_goods::Goods:#0
 playstate_hud_bads::Bads:#0
@@ -226,6 +227,10 @@ playstate_hud_overtaps::OverTaps:#0
 playstate_hud_overstrums::OverStrums:#0
 playstate_hud_engine::VMan Engine
 playstate_hud_engine botplay::VMan Engine (Botplay)
+playstate_hud_curstep::curStep:#0
+playstate_hud_curbeat::curBeat:#0
+playstate_hud_cursection::curSection:#0
+playstate_hud_songposition::songPosition:#0
 //}
 //Pause Menu
 //{

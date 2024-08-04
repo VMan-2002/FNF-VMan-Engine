@@ -24,6 +24,7 @@ import haxe.Json;
 import openfl.net.FileReference;
 import openfl.net.IDynamicPropertyOutput;
 import sys.FileSystem;
+import MusicBeatState;
 
 using StringTools;
 
@@ -168,7 +169,7 @@ class StageEditorState extends MusicBeatState
 			trace("stage "+daAnim+" of "+modStageIsFrom+" is null");
 			super.create();
 			FlxTransitionableState.skipNextTransOut = true;
-			transitionToState(new StageEditorState());
+			new StageEditorState().switchToThis();
 			return;
 		}
 

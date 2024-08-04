@@ -1,14 +1,7 @@
 package;
 
-import Translation;
-import flixel.FlxSprite;
-import flixel.group.FlxGroup;
-import flixel.math.FlxMath;
-import flixel.system.FlxAssets.FlxSoundAsset;
-import flixel.system.FlxSound;
-import flixel.system.FlxSoundGroup;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
+import flixel.sound.FlxSound;
+import flixel.sound.FlxSoundGroup;
 
 class SplitLongMusic {
 	//todo: Idk if this is finished yet

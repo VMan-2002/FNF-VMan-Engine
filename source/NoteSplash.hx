@@ -53,7 +53,7 @@ class NoteSplash extends FlxSprite {
 			return;
 		}
 		//todo: somehow it doesn't load the notesplash from the noteskin, why is that?
-		trace("set style to " + style);
+		//trace("set style to " + style);
 		curStyle = style;
 		var validNoteSkin = Note.loadedNoteSkins.exists(style);
 		frames = Paths.getSparrowAtlas(validNoteSkin ? Note.loadedNoteSkins.get(style).noteSplashImage : "normal/notesplash");

@@ -3,6 +3,8 @@
 	<!-- _________________________ Application Settings _________________________ -->
 
 	<app title="Friday Night Funkin' VMan Engine" file="funkin" packageName="com.vman_2002.fnfvmanengine" package="com.vman_2002.fnfvmanengine" main="Main" version="0.2.7.1" company="VMan_2002" />
+	<app title="Friday Night Funkin' VMan Engine (Debug)" if="debug" />
+	<app title="Friday Night Funkin' VMan Engine (32-bit)" unless="debug" if="32bit" />
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
@@ -143,6 +145,7 @@
 	
 	<haxelib name="away3d" />
 	<haxelib name="hxWebP" if="cpp || web" />
+	<haxelib name="haxe-openfl-ffmpeg" if="VE_VIDEORENDER"/>
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 
@@ -177,7 +180,10 @@
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
 
 	<!--Profiler-->
-	<haxedef name="VE_PROFILER" />
+	<haxedef name="VE_PROFILER" if="debug"/>
+
+	<!--Render thungy-->
+	<haxedef name="VE_VIDEORENDER"/>
 
 	<!-- _________________________________ Custom _______________________________ -->
 

@@ -2,3 +2,4 @@
 Senpai
 bf-pixel::senpai::gf-pixel
 Kawai Sprite
+Easy,Normal,Hard,Erect,Nightmare

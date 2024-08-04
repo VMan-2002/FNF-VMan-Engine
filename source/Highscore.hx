@@ -12,6 +12,7 @@ class Highscore
 	public static var weekScores:Map<String, Int> = new Map<String, Int>();
 	public static var songScoreAcc:Map<String, Float> = new Map<String, Float>();
 	public static var songScoreFC:Map<String, Int> = new Map<String, Int>();
+	public static var songScoreNextRank:Map<String, Float> = new Map<String, Float>();
 
 	inline static function modPrefix(song:String, ?mod:String) {
 		if (mod == null) {

@@ -47,10 +47,11 @@ class OptionsSubState extends OptionsSubStateBasic
 			"Customize HUD",
 			"Gameplay Changes",
 			"Exit Without Saving",
+			"GameJolt Login",
+			"Use WebP Image Loader",
 			#if debug
-			"Options Warning Test",
+			"Options Warning Test"
 			#end
-			"GameJolt Login"
 		];
 	}
 	
@@ -136,6 +137,8 @@ class OptionsSubState extends OptionsSubStateBasic
 				return ["Color filter that aids colorblind users or simulates colorblindness."];
 			case "gamejolt login":
 				return ["Log in to your Game Jolt account."];
+			case "use webp image loader":
+				return ["Turn on/off the new image loader which supports the WebP format. If you encounter a crash, turning this off can help figure out the cause.", Options.useWebp ? "Enabled" : "Disabled"];
 		}
 		return ["Unknown option.", name, 'unknownOption'];
 	}
@@ -253,6 +256,8 @@ class OptionsSubState extends OptionsSubStateBasic
 				FlxG.switchState(new HudThingMenu());
 			case "enable notesplash":
 				Options.saved.noteSplash = !Options.saved.noteSplash;
+			case "use webp image loader":
+				Options.useWebp = !Options.useWebp;
 			default:
 				trace("Tried to accept unknown option: " + name);
 		}

@@ -6,6 +6,11 @@ import flixel.group.FlxGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+import lime.utils.Assets;
+import sys.FileSystem;
+import sys.io.File;
+
+using StringTools;
 
 typedef SwagRank = {
 	level:Float,
@@ -27,38 +32,47 @@ class HudThing extends FlxGroup {
 		"song", "engine"
 	];
 	public var autoUpdate:Bool = false;
+	public var autoDataUpdate:Bool = false;
 
 	public static var hudThingDispTypes:Array<String> = [
 		"song", "difficulty", "modName", //Song info
-		"score", "hits", "misses", "accSimple", "accRating", "rankWord", "fc", "combo", "maxCombo", "overTaps", "overStrums", //performance
-		"sicks", "goods", "bads", "shits", "imperfects", "totalnotes" //ratings
+		"score", "hits", "misses", "accSimple", "accRating", "rankWord", "fc", "combo", "maxCombo", "overTaps", "overStrums", "health", //performance
+		"marvelous", "sicks", "sickNoMarv", "goods", "bads", "shits", "imperfects", "totalnotes", //ratings
+		"curStep", "curBeat", "curSection", "songPosition" //charting
 	];
 
-	public var ranks:Array<SwagRank> = [
-		{level: -99, name: "What!?"},
-		{level: 0.0, name: "Awful"},
-		{level: 0.1, name: "Terrible"},
-		{level: 0.2, name: "Stupid"},
-		{level: 0.3, name: "Dumb"},
-		{level: 0.4, name: "Crap"},
-		{level: 0.5, name: "Bad"},
-		{level: 0.6, name: "Alright"},
-		{level: 0.69, name: "Nice"},
-		{level: 0.7, name: "Good"},
-		{level: 0.8, name: "Super"},
-		{level: 0.9, name: "Awesome"},
-		{level: 0.95, name: "Epic"},
-		{level: 0.98, name: "Amazing"},
-		{level: 1.0, name: "PERFECT!!"}
-	];
+	public var ranks:Null<Array<SwagRank>> = null;
+	public var noRankName:String = "...";
+
+	public function loadRankWords(?name:String = "default") {
+		var txarr = CoolUtil.uncoolTextFile('objects/translations/${Translation.translationId}/rankwords/${name}.txt', "", function(_:String) {
+			return CoolUtil.uncoolTextFile('objects/rankwords/${name}.txt', "", function(_:String) {
+				return CoolUtil.uncoolTextFile('objects/rankwords/default');
+			});
+		});
+		if (ranks == null) {
+			ranks = [];
+		} else {
+			ranks.resize(0);
+		}
+		for (i => tx in txarr.keyValueIterator()) {
+			tx = tx.trim();
+			
+			var colonpos = tx.indexOf("::");
+			var a = tx.substr(0, colonpos);
+			var b = tx.substr(colonpos + 2);
+			if (i == 0) {
+				noRankName = b.ltrim();
+			} else {
+				ranks.push({level: Std.parseFloat(a), name: b.ltrim()});
+			}
+		}
+		trace("Loaded "+txarr.length+" from rankWords file "+name);
+	}
 
 	public var onUpdateText:Null<HudThing->Void> = null;
 	public var onUpdateInfo:Null<HudThing->Void> = null;
-
-	//arbitrary whatevers
-	//public var ratingAcc:Array<Float> = [0.25, 0.5, 0.7, 0.8, 0.85, 0.9, 0.95, 0.975, 0.9825, 0.995, 1];
-	//public var ratingLetters:Array<String> = ["F", "D", "C", "B", "B+", "A-", "A", "A+", "S-", "S", "S+", "P"];
-
+	public var textUpdating:Bool = true;
 	
 	public function new(x:Float, y:Float, list:Array<String>, ?vertical:Bool = false) {
 		super();
@@ -74,18 +88,43 @@ class HudThing extends FlxGroup {
 		} else {
 			list = new Array<String>();
 		}
-		if (list.length > 1) {
+		if (items.length > 1) {
 			var i = 0;
 			while (true) {
-				if (list[i] == "song" && list[i + 1] == "difficulty") {
-					list[i] = "songAndDifficulty";
-					list.splice(i + 1, 1);
-					if (i == list.length)
+				if (items[i] == "song" && items[i + 1] == "difficulty") {
+					items[i] = "songAndDifficulty";
+					items.splice(i + 1, 1);
+					if (i == items.length)
 						break;
 				}
-				if (i + 1 == list.length)
+				/*if (items[i] == "accRating" && items[i + 1] == "rankWord") {
+					items[i] = "accRatingAndRankWord";
+					items.splice(i + 1, 1);
+					if (i == items.length)
+						break;
+				}*/
+				if (i + 1 == items.length)
 					break;
 				i += 1;
+			}
+			if (items.contains("songPosition") || items.contains("curStep") || items.contains("curSection") || items.contains("curBeat")) {
+				autoUpdate = true;
+				autoDataUpdate = true;
+				trace("Hud thing autoupdate because it has chart time info");
+			} else {
+				trace("Hud thing doesn't autoupdate, doesn't contain chart time info");
+				trace("It's "+items);
+			}
+			if (items.contains("rankWord")) {
+				loadRankWords((PlayState.SONG.rankWords == null || PlayState.SONG.rankWords == "") ? "default" : PlayState.SONG.rankWords);
+			}
+			if (items.contains("marvelous")) {
+				trace("Hud thing separate marvelous/sick");
+				for (i => name in items.keyValueIterator()) {
+					if (name == "sicks") {
+						items[i] = "sickNoMarv";
+					}
+				}
 			}
 		}
 		this.vertical = vertical;
@@ -104,6 +143,8 @@ class HudThing extends FlxGroup {
 	}
 
 	override function update(elapsed:Float) {
+		if (autoDataUpdate)
+			updateDatas();
 		if (autoUpdate)
 			updateInfo();
 		super.update(elapsed);
@@ -135,8 +176,12 @@ class HudThing extends FlxGroup {
 					trimNoPercent(PlayState.instance.songHits / (PlayState.instance.songHits + PlayState.instance.songMisses));
 				case "accRating":
 					trimNoPercent(accuracy());
+				case "marvelous":
+					Std.string(PlayState.instance.marvelous);
 				case "sicks":
 					Std.string(PlayState.instance.sicks);
+				case "sickNoMarv":
+					Std.string(PlayState.instance.sicks - PlayState.instance.marvelous);
 				case "goods":
 					Std.string(PlayState.instance.goods);
 				case "bads":
@@ -157,8 +202,16 @@ class HudThing extends FlxGroup {
 					Std.string(PlayState.instance.overTaps);
 				case "overStrums":
 					Std.string(PlayState.instance.overStrums);
+				case "curStep":
+					Std.string(PlayState.instance.curStep);
+				case "curBeat":
+					Std.string(PlayState.instance.curBeat);
+				case "curSection":
+					Std.string(PlayState.instance.currentSection);
+				case "songPosition":
+					Std.string(FlxMath.roundDecimal(Conductor.songPosition, 3));
 				case "rankWord":
-					getRank(accuracy(), ranks);
+					(PlayState.instance.songHits == 0 && PlayState.instance.songMisses == 0) ? noRankName : (PlayState.instance.songFC == 0 ? ranks[ranks.length - (PlayState.instance.songMFC ? 1 : 2)].name : getRank(accuracy(), ranks));
 				default:
 					null;
 			}
@@ -174,8 +227,10 @@ class HudThing extends FlxGroup {
 				text += vertical ? "\n" : " | ";
 			}
 			switch(items[i]) {
-				case "score" | "misses" | "health" | "accSimple" | "accRating" | "sicks" | "goods" | "bads" | "shits" | "imperfects" | "hits" | "totalnotes" | "combo" | "maxCombo" | "overTaps" | "overStrums":
+				case "score" | "misses" | "health" | "accSimple" | "accRating" | "marvelous" | "sicks" | "goods" | "bads" | "shits" | "imperfects" | "hits" | "totalnotes" | "combo" | "maxCombo" | "overTaps" | "overStrums" | "curBeat" | "curStep" | "curSection" | "songPosition":
 					text += Translation.getTranslation("hud_" + items[i], "playstate", [itemDatas[i]]);
+				case "sickNoMarv":
+					text += Translation.getTranslation("hud_sicks", "playstate", [itemDatas[i]]);
 				//case "score":
 				//	text += Translation.getTranslation("hud_score", "playstate", [Std.string(PlayState.instance.songScore)]);
 				//case "misses":
@@ -258,7 +313,8 @@ class HudThing extends FlxGroup {
 	}
 	
 	public inline function updateInfo() {
-		textThing.text = getInfoText();
+		if (textUpdating)
+			textThing.text = getInfoText();
 		if (onUpdateText != null)
 			onUpdateText(this);
 	}
@@ -282,7 +338,7 @@ class HudThing extends FlxGroup {
 		var sec:Int = Math.floor((tNum >= 0 ? tNum : -tNum) % 60);
 		if (hour > 0)
 			return hour + ":" + min + (sec > 9 ? ":" : ":0") + sec;
-		return min + (sec >= 9 ? ":" : ":0") + sec;
+		return min + (sec > 9 ? ":" : ":0") + sec;
 	}
 
 	public function doSpoop() {

@@ -1,8 +1,12 @@
 package;
 
-import atlas.AtlasTest;
-import atlas.AtlasTestState;
+import Options.PrivateOptions;
+import flixel.system.FlxSound;
+import haxe.macro.Context;
 import new_editors.StageEditorState;
+import openfl.desktop.Clipboard;
+import openfl.net.FileReference;
+import sys.FileSystem;
 #if !html5
 import Section.SwagSection;
 import Section;
@@ -15,17 +19,18 @@ import sys.io.File;
 
 using StringTools;
 
-
+//@:build(ToolsMenuSubState.build())
 class ToolsMenuSubState extends OptionsSubStateBasic
 {
+	var fileref:FileReference;
 	override function optionList() {
-		return [
+		var result = [
 			'Chart Editor',
 			"Strip File Data",
 			"Animation Debug",
 			#if debug
 			"Cutscene Anim Test",
-			"Texture Atlas Test",
+			//"Texture Atlas Test",
 			#end
 			//"Week Editor",
 			//"Folder Editor",
@@ -39,11 +44,20 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			//"Spritesheet Tool",
 			//"Noteskin Creator",
 			"Clone Hero Import",
+			//"New FNF Backporter",
 			"Unload Scripts",
 			"Documentation",
 			"Discord Server"
 		];
+		#if debug
+		@:privateAccess
+		if (PrivateOptions.checkTypeClassAllowed())
+			result.push("UNLOCK TYPE CLASS");
+		#end
+		return result;
 	}
+	var debugThingyCopy:String;
+	var debugCopySound = new FlxSound().loadEmbedded(Paths.sound("clickText"));
 	
 	override public function new() {
 		super();
@@ -59,7 +73,73 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 		optionsImage.animation.addByPrefix("change color advanced", "change color advanced0", 12, true);
 		optionsImage.animation.addByPrefix("confusion", "confusion0", 12, true);
 		optionsImage.animation.addByPrefix("activate new mods", "activate new mods0", 12, true);
+		optionsImage.animation.addByPrefix("self awareness", "self awareness0", 12, true);
+
+		var debugThingy = new FlxText(0, FlxG.height - 4, FlxG.width * 2, 'VE ${Main.gameVersionNoSubtitle} | VerInt: ${Main.gameVersionInt} | Platform: ${Scripting.gamePlatform} | BuildType: ${Scripting.gameBuildType}\n');
+		//todo: i dont know how to make this work
+		/*var eatItLibs:Map<String, String> = [
+			//Flixel
+			"flixel" => macro $v{haxe.macro.Context.definedValue("flixel")},
+			"flixel-addons" => macro $v{haxe.macro.Context.definedValue("flixel-addons")},
+			"flixel-ui" => macro $v{haxe.macro.Context.definedValue("flixel-ui")},
+			//Non flixel
+			"json2object" => macro $v{haxe.macro.Context.definedValue("json2object")},
+			"flxanimate" => macro $v{haxe.macro.Context.definedValue("flxanimate")},
+			"polymod" => macro $v{haxe.macro.Context.definedValue("polymod")},
+			"hxWebP" => macro $v{haxe.macro.Context.definedValue("hxWebP")},
+			//Niche
+			"discord_rpc" => macro $v{haxe.macro.Context.definedValue("discord_rpc")},
+			"extension-networking" => macro $v{haxe.macro.Context.definedValue("extension-networking")},
+			"away3d" => macro $v{haxe.macro.Context.definedValue("away3d")}
+		];*/
+		/*var eatItLibs = libVersions();
+		trace(eatItLibs);
+		debugThingy.text += CoolUtil.iteratorToArray(eatItLibs.keys()).map(function(k) {
+			return k + ": " + eatItLibs.get(k);
+		}).join(" | ");
+		debugThingyCopy = debugThingy.text;
+		debugThingy.text += "\nCtrl+C to copy this";
+		debugThingy.y -= debugThingy.textField.textHeight * 0.5;
+		debugThingy.scale.set(0.5, 0.5);*/
+		add(debugThingy);
+
+		//FlxG.sound.list.add(debugCopySound);
 	}
+
+	/*public static macro function build():Map<String, String> {
+		var names:Array<String> = ["flixel", "flixel-addons", "flixel-ui", "json2object", "flxanimate", "polymod", "hxWebP", "discord_rpc", "extension-networking", "away3d"];
+		// The context is the class this build macro is called on
+		var fields = Context.getBuildFields();
+		// A map is an array of `key => value` expressions
+		var map : Array<Expr> = [];
+		// We add a `key => value` expression for every name
+		for (name in names) {
+		  // Expression reification generates expression from argument
+		  map.push(macro $v{name} => $v{haxe.crypto.Sha256.encode(name)});
+		}
+		// We push the map into the context build fields
+		fields.push({
+		  // The line position that will be referenced on error
+		  pos: Context.currentPos(),
+		  // Field name
+		  name: "namesHashed",
+		  // Attached metadata (we are not adding any)
+		  meta: null,
+		  // Field type is Map<String, String>, `map` is the map
+		  kind: FieldType.FVar(macro : Map<String, String>, macro $a{map}),
+		  // Documentation (we are not adding any)
+		  doc: null,
+		  // Field visibility
+		  access: [Access.AStatic]
+		});
+		// Return the context build fields to build the type
+		return fields;
+	}
+
+	static function libVersions():Map<String, String> {
+		//this is the most wack ass idea (casting Array<Expr> to Map) i hope it works
+		return namesHashed;
+	} */
 	
 	override function optionDescription(name:String) {
 		switch(name) {
@@ -70,8 +150,8 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			#if debug
 			case "cutscene anim test":
 				return ["Cutscene anim test"];
-			case "texture atlas test":
-				return ["Texture atlast text", "", "animation debug"];
+			//case "texture atlas test":
+			//	return ["Texture atlast text", "", "animation debug"];
 			#end
 			case "week editor":
 				return ["Edit in-game weeks for Story Mode."];
@@ -95,6 +175,8 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 				return ["Edit dialogue."];
 			case "clone hero import":
 				return ["Import a chart from Clone Hero.\n\nThe chart file must be in the same folder as the game executable and be named \"clonehero_import.chart\".\nWork in progress :)"];
+			case "new fnf backporter":
+				return ["New shit from new FNF :O"];
 			case "strip file data":
 				return ["Strip unneeded data from saved files such as charts, drastically reducing the file size.", Options.dataStrip ? "Enabled" : "Disabled", "confusion"];
 			case "documentation":
@@ -116,6 +198,9 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 				return ["Unload all currently loaded scripts.", list, "unknownOption"];
 			case "discord server":
 				return ["A Discord Server, for VMan Engine discussion and probably more"];
+			case "unlocke type class":
+				@:privateAccess
+				return ["Unlock access to the \"Type\" class in scripts. Debug builds only, and causes a SEVERE security issue. This option is not saved to your save data and will reset on quit.", PrivateOptions.typeClassAvailable ? "Enabled" : "Disabled", "self awareness"];
 		}
 		return ["Unknown option.", '', 'unknownOption'];
 	}
@@ -145,9 +230,9 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 			case "cutscene anim test":
 				FlxG.state.closeSubState();
 				FlxG.switchState(new CutsceneAnimTestState());
-			case "texture atlas test":
-				FlxG.state.closeSubState();
-				FlxG.switchState(new AtlasTestState());
+			//case "texture atlas test":
+			//	FlxG.state.closeSubState();
+			//	FlxG.switchState(new AtlasTestState());
 			#end
 			case "stage editor":
 				FlxG.state.closeSubState();
@@ -157,8 +242,31 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 				return true;
 			case "discord server":
 				FlxG.openURL("https://discord.gg/aYkugcADnd");
+			#if debug
+			case "unlock type class":
+				@:privateAccess
+				PrivateOptions.typeClassAvailable = !PrivateOptions.typeClassAvailable;
+				return true;
+			#end
+			case "new fnf backporter":
+				fileref = new FileReference();
+				fileref.browse();
+				fileref.addEventListener("select", function(evt) {
+					var result:Dynamic = CoolUtil.loadJsonFromFile(fileref.name);
+					trace(fileref.name);
+					trace(result.generatedBy);
+				});
 		}
 		return false;
+	}
+
+	public override function update(elapsed:Float) {
+		/*if (FlxG.keys.justPressed.C && FlxG.keys.pressed.CONTROL) {
+			trace("Copied game debug info");
+			Clipboard.generalClipboard.setData(TEXT_FORMAT, debugThingyCopy);
+			debugCopySound.play(true);
+		}*/
+		return update(elapsed);
 	}
 	
 	static function cloneHeroTiming(n:Float, res:Float, bpm:Float, ?bpmChanges:Array<Array<Float>>) {
@@ -379,6 +487,10 @@ class ToolsMenuSubState extends OptionsSubStateBasic
 		PlayState.SONG = Song.sanitizeSong(song);
 		FlxG.state.closeSubState();
 		FlxG.switchState(new ChartingState());
+	}
+
+	function newFnfPorter() {
+		
 	}
 }
 

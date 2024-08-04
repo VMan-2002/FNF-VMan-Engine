@@ -7,15 +7,19 @@ import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.graphics.FlxGraphic;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxMath;
+import flixel.system.FlxAssets;
 import flixel.tweens.FlxEase;
 import flixel.util.FlxColor;
 import flixel.util.typeLimit.OneOfThree;
+import flixel.util.typeLimit.OneOfTwo;
 import haxe.Json;
 import lime.utils.Assets;
 import openfl.display.BitmapData;
+import openfl.geom.Rectangle;
 
 using StringTools;
 
@@ -38,6 +42,7 @@ class CoolUtil
 	public static var difficultyArray:Array<String> = defaultDifficultyArray;
 	public static var mainMusicTime:Float = 0;
 	public static var playingMainMusic:Bool = false;
+	public static final sixtyFourBit:String = "abcdefghijklmnopqrstuvwxyzABCDEFGIHJLMNOPQRSTUVWXYZ0123456789()=";
 
 	/**
 		Switch difficulty array, and keep the current difficulty if possible. Assumes the difficulty is stored on `object` as an `Int` as an index in `CoolUtil.difficultyArray`.
@@ -89,10 +94,12 @@ class CoolUtil
 	/**
 		Returns lines from a text file
 	**/
-	inline public static function uncoolTextFile(path:String):Array<String>
+	inline public static function uncoolTextFile(path:String, ?ext:String = ".txt", ?notfound:Null<String->Null<Array<String>>> = null):Null<Array<String>>
 	{
-		//return Paths.getTextAsset('${path}.txt', TEXT, null).trim().split('\n');
-		var thing = Assets.getText('assets/'+path+'.txt').trim().split('\n');
+		path = 'assets/${path}${ext}';
+		if (notfound != null && !Assets.exists(path))
+			return notfound(path);
+		var thing = Assets.getText(path).trim().split('\n');
 		trace('uncool text file');
 		trace(thing.length);
 		trace(thing[0]);
@@ -176,7 +183,7 @@ class CoolUtil
 		Create menu background as FlxSprite
 	**/
 	public static function makeMenuBackground(type:String = "", x:Float = 0, y:Float = 0):FlxSprite {
-		var bg:FlxSprite = new FlxSprite(x, y).loadGraphic(Paths.image('menuBG${type}'));
+		var bg:FlxSprite = new FlxSprite(x, y).loadGraphic(Paths2.image('menuBG${type}'));
 		bg.antialiasing = true;
 		bg.moves = false;
 		return bg;
@@ -590,10 +597,14 @@ class CoolUtil
 		Please use this responsibly, don't save or share it anywhere you sneaky fart. We want the players to trust us.
 	**/
 	public static function getComputerUsername() {
-		if (Options.selfAware)
+		if (!Options.selfAware)
 			return "User";
-		//todo: this
-		return "User";
+		//i stole this from dave and bambi
+		#if windows
+		return Sys.getEnv("USERNAME");
+		#else
+		return Sys.getEnv("USER");
+		#end
 	}
 
 	/**
@@ -635,16 +646,19 @@ class CoolUtil
 	}
 
 	/**
-		Get mod that a file originates from. Returns `null` if the file doesn't exist or it's a vanilla file.
+		Get the first mod that a file originates from. Returns `notfound` if the file doesn't exist in a mod, so it's either basegame or doesn't exist at all.
 	**/
-	public static function getFileOriginMod(file:String):Null<String> {
+	public static function getFileOriginMod(file:String, ?notfound:Null<String> = null):Null<String> {
 		for (mod in ModLoad.enabledMods) {
 			if (FileSystem.exists('mods/${mod}/${file}'))
 				return mod;
 		}
-		return null;
+		return notfound;
 	}
 
+	/**
+		Creates an FlxSprite and assigns it a sparrow atlas in a single function
+	**/
 	public static function fastCreateSparrowSprite(?x:Float = 0, ?y:Float = 0, image:String, ?sprite:Null<FlxSprite> = null) {
 		if (sprite == null)
 			sprite = new FlxSprite(x, y);
@@ -654,6 +668,9 @@ class CoolUtil
 		return sprite;
 	}
 
+	/**
+		Creates an FlxSprite and assigns it a grid spritesheet in a single function
+	**/
 	public static function fastCreateGridSprite(?x:Float = 0, ?y:Float = 0, image:String, ?tileWidth:Int = 16, ?tileHeight:Int = 16, ?sprite:Null<FlxSprite> = null) {
 		if (sprite == null)
 			sprite = new FlxSprite(x, y);
@@ -661,6 +678,34 @@ class CoolUtil
 			sprite.setPosition(x, y);
 		sprite.loadGraphic(image, true, tileWidth, tileHeight);
 		return sprite;
+	}
+
+	public static function sixtyFourBitRandom(?length:Int = 1) {
+		if (length <= 0)
+			return "";
+		var result = "";
+		do {
+			result += sixtyFourBit.charAt(Math.floor(Math.random() * 64));
+		} while (result.length != length);
+		return result;
+	}
+
+	public static function makeOutlinedRectangle(obj:FlxSprite, width:Int, height:Int, border:Int, ?innerOpacity:Float = 0) {
+		var id = 'OL_Rect_${width}_${height}_${border}_${innerOpacity}';
+		/*if (FlxAssets.getBitmapData(id)) {
+
+		}*/
+		obj.makeGraphic(width, height, FlxColor.WHITE, false, id);
+		var middlecol = FlxColor.fromRGBFloat(1, 1, 1, innerOpacity);
+		var border2 = border + border;
+		obj.graphic.bitmap.fillRect(new Rectangle(border, border, width - border2, height - border2), middlecol);
+	}
+
+	public static function iteratorToArray<T>(a:Iterator<T>):Array<T> {
+		var result = new Array<T>();
+		for (n in a)
+			result.push(n);
+		return result;
 	}
 }
 
@@ -736,6 +781,7 @@ class ScriptHelper {
 		return (Math.sin(t*Math.PI*2)*jumpThing)+t;
 	}
 
+	@:deprecated("Use Scripting.ease instead")
 	public static function getEaseFromString(name:String) {
 		switch(name.toLowerCase().trim().replace(" ", "")) {
 			case "sinein":
@@ -804,6 +850,12 @@ class ScriptHelper {
 				return FlxEase.elasticOut;
 			case "elasticinout" | "elastic":
 				return FlxEase.elasticInOut;
+			case "expoIn":
+				return FlxEase.expoIn;
+			case "expoout":
+				return FlxEase.expoOut;
+			case "expoinout" | "expo":
+				return FlxEase.expoInOut;
 			case "jumpin":
 				return jumpIn;
 			case "jumpout" | "jump":
@@ -813,7 +865,7 @@ class ScriptHelper {
 			case "linear":
 				return FlxEase.linear;
 		}
-		trace("Lua: Cant find ease for \""+name+"\", using linear");
+		trace("Cant find ease for \""+name+"\", using linear");
 		return FlxEase.linear;
 	}
 

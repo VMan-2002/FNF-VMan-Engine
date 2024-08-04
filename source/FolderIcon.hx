@@ -13,7 +13,7 @@ class FolderIcon extends FlxTypedSpriteGroup<FlxSprite>
 	public function new() {
 		super();
 		moves = false;
-		add(new FlxSprite().loadGraphic(Paths.image('menu/folder')));
+		add(new FlxSprite().loadGraphic(Paths2.image('menu/folder')));
 		members[0].antialiasing = true;
 	}
 

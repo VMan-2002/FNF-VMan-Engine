@@ -37,6 +37,7 @@ typedef SwagSong = {
 	var noteSkin:String;
 	var noteSkinOpponent:Array<String>;
 	var uiStyle:String;
+	var rankWords:String;
 	
 	var vmanEventTime:Array<Float>;
 	var vmanEventOrder:Array<Int>;
@@ -49,6 +50,7 @@ typedef SwagSong = {
 	var timeSignature:Null<Int>;
 
 	var voicesName:Null<String>;
+	var voicesOpponentName:Null<String>;
 	var instName:Null<String>;
 	
 	var threeLanes:Null<Bool>; //Pasta night :))))))
@@ -120,12 +122,14 @@ class Song {
 			moreStrumLines: 0,
 			timeSignature:4,
 			voicesName:null,
+			voicesOpponentName:null,
 			instName:null,
 			threeLanes:false,
 			newtitle:null,
 			picospeaker:null,
 			loopbackPoint:null,
-			picocharts:null
+			picocharts:null,
+			rankWords:""
 		};
 	}
 

@@ -104,6 +104,19 @@ class Stage {
 			//#end
 			//your hardcoded stage would go here
 			switch(name) {
+				//weird fallbacks! because new FNF
+				case "limoRide":
+					return getStage("limo", mod);
+				case "mainStage":
+					return getStage("stage", mod);
+				case "phillyTrain":
+					return getStage("philly", mod);
+				case "spookyMansion":
+					return getStage("spooky", mod);
+				case "mallXmas":
+					return getStage("mall", mod);
+				case "tankmanBattlefield":
+					return getStage("tank", mod);
 				case "poops":
 					//nothing lol
 			}
@@ -151,6 +164,14 @@ class Stage {
 						sprite.scale.set(element.scaleX / 8, element.scaleY / 8);
 					case 2: //vertical gradient
 					case 3: //rotated gradient
+					case 5: //something else
+						if (colorGenArgs[0] == "rectangle") {
+							//0: id
+							//1: width
+							//2: height
+							//3: outline width
+							//4: inner opacity
+						}
 				}
 			} else {
 				if (element.animated == true) {

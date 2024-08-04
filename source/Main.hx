@@ -7,6 +7,7 @@ import flixel.FlxGame;
 import flixel.FlxState;
 import haxe.CallStack;
 import haxe.Exception;
+import haxe.Json;
 import net.VeAPIKeys;
 import net.VeGameJolt.FlxGameJolt;
 import openfl.Assets;
@@ -16,6 +17,7 @@ import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.events.UncaughtErrorEvent;
 import render3d.Render3D.VeScene3D;
+import sys.FileSystem;
 import sys.io.File;
 import sys.io.Process;
 import wackierstuff.VeFlxCamera;
@@ -140,6 +142,11 @@ class Main extends Sprite {
 		var stack = new Array<String>();
 		//todo: i dont know why but the exceptionstack is empty
 		var exceptionstack = CallStack.exceptionStack(true);
+		var savedChartTxt = "";
+		if (ChartingState.used) {
+			var chartfilename = errorBackup();
+			savedChartTxt = "\nBut we saved chart crash restore file to " + chartfilename + "\n";
+		}
 		if (exceptionstack.length == 0) {
 			trace("callstack not available?");
 			stack.push("[stack unavailable]");
@@ -158,7 +165,7 @@ class Main extends Sprite {
 			stack.push("[stack unmeasurable]");
 		var result = [
 			"VMan Engine ran into a problem :(",
-			"",
+			savedChartTxt,
 			"You can report it here: https://github.com/VMan-2002/FNF-VMan-Engine/issues",
 			"If this is an hscript crash caused by a mod you downloaded, please report it to the mod author instead.",
 			"",
@@ -182,4 +189,18 @@ class Main extends Sprite {
 		new Process(path);
 	}
 	//#end
+
+	/**
+		Save chart backup when the game crash
+	**/
+	function errorBackup() {
+		var chart = Std.isOfType(FlxG.state, ChartingState) ? cast(FlxG.state, ChartingState)._song : PlayState.SONG;
+		var filename = "crashrestore/chart/" + Highscore.formatSong(chart.song) + "-" + CoolUtil.sixtyFourBitRandom(6) + ".json";
+		if (!FileSystem.exists("crashrestore"))
+			FileSystem.createDirectory("crashrestore");
+		if (!FileSystem.exists("crashrestore/chart"))
+			FileSystem.createDirectory("crashrestore/chart");
+		File.saveContent(filename, Json.stringify(chart));
+		return filename;
+	}
 }

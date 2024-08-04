@@ -12,4 +12,8 @@ class VeAPIKeys {
     static function get(name:String):Null<String> {
         return null;
     }
+
+    static function hash(s:String):String {
+        return "";
+    }
 }

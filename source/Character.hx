@@ -4,6 +4,7 @@ import CoolUtil;
 import ThingThatSucks.ErrorReportSubstate;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
@@ -59,6 +60,7 @@ typedef SwagCharacterAnim = {
 class Character extends SpriteVManExtra {
 	public static var nextId:Int = 0;
 	public static var activeArray:Array<Character>;
+	public static var activeArray_combo:Null<Array<Character>>;
 	public static function findSuitableCharacter(name:String, ?def:Int = 0) {
 		var result:Character = activeArray[def <= activeArray.length ? 0 : def];
 		for (guy in activeArray) {
@@ -118,13 +120,15 @@ class Character extends SpriteVManExtra {
 	public var noteCameraOffset:Map<String, FlxPoint> = new Map<String, FlxPoint>();
 	public var cameraTickUpdate:Bool = false;
 
+	public var comboPoints:Null<Array<Int>> = null;
+
 	public var hitNoteByPlayer = false;
 	public var idleAlt(default, set):String = "";
 
 	public function set_realcolor(a:FlxColor) {
 		if (!misscolored)
 			color = a;
-		return a;
+		return realcolor = a;
 	}
 
 	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false, ?myMod:String = "", ?addToArray:Bool = true, ?boyfriend:Bool = false) {
@@ -416,7 +420,7 @@ class Character extends SpriteVManExtra {
 				moduloDances = 0; //no dances :)
 				
 				healthBarColor.setRGB(183, 216, 85);
-			case 'bf':
+			/*case 'bf':
 				AnimationDebug.imageFile = 'characters/BOYFRIEND';
 				frames = Paths.getSparrowAtlas('characters/BOYFRIEND');
 				animation.addByPrefix('idle', 'BF idle dance', 24, false);
@@ -453,7 +457,7 @@ class Character extends SpriteVManExtra {
 
 				positionOffset[1] = 350;
 
-				healthBarColor.setRGB(43, 176, 209);
+				healthBarColor.setRGB(43, 176, 209);*/
 			case 'bf-dead':
 				AnimationDebug.imageFile = 'characters/BF_Death';
 				frames = Paths.getSparrowAtlas('characters/BF_Death');
@@ -794,9 +798,23 @@ class Character extends SpriteVManExtra {
 					
 					//Char stuff is load. now set up
 					AnimationDebug.imageFile = loadedStuff.image == null ? curCharacter : loadedStuff.image;
-					frames = Paths.getSparrowAtlas(AnimationDebug.imageFile);
+					if (Options.useWebp)
+						frames = FlxAtlasFrames.fromSparrow(Paths2.image(AnimationDebug.imageFile, "shared/images/", myMod), Paths.file('images/${AnimationDebug.imageFile}.xml'));
+					else
+						frames = Paths.getSparrowAtlas(AnimationDebug.imageFile);
+					//frames = Paths2.getSparrowAtlas(AnimationDebug.imageFile, "shared/images/", myMod);
 					for (anim in loadedStuff.animations) {
 						loadAnimation(this, anim);
+						if (anim.name.startsWith("combo")) {
+							var num = Std.parseInt(anim.name.substr(5));
+							if (num != null) {
+								if (comboPoints == null) {
+									comboPoints = new Array<Int>();
+									activeArray_combo.push(this);
+								}
+								comboPoints.push(num);
+							}
+						}
 						var flippedPlayer:Bool = (loadedStuff.isPlayer != flipX);
 						if (anim.offset != null && anim.offset.length > 0) {
 							if (anim.offset.length >= 3) {
@@ -900,7 +918,7 @@ class Character extends SpriteVManExtra {
 					trace('using default character because couldn\'t find ${curCharacter} from ${myMod}');
 					curCharacter = "mr_placeholder_guy";
 					
-					frames = Paths.getSparrowAtlas('characters/placeholderguy/dood');
+					frames = Paths2.getSparrowAtlas('characters/placeholderguy/dood', "shared/images/");
 					AnimationDebug.imageFile = 'characters/placeholderguy/dood';
 					animation.addByPrefix('idle', 'idle lol', 24, false);
 					animation.addByPrefix('singUP', 'up note', 24, false);
@@ -967,7 +985,9 @@ class Character extends SpriteVManExtra {
 		dance();
 	}
 
-	public function changeCharacter(name:String, modName:String) {
+	public function changeCharacter(name:String, ?modName:String = null, ?force:Bool = false) {
+		if (!force && curCharacter == name && modName == myMod)
+			return; //do nothing if it's already the same
 		x -= positionOffset[0];
 		y -= positionOffset[1];
 		positionOffset = [0, 0];
@@ -975,7 +995,7 @@ class Character extends SpriteVManExtra {
 		animation.destroyAnimations();
 		animOffsets.clear();
 		noteCameraOffset.clear();
-		initCharacter(name, modName);
+		initCharacter(name, modName == null ? myMod : modName);
 		applyPositionOffset();
 	}
 

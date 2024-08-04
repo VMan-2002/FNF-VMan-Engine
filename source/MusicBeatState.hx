@@ -25,6 +25,7 @@ class MusicBeatState extends FlxUIState {
 
 	override function create() {
 		Scripting.clearScriptsByContext("PlayStateSong");
+		Paths2.dumpCache();
 		
 		if (transIn != null)
 			trace('reg ' + transIn.region);

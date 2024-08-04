@@ -1,0 +1,17 @@
+//Tuto
+
+function stateInitPost() {
+	if (PlayState.instance.instName != "Inst") {
+		trace("Erect lol, byebye script XD");
+		killScript();
+	} else {
+		trace("Regular FNF Song");
+	}
+}
+
+function beatHit(num:Int) {
+	if (num % 16 == 15 && num > 16 && num < 48) {
+		PlayState.instance.boyfriend.playAnim('hey', true);
+		PlayState.instance.dad.playAnim('cheer', true);
+	}
+}

@@ -72,8 +72,7 @@ class AnimationDebug extends MusicBeatState {
 		add(originThing);
 
 		//get char origin mod
-		var modNameTmp = CoolUtil.getFileOriginMod("objects/characters/" + daAnim + ".json");
-		modName = modNameTmp == null ? "" : modNameTmp;
+		modName = CoolUtil.getFileOriginMod("objects/characters/" + daAnim + ".json", "");
 		//
 		char = new Character(xPositionThing, 0, daAnim, false, modName);
 		char.debugMode = true;
