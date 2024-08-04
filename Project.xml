@@ -145,6 +145,8 @@
 	<haxelib name="hxWebP" if="cpp || web" />
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
+	
+	<haxedef name="HXCPP_DEBUGGER" if="debug" />
 
 	<!--Enable the Flixel core recording system-->
 	<!--<haxedef name="FLX_RECORD" />-->
