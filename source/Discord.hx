@@ -3,7 +3,7 @@ package;
 import Sys.sleep;
 
 using StringTools;
-#if !html5
+#if (!html5 && !android)
 import cpp.abi.Abi;
 import discord_rpc.DiscordRpc;
 #end
@@ -14,7 +14,7 @@ class DiscordClient
 	static var canJoin:Bool = false;
 	public function new()
 	{
-		#if !html5
+		#if (!html5 && !android)
 		trace("Discord Client starting...");
 		DiscordRpc.start({
 			clientID: "983954658231975946",
@@ -38,7 +38,7 @@ class DiscordClient
 
 	public static function shutdown()
 	{
-		#if !html5
+		#if (!html5 && !android)
 		if (!isActivated) {
 			return;
 		}
@@ -49,7 +49,7 @@ class DiscordClient
 	
 	static function onReady()
 	{
-		#if !html5
+		#if (!html5 && !android)
 		if (!isActivated) {
 			return;
 		}
@@ -72,8 +72,10 @@ class DiscordClient
 		trace('Disconnected! $_code : $_message');
 	}
 
+	#if (!html5 && !android)
 	static var requests:Array<JoinRequest>;
 	public static var mimicable:Bool;
+	#end
 
 	static function onJoin(id:String) {
 		if (Multiplayer.valid) {
@@ -81,8 +83,9 @@ class DiscordClient
 		}
 	}
 
+	#if (!html5 && !android)
 	static function onRequest(dat:JoinRequest) {
-		#if !html5
+		#if (!html5 && !android)
 		if (!isActivated || !canJoin) {
 			DiscordRpc.respond(dat.userId, No);
 			return;
@@ -101,10 +104,11 @@ class DiscordClient
 		}
 		#end
 	}
+	#end
 
 	public static function initialize()
 	{
-		#if !html5
+		#if (!html5 && !android)
 		var DiscordDaemon = sys.thread.Thread.create(() ->
 		{
 			new DiscordClient();
@@ -114,7 +118,7 @@ class DiscordClient
 	}
 
 	public static function changePresenceSimple(type:String, ?extra:String = "") {
-		#if !html5
+		#if (!html5 && !android)
 		if (!isActivated) {
 			return;
 		}
@@ -192,7 +196,7 @@ class DiscordClient
 
 	public static function changePresence(details:String, ?state:Null<String>, ?smallImageKey : String, ?hasStartTimestamp : Bool, ?endTimestamp: Float, ?includeJoin:Bool = false)
 	{
-		#if !html5
+		#if (!html5 && !android)
 		if (!isActivated) {
 			return;
 		}

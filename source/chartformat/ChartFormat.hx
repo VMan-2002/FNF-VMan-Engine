@@ -4,7 +4,7 @@ class ChartFormat {
 	//basic info
 	public var song:String;
 	public var title:Null<String>;
-	public var bpm:Float = 100.0;
+    public var bpm:Float;
 	public var speed:Float = 1.0;
 	public var attributes:Array<Array<Dynamic>>;
 	
@@ -131,7 +131,8 @@ class ChartFormat {
                 mania: null,
                 mustHitSection: section.mustHitSection,
                 focusCharacter: section.gfSection ? 2 : null,
-                beats: section.sectionBeats
+                sectionSteps: Math.floor(section.sectionBeats * 4),
+                beatSteps: 4
             }
             for (note in section.sectionNotes) {
                 var nt:String = (note.length < 4 || note[3] == null) ? "Normal Note" : (Std.isOfType(note[3], String) ? note[3] : ntOld[note[3]]);
@@ -180,12 +181,13 @@ class ChartFormat {
 
 typedef SectionFormatVE = {
     var notes:Array<NoteFormatVE>;
-    var chars:Null<Array<Int>>;
+    var chars:Null<Array<Int>>; //by default, which characters sing in this section per side
     var bpm:Float;
     var mania:Null<Array<Null<String>>>;
     var mustHitSection:Bool;
     var focusCharacter:Null<Int>;
-    var beats:Float;
+    var sectionSteps:Int; //how many steps in sections
+    var beatSteps:Int; //how many steps are in beats in sections
 }
 
 typedef NoteFormatVE = {
